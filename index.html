@@ -2411,6 +2411,207 @@
     }
 
     /* ==========================================================
+       PAUSE-AI
+       ========================================================== */
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .pause-score {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .pause-score h2 {
+      margin: 2px 0 4px;
+      color: var(--level);
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    /* Ring, der fyldes op efter scoren */
+    .ring {
+      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      background: conic-gradient(var(--level) calc(var(--pct) * 1%), var(--card-2) 0);
+    }
+
+    .ring::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 50%;
+      background: var(--card);
+    }
+
+    .ring strong,
+    .ring small {
+      position: relative;
+    }
+
+    .ring strong {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ring small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .rec-card {
+      border-left: 4px solid var(--level);
+    }
+
+    .rec-card h2 {
+      margin: 4px 0 6px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .rec-card p {
+      line-height: 1.45;
+    }
+
+    .rec-start {
+      margin: 10px 0 6px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-grid .card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 14px 12px;
+      margin: 0;
+    }
+
+    .stat-grid strong {
+      font-size: 22px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-grid span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    /* Søjler for de sidste 14 dage */
+    .history {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 130px;
+      padding: 16px 14px 10px;
+    }
+
+    .bar-col {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bar {
+      width: 100%;
+      min-height: 3px;
+      border-radius: 6px 6px 3px 3px;
+      background: var(--accent);
+    }
+
+    .bar-col small {
+      height: 12px;
+      color: var(--muted);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .forecast {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .forecast-row {
+      display: grid;
+      grid-template-columns: 96px 1fr 30px;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .forecast-row strong {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .forecast-bar {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--card-2);
+    }
+
+    .forecast-bar span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .pause-empty h2 {
+      margin-bottom: 6px;
+    }
+
+    .pause-empty p {
+      margin-bottom: 14px;
+      line-height: 1.45;
+    }
+
+    .demo-note {
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border: 1px dashed var(--border-strong);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pause-disclaimer {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    /* ==========================================================
        TOAST-BESKED
        ========================================================== */
     .toast {
@@ -2575,6 +2776,10 @@
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span>
                 <strong data-i18n="hb.checklist">Tjekliste</strong>
               </button>
+              <button class="tile" data-go="pause">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span>
+                <strong data-i18n="hb.pause">Pause-AI</strong>
+              </button>
             </div>
           </div>
 
@@ -2637,6 +2842,14 @@
               <button type="button" class="btn-primary" id="game-start" data-i18n="game.start">Start spillet</button>
               <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
             </div>
+          </div>
+
+          <!-- Pause-AI -->
+          <div class="view" data-view="pause">
+            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
+            <h1 class="page-title" data-i18n="hb.pause">Pause-AI</h1>
+            <p class="private-note" data-i18n="pause.source">Beregnet ud fra dine registreringer</p>
+            <div id="pause-content"></div>
           </div>
 
           <!-- Smoke spots-kort -->
@@ -2982,6 +3195,45 @@
     const I18N = {
       da: {
         "locale": "da-DK",
+        "hb.pause": "Pause-AI",
+        "pause.source": "Beregnet ud fra dine registreringer",
+        "pause.emptyTitle": "Ingen registreringer endnu",
+        "pause.emptyText": "Når du har registreret, hvornår du ryger, beregner Pause-AI din tolerance og foreslår, hvornår en pause giver mest mening.",
+        "pause.tryDemo": "Se et eksempel",
+        "pause.hideDemo": "Skjul eksemplet",
+        "pause.demoNote": "Eksempeldata: sådan ser det ud, når du har registreret noget.",
+        "pause.tolerance": "Tolerance",
+        "pause.level.low": "Lav",
+        "pause.level.moderate": "Moderat",
+        "pause.level.high": "Høj",
+        "pause.level.veryHigh": "Meget høj",
+        "pause.based": "Baseret på {n} registreringer de sidste 30 dage",
+        "pause.recommendation": "Anbefaling",
+        "pause.rec.noneTitle": "Ingen pause nødvendig lige nu",
+        "pause.rec.noneText": "Din tolerance er lav. Hold gerne et par frie dage om ugen, så den bliver der.",
+        "pause.rec.shortTitle": "Tag en pause på 2 dage",
+        "pause.rec.shortText": "Allerede efter 48 timer begynder kroppen at nulstille sig, og du mærker effekten tydeligere bagefter.",
+        "pause.rec.weekTitle": "Tag en pause på 1 uge",
+        "pause.rec.weekText": "Du har røget ofte på det seneste. En uges pause sænker din tolerance markant.",
+        "pause.rec.longTitle": "Tag en pause på {n} dage",
+        "pause.rec.longText": "Din tolerance er høj. Efter 3-4 uger er kroppens receptorer stort set nulstillet.",
+        "pause.startToday": "Bedste start: i dag",
+        "pause.startDay": "Bedste start: {day}. Det er typisk din roligste dag.",
+        "pause.onBreak": "Du har holdt pause i {n} dage 💪",
+        "pause.rec.keepTitle": "Hold pausen {n} dage mere",
+        "pause.rec.keepTitle1": "Hold pausen 1 dag mere",
+        "pause.rec.keepText": "Du er godt i gang. Din tolerance falder for hver dag, du holder pause.",
+        "pause.rec.doneTitle": "Din pause har virket 🎉",
+        "pause.rec.doneText": "Din tolerance er lav igen. Hold gerne et par frie dage om ugen fremover.",
+        "pause.lowIn": "Efter ca. {n} dages pause er din tolerance lav igen.",
+        "pause.statDays": "Røgdage den sidste uge",
+        "pause.statPerDay": "Gange pr. røgdag",
+        "pause.statStreak": "Dage i træk",
+        "pause.history": "De sidste 14 dage",
+        "pause.today": "I dag",
+        "pause.forecast": "Din tolerance, hvis du holder pause fra i dag",
+        "pause.after": "Efter {n} dage",
+        "pause.disclaimer": "Pause-AI er et estimat ud fra dine egne registreringer og ikke lægefaglig rådgivning. Er det svært at holde pause, så snak med din læge.",
         "home.heroText": "Saml vennerne, slå med terningen og se, hvor du lander.",
         "game.tagline": "Brætspillet for dig og vennerne",
         "game.players": "Spillere",
@@ -3172,6 +3424,45 @@
       },
       en: {
         "locale": "en-GB",
+        "hb.pause": "Break AI",
+        "pause.source": "Calculated from what you've logged",
+        "pause.emptyTitle": "Nothing logged yet",
+        "pause.emptyText": "Once you've logged when you smoke, Break AI works out your tolerance and suggests when a break makes the most sense.",
+        "pause.tryDemo": "See an example",
+        "pause.hideDemo": "Hide example",
+        "pause.demoNote": "Example data: this is how it looks once you've logged something.",
+        "pause.tolerance": "Tolerance",
+        "pause.level.low": "Low",
+        "pause.level.moderate": "Moderate",
+        "pause.level.high": "High",
+        "pause.level.veryHigh": "Very high",
+        "pause.based": "Based on {n} logs in the last 30 days",
+        "pause.recommendation": "Recommendation",
+        "pause.rec.noneTitle": "No break needed right now",
+        "pause.rec.noneText": "Your tolerance is low. Keep a couple of free days a week to keep it that way.",
+        "pause.rec.shortTitle": "Take a 2-day break",
+        "pause.rec.shortText": "After just 48 hours your body starts to reset, and you'll feel the effect more clearly afterwards.",
+        "pause.rec.weekTitle": "Take a 1-week break",
+        "pause.rec.weekText": "You've been smoking often lately. A week off will lower your tolerance a lot.",
+        "pause.rec.longTitle": "Take a {n}-day break",
+        "pause.rec.longText": "Your tolerance is high. After 3-4 weeks your body's receptors are largely reset.",
+        "pause.startToday": "Best time to start: today",
+        "pause.startDay": "Best time to start: {day}. It's usually your quietest day.",
+        "pause.onBreak": "You've been on a break for {n} days 💪",
+        "pause.rec.keepTitle": "Keep the break going {n} more days",
+        "pause.rec.keepTitle1": "Keep the break going 1 more day",
+        "pause.rec.keepText": "You're doing great. Your tolerance drops every day you stay off.",
+        "pause.rec.doneTitle": "Your break worked 🎉",
+        "pause.rec.doneText": "Your tolerance is low again. Keep a couple of free days a week from now on.",
+        "pause.lowIn": "After about {n} days off, your tolerance will be low again.",
+        "pause.statDays": "Smoking days last week",
+        "pause.statPerDay": "Times per smoking day",
+        "pause.statStreak": "Days in a row",
+        "pause.history": "The last 14 days",
+        "pause.today": "Today",
+        "pause.forecast": "Your tolerance if you take a break from today",
+        "pause.after": "After {n} days",
+        "pause.disclaimer": "Break AI is an estimate based on your own logs and not medical advice. If taking a break is hard, talk to your doctor.",
         "home.heroText": "Gather your friends, roll the die and see where you land.",
         "game.tagline": "The board game for you and your friends",
         "game.players": "Players",
@@ -3404,6 +3695,7 @@
       renderChecklist();
       renderPlayers();
       renderGame();
+      renderPause();
       if (currentUserKey()) {
         renderProfile();
         renderFriends();
@@ -3702,6 +3994,7 @@
       handbookPage.classList.toggle("map-mode", name === "map");
       if (name !== "map") cancelPlacing();
       if (name === "map") openMap();
+      if (name === "pause") renderPause();
       scrollToTop();
     }
 
@@ -4696,6 +4989,7 @@
         (snap) => {
           diaryEntries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
           renderDiary();
+          renderPause();
         },
         (error) => console.error(error)
       );
@@ -5417,6 +5711,217 @@
     document.querySelectorAll("[data-game-end]").forEach((btn) => btn.addEventListener("click", endGame));
 
     renderPlayers();
+
+    // ==========================================================
+    // PAUSE-AI: hvornår er det bedst at holde pause?
+    // ==========================================================
+    // En model, der kører direkte i appen (ingen server eller API-nøgle).
+    // Hver registrering bygger tolerance op, og tolerancen falder igen
+    // eksponentielt, når man holder pause. Ud fra det beregnes en score
+    // fra 0-100, en anbefalet pauselængde og den bedste dag at starte.
+    const DAY = 864e5;
+    const TOLERANCE_DAYS = 6;      // hvor hurtigt tolerancen falder (dage)
+    const TOLERANCE_SCALE = 6;     // hvor hurtigt scoren nærmer sig 100
+    const LOW_SCORE = 20;          // under denne score er tolerancen "lav"
+    let showPauseDemo = false;
+
+    // Registreringer: { time, amount }. Lige nu er hvert opslag i Joint Log
+    // én registrering. Når vi laver den rigtige registrering, kobles den på her.
+    function getSessions() {
+      if (showPauseDemo) return demoSessions();
+      return diaryEntries.map((entry) => ({ time: entry.createdAt, amount: 1 }));
+    }
+
+    // Eksempel: en måned med næsten daglig rygning, mindst om tirsdagen
+    function demoSessions() {
+      const sessions = [];
+      const today = new Date();
+      today.setHours(20, 0, 0, 0);
+      for (let d = 30; d >= 0; d--) {
+        const day = new Date(today.getTime() - d * DAY);
+        const weekday = day.getDay();
+        const count = weekday === 2 ? 0 : weekday === 5 || weekday === 6 ? 3 : 1 + (d % 3 === 0 ? 1 : 0);
+        for (let i = 0; i < count; i++) sessions.push({ time: day.getTime() - i * 3 * 36e5, amount: 1 });
+      }
+      return sessions;
+    }
+
+    function toleranceAt(sessions, time) {
+      return sessions
+        .filter((s) => s.time <= time)
+        .reduce((sum, s) => sum + (s.amount || 1) * Math.exp(-(time - s.time) / (TOLERANCE_DAYS * DAY)), 0);
+    }
+
+    function scoreFrom(tolerance) {
+      return Math.round(100 * (1 - Math.exp(-tolerance / TOLERANCE_SCALE)));
+    }
+
+    function dayKey(time) {
+      const d = new Date(time);
+      return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    }
+
+    function analysePause(sessions) {
+      const now = Date.now();
+      const recent = sessions.filter((s) => s.time > now - 30 * DAY);
+      const tolerance = toleranceAt(sessions, now);
+      const score = scoreFrom(tolerance);
+
+      // Dage med rygning og hvor mange gange pr. dag
+      const useDays = new Set(recent.map((s) => dayKey(s.time)));
+      const daysLastWeek = new Set(recent.filter((s) => s.time > now - 7 * DAY).map((s) => dayKey(s.time))).size;
+      const perUseDay = useDays.size ? recent.length / useDays.size : 0;
+
+      // Dage i træk med rygning (til og med i dag eller i går)
+      let streak = 0;
+      for (let d = 0; d < 60; d++) {
+        const used = useDays.has(dayKey(now - d * DAY));
+        if (used) streak++;
+        else if (d > 0 || streak > 0) break;
+      }
+
+      // Hvor længe siden sidst?
+      const last = sessions.reduce((max, s) => Math.max(max, s.time), 0);
+      const daysSinceLast = last ? Math.floor((now - last) / DAY) : null;
+
+      // Anbefalet pause
+      let level;
+      let breakDays;
+      if (score < 25) [level, breakDays] = ["low", 0];
+      else if (score < 50) [level, breakDays] = ["moderate", 2];
+      else if (score < 75) [level, breakDays] = ["high", 7];
+      else [level, breakDays] = ["veryHigh", score >= 85 || streak >= 21 ? 28 : 21];
+
+      // Hvor mange dages pause, før tolerancen er lav igen
+      const lowTolerance = -TOLERANCE_SCALE * Math.log(1 - LOW_SCORE / 100);
+      const daysToLow = tolerance > lowTolerance ? Math.ceil(TOLERANCE_DAYS * Math.log(tolerance / lowTolerance)) : 0;
+
+      // Den dag i ugen, hvor man typisk ryger mindst
+      const perWeekday = [0, 0, 0, 0, 0, 0, 0];
+      recent.forEach((s) => { perWeekday[new Date(s.time).getDay()] += s.amount || 1; });
+      const calmestDay = perWeekday.indexOf(Math.min(...perWeekday));
+
+      // Forventet score efter 2, 7, 14 og 28 dages pause
+      const forecast = [2, 7, 14, 28].map((d) => ({ days: d, score: scoreFrom(tolerance * Math.exp(-d / TOLERANCE_DAYS)) }));
+
+      // Antal registreringer pr. dag de sidste 14 dage
+      const history = Array.from({ length: 14 }, (_, i) => {
+        const key = dayKey(now - (13 - i) * DAY);
+        return sessions.filter((s) => dayKey(s.time) === key).reduce((sum, s) => sum + (s.amount || 1), 0);
+      });
+
+      return { count: recent.length, score, level, breakDays, daysLastWeek, perUseDay, streak, daysSinceLast, daysToLow, calmestDay, forecast, history };
+    }
+
+    function weekdayName(index) {
+      // 4. januar 1970 var en søndag (indeks 0)
+      return new Date(Date.UTC(1970, 0, 4 + index)).toLocaleDateString(t("locale"), { weekday: "long", timeZone: "UTC" });
+    }
+
+    const LEVEL_COLORS = { low: "#6fd08f", moderate: "#ffd166", high: "#ffb347", veryHigh: "#ff6159" };
+
+    function renderPause() {
+      const el = document.getElementById("pause-content");
+      if (!el) return;
+      const sessions = getSessions();
+
+      if (!sessions.length) {
+        el.innerHTML = `
+          <div class="card pause-empty">
+            <h2>${t("pause.emptyTitle")}</h2>
+            <p class="muted">${t("pause.emptyText")}</p>
+            <button type="button" class="btn-plain" data-pause-demo>${t("pause.tryDemo")}</button>
+          </div>
+          <p class="pause-disclaimer">${t("pause.disclaimer")}</p>`;
+        return;
+      }
+
+      const a = analysePause(sessions);
+      const color = LEVEL_COLORS[a.level];
+      const maxBar = Math.max(1, ...a.history);
+
+      const rec = {
+        low: [t("pause.rec.noneTitle"), t("pause.rec.noneText")],
+        moderate: [t("pause.rec.shortTitle"), t("pause.rec.shortText")],
+        high: [t("pause.rec.weekTitle"), t("pause.rec.weekText")],
+        veryHigh: [t("pause.rec.longTitle", { n: a.breakDays }), t("pause.rec.longText")],
+      }[a.level];
+
+      // Holder man allerede pause, handler rådet om at blive ved
+      const onBreak = a.daysSinceLast >= 2;
+      if (onBreak && a.daysToLow > 0) {
+        rec[0] = a.daysToLow === 1 ? t("pause.rec.keepTitle1") : t("pause.rec.keepTitle", { n: a.daysToLow });
+        rec[1] = t("pause.rec.keepText");
+      } else if (onBreak && a.level === "low") {
+        rec[0] = t("pause.rec.doneTitle");
+        rec[1] = t("pause.rec.doneText");
+      }
+
+      let start = "";
+      if (onBreak) {
+        start = t("pause.onBreak", { n: a.daysSinceLast });
+      } else if (a.level === "high" || a.level === "veryHigh") {
+        start = t("pause.startToday");
+      } else if (a.level === "moderate") {
+        start = t("pause.startDay", { day: weekdayName(a.calmestDay) });
+      }
+
+      el.innerHTML = `
+        ${showPauseDemo ? `<p class="demo-note">${t("pause.demoNote")} <button type="button" class="link-btn small" data-pause-demo>${t("pause.hideDemo")}</button></p>` : ""}
+
+        <div class="card pause-score" style="--level:${color}">
+          <div class="ring" style="--pct:${a.score}">
+            <strong>${a.score}</strong>
+            <small>/ 100</small>
+          </div>
+          <div>
+            <small class="eyebrow">${t("pause.tolerance")}</small>
+            <h2>${t("pause.level." + a.level)}</h2>
+            <p class="muted">${t("pause.based", { n: a.count })}</p>
+          </div>
+        </div>
+
+        <div class="card rec-card" style="--level:${color}">
+          <small class="eyebrow">${t("pause.recommendation")}</small>
+          <h2>${rec[0]}</h2>
+          <p>${rec[1]}</p>
+          ${start ? `<p class="rec-start">${start}</p>` : ""}
+          ${a.daysToLow && !onBreak ? `<p class="muted">${t("pause.lowIn", { n: a.daysToLow })}</p>` : ""}
+        </div>
+
+        <div class="stat-grid">
+          <div class="card"><strong>${a.daysLastWeek}/7</strong><span>${t("pause.statDays")}</span></div>
+          <div class="card"><strong>${a.perUseDay.toLocaleString(t("locale"), { maximumFractionDigits: 1 })}</strong><span>${t("pause.statPerDay")}</span></div>
+          <div class="card"><strong>${a.streak}</strong><span>${t("pause.statStreak")}</span></div>
+        </div>
+
+        <h2 class="section-title">${t("pause.history")}</h2>
+        <div class="card history">
+          ${a.history.map((n, i) => `
+            <div class="bar-col" title="${n}">
+              <span class="bar" style="height:${(n / maxBar) * 100}%"></span>
+              <small>${i === 13 ? t("pause.today") : ""}</small>
+            </div>`).join("")}
+        </div>
+
+        <h2 class="section-title">${t("pause.forecast")}</h2>
+        <div class="card forecast">
+          ${a.forecast.map((f) => `
+            <div class="forecast-row">
+              <span>${t("pause.after", { n: f.days })}</span>
+              <span class="forecast-bar"><span style="width:${f.score}%"></span></span>
+              <strong>${f.score}</strong>
+            </div>`).join("")}
+        </div>
+
+        <p class="pause-disclaimer">${t("pause.disclaimer")}</p>`;
+    }
+
+    document.getElementById("pause-content").addEventListener("click", (e) => {
+      if (!e.target.closest("[data-pause-demo]")) return;
+      showPauseDemo = !showPauseDemo;
+      renderPause();
+    });
 
     // ---------- Genveje på hjemmeskærmen ----------
     function greetingKey() {
