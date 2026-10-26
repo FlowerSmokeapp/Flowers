@@ -14,11 +14,11 @@
 
   <title>MinApp</title>
 
-  <!-- Leaflet: gratis kortbibliotek til Verdenskortet (kræver internet) -->
+  <!-- Leaflet: gratis kortbibliotek til Smoke spots-kortet (kræver internet) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Firebase: fælles database, så alle kan se bænkene (kræver internet) -->
+  <!-- Firebase: login og fælles database (kræver internet) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -569,7 +569,7 @@
     }
 
     /* ==========================================================
-       HÅNDBOG: undersider (menu, guides, kort, bænk)
+       HÅNDBOG: undersider (menu, guides, kort, smoke spot)
        ========================================================== */
     .view {
       display: none;
@@ -591,118 +591,50 @@
       cursor: pointer;
     }
 
-    /* Store knapper i håndbogen */
-    .big-btn {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      width: 100%;
-      min-height: 130px;
-      padding: 24px 22px;
-      margin-bottom: 16px;
-      border: none;
-      border-radius: 22px;
-      color: #fff;
-      text-align: left;
-      font: inherit;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      transition: transform 0.1s;
-    }
-
-    .big-btn:active {
-      transform: scale(0.97);
-    }
-
-    .big-btn.guides {
-      background: linear-gradient(145deg, #1f6b3a, #0e2f19);
-    }
-
-    .big-btn.map {
-      background: linear-gradient(145deg, #232a25, #0f120f);
-      border: 1px solid #2c3a30;
-    }
-
-    .big-icon {
-      font-size: 46px;
-    }
-
-    .big-btn strong {
-      display: block;
-      font-size: 26px;
-      margin-bottom: 4px;
-    }
-
-    .big-btn small {
-      font-size: 15px;
-      opacity: 0.9;
-    }
-
-    /* Kategori-knapper */
-    .chips {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      margin-bottom: 16px;
-      scrollbar-width: none;
-    }
-
-    .chip {
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 14px;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    .chip.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-    }
-
-    /* Liste med guides */
-    .guide-item {
-      display: flex;
-      align-items: center;
+    /* Håndbog: to firkantede knapper side om side */
+    .tile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 14px;
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 10px;
-      border: none;
-      border-radius: var(--radius);
-      background: var(--card);
-      color: var(--text);
-      text-align: left;
-      font: inherit;
-      cursor: pointer;
     }
 
-    .guide-emoji {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: var(--bg);
+    .tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      aspect-ratio: 1;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+    }
+
+    .tile:active {
+      transform: scale(0.96);
+      border-color: var(--accent);
+    }
+
+    .tile-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
+      background: linear-gradient(145deg, #1f6b3a, #0f3a1f);
+      font-size: 38px;
+      box-shadow: 0 8px 20px rgba(31, 107, 58, 0.3);
     }
 
-    .guide-item strong {
-      display: block;
-      font-size: 16px;
-      margin-bottom: 2px;
-    }
-
-    .guide-item small {
-      color: var(--muted);
-      font-size: 13px;
+    .tile strong {
+      font-size: 17px;
+      text-align: center;
     }
 
     .chevron {
@@ -711,73 +643,7 @@
       font-size: 20px;
     }
 
-    /* En enkelt guide */
-    .guide-head {
-      margin-bottom: 16px;
-    }
-
-    .guide-head .guide-emoji {
-      width: 64px;
-      height: 64px;
-      font-size: 36px;
-      background: var(--card);
-      margin-bottom: 12px;
-    }
-
-    .guide-head h1 {
-      font-size: 28px;
-      letter-spacing: -0.4px;
-      margin-bottom: 4px;
-    }
-
-    .intro {
-      font-size: 17px;
-      line-height: 1.45;
-      margin-bottom: 16px;
-    }
-
-    .steps {
-      list-style: none;
-      counter-reset: step;
-    }
-
-    .steps li {
-      position: relative;
-      counter-increment: step;
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 14px 14px 14px 54px;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-
-    .steps li::before {
-      content: counter(step);
-      position: absolute;
-      left: 14px;
-      top: 12px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tip {
-      background: rgba(93, 187, 122, 0.1);
-      border: 1px solid rgba(93, 187, 122, 0.2);
-      border-radius: var(--radius);
-      padding: 14px;
-      line-height: 1.4;
-      margin-top: 6px;
-    }
-
-    /* Verdenskort: kortet fylder hele skærmen, knapperne svæver ovenpå */
+    /* Smoke spots: kortet fylder hele skærmen, knapperne svæver ovenpå */
     .page.map-mode.active {
       position: relative;
       height: 100%;
@@ -1014,7 +880,7 @@
       border-top-color: var(--primary);
     }
 
-    /* Bænk-side */
+    /* Et enkelt smoke spot */
     .bench-photo {
       display: block;
       width: 100%;
@@ -1093,7 +959,7 @@
       cursor: pointer;
     }
 
-    /* Bundark til at tilføje en bænk */
+    /* Bundark til at tilføje et smoke spot */
     .sheet-backdrop {
       position: fixed;
       inset: 0;
@@ -1690,47 +1556,36 @@
         </section>
 
         <section class="page" data-page="handbook" id="handbook">
-          <!-- Håndbog: forside med store knapper -->
+          <!-- Håndbog: forside med to knapper -->
           <div class="view active" data-view="hb-menu">
             <h1 class="page-title" data-i18n="nav.handbook">Håndbog</h1>
-            <button class="big-btn guides" data-go="guides">
-              <span class="big-icon">📖</span>
-              <span>
+            <div class="tile-grid">
+              <button class="tile" data-go="guides">
+                <span class="tile-img" aria-hidden="true">📖</span>
                 <strong>Guides</strong>
-                <small data-i18n="hb.guidesSub">Stole, bænke, borde og sofaer</small>
-              </span>
-            </button>
-            <button class="big-btn map" data-go="map">
-              <span class="big-icon">🌍</span>
-              <span>
-                <strong data-i18n="hb.map">Verdenskort</strong>
-                <small data-i18n="hb.mapSub">Find og del verdens fedeste bænke</small>
-              </span>
-            </button>
+              </button>
+              <button class="tile" data-go="map">
+                <span class="tile-img" aria-hidden="true">📍</span>
+                <strong data-i18n="hb.map">Smoke spots</strong>
+              </button>
+            </div>
           </div>
 
-          <!-- Liste med guides -->
+          <!-- Guides (tom indtil videre) -->
           <div class="view" data-view="guides">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title">Guides</h1>
-            <div class="chips" id="guide-chips"></div>
-            <div id="guide-list"></div>
+            <p class="empty-note" data-i18n="guides.empty">Der er ingen guides endnu.</p>
           </div>
 
-          <!-- En enkelt guide -->
-          <div class="view" data-view="guide">
-            <button class="back" data-back>‹ Guides</button>
-            <div id="guide-detail"></div>
-          </div>
-
-          <!-- Verdenskort -->
+          <!-- Smoke spots-kort -->
           <div class="view map-view" data-view="map" id="map-view">
             <div id="map"></div>
             <div class="map-header">
               <button class="round-btn glass" data-back data-i18n-aria="map.back" aria-label="Tilbage">
                 <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
               </button>
-              <span class="map-title glass" data-i18n="hb.map">Verdenskort</span>
+              <span class="map-title glass" data-i18n="hb.map">Smoke spots</span>
               <button class="round-btn glass" id="locate-btn" data-i18n-aria="map.locate" aria-label="Vis min placering">
                 <svg viewBox="0 0 24 24"><path d="M21 3L3 10.5l7.5 3 3 7.5z"/></svg>
               </button>
@@ -1744,16 +1599,16 @@
               </button>
             </div>
             <div id="map-empty" class="place-hint glass hidden">
-              <span data-i18n="map.empty">Ingen bænke endnu. Sæt den første på kortet!</span>
+              <span data-i18n="map.empty">Ingen smoke spots endnu. Sæt det første på kortet!</span>
             </div>
             <div id="place-hint" class="place-hint glass hidden">
-              <span data-i18n="map.placeHint">Tryk på kortet, hvor bænken står</span>
+              <span data-i18n="map.placeHint">Tryk på kortet, hvor dit smoke spot er</span>
               <button type="button" id="cancel-place" data-i18n="common.cancel">Annuller</button>
             </div>
-            <button class="fab" id="add-bench-btn"><span>+</span> <span data-i18n="map.add">Tilføj bænk</span></button>
+            <button class="fab" id="add-bench-btn"><span>+</span> <span data-i18n="map.add">Tilføj smoke spot</span></button>
           </div>
 
-          <!-- En enkelt bænk -->
+          <!-- Et enkelt smoke spot -->
           <div class="view" data-view="bench">
             <button class="back" data-back data-i18n="back.map">‹ Kort</button>
             <div id="bench-detail"></div>
@@ -1806,7 +1661,7 @@
             <p class="muted" id="profile-since"></p>
             <p class="bio" id="profile-bio"></p>
             <div class="stats">
-              <div><strong id="stat-benches">0</strong><span data-i18n="profile.benches">Bænke</span></div>
+              <div><strong id="stat-benches">0</strong><span data-i18n="profile.benches">Smoke spots</span></div>
               <div><strong id="stat-friends">0</strong><span data-i18n="profile.friends">Venner</span></div>
             </div>
             <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
@@ -1848,22 +1703,22 @@
       </div>
     </div>
 
-    <!-- Bundark: tilføj en ny bænk -->
+    <!-- Bundark: tilføj et nyt smoke spot -->
     <div id="sheet-backdrop" class="sheet-backdrop hidden"></div>
     <form id="bench-form" class="sheet hidden" novalidate>
-      <h2 data-i18n="bench.new">Ny bænk</h2>
+      <h2 data-i18n="bench.new">Nyt smoke spot</h2>
       <label class="photo-pick" id="photo-pick">
-        <span id="photo-text" data-i18n="bench.addPhoto">📷 Tilføj billede af bænken</span>
+        <span id="photo-text" data-i18n="bench.addPhoto">📷 Tilføj billede af stedet</span>
         <img id="photo-preview" class="hidden" alt="">
         <input type="file" accept="image/*" id="photo-input">
       </label>
       <label class="field">
-        <span data-i18n="bench.name">Navn på bænken</span>
-        <input type="text" name="name" data-i18n-ph="bench.namePh" placeholder="Fx Bænken ved søen" maxlength="60">
+        <span data-i18n="bench.name">Navn på stedet</span>
+        <input type="text" name="name" data-i18n-ph="bench.namePh" placeholder="Fx Udsigten ved søen" maxlength="60">
       </label>
       <label class="field">
-        <span data-i18n="bench.why">Hvorfor er den fed?</span>
-        <textarea name="desc" data-i18n-ph="bench.whyPh" placeholder="Udsigt, sol, god til madpakken…" maxlength="400"></textarea>
+        <span data-i18n="bench.why">Hvorfor er det fedt?</span>
+        <textarea name="desc" data-i18n-ph="bench.whyPh" placeholder="Udsigt, læ, roligt sted…" maxlength="400"></textarea>
       </label>
       <div class="field">
         <span data-i18n="bench.yourRating">Din bedømmelse</span>
@@ -1998,6 +1853,7 @@
     const I18N = {
       da: {
         "locale": "da-DK",
+        "guides.empty": "Der er ingen guides endnu.",
         "lang.title": "Vælg sprog",
         "lang.sub": "Du kan altid skifte senere under Profil",
         "auth.welcome": "Velkommen tilbage",
@@ -2034,58 +1890,55 @@
         "forum.emptySub": "Her kommer diskussioner og spørgsmål fra fællesskabet.",
         "home.hello": "Hej",
         "home.welcome": "Velkommen til MinApp.",
-        "hb.guidesSub": "Stole, bænke, borde og sofaer",
-        "hb.map": "Verdenskort",
-        "hb.mapSub": "Find og del verdens fedeste bænke",
+        "hb.map": "Smoke spots",
         "back.handbook": "‹ Håndbog",
         "back.map": "‹ Kort",
-        "guides.all": "Alle",
         "common.cancel": "Annuller",
         "map.back": "Tilbage",
         "map.locate": "Vis min placering",
         "map.zoomIn": "Zoom ind",
         "map.zoomOut": "Zoom ud",
-        "map.empty": "Ingen bænke endnu. Sæt den første på kortet!",
-        "map.placeHint": "Tryk på kortet, hvor bænken står",
-        "map.add": "Tilføj bænk",
+        "map.empty": "Ingen smoke spots endnu. Sæt det første på kortet!",
+        "map.placeHint": "Tryk på kortet, hvor dit smoke spot er",
+        "map.add": "Tilføj smoke spot",
         "map.noInternet": "Kortet kræver internetforbindelse 🌐",
         "map.notLoaded": "Kortet er ikke indlæst",
         "map.noLocation": "Kan ikke finde din placering",
         "db.noConnection": "Kunne ikke forbinde til databasen",
-        "db.fetchFailed": "Kunne ikke hente bænke fra databasen",
+        "db.fetchFailed": "Kunne ikke hente smoke spots fra databasen",
         "db.offline": "Ingen forbindelse til databasen",
         "img.failed": "Billedet kunne ikke indlæses",
         "pin.new": "Ny",
         "stars": "{n} stjerner",
-        "bench.new": "Ny bænk",
-        "bench.addPhoto": "📷 Tilføj billede af bænken",
-        "bench.name": "Navn på bænken",
-        "bench.namePh": "Fx Bænken ved søen",
-        "bench.why": "Hvorfor er den fed?",
-        "bench.whyPh": "Udsigt, sol, god til madpakken…",
+        "bench.new": "Nyt smoke spot",
+        "bench.addPhoto": "📷 Tilføj billede af stedet",
+        "bench.name": "Navn på stedet",
+        "bench.namePh": "Fx Udsigten ved søen",
+        "bench.why": "Hvorfor er det fedt?",
+        "bench.whyPh": "Udsigt, læ, roligt sted…",
         "bench.yourRating": "Din bedømmelse",
-        "bench.giveStars": "Giv bænken stjerner",
+        "bench.giveStars": "Giv stedet stjerner",
         "bench.save": "Sæt på kortet",
         "bench.saving": "Gemmer…",
-        "bench.errPhoto": "Tilføj et billede af bænken",
-        "bench.errName": "Giv bænken et navn",
-        "bench.errSave": "Bænken kunne ikke gemmes. Tjek din internetforbindelse.",
-        "bench.added": "Bænken er sat på kortet 📍",
+        "bench.errPhoto": "Tilføj et billede af stedet",
+        "bench.errName": "Giv stedet et navn",
+        "bench.errSave": "Smoke spottet kunne ikke gemmes. Tjek din internetforbindelse.",
+        "bench.added": "Smoke spottet er sat på kortet 📍",
         "bench.addedBy": "Tilføjet af {name} · {date}",
         "bench.rating1": "bedømmelse",
         "bench.ratingN": "bedømmelser",
         "bench.showOnMap": "📍 Vis på kortet",
-        "bench.delete": "Slet bænk",
-        "bench.confirmDelete": "Vil du slette denne bænk?",
-        "bench.deleted": "Bænken er slettet",
-        "bench.deleteFailed": "Bænken kunne ikke slettes",
-        "bench.gone": "Bænken findes ikke længere.",
+        "bench.delete": "Slet smoke spot",
+        "bench.confirmDelete": "Vil du slette dette smoke spot?",
+        "bench.deleted": "Smoke spottet er slettet",
+        "bench.deleteFailed": "Smoke spottet kunne ikke slettes",
+        "bench.gone": "Smoke spottet findes ikke længere.",
         "bench.photoAlt": "Billede af {name}",
         "bench.rated1": "Du gav 1 stjerne ⭐",
         "bench.ratedN": "Du gav {n} stjerner ⭐",
         "bench.rateFailed": "Bedømmelsen kunne ikke gemmes",
         "profile.since": "Smoker siden {date}",
-        "profile.benches": "Bænke",
+        "profile.benches": "Smoke spots",
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
         "profile.logout": "Log ud",
@@ -2127,6 +1980,7 @@
       },
       en: {
         "locale": "en-GB",
+        "guides.empty": "There are no guides yet.",
         "lang.title": "Choose language",
         "lang.sub": "You can always change it later in Profile",
         "auth.welcome": "Welcome back",
@@ -2163,58 +2017,55 @@
         "forum.emptySub": "Discussions and questions from the community will show up here.",
         "home.hello": "Hey",
         "home.welcome": "Welcome to MinApp.",
-        "hb.guidesSub": "Chairs, benches, tables and sofas",
-        "hb.map": "World map",
-        "hb.mapSub": "Find and share the world's best benches",
+        "hb.map": "Smoke spots",
         "back.handbook": "‹ Handbook",
         "back.map": "‹ Map",
-        "guides.all": "All",
         "common.cancel": "Cancel",
         "map.back": "Back",
         "map.locate": "Show my location",
         "map.zoomIn": "Zoom in",
         "map.zoomOut": "Zoom out",
-        "map.empty": "No benches yet. Put the first one on the map!",
-        "map.placeHint": "Tap the map where the bench is",
-        "map.add": "Add bench",
+        "map.empty": "No smoke spots yet. Put the first one on the map!",
+        "map.placeHint": "Tap the map where the smoke spot is",
+        "map.add": "Add smoke spot",
         "map.noInternet": "The map needs an internet connection 🌐",
         "map.notLoaded": "The map hasn't loaded",
         "map.noLocation": "Can't find your location",
         "db.noConnection": "Couldn't connect to the database",
-        "db.fetchFailed": "Couldn't load benches from the database",
+        "db.fetchFailed": "Couldn't load smoke spots from the database",
         "db.offline": "No connection to the database",
         "img.failed": "The photo couldn't be loaded",
         "pin.new": "New",
         "stars": "{n} stars",
-        "bench.new": "New bench",
-        "bench.addPhoto": "📷 Add a photo of the bench",
-        "bench.name": "Bench name",
-        "bench.namePh": "E.g. The bench by the lake",
+        "bench.new": "New smoke spot",
+        "bench.addPhoto": "📷 Add a photo of the spot",
+        "bench.name": "Spot name",
+        "bench.namePh": "E.g. The view by the lake",
         "bench.why": "Why is it great?",
-        "bench.whyPh": "View, sun, perfect for lunch…",
+        "bench.whyPh": "View, shelter, nice and quiet…",
         "bench.yourRating": "Your rating",
-        "bench.giveStars": "Rate this bench",
+        "bench.giveStars": "Rate this spot",
         "bench.save": "Put on map",
         "bench.saving": "Saving…",
-        "bench.errPhoto": "Add a photo of the bench",
-        "bench.errName": "Give the bench a name",
-        "bench.errSave": "The bench couldn't be saved. Check your internet connection.",
-        "bench.added": "The bench is on the map 📍",
+        "bench.errPhoto": "Add a photo of the spot",
+        "bench.errName": "Give the spot a name",
+        "bench.errSave": "The smoke spot couldn't be saved. Check your internet connection.",
+        "bench.added": "The smoke spot is on the map 📍",
         "bench.addedBy": "Added by {name} · {date}",
         "bench.rating1": "rating",
         "bench.ratingN": "ratings",
         "bench.showOnMap": "📍 Show on map",
-        "bench.delete": "Delete bench",
-        "bench.confirmDelete": "Do you want to delete this bench?",
-        "bench.deleted": "The bench was deleted",
-        "bench.deleteFailed": "The bench couldn't be deleted",
-        "bench.gone": "This bench no longer exists.",
+        "bench.delete": "Delete smoke spot",
+        "bench.confirmDelete": "Do you want to delete this smoke spot?",
+        "bench.deleted": "The smoke spot was deleted",
+        "bench.deleteFailed": "The smoke spot couldn't be deleted",
+        "bench.gone": "This smoke spot no longer exists.",
         "bench.photoAlt": "Photo of {name}",
         "bench.rated1": "You gave 1 star ⭐",
         "bench.ratedN": "You gave {n} stars ⭐",
         "bench.rateFailed": "Your rating couldn't be saved",
         "profile.since": "Smoker since {date}",
-        "profile.benches": "Benches",
+        "profile.benches": "Smoke spots",
         "profile.edit": "Edit profile",
         "profile.language": "Language",
         "profile.logout": "Log out",
@@ -2292,9 +2143,6 @@
       });
 
       updateAuthTitles();
-      renderGuideChips();
-      renderGuideList();
-      if (currentGuideId) renderGuide();
       renderMarkers();
       if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) renderBench();
       if (currentUserKey()) {
@@ -2614,455 +2462,7 @@
     });
 
     // ==========================================================
-    // GUIDES
-    // ==========================================================
-    const CATEGORIES = {
-      chairs:  { name: "Stole",  emoji: "🪑" },
-      benches: { name: "Bænke",  emoji: "🌳" },
-      tables:  { name: "Borde",  emoji: "🪵" },
-      sofas:   { name: "Sofaer", emoji: "🛋️" },
-    };
-
-    const GUIDES = [
-      // ---------- Stole ----------
-      {
-        id: "chair-wobbly",
-        cat: "chairs",
-        title: "Stram en vakkelvorn stol",
-        time: "15 min",
-        intro: "En stol, der vakler, har næsten altid en løs samling. Sådan får du den fast igen.",
-        steps: [
-          "Vend stolen om og find de samlinger, der giver sig, når du vrikker med benene.",
-          "Har stolen skruer eller beslag, så spænd dem med en skruetrækker eller unbrakonøgle.",
-          "Er samlingen limet og løs, så skil den forsigtigt ad og skrab den gamle lim af.",
-          "Kom ny trælim i hullet og på tappen, og saml stolen igen.",
-          "Pres samlingen sammen med en skruetvinge eller en stram strop, og tør overskydende lim af med en fugtig klud.",
-          "Lad limen tørre i mindst 24 timer, før stolen bruges.",
-        ],
-        tip: "Er et ben bare lidt for kort, kan en filtdup under benet ofte løse det, så du ikke skal save i de andre.",
-      },
-      {
-        id: "chair-reupholster",
-        cat: "chairs",
-        title: "Betræk et stolesæde",
-        time: "1 time",
-        intro: "Et nyt stof på sædet kan få en gammel stol til at se helt ny ud.",
-        steps: [
-          "Skru sædet af. Det sidder typisk fast med 4 skruer nedefra.",
-          "Fjern det gamle stof og hæfteklammerne med en lille fladskruetrækker og en tang.",
-          "Er skummet fladt, så skær et nyt stykke til, der er lidt større end sædepladen.",
-          "Læg stoffet med forsiden nedad, og læg skum og plade ovenpå. Klip stoffet til med 5-7 cm overskud hele vejen rundt.",
-          "Hæft først midt på hver side, mens du strammer stoffet, og arbejd dig derefter ud mod hjørnerne.",
-          "Fold hjørnerne pænt ind, som når man pakker en gave ind, og hæft dem.",
-          "Skru sædet på stolen igen.",
-        ],
-        tip: "Brug møbelstof. Almindeligt stof bliver hurtigt slidt igennem.",
-      },
-      {
-        id: "chair-office",
-        cat: "chairs",
-        title: "Vælg den rigtige kontorstol",
-        time: "5 min",
-        intro: "Du sidder måske flere tusind timer om året på din kontorstol, så den er værd at vælge med omhu.",
-        steps: [
-          "Højde: Fødderne skal stå fladt på gulvet, og knæene skal være i cirka 90 grader.",
-          "Siddedybde: Der skal være 2-4 fingres bredde mellem sædets forkant og knæhasen.",
-          "Ryg: Vælg en stol med lændestøtte, som kan justeres i højden.",
-          "Armlæn: De skal kunne sænkes, så skuldrene er afslappede, når du arbejder ved bordet.",
-          "Prøv stolen i mindst 10 minutter, før du køber den.",
-        ],
-        tip: "Den bedste siddestilling er den næste. Skift stilling og rejs dig jævnligt.",
-      },
-
-      // ---------- Bænke ----------
-      {
-        id: "bench-build",
-        cat: "benches",
-        title: "Byg en simpel havebænk",
-        time: "1 dag",
-        intro: "Med lidt træ, en sav og en skruemaskine kan du bygge en solid bænk til haven.",
-        steps: [
-          "Køb trykimprægneret træ eller hårdttræ, fx 45×95 mm reglar, og udendørs skruer i rustfrit eller galvaniseret stål.",
-          "Bestem målene: en sædehøjde på cirka 45 cm og en siddedybde på 35-45 cm er behageligt.",
-          "Sav og skru to ens endegavle (ben + tværstykke) sammen.",
-          "Skru 3-4 sædebrædder fast ovenpå med 5-8 mm mellemrum, så regnvand kan løbe af.",
-          "Er bænken længere end cirka 150 cm, så sæt en ekstra støtte på midten.",
-          "Slib kanterne runde, og behandl bænken med træolie.",
-        ],
-        tip: "Forbor skruehullerne tæt på enderne af brædderne, så træet ikke flækker.",
-      },
-      {
-        id: "bench-maintain",
-        cat: "benches",
-        title: "Vedligehold en træbænk udendørs",
-        time: "2 timer",
-        intro: "Lidt pleje en gang om året får en udendørs bænk til at holde i mange år.",
-        steps: [
-          "Børst snavs, mos og alger af, og vask bænken med vand og lidt brun sæbe.",
-          "Lad den tørre helt. Det kræver gerne et par tørre dage.",
-          "Slib let med sandpapir (korn 120) de steder, hvor træet er ru eller gråt.",
-          "Påfør træolie med en pensel i træets retning.",
-          "Tør den olie af, som ikke er trukket ind, efter 15-20 minutter.",
-          "Gentag 1-2 gange om året, gerne forår og efterår.",
-        ],
-        tip: "Klude med olie kan selvantænde! Læg dem i en spand vand, eller lad dem tørre udfoldet udendørs.",
-      },
-      {
-        id: "bench-find",
-        cat: "benches",
-        title: "Hvad gør en bænk fed?",
-        time: "3 min",
-        intro: "Nogle bænke er bare bedre end andre. Her er hvad du skal kigge efter, når du jagter den perfekte bænk.",
-        steps: [
-          "Udsigt: vand, skyline, solnedgang eller bare et godt sted at kigge på folk.",
-          "Sol og læ: en bænk med eftermiddagssol og læ for vinden er guld værd.",
-          "Komfort: ryglæn, en god sædehøjde og ikke for smalle brædder.",
-          "Ro: lidt væk fra trafik og larm.",
-          "Historie: en mindeplade, et særligt design eller en lokal legende.",
-        ],
-        tip: "Har du fundet en fed bænk? Sæt den på Verdenskortet, så andre også kan finde den!",
-      },
-
-      // ---------- Borde ----------
-      {
-        id: "table-rings",
-        cat: "tables",
-        title: "Fjern hvide ringe fra et træbord",
-        time: "20 min",
-        intro: "Hvide ringe fra kopper og glas er fugt, der sidder fast i overfladebehandlingen, ikke i selve træet. De kan ofte fjernes.",
-        steps: [
-          "Læg et tørt viskestykke af bomuld over pletten.",
-          "Stryg med et strygejern på lav varme og uden damp i 10-20 sekunder ad gangen.",
-          "Løft viskestykket og se efter. Gentag, indtil pletten er væk.",
-          "Hjælper det ikke, så gnid forsigtigt med en smule tandpasta (ikke gel) på en blød klud i træets retning.",
-          "Tør af og afslut med møbelpleje eller olie.",
-        ],
-        tip: "Mørke eller sorte ringe er trængt ind i træet og skal som regel slibes væk.",
-      },
-      {
-        id: "table-refinish",
-        cat: "tables",
-        title: "Slib og lakér et gammelt bord",
-        time: "En weekend",
-        intro: "Et slidt bord kan blive som nyt med slibning og ny overfladebehandling.",
-        steps: [
-          "Rengør bordet grundigt og lad det tørre.",
-          "Slib i træets retning med korn 80, derefter 120 og til sidst 180.",
-          "Støvsug og tør af med en let fugtig klud, så alt støv er væk.",
-          "Påfør et tyndt lag lak eller olie.",
-          "Slib let med korn 240, når laget er tørt, og fjern støvet.",
-          "Gentag, til du har 2-3 lag.",
-        ],
-        tip: "Arbejd i et rum med god udluftning, og brug støvmaske, når du sliber.",
-      },
-      {
-        id: "table-height",
-        cat: "tables",
-        title: "Vælg den rigtige bordhøjde",
-        time: "3 min",
-        intro: "De rigtige mål gør, at både bord og stole bliver behagelige at bruge.",
-        steps: [
-          "Spisebord: typisk 72-76 cm højt.",
-          "Der bør være 25-30 cm fra stolens sæde op til bordpladen.",
-          "Sofabord: cirka samme højde som sofaens sæde eller lidt lavere, typisk 40-50 cm.",
-          "Beregn cirka 60 cm bordkant per person ved et spisebord.",
-          "Hav 80-100 cm fra bordet til væggen, så stolene kan trækkes ud.",
-        ],
-        tip: "Til skrivebord er et hæve-sænkebord bedst, så du kan skifte mellem at sidde og stå.",
-      },
-
-      // ---------- Sofaer ----------
-      {
-        id: "sofa-stains",
-        cat: "sofas",
-        title: "Fjern pletter fra en stofsofa",
-        time: "15 min",
-        intro: "Jo hurtigere du tager fat i en plet, jo lettere er den at få væk.",
-        steps: [
-          "Find sofaens vaskemærke: W = vand, S = rensemiddel uden vand, W/S = begge dele, X = kun støvsugning.",
-          "Dup spildt væske op med køkkenrulle. Gnid aldrig, så spreder pletten sig.",
-          "Bland lunkent vand med lidt opvaskemiddel.",
-          "Dup pletten med en klud, og arbejd fra kanten ind mod midten.",
-          "Dup efter med en klud med rent vand, og dup derefter tørt.",
-          "Lad det tørre, og børst stoffet let op.",
-        ],
-        tip: "Test altid først et skjult sted, fx bag på en hynde.",
-      },
-      {
-        id: "sofa-leather",
-        cat: "sofas",
-        title: "Pleje af lædersofa",
-        time: "30 min",
-        intro: "Læder holder i mange år, hvis det ikke tørrer ud.",
-        steps: [
-          "Støvsug med et blødt børstemundstykke, også i sprækkerne.",
-          "Tør sofaen af med en let fugtig klud.",
-          "Rens med læderrens 2-4 gange om året.",
-          "Afslut med lædercreme eller balsam, så læderet ikke tørrer ud og revner.",
-          "Undgå at stille sofaen i direkte sol eller tæt på en radiator.",
-        ],
-        tip: "Spørg forhandleren hvilken type læder sofaen er lavet af. Anilinlæder kræver særlige plejemidler.",
-      },
-      {
-        id: "sofa-measure",
-        cat: "sofas",
-        title: "Mål op før du køber en sofa",
-        time: "10 min",
-        intro: "Intet er værre end en ny sofa, der ikke kan komme ind ad døren.",
-        steps: [
-          "Mål rummet, og marker sofaens mål på gulvet med malertape.",
-          "Mål døråbninger, gange, trappeopgange og elevator, også diagonalt.",
-          "En sofa er typisk 85-100 cm dyb. Vil du kunne slappe af, er en siddedybde på 50-60 cm god.",
-          "Hav cirka 40-50 cm mellem sofaen og sofabordet.",
-          "Tjek om ben og armlæn kan skrues af, hvis det bliver stramt.",
-        ],
-        tip: "Sæt dig i sofaen i butikken i mindst 5 minutter, gerne i den stilling du plejer at sidde i.",
-      },
-    ];
-
-    let guideFilter = "all";
-
-    function renderGuideChips() {
-      const chips = [["all", t("guides.all")]].concat(
-        Object.entries(CATEGORIES).map(([key, cat]) => [key, `${cat.emoji} ${catName(key)}`])
-      );
-      document.getElementById("guide-chips").innerHTML = chips
-        .map(([key, label]) =>
-          `<button class="chip ${key === guideFilter ? "active" : ""}" data-cat="${key}">${label}</button>`)
-        .join("");
-    }
-
-    function renderGuideList() {
-      const list = GUIDES.filter((g) => guideFilter === "all" || g.cat === guideFilter).map(localGuide);
-      document.getElementById("guide-list").innerHTML = list
-        .map((g) => `
-          <button class="guide-item" data-guide="${g.id}">
-            <span class="guide-emoji">${CATEGORIES[g.cat].emoji}</span>
-            <span>
-              <strong>${g.title}</strong>
-              <small>${catName(g.cat)} · ${g.time}</small>
-            </span>
-            <span class="chevron">›</span>
-          </button>`)
-        .join("");
-    }
-
-    let currentGuideId = null;
-
-    function openGuide(id) {
-      currentGuideId = id;
-      renderGuide();
-      goView("guide");
-    }
-
-    function renderGuide() {
-      const g = localGuide(GUIDES.find((guide) => guide.id === currentGuideId));
-      const cat = CATEGORIES[g.cat];
-      document.getElementById("guide-detail").innerHTML = `
-        <div class="guide-head">
-          <div class="guide-emoji">${cat.emoji}</div>
-          <h1>${g.title}</h1>
-          <p class="muted">${catName(g.cat)} · ${g.time}</p>
-        </div>
-        <p class="intro">${g.intro}</p>
-        <ol class="steps">${g.steps.map((step) => `<li>${step}</li>`).join("")}</ol>
-        <p class="tip">💡 ${g.tip}</p>`;
-    }
-
-    document.getElementById("guide-chips").addEventListener("click", (e) => {
-      const chip = e.target.closest(".chip");
-      if (!chip) return;
-      guideFilter = chip.dataset.cat;
-      renderGuideChips();
-      renderGuideList();
-    });
-
-    document.getElementById("guide-list").addEventListener("click", (e) => {
-      const item = e.target.closest(".guide-item");
-      if (item) openGuide(item.dataset.guide);
-    });
-
-
-    // Engelske udgaver af guides og kategorier
-    const CATEGORY_NAMES_EN = { chairs: "Chairs", benches: "Benches", tables: "Tables", sofas: "Sofas" };
-
-    const GUIDES_EN = {
-      "chair-wobbly": {
-        title: "Fix a wobbly chair",
-        time: "15 min",
-        intro: "A wobbly chair almost always has a loose joint. Here's how to make it solid again.",
-        steps: [
-          "Turn the chair upside down and find the joints that move when you wiggle the legs.",
-          "If the chair has screws or brackets, tighten them with a screwdriver or Allen key.",
-          "If a glued joint is loose, carefully take it apart and scrape off the old glue.",
-          "Put fresh wood glue in the hole and on the tenon, then put the chair back together.",
-          "Press the joint together with a clamp or a tight strap, and wipe off excess glue with a damp cloth.",
-          "Let the glue dry for at least 24 hours before using the chair.",
-        ],
-        tip: "If one leg is just slightly too short, a felt pad underneath often fixes it, so you don't have to cut the other legs.",
-      },
-      "chair-reupholster": {
-        title: "Reupholster a chair seat",
-        time: "1 hour",
-        intro: "New fabric on the seat can make an old chair look brand new.",
-        steps: [
-          "Unscrew the seat. It's usually held on by 4 screws from underneath.",
-          "Remove the old fabric and staples with a small flathead screwdriver and pliers.",
-          "If the foam is flat, cut a new piece slightly larger than the seat board.",
-          "Lay the fabric face down and place the foam and board on top. Trim the fabric, leaving 5-7 cm extra all the way around.",
-          "Staple the middle of each side first while pulling the fabric tight, then work out towards the corners.",
-          "Fold the corners neatly, like wrapping a present, and staple them.",
-          "Screw the seat back onto the chair.",
-        ],
-        tip: "Use upholstery fabric. Regular fabric wears through quickly.",
-      },
-      "chair-office": {
-        title: "Choose the right office chair",
-        time: "5 min",
-        intro: "You may spend thousands of hours a year in your office chair, so it's worth choosing carefully.",
-        steps: [
-          "Height: your feet should rest flat on the floor with your knees at about 90 degrees.",
-          "Seat depth: leave 2-4 finger widths between the front of the seat and the back of your knee.",
-          "Back: choose a chair with lumbar support that can be adjusted in height.",
-          "Armrests: they should go low enough for your shoulders to relax while you work at the desk.",
-          "Try the chair for at least 10 minutes before you buy it.",
-        ],
-        tip: "The best sitting position is the next one. Change position and stand up regularly.",
-      },
-      "bench-build": {
-        title: "Build a simple garden bench",
-        time: "1 day",
-        intro: "With some wood, a saw and a drill you can build a sturdy bench for your garden.",
-        steps: [
-          "Buy pressure-treated wood or hardwood, e.g. 45×95 mm timber, and outdoor screws in stainless or galvanised steel.",
-          "Decide on the size: a seat height of about 45 cm and a seat depth of 35-45 cm is comfortable.",
-          "Cut and screw together two identical end frames (legs + crosspiece).",
-          "Screw 3-4 seat boards on top with 5-8 mm gaps so rainwater can run off.",
-          "If the bench is longer than about 150 cm, add an extra support in the middle.",
-          "Sand the edges round and treat the bench with wood oil.",
-        ],
-        tip: "Pre-drill the screw holes near the ends of the boards so the wood doesn't split.",
-      },
-      "bench-maintain": {
-        title: "Look after an outdoor wooden bench",
-        time: "2 hours",
-        intro: "A little care once a year keeps an outdoor bench going for many years.",
-        steps: [
-          "Brush off dirt, moss and algae, and wash the bench with water and a little soft soap.",
-          "Let it dry completely. This usually takes a couple of dry days.",
-          "Lightly sand with 120 grit sandpaper where the wood is rough or grey.",
-          "Apply wood oil with a brush along the grain.",
-          "After 15-20 minutes, wipe off any oil that hasn't soaked in.",
-          "Repeat 1-2 times a year, ideally in spring and autumn.",
-        ],
-        tip: "Oily rags can catch fire on their own! Put them in a bucket of water or let them dry spread out outdoors.",
-      },
-      "bench-find": {
-        title: "What makes a bench great?",
-        time: "3 min",
-        intro: "Some benches are just better than others. Here's what to look for when you're hunting for the perfect bench.",
-        steps: [
-          "View: water, a skyline, the sunset or just a good spot for people-watching.",
-          "Sun and shelter: a bench with afternoon sun and shelter from the wind is gold.",
-          "Comfort: a backrest, a good seat height and boards that aren't too narrow.",
-          "Peace and quiet: a bit away from traffic and noise.",
-          "Story: a memorial plaque, a special design or a local legend.",
-        ],
-        tip: "Found a great bench? Put it on the World map so others can find it too!",
-      },
-      "table-rings": {
-        title: "Remove white rings from a wooden table",
-        time: "20 min",
-        intro: "White rings from cups and glasses are moisture trapped in the finish, not in the wood itself. They can often be removed.",
-        steps: [
-          "Lay a dry cotton tea towel over the stain.",
-          "Iron it on low heat without steam for 10-20 seconds at a time.",
-          "Lift the towel and check. Repeat until the stain is gone.",
-          "If that doesn't work, gently rub with a little toothpaste (not gel) on a soft cloth along the grain.",
-          "Wipe clean and finish with furniture polish or oil.",
-        ],
-        tip: "Dark or black rings have gone into the wood and usually have to be sanded away.",
-      },
-      "table-refinish": {
-        title: "Sand and varnish an old table",
-        time: "A weekend",
-        intro: "A worn table can look like new again with sanding and a fresh finish.",
-        steps: [
-          "Clean the table thoroughly and let it dry.",
-          "Sand along the grain with 80 grit, then 120 and finally 180.",
-          "Vacuum and wipe with a slightly damp cloth so all the dust is gone.",
-          "Apply a thin coat of varnish or oil.",
-          "When the coat is dry, sand lightly with 240 grit and remove the dust.",
-          "Repeat until you have 2-3 coats.",
-        ],
-        tip: "Work in a well-ventilated room and wear a dust mask when you sand.",
-      },
-      "table-height": {
-        title: "Choose the right table height",
-        time: "3 min",
-        intro: "The right measurements make both the table and the chairs comfortable to use.",
-        steps: [
-          "Dining table: usually 72-76 cm high.",
-          "There should be 25-30 cm from the chair seat up to the tabletop.",
-          "Coffee table: about the same height as the sofa seat or a little lower, usually 40-50 cm.",
-          "Allow about 60 cm of table edge per person at a dining table.",
-          "Leave 80-100 cm from the table to the wall so chairs can be pulled out.",
-        ],
-        tip: "For a desk, a sit-stand desk is best, so you can switch between sitting and standing.",
-      },
-      "sofa-stains": {
-        title: "Remove stains from a fabric sofa",
-        time: "15 min",
-        intro: "The sooner you deal with a stain, the easier it is to get out.",
-        steps: [
-          "Find the sofa's care label: W = water, S = water-free cleaner, W/S = both, X = vacuum only.",
-          "Blot up spills with kitchen roll. Never rub, or the stain will spread.",
-          "Mix lukewarm water with a little washing-up liquid.",
-          "Dab the stain with a cloth, working from the edge towards the centre.",
-          "Dab again with a cloth and clean water, then blot dry.",
-          "Let it dry and brush the fabric lightly.",
-        ],
-        tip: "Always test on a hidden spot first, e.g. the back of a cushion.",
-      },
-      "sofa-leather": {
-        title: "Caring for a leather sofa",
-        time: "30 min",
-        intro: "Leather lasts for many years, as long as it doesn't dry out.",
-        steps: [
-          "Vacuum with a soft brush attachment, including the gaps.",
-          "Wipe the sofa with a slightly damp cloth.",
-          "Clean it with leather cleaner 2-4 times a year.",
-          "Finish with leather cream or conditioner so the leather doesn't dry out and crack.",
-          "Don't place the sofa in direct sunlight or close to a radiator.",
-        ],
-        tip: "Ask the shop what type of leather the sofa is made of. Aniline leather needs special care products.",
-      },
-      "sofa-measure": {
-        title: "Measure before you buy a sofa",
-        time: "10 min",
-        intro: "Nothing is worse than a new sofa that won't fit through the door.",
-        steps: [
-          "Measure the room and mark the sofa's size on the floor with painter's tape.",
-          "Measure doorways, hallways, stairwells and the lift, including diagonally.",
-          "A sofa is typically 85-100 cm deep. For lounging, a seat depth of 50-60 cm is good.",
-          "Leave about 40-50 cm between the sofa and the coffee table.",
-          "Check whether the legs and armrests can be unscrewed if it's a tight fit.",
-        ],
-        tip: "Sit on the sofa in the shop for at least 5 minutes, ideally in the position you usually sit in.",
-      },
-    };
-
-    // Guiden på det valgte sprog
-    function localGuide(g) {
-      return lang === "en" ? { ...g, ...GUIDES_EN[g.id] } : g;
-    }
-
-    function catName(key) {
-      return lang === "en" ? CATEGORY_NAMES_EN[key] : CATEGORIES[key].name;
-    }
-
-    // ==========================================================
-    // VERDENSKORT MED BÆNKE
+    // SMOKE SPOTS: kort over steder (gemt i "benches" i databasen)
     // ==========================================================
     // Bænkene gemmes i en fælles Firebase-database (Firestore),
     // så alle brugere ser de samme bænke, billeder og ratings.
