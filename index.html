@@ -20,6 +20,7 @@
 
   <!-- Firebase: fælles database, så alle kan se bænkene (kræver internet) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <style>
@@ -1376,6 +1377,182 @@
     }
 
     /* ==========================================================
+       VENNER
+       ========================================================== */
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+    }
+
+    .search svg {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: var(--muted);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    .search input {
+      border: none;
+      background: none;
+      padding: 13px 0;
+      box-shadow: none;
+    }
+
+    .search input:focus {
+      box-shadow: none;
+    }
+
+    .search:focus-within {
+      border-color: var(--accent);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 4px 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .count {
+      min-width: 20px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .people {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .person {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: var(--radius);
+      background: var(--card);
+      cursor: pointer;
+    }
+
+    .person:active {
+      background: var(--border);
+    }
+
+    .avatar-sm {
+      flex-shrink: 0;
+      width: 46px;
+      height: 46px;
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .person-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .person-text strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .person-text small {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+
+    .mini-btn.primary {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .empty-note {
+      padding: 18px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .person-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .person-actions .sheet-actions {
+      width: 100%;
+    }
+
+    .stats.single {
+      grid-template-columns: 1fr;
+    }
+
+    .tabbar-item {
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: 0;
+      left: calc(50% + 6px);
+      min-width: 18px;
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: var(--error);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 16px;
+      text-align: center;
+    }
+
+    /* ==========================================================
        TOAST-BESKED
        ========================================================== */
     .toast {
@@ -1439,7 +1616,7 @@
       </section>
 
       <!-- ================= Login / Opret konto ================= -->
-      <main id="auth" class="screen">
+      <main id="auth" class="screen hidden">
         <button type="button" class="lang-pill" id="lang-pill">🇩🇰 Dansk</button>
         <header class="brand">
           <div class="logo"><img src="data:image/png;base64,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" alt="Logo"></div>
@@ -1588,11 +1765,33 @@
           </div>
         </section>
 
-        <section class="page" data-page="friends">
-          <h1 class="page-title" data-i18n="nav.friends">Venner</h1>
-          <div class="card">
-            <h2 data-i18n="friends.empty">Ingen venner endnu</h2>
-            <p class="muted" data-i18n="friends.emptySub">Find og tilføj venner her.</p>
+        <section class="page" data-page="friends" id="friends-page">
+          <!-- Mine venner + søgning -->
+          <div class="view active" data-fview="list">
+            <h1 class="page-title" data-i18n="nav.friends">Venner</h1>
+            <label class="search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+              <input type="search" id="friend-search" data-i18n-ph="friends.searchPh" placeholder="Søg efter smoker name" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+            </label>
+            <div id="search-results" class="people hidden"></div>
+            <div id="friends-home">
+              <div id="requests-section" class="hidden">
+                <h2 class="section-title"><span data-i18n="friends.requests">Venneanmodninger</span> <span class="count" id="requests-count"></span></h2>
+                <div id="requests-list" class="people"></div>
+              </div>
+              <h2 class="section-title" data-i18n="friends.yours">Dine venner</h2>
+              <div id="friends-list" class="people"></div>
+              <div id="sent-section" class="hidden">
+                <h2 class="section-title" data-i18n="friends.sent">Sendte anmodninger</h2>
+                <div id="sent-list" class="people"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- En andens profil -->
+          <div class="view" data-fview="person">
+            <button class="back" id="person-back" data-i18n="back.friends">‹ Venner</button>
+            <div id="person-detail"></div>
           </div>
         </section>
 
@@ -1605,7 +1804,7 @@
             <p class="bio" id="profile-bio"></p>
             <div class="stats">
               <div><strong id="stat-benches">0</strong><span data-i18n="profile.benches">Bænke</span></div>
-              <div><strong id="stat-ratings">0</strong><span data-i18n="profile.ratings">Bedømmelser</span></div>
+              <div><strong id="stat-friends">0</strong><span data-i18n="profile.friends">Venner</span></div>
             </div>
             <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
           </div>
@@ -1634,6 +1833,7 @@
             <span data-i18n="nav.home">Hjem</span>
           </button>
           <button class="tabbar-item" data-page="friends">
+            <span class="badge hidden" id="friends-badge"></span>
             <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21.5 19"/></svg>
             <span data-i18n="nav.friends">Venner</span>
           </button>
@@ -1724,50 +1924,38 @@
     updateClock();
     setInterval(updateClock, 10000);
 
-    // ---------- Lagring ----------
-    // OBS: Brugere gemmes lokalt i browseren (localStorage). Det er fint til
-    // udvikling, men en rigtig app skal have en server/database til login.
-    const USERS_KEY = "users";
-    const SESSION_KEY = "currentUser";
+    // ---------- Firebase: login og fælles database ----------
+    // Konti, profiler, venner og bænke ligger i Firebase, så alle brugere
+    // kan finde hinanden. Login sker med Firebase Authentication.
     const LAST_USER_KEY = "lastSmokerName";
+    let fbAuth = null;      // Firebase Authentication
+    let db = null;          // Firestore-databasen
+    let myProfile = null;   // Min egen profil fra databasen
 
-    // Med "Husk mig" gemmes login i localStorage (bliver husket, også når
-    // appen lukkes). Uden gemmes det i sessionStorage (glemmes ved lukning).
+    function initFirebase() {
+      if (db) return true;
+      if (!window.firebase) return false;
+      firebase.initializeApp(firebaseConfig);
+      fbAuth = firebase.auth();
+      db = firebase.firestore();
+      return true;
+    }
+
+    // Den indloggede brugers id (eller null)
     function currentUserKey() {
-      return localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+      return fbAuth && fbAuth.currentUser ? fbAuth.currentUser.uid : null;
+    }
+
+    // Firebase kræver en e-mail, så smoker name laves om til en intern
+    // adresse. Brugeren ser den aldrig.
+    function smokerEmail(name) {
+      return name.trim().toLowerCase() + "@smokers.flowers.app";
     }
 
     // Udfyld sidste smoker name, så man kun skal skrive adgangskoden
     function prefillLogin() {
       const last = localStorage.getItem(LAST_USER_KEY);
       if (last) loginForm.elements.name.value = last;
-    }
-
-    function getUsers() {
-      try {
-        return JSON.parse(localStorage.getItem(USERS_KEY)) || {};
-      } catch {
-        return {};
-      }
-    }
-
-    function saveUsers(users) {
-      localStorage.setItem(USERS_KEY, JSON.stringify(users));
-    }
-
-    function toHex(bytes) {
-      return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-    }
-
-    // Adgangskoder gemmes aldrig i klartekst - kun som SHA-256 hash med salt
-    async function hashPassword(password, salt) {
-      const data = new TextEncoder().encode(salt + password);
-      const hash = await crypto.subtle.digest("SHA-256", data);
-      return toHex(new Uint8Array(hash));
-    }
-
-    function randomSalt() {
-      return toHex(crypto.getRandomValues(new Uint8Array(16)));
     }
 
     // ---------- Hjælpefunktioner ----------
@@ -1793,7 +1981,7 @@
     }
 
     function isValidSmokerName(name) {
-      return /^[A-Za-z0-9æøåÆØÅ_.-]{2,20}$/.test(name);
+      return /^[A-Za-z0-9_-]{2,20}$/.test(name);
     }
 
     function scrollToTop() {
@@ -1823,7 +2011,7 @@
         "pw.show": "Vis",
         "pw.hide": "Skjul",
         "pw.aria": "Vis adgangskode",
-        "err.nameFormat": "Smoker name skal være 2-20 tegn: bogstaver, tal, _ . eller -",
+        "err.nameFormat": "Smoker name skal være 2-20 tegn: bogstaver (a-z), tal, _ eller -",
         "err.pwShort": "Adgangskoden skal være mindst 8 tegn",
         "err.pwMismatch": "Adgangskoderne er ikke ens",
         "err.nameTaken": "Det smoker name er allerede taget",
@@ -1843,8 +2031,6 @@
         "forum.emptySub": "Her kommer diskussioner og spørgsmål fra fællesskabet.",
         "home.hello": "Hej",
         "home.welcome": "Velkommen til MinApp.",
-        "friends.empty": "Ingen venner endnu",
-        "friends.emptySub": "Find og tilføj venner her.",
         "hb.guidesSub": "Stole, bænke, borde og sofaer",
         "hb.map": "Verdenskort",
         "hb.mapSub": "Find og del verdens fedeste bænke",
@@ -1897,7 +2083,6 @@
         "bench.rateFailed": "Bedømmelsen kunne ikke gemmes",
         "profile.since": "Smoker siden {date}",
         "profile.benches": "Bænke",
-        "profile.ratings": "Bedømmelser",
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
         "profile.logout": "Log ud",
@@ -1908,7 +2093,34 @@
         "profile.bioPh": "Fortæl lidt om dig selv…",
         "profile.save": "Gem",
         "profile.saved": "Profilen er gemt ✅",
-        "profile.noSpace": "Der er ikke plads til billedet. Prøv et mindre billede.",
+        "profile.friends": "Venner",
+        "back.friends": "‹ Venner",
+        "err.tooMany": "For mange forsøg. Vent lidt og prøv igen.",
+        "err.network": "Ingen internetforbindelse",
+        "err.authOff": "Login er ikke slået til i Firebase endnu",
+        "err.generic": "Noget gik galt ({code})",
+        "friends.searchPh": "Søg efter smoker name",
+        "friends.requests": "Venneanmodninger",
+        "friends.yours": "Dine venner",
+        "friends.sent": "Sendte anmodninger",
+        "friends.none": "Du har ingen venner endnu. Søg efter folk ovenfor og tilføj dem.",
+        "friends.noResults": "Ingen fundet med det navn",
+        "friends.searching": "Søger…",
+        "friends.add": "＋ Tilføj ven",
+        "friends.requested": "Anmodning sendt",
+        "friends.cancelRequest": "Annuller anmodning",
+        "friends.accept": "Accepter",
+        "friends.decline": "Afvis",
+        "friends.isFriend": "✓ Venner",
+        "friends.remove": "Fjern ven",
+        "friends.confirmRemove": "Vil du fjerne {name} som ven?",
+        "friends.sentToast": "Venneanmodning sendt til {name}",
+        "friends.acceptedToast": "Du og {name} er nu venner 🎉",
+        "friends.declinedToast": "Anmodningen er afvist",
+        "friends.removedToast": "{name} er fjernet som ven",
+        "friends.failed": "Det lykkedes ikke. Prøv igen.",
+        "friends.wantsToBeFriend": "Vil gerne være din ven",
+        "friends.noBio": "Ingen bio endnu.",
       },
       en: {
         "locale": "en-GB",
@@ -1928,7 +2140,7 @@
         "pw.show": "Show",
         "pw.hide": "Hide",
         "pw.aria": "Show password",
-        "err.nameFormat": "Smoker name must be 2-20 characters: letters, numbers, _ . or -",
+        "err.nameFormat": "Smoker name must be 2-20 characters: letters (a-z), numbers, _ or -",
         "err.pwShort": "Password must be at least 8 characters",
         "err.pwMismatch": "Passwords don't match",
         "err.nameTaken": "That smoker name is already taken",
@@ -1948,8 +2160,6 @@
         "forum.emptySub": "Discussions and questions from the community will show up here.",
         "home.hello": "Hey",
         "home.welcome": "Welcome to MinApp.",
-        "friends.empty": "No friends yet",
-        "friends.emptySub": "Find and add friends here.",
         "hb.guidesSub": "Chairs, benches, tables and sofas",
         "hb.map": "World map",
         "hb.mapSub": "Find and share the world's best benches",
@@ -2002,7 +2212,6 @@
         "bench.rateFailed": "Your rating couldn't be saved",
         "profile.since": "Smoker since {date}",
         "profile.benches": "Benches",
-        "profile.ratings": "Ratings",
         "profile.edit": "Edit profile",
         "profile.language": "Language",
         "profile.logout": "Log out",
@@ -2013,7 +2222,34 @@
         "profile.bioPh": "Tell people a bit about yourself…",
         "profile.save": "Save",
         "profile.saved": "Profile saved ✅",
-        "profile.noSpace": "There's not enough space for the photo. Try a smaller one.",
+        "profile.friends": "Friends",
+        "back.friends": "‹ Friends",
+        "err.tooMany": "Too many attempts. Wait a bit and try again.",
+        "err.network": "No internet connection",
+        "err.authOff": "Login isn't enabled in Firebase yet",
+        "err.generic": "Something went wrong ({code})",
+        "friends.searchPh": "Search for a smoker name",
+        "friends.requests": "Friend requests",
+        "friends.yours": "Your friends",
+        "friends.sent": "Sent requests",
+        "friends.none": "You don't have any friends yet. Search for people above and add them.",
+        "friends.noResults": "No one found with that name",
+        "friends.searching": "Searching…",
+        "friends.add": "＋ Add friend",
+        "friends.requested": "Request sent",
+        "friends.cancelRequest": "Cancel request",
+        "friends.accept": "Accept",
+        "friends.decline": "Decline",
+        "friends.isFriend": "✓ Friends",
+        "friends.remove": "Remove friend",
+        "friends.confirmRemove": "Remove {name} as a friend?",
+        "friends.sentToast": "Friend request sent to {name}",
+        "friends.acceptedToast": "You and {name} are now friends 🎉",
+        "friends.declinedToast": "Request declined",
+        "friends.removedToast": "{name} was removed as a friend",
+        "friends.failed": "That didn't work. Please try again.",
+        "friends.wantsToBeFriend": "Wants to be your friend",
+        "friends.noBio": "No bio yet.",
       },
     };
 
@@ -2058,7 +2294,10 @@
       if (currentGuideId) renderGuide();
       renderMarkers();
       if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) renderBench();
-      if (currentUserKey()) renderProfile();
+      if (currentUserKey()) {
+        renderProfile();
+        renderFriends();
+      }
     }
 
     function setLanguage(newLang) {
@@ -2081,12 +2320,8 @@
       btn.addEventListener("click", () => {
         setLanguage(btn.dataset.lang);
         langScreen.classList.add("hidden");
-        if (currentUserKey()) {
-          showApp();
-        } else {
-          authScreen.classList.remove("hidden");
-          prefillLogin();
-        }
+        if (!fbAuth) showAuthScreen();
+        else if (authResolved) onAuthChanged(fbAuth.currentUser);
       });
     });
 
@@ -2135,13 +2370,38 @@
     });
 
     // ---------- Opret konto ----------
+    function authErrorText(error) {
+      switch (error && error.code) {
+        case "auth/email-already-in-use":
+          return t("err.nameTaken");
+        case "auth/invalid-credential":
+        case "auth/invalid-login-credentials":
+        case "auth/wrong-password":
+        case "auth/user-not-found":
+        case "auth/invalid-email":
+          return t("err.wrongLogin");
+        case "auth/too-many-requests":
+          return t("err.tooMany");
+        case "auth/network-request-failed":
+          return t("err.network");
+        case "auth/operation-not-allowed":
+        case "auth/configuration-not-found":
+          return t("err.authOff");
+        default:
+          return t("err.generic", { code: (error && error.code) || "?" });
+      }
+    }
+
+    function setBusy(form, busy) {
+      form.querySelector('button[type="submit"]').disabled = busy;
+    }
+
     signupForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearErrors(signupForm);
 
       const { name, password, confirm } = signupForm.elements;
       const smokerName = name.value.trim();
-      const userKey = smokerName.toLowerCase();
 
       if (!isValidSmokerName(smokerName)) {
         markInvalid(name);
@@ -2155,25 +2415,29 @@
         markInvalid(confirm);
         return setError(signupForm, t("err.pwMismatch"));
       }
+      if (!fbAuth) return setError(signupForm, t("err.network"));
 
-      const users = getUsers();
-      if (users[userKey]) {
-        markInvalid(name);
-        return setError(signupForm, t("err.nameTaken"));
+      setBusy(signupForm, true);
+      try {
+        await fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        const cred = await fbAuth.createUserWithEmailAndPassword(smokerEmail(smokerName), password.value);
+        await db.collection("profiles").doc(cred.user.uid).set({
+          name: smokerName,
+          nameLower: smokerName.toLowerCase(),
+          bio: "",
+          avatar: null,
+          createdAt: Date.now(),
+        });
+        localStorage.setItem(LAST_USER_KEY, smokerName);
+        signupForm.reset();
+        showToast(t("toast.signedUp"));
+      } catch (error) {
+        console.error(error);
+        if (error.code === "auth/email-already-in-use") markInvalid(name);
+        setError(signupForm, authErrorText(error));
+      } finally {
+        setBusy(signupForm, false);
       }
-
-      const salt = randomSalt();
-      users[userKey] = {
-        name: smokerName,
-        salt,
-        passwordHash: await hashPassword(password.value, salt),
-        createdAt: Date.now(),
-      };
-      saveUsers(users);
-
-      signupForm.reset();
-      login(userKey);
-      showToast(t("toast.signedUp"));
     });
 
     // ---------- Log ind ----------
@@ -2181,10 +2445,9 @@
       e.preventDefault();
       clearErrors(loginForm);
 
-      const { name, password } = loginForm.elements;
-      const userKey = name.value.trim().toLowerCase();
+      const { name, password, remember } = loginForm.elements;
 
-      if (!userKey) {
+      if (!name.value.trim()) {
         markInvalid(name);
         return setError(loginForm, t("err.nameMissing"));
       }
@@ -2192,18 +2455,23 @@
         markInvalid(password);
         return setError(loginForm, t("err.pwMissing"));
       }
+      if (!fbAuth) return setError(loginForm, t("err.network"));
 
-      const user = getUsers()[userKey];
-      const hash = user && (await hashPassword(password.value, user.salt));
-
-      if (!user || hash !== user.passwordHash) {
-        return setError(loginForm, t("err.wrongLogin"));
+      setBusy(loginForm, true);
+      try {
+        // Med "Husk mig" huskes login, også når appen lukkes
+        const persistence = firebase.auth.Auth.Persistence;
+        await fbAuth.setPersistence(remember.checked ? persistence.LOCAL : persistence.SESSION);
+        await fbAuth.signInWithEmailAndPassword(smokerEmail(name.value), password.value);
+        localStorage.setItem(LAST_USER_KEY, name.value.trim());
+        loginForm.reset();
+        showToast(t("toast.loggedIn"));
+      } catch (error) {
+        console.error(error);
+        setError(loginForm, authErrorText(error));
+      } finally {
+        setBusy(loginForm, false);
       }
-
-      const remember = loginForm.elements.remember.checked;
-      loginForm.reset();
-      login(userKey, remember);
-      showToast(t("toast.loggedIn"));
     });
 
     document.getElementById("forgot").addEventListener("click", (e) => {
@@ -2212,41 +2480,66 @@
     });
 
     // ---------- Session ----------
-    function login(userKey, remember = true) {
-      (remember ? localStorage : sessionStorage).setItem(SESSION_KEY, userKey);
-      localStorage.setItem(LAST_USER_KEY, getUsers()[userKey].name);
-      showApp();
-    }
+    let authResolved = false;   // Har Firebase svaret på, om man er logget ind?
+    let profileUnsub = null;
 
-    function showApp() {
-      const userKey = currentUserKey();
-      const user = getUsers()[userKey];
-      if (!user) {
-        prefillLogin();
-        return showTab("login");
-      }
-
-      authScreen.classList.add("hidden");
-      appScreen.classList.remove("hidden");
-
-      renderProfile();
-      // Hent bænkene med det samme, så profilens tal er klar
-      connectBenches();
-
-      // Man starter altid på hjemmeskærmen
-      showPage("home");
-    }
-
-    document.getElementById("logout").addEventListener("click", () => {
-      localStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
-      closeSheet();
-      resetHandbook();
+    function showAuthScreen() {
       appScreen.classList.add("hidden");
       authScreen.classList.remove("hidden");
       showTab("login");
       prefillLogin();
       scrollToTop();
+    }
+
+    // Kaldes hver gang man logger ind eller ud
+    function onAuthChanged(user) {
+      if (!lang) return; // sprogvalget vises først
+      if (user) {
+        showApp();
+      } else {
+        stopListening();
+        showAuthScreen();
+      }
+    }
+
+    function showApp() {
+      const uid = currentUserKey();
+      if (!uid) return showAuthScreen();
+
+      authScreen.classList.add("hidden");
+      langScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+
+      // Min profil opdateres live, fx når jeg skifter billede
+      if (!profileUnsub) {
+        profileUnsub = db.collection("profiles").doc(uid).onSnapshot(
+          (doc) => {
+            myProfile = doc.exists ? { id: doc.id, ...doc.data() } : null;
+            renderProfile();
+          },
+          (error) => console.error(error)
+        );
+      }
+      connectBenches();
+      listenToFriends();
+
+      // Man starter altid på hjemmeskærmen
+      showPage("home");
+    }
+
+    function stopListening() {
+      if (profileUnsub) profileUnsub();
+      profileUnsub = null;
+      myProfile = null;
+      stopFriends();
+    }
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      closeSheet();
+      resetHandbook();
+      showFriendsList();
+      stopListening();
+      await fbAuth.signOut();
       showToast(t("toast.loggedOut"));
     });
 
@@ -2261,6 +2554,7 @@
         resetHandbook();
       }
       if (name !== "handbook") cancelPlacing();
+      if (name === "friends" && current && current.dataset.page === "friends") showFriendsList();
 
       pages.forEach((page) => page.classList.toggle("active", page.dataset.page === name));
       tabbarItems.forEach((item) => item.classList.toggle("active", item.dataset.page === name));
@@ -2783,12 +3077,11 @@
 
     function connectBenches() {
       if (benchesRef) return;
-      if (!window.firebase) {
+      if (!initFirebase()) {
         showToast(t("db.noConnection"));
         return;
       }
-      firebase.initializeApp(firebaseConfig);
-      benchesRef = firebase.firestore().collection("benches");
+      benchesRef = db.collection("benches");
 
       // Lyt efter ændringer: kortet opdateres med det samme,
       // når nogen tilføjer, bedømmer eller sletter en bænk
@@ -2801,6 +3094,7 @@
             renderBench();
           }
           renderProfile();
+          if (currentPersonId) renderPerson();
         },
         (error) => {
           console.error(error);
@@ -3014,7 +3308,7 @@
       }
 
       const email = currentUserKey();
-      const user = getUsers()[email];
+      const user = myProfile;
       const bench = {
         name: name.value.trim(),
         desc: desc.value.trim(),
@@ -3123,7 +3417,7 @@
 
 
     // ==========================================================
-    // PROFIL: profilbillede, bio og statistik
+    // PROFIL: profilbillede og bio
     // ==========================================================
     const profileForm = document.getElementById("profile-form");
     const avatarInput = document.getElementById("avatar-input");
@@ -3132,31 +3426,29 @@
     let pendingAvatar = null;
 
     // Profilbillede eller forbogstav i en rund ramme
-    function avatarHTML(user, avatar = user.avatar) {
-      return avatar ? `<img src="${avatar}" alt="">` : esc(user.name.charAt(0).toUpperCase());
+    function avatarHTML(profile, avatar = profile && profile.avatar) {
+      if (avatar) return `<img src="${esc(avatar)}" alt="">`;
+      return esc(((profile && profile.name) || "?").charAt(0).toUpperCase());
     }
 
     function renderProfile() {
-      const userKey = currentUserKey();
-      const user = getUsers()[userKey];
-      if (!user) return;
+      const uid = currentUserKey();
+      if (!uid || !myProfile) return;
 
-      document.getElementById("home-name").textContent = user.name;
-      document.getElementById("avatar").innerHTML = avatarHTML(user);
-      document.getElementById("profile-name").textContent = user.name;
-      document.getElementById("profile-since").textContent = user.createdAt
-        ? t("profile.since", { date: formatDate(user.createdAt) })
+      document.getElementById("home-name").textContent = myProfile.name;
+      document.getElementById("avatar").innerHTML = avatarHTML(myProfile);
+      document.getElementById("profile-name").textContent = myProfile.name;
+      document.getElementById("profile-since").textContent = myProfile.createdAt
+        ? t("profile.since", { date: formatDate(myProfile.createdAt) })
         : "Smoker";
 
       const bio = document.getElementById("profile-bio");
-      bio.textContent = user.bio || t("profile.noBio");
-      bio.classList.toggle("empty", !user.bio);
+      bio.textContent = myProfile.bio || t("profile.noBio");
+      bio.classList.toggle("empty", !myProfile.bio);
 
-      // Antal bænke man har sat på kortet, og antal bænke man har bedømt
       document.getElementById("stat-benches").textContent =
-        benches.filter((b) => b.addedBy === userKey).length;
-      document.getElementById("stat-ratings").textContent =
-        benches.filter((b) => b.ratings && b.ratings[userKey]).length;
+        benches.filter((b) => b.addedBy === uid).length;
+      document.getElementById("stat-friends").textContent = friendships.length;
     }
 
     // Klip billedet til en firkant og gør det lille
@@ -3182,8 +3474,7 @@
     }
 
     function updateAvatarPreview() {
-      const user = getUsers()[currentUserKey()];
-      editAvatar.innerHTML = avatarHTML(user, pendingAvatar);
+      editAvatar.innerHTML = avatarHTML(myProfile, pendingAvatar);
       document.getElementById("remove-avatar").classList.toggle("hidden", !pendingAvatar);
     }
 
@@ -3192,10 +3483,10 @@
     }
 
     function openProfileSheet() {
-      const user = getUsers()[currentUserKey()];
+      if (!myProfile) return;
       clearErrors(profileForm);
-      pendingAvatar = user.avatar || null;
-      profileForm.elements.bio.value = user.bio || "";
+      pendingAvatar = myProfile.avatar || null;
+      profileForm.elements.bio.value = myProfile.bio || "";
       avatarInput.value = "";
       updateAvatarPreview();
       updateBioCounter();
@@ -3224,31 +3515,355 @@
       updateAvatarPreview();
     });
 
-    profileForm.addEventListener("submit", (e) => {
+    profileForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const users = getUsers();
-      const user = users[currentUserKey()];
-      user.avatar = pendingAvatar;
-      user.bio = profileForm.elements.bio.value.trim();
+      clearErrors(profileForm);
+      setBusy(profileForm, true);
       try {
-        saveUsers(users);
-      } catch {
-        return setError(profileForm, t("profile.noSpace"));
+        await db.collection("profiles").doc(currentUserKey()).set(
+          { avatar: pendingAvatar, bio: profileForm.elements.bio.value.trim() },
+          { merge: true }
+        );
+        closeSheet();
+        showToast(t("profile.saved"));
+      } catch (error) {
+        console.error(error);
+        setError(profileForm, t("friends.failed"));
+      } finally {
+        setBusy(profileForm, false);
       }
-      closeSheet();
-      renderProfile();
-      showToast(t("profile.saved"));
     });
+
+    // ==========================================================
+    // VENNER: søgning, profiler og venneanmodninger
+    // ==========================================================
+    // friendRequests/{fra}_{til}   en ubesvaret anmodning
+    // friendships/{id1}_{id2}      to brugere, der er venner
+    const friendsPage = document.getElementById("friends-page");
+    const searchInput = document.getElementById("friend-search");
+    const searchResults = document.getElementById("search-results");
+    const friendsHome = document.getElementById("friends-home");
+
+    let friendships = [];   // mine venskaber
+    let requestsIn = [];    // anmodninger til mig
+    let requestsOut = [];   // anmodninger fra mig
+    let friendUnsubs = [];
+    let currentPersonId = null;
+    const profileCache = new Map();
+
+    function friendshipId(a, b) {
+      return [a, b].sort().join("_");
+    }
+
+    function otherUser(friendship) {
+      const me = currentUserKey();
+      return friendship.users.find((u) => u !== me);
+    }
+
+    function nameOf(uid) {
+      return (profileCache.get(uid) || {}).name || "?";
+    }
+
+    async function getProfile(uid, fresh = false) {
+      if (!fresh && profileCache.has(uid)) return profileCache.get(uid);
+      const doc = await db.collection("profiles").doc(uid).get();
+      const profile = doc.exists ? { id: doc.id, ...doc.data() } : { id: uid, name: "?" };
+      profileCache.set(uid, profile);
+      return profile;
+    }
+
+    // Lyt efter venner og anmodninger, så alt opdateres live
+    function listenToFriends() {
+      if (friendUnsubs.length) return;
+      const me = currentUserKey();
+      const onError = (error) => console.error(error);
+      const toList = (snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      friendUnsubs = [
+        db.collection("friendships").where("users", "array-contains", me).onSnapshot((snap) => {
+          friendships = toList(snap);
+          renderFriends();
+        }, onError),
+        db.collection("friendRequests").where("to", "==", me).onSnapshot((snap) => {
+          requestsIn = toList(snap);
+          renderFriends();
+        }, onError),
+        db.collection("friendRequests").where("from", "==", me).onSnapshot((snap) => {
+          requestsOut = toList(snap);
+          renderFriends();
+        }, onError),
+      ];
+    }
+
+    function stopFriends() {
+      friendUnsubs.forEach((unsub) => unsub());
+      friendUnsubs = [];
+      friendships = [];
+      requestsIn = [];
+      requestsOut = [];
+      profileCache.clear();
+      document.getElementById("friends-badge").classList.add("hidden");
+    }
+
+    function relationTo(uid) {
+      if (friendships.some((f) => f.users.includes(uid))) return "friend";
+      if (requestsIn.some((r) => r.from === uid)) return "incoming";
+      if (requestsOut.some((r) => r.to === uid)) return "outgoing";
+      return "none";
+    }
+
+    function personRow(profile, extra = "") {
+      return `
+        <div class="person" data-uid="${esc(profile.id)}" role="button" tabindex="0">
+          <span class="avatar avatar-sm">${avatarHTML(profile)}</span>
+          <span class="person-text">
+            <strong>${esc(profile.name)}</strong>
+            <small>${esc(profile.bio || "")}</small>
+          </span>
+          ${extra || '<span class="chevron">›</span>'}
+        </div>`;
+    }
+
+    let renderToken = 0;
+
+    async function renderFriends() {
+      if (!currentUserKey()) return;
+      const token = ++renderToken;
+      let inProfiles = [];
+      let friendProfiles = [];
+      let outProfiles = [];
+      try {
+        [inProfiles, friendProfiles, outProfiles] = await Promise.all([
+          Promise.all(requestsIn.map((r) => getProfile(r.from))),
+          Promise.all(friendships.map((f) => getProfile(otherUser(f)))),
+          Promise.all(requestsOut.map((r) => getProfile(r.to))),
+        ]);
+      } catch (error) {
+        console.error(error);
+      }
+      if (token !== renderToken) return; // en nyere opdatering er på vej
+
+      // Antal ubesvarede anmodninger på Venner-ikonet
+      const badge = document.getElementById("friends-badge");
+      badge.textContent = requestsIn.length;
+      badge.classList.toggle("hidden", !requestsIn.length);
+
+      document.getElementById("requests-section").classList.toggle("hidden", !requestsIn.length);
+      document.getElementById("requests-count").textContent = requestsIn.length;
+      document.getElementById("requests-list").innerHTML = inProfiles
+        .map((p) => personRow(p, `
+          <span class="row-actions">
+            <button type="button" class="mini-btn primary" data-accept="${esc(p.id)}">${t("friends.accept")}</button>
+            <button type="button" class="mini-btn" data-decline="${esc(p.id)}">${t("friends.decline")}</button>
+          </span>`))
+        .join("");
+
+      friendProfiles.sort((a, b) => a.name.localeCompare(b.name));
+      document.getElementById("friends-list").innerHTML = friendProfiles.length
+        ? friendProfiles.map((p) => personRow(p)).join("")
+        : `<p class="empty-note">${t("friends.none")}</p>`;
+
+      document.getElementById("sent-section").classList.toggle("hidden", !requestsOut.length);
+      document.getElementById("sent-list").innerHTML = outProfiles.map((p) => personRow(p)).join("");
+
+      renderProfile();
+      if (currentPersonId) renderPerson();
+    }
+
+    // ---------- Søg efter folk ----------
+    let searchTimer = null;
+    let searchToken = 0;
+
+    searchInput.addEventListener("input", () => {
+      clearTimeout(searchTimer);
+      const query = searchInput.value.trim().toLowerCase();
+      searchResults.classList.toggle("hidden", !query);
+      friendsHome.classList.toggle("hidden", !!query);
+      if (!query) return;
+      searchResults.innerHTML = `<p class="empty-note">${t("friends.searching")}</p>`;
+      searchTimer = setTimeout(() => runSearch(query), 250);
+    });
+
+    // Finder alle, hvis smoker name starter med det, man har skrevet
+    async function runSearch(query) {
+      const token = ++searchToken;
+      try {
+        const snap = await db.collection("profiles")
+          .where("nameLower", ">=", query)
+          .where("nameLower", "<=", query + "")
+          .limit(20)
+          .get();
+        if (token !== searchToken) return;
+        const me = currentUserKey();
+        const people = snap.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .filter((p) => p.id !== me);
+        people.forEach((p) => profileCache.set(p.id, p));
+        searchResults.innerHTML = people.length
+          ? people.map((p) => personRow(p)).join("")
+          : `<p class="empty-note">${t("friends.noResults")}</p>`;
+      } catch (error) {
+        console.error(error);
+        if (token === searchToken) {
+          searchResults.innerHTML = `<p class="empty-note">${t("friends.failed")}</p>`;
+        }
+      }
+    }
+
+    // ---------- Tryk på en person eller en knap ----------
+    friendsPage.addEventListener("click", (e) => {
+      const accept = e.target.closest("[data-accept]");
+      const decline = e.target.closest("[data-decline]");
+      if (accept) return acceptRequest(accept.dataset.accept);
+      if (decline) return declineRequest(decline.dataset.decline);
+      const row = e.target.closest(".person");
+      if (row) openPerson(row.dataset.uid);
+    });
+
+    friendsPage.addEventListener("keydown", (e) => {
+      const row = e.target.closest(".person");
+      if (row && e.key === "Enter") openPerson(row.dataset.uid);
+    });
+
+    function showFriendsView(name) {
+      friendsPage.querySelectorAll("[data-fview]").forEach((view) => {
+        view.classList.toggle("active", view.dataset.fview === name);
+      });
+      scrollToTop();
+    }
+
+    function showFriendsList() {
+      currentPersonId = null;
+      showFriendsView("list");
+    }
+
+    document.getElementById("person-back").addEventListener("click", showFriendsList);
+
+    // ---------- En andens profil ----------
+    async function openPerson(uid) {
+      currentPersonId = uid;
+      document.getElementById("person-detail").innerHTML = "";
+      showFriendsView("person");
+      try {
+        await getProfile(uid, true);
+      } catch (error) {
+        console.error(error);
+      }
+      renderPerson();
+    }
+
+    function renderPerson() {
+      const p = profileCache.get(currentPersonId);
+      if (!p) return;
+      const relation = relationTo(p.id);
+      const benchCount = benches.filter((b) => b.addedBy === p.id).length;
+
+      let actions;
+      if (relation === "friend") {
+        actions = `
+          <button type="button" class="btn-plain" disabled>${t("friends.isFriend")}</button>
+          <button type="button" class="link-btn danger" data-action="remove">${t("friends.remove")}</button>`;
+      } else if (relation === "incoming") {
+        actions = `
+          <p class="muted">${t("friends.wantsToBeFriend")}</p>
+          <div class="sheet-actions">
+            <button type="button" class="btn-plain" data-action="decline">${t("friends.decline")}</button>
+            <button type="button" class="btn-primary" data-action="accept">${t("friends.accept")}</button>
+          </div>`;
+      } else if (relation === "outgoing") {
+        actions = `
+          <button type="button" class="btn-plain" disabled>${t("friends.requested")}</button>
+          <button type="button" class="link-btn danger" data-action="cancel">${t("friends.cancelRequest")}</button>`;
+      } else {
+        actions = `<button type="button" class="btn-primary" data-action="add">${t("friends.add")}</button>`;
+      }
+
+      const el = document.getElementById("person-detail");
+      el.innerHTML = `
+        <div class="card profile-card">
+          <div class="avatar avatar-lg">${avatarHTML(p)}</div>
+          <h2>${esc(p.name)}</h2>
+          <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
+          <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
+          <div class="stats single">
+            <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
+          </div>
+          <div class="person-actions">${actions}</div>
+        </div>`;
+
+      const handlers = {
+        add: sendRequest,
+        accept: acceptRequest,
+        decline: declineRequest,
+        cancel: cancelRequest,
+        remove: removeFriend,
+      };
+      el.querySelectorAll("[data-action]").forEach((btn) => {
+        btn.addEventListener("click", () => handlers[btn.dataset.action](p.id));
+      });
+    }
+
+    // ---------- Venneanmodninger ----------
+    async function friendAction(work, message) {
+      try {
+        await work();
+        if (message) showToast(message);
+      } catch (error) {
+        console.error(error);
+        showToast(t("friends.failed"));
+      }
+    }
+
+    function sendRequest(uid) {
+      // Har de allerede spurgt mig, så bliver vi bare venner med det samme
+      if (relationTo(uid) === "incoming") return acceptRequest(uid);
+      const me = currentUserKey();
+      return friendAction(
+        () => db.collection("friendRequests").doc(`${me}_${uid}`).set({ from: me, to: uid, createdAt: Date.now() }),
+        t("friends.sentToast", { name: nameOf(uid) })
+      );
+    }
+
+    function acceptRequest(uid) {
+      const me = currentUserKey();
+      const batch = db.batch();
+      batch.set(db.collection("friendships").doc(friendshipId(me, uid)), { users: [uid, me], createdAt: Date.now() });
+      batch.delete(db.collection("friendRequests").doc(`${uid}_${me}`));
+      return friendAction(() => batch.commit(), t("friends.acceptedToast", { name: nameOf(uid) }));
+    }
+
+    function declineRequest(uid) {
+      return friendAction(
+        () => db.collection("friendRequests").doc(`${uid}_${currentUserKey()}`).delete(),
+        t("friends.declinedToast")
+      );
+    }
+
+    function cancelRequest(uid) {
+      return friendAction(() => db.collection("friendRequests").doc(`${currentUserKey()}_${uid}`).delete());
+    }
+
+    function removeFriend(uid) {
+      if (!confirm(t("friends.confirmRemove", { name: nameOf(uid) }))) return;
+      return friendAction(
+        () => db.collection("friendships").doc(friendshipId(currentUserKey(), uid)).delete(),
+        t("friends.removedToast", { name: nameOf(uid) })
+      );
+    }
 
     // ---------- Start ----------
     // Første gang vælger man sprog. Er man logget ind, springes login over.
     applyLanguage();
+    if (initFirebase()) {
+      fbAuth.onAuthStateChanged((user) => {
+        authResolved = true;
+        onAuthChanged(user);
+      });
+    }
     if (!lang) {
       showLangScreen();
-    } else if (currentUserKey()) {
-      showApp();
-    } else {
-      prefillLogin();
+    } else if (!fbAuth) {
+      showAuthScreen();
+      setError(loginForm, t("err.network"));
     }
   </script>
 </body>
