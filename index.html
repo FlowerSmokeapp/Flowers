@@ -231,14 +231,16 @@
       height: 72px;
       margin: 0 auto 16px;
       border-radius: 18px;
-      background: linear-gradient(135deg, #007aff, #5ac8fa);
-      color: #fff;
-      font-size: 34px;
-      font-weight: 700;
+      background: linear-gradient(135deg, #34c759, #1a7f37);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+      box-shadow: 0 8px 20px rgba(26, 127, 55, 0.35);
+    }
+
+    .logo svg {
+      width: 66px;
+      height: 66px;
     }
 
     .brand h1 {
@@ -737,141 +739,194 @@
       margin-top: 6px;
     }
 
-    /* Verdenskort */
+    /* Verdenskort: kortet fylder hele skærmen, knapperne svæver ovenpå */
     .page.map-mode.active {
-      display: flex;
-      flex-direction: column;
+      position: relative;
       height: 100%;
-      padding-bottom: calc(var(--safe-bottom) + 76px);
+      padding: 0;
     }
 
     .map-view.active {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      position: relative;
-    }
-
-    .map-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .map-header h1 {
-      font-size: 22px;
-    }
-
-    .map-header .back {
-      margin: 0;
-      min-width: 90px;
-      text-align: left;
-    }
-
-    .icon-btn {
-      min-width: 90px;
-      text-align: right;
-      border: none;
-      background: none;
-      color: var(--primary);
-      font: inherit;
-      font-size: 15px;
-      cursor: pointer;
+      position: absolute;
+      inset: 0;
     }
 
     #map {
-      flex: 1;
+      position: absolute;
+      inset: 0;
       z-index: 0;
-      border-radius: var(--radius);
-      background: var(--border);
+      background: #0b0f0c;
     }
 
     .map-error {
-      padding: 40px 20px;
+      padding: 140px 20px;
       text-align: center;
-      color: var(--muted);
+      color: #fff;
     }
 
     .placing #map {
       cursor: crosshair;
     }
 
-    .fab {
-      position: absolute;
-      right: 12px;
-      bottom: 12px;
-      z-index: 5;
-      border: none;
-      border-radius: 999px;
-      padding: 13px 18px;
-      background: var(--primary);
+    /* "Frostet glas"-knapper */
+    .glass {
+      background: rgba(18, 20, 18, 0.55);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       color: #fff;
-      font: inherit;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .map-header {
+      position: absolute;
+      top: calc(var(--safe-top) + 10px);
+      left: 14px;
+      right: 14px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .map-header > * {
+      pointer-events: auto;
+    }
+
+    .map-title {
+      padding: 9px 16px;
+      border-radius: 999px;
       font-size: 15px;
       font-weight: 600;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
+      letter-spacing: 0.2px;
     }
 
-    /* Kort/Satellit-knap på kortet */
-    .map-toggle {
+    .round-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
       display: flex;
-      padding: 2px;
-      border-radius: 10px;
-      background: var(--card);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      cursor: pointer;
+      transition: transform 0.1s;
     }
 
-    .map-toggle button {
+    .round-btn:active,
+    .zoom-group button:active {
+      transform: scale(0.92);
+    }
+
+    .round-btn svg,
+    .zoom-group svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .zoom-group {
+      position: absolute;
+      right: 14px;
+      top: calc(var(--safe-top) + 66px);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .zoom-group button {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border: none;
       background: none;
-      color: var(--text);
-      font: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 7px 11px;
-      border-radius: 8px;
+      color: #fff;
       cursor: pointer;
     }
 
-    .map-toggle button.active {
-      background: var(--primary);
-      color: #fff;
+    .zoom-group button + button {
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
     }
 
-    .leaflet-bar a {
-      width: 36px !important;
-      height: 36px !important;
-      line-height: 36px !important;
-      font-size: 20px !important;
+    .fab {
+      position: absolute;
+      left: 50%;
+      bottom: calc(var(--safe-bottom) + 78px);
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      border-radius: 999px;
+      padding: 13px 20px;
+      background: #fff;
+      color: #111;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      cursor: pointer;
+    }
+
+    .fab:active {
+      transform: translateX(-50%) scale(0.96);
+    }
+
+    .fab span {
+      font-size: 20px;
+      line-height: 1;
     }
 
     .place-hint {
       position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 70px;
+      left: 14px;
+      right: 70px;
+      top: calc(var(--safe-top) + 66px);
       z-index: 5;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
       padding: 12px 14px;
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
+      border-radius: 16px;
       font-size: 14px;
+      line-height: 1.35;
     }
 
     .place-hint button {
       border: none;
       background: none;
-      color: #5ac8fa;
+      color: #9be89b;
       font: inherit;
       font-weight: 600;
       cursor: pointer;
+    }
+
+    /* Diskret kildeangivelse nederst */
+    .leaflet-container .leaflet-control-attribution {
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 9px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .leaflet-container .leaflet-control-attribution a {
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .leaflet-bottom {
+      bottom: calc(var(--safe-bottom) + 62px);
     }
 
     /* Knappenål på kortet */
@@ -883,25 +938,42 @@
     .pin {
       position: absolute;
       transform: translate(-50%, calc(-100% - 7px));
-      padding: 4px 9px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 5px 10px;
       border-radius: 999px;
-      border: 2px solid #fff;
-      background: #ff3b30;
-      color: #fff;
+      background: #fff;
+      color: #111;
       font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+    }
+
+    .pin b {
+      color: #f5b700;
     }
 
     .pin::after {
       content: "";
       position: absolute;
       left: 50%;
-      bottom: -8px;
+      bottom: -6px;
       transform: translateX(-50%);
       border: 6px solid transparent;
       border-top-color: #fff;
+      border-bottom: 0;
+    }
+
+    .pin.new {
+      background: #2fbf4a;
+      color: #fff;
+    }
+
+    .pin.new::after {
+      border-top-color: #2fbf4a;
     }
 
     /* Bænk-side */
@@ -1057,7 +1129,7 @@
     .toast {
       position: fixed;
       left: 50%;
-      bottom: calc(var(--safe-bottom) + 90px);
+      bottom: calc(var(--safe-bottom) + 140px);
       z-index: 60;
       transform: translate(-50%, 20px);
       opacity: 0;
@@ -1096,7 +1168,24 @@
       <!-- ================= Login / Opret konto ================= -->
       <main id="auth" class="screen">
         <header class="brand">
-          <div class="logo">M</div>
+          <div class="logo">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <defs>
+                <path id="leaflet" d="M0.0 0.0 L1.6 -1.6 L2.0 -3.3 L3.7 -4.9 L3.2 -6.6 L5.2 -8.2 L4.2 -9.9 L6.3 -11.5 L4.8 -13.1 L7.0 -14.8 L5.2 -16.4 L7.4 -18.1 L5.4 -19.7 L7.5 -21.4 L5.3 -23.0 L7.2 -24.6 L5.0 -26.3 L6.7 -27.9 L4.6 -29.6 L5.9 -31.2 L3.9 -32.9 L4.9 -34.5 L3.2 -36.1 L3.8 -37.8 L2.2 -39.4 L2.4 -41.1 L1.2 -42.7 L0.9 -44.4 L0.0 -46.0 L-0.9 -44.4 L-1.2 -42.7 L-2.4 -41.1 L-2.2 -39.4 L-3.8 -37.8 L-3.2 -36.1 L-4.9 -34.5 L-3.9 -32.9 L-5.9 -31.2 L-4.6 -29.6 L-6.7 -27.9 L-5.0 -26.3 L-7.2 -24.6 L-5.3 -23.0 L-7.5 -21.4 L-5.4 -19.7 L-7.4 -18.1 L-5.2 -16.4 L-7.0 -14.8 L-4.8 -13.1 L-6.3 -11.5 L-4.2 -9.9 L-5.2 -8.2 L-3.2 -6.6 L-3.7 -4.9 L-2.0 -3.3 L-1.6 -1.6Z"/>
+              </defs>
+              <!-- Cannabisblad: 7 småblade drejet ud fra midten -->
+              <g transform="translate(50 64)" fill="#fff">
+                <rect x="-1.2" y="0" width="2.4" height="22" rx="1.2"/>
+                <use href="#leaflet" transform="rotate(-100) scale(0.42)"/>
+                <use href="#leaflet" transform="rotate(100) scale(0.42)"/>
+                <use href="#leaflet" transform="rotate(-62) scale(0.7)"/>
+                <use href="#leaflet" transform="rotate(62) scale(0.7)"/>
+                <use href="#leaflet" transform="rotate(-30) scale(0.9)"/>
+                <use href="#leaflet" transform="rotate(30) scale(0.9)"/>
+                <use href="#leaflet" transform="scale(1.05)"/>
+              </g>
+            </svg>
+          </div>
           <h1 id="title">Velkommen tilbage</h1>
           <p id="subtitle" class="muted">Log ind for at fortsætte</p>
         </header>
@@ -1111,8 +1200,8 @@
         <!-- Log ind -->
         <form id="login-form" class="form" novalidate>
           <label class="field">
-            <span>E-mail</span>
-            <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="dig@eksempel.dk" required>
+            <span>Smoker name</span>
+            <input type="text" name="name" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Smoker name" required>
           </label>
           <label class="field">
             <span>Adgangskode</span>
@@ -1129,12 +1218,8 @@
         <!-- Opret konto -->
         <form id="signup-form" class="form hidden" novalidate>
           <label class="field">
-            <span>Navn</span>
-            <input type="text" name="name" autocomplete="name" placeholder="Dit navn" required>
-          </label>
-          <label class="field">
-            <span>E-mail</span>
-            <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="dig@eksempel.dk" required>
+            <span>Smoker name</span>
+            <input type="text" name="name" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Smoker name" maxlength="20" required>
           </label>
           <label class="field">
             <span>Adgangskode</span>
@@ -1198,20 +1283,32 @@
 
           <!-- Verdenskort -->
           <div class="view map-view" data-view="map" id="map-view">
-            <div class="map-header">
-              <button class="back" data-back>‹ Håndbog</button>
-              <h1>Verdenskort</h1>
-              <button class="icon-btn" id="locate-btn">📍 Mig</button>
-            </div>
             <div id="map"></div>
-            <div id="map-empty" class="place-hint hidden">
-              <span>Ingen bænke endnu. Tryk på "+ Tilføj bænk" og sæt den første!</span>
+            <div class="map-header">
+              <button class="round-btn glass" data-back aria-label="Tilbage">
+                <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+              </button>
+              <span class="map-title glass">Verdenskort</span>
+              <button class="round-btn glass" id="locate-btn" aria-label="Vis min placering">
+                <svg viewBox="0 0 24 24"><path d="M21 3L3 10.5l7.5 3 3 7.5z"/></svg>
+              </button>
             </div>
-            <div id="place-hint" class="place-hint hidden">
+            <div class="zoom-group glass">
+              <button type="button" id="zoom-in" aria-label="Zoom ind">
+                <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+              <button type="button" id="zoom-out" aria-label="Zoom ud">
+                <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+              </button>
+            </div>
+            <div id="map-empty" class="place-hint glass hidden">
+              <span>Ingen bænke endnu. Sæt den første på kortet!</span>
+            </div>
+            <div id="place-hint" class="place-hint glass hidden">
               <span>Tryk på kortet, hvor bænken står</span>
               <button type="button" id="cancel-place">Annuller</button>
             </div>
-            <button class="fab" id="add-bench-btn">+ Tilføj bænk</button>
+            <button class="fab" id="add-bench-btn"><span>+</span> Tilføj bænk</button>
           </div>
 
           <!-- En enkelt bænk -->
@@ -1381,8 +1478,8 @@
       input.focus();
     }
 
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    function isValidSmokerName(name) {
+      return /^[A-Za-z0-9æøåÆØÅ_.-]{2,20}$/.test(name);
     }
 
     function scrollToTop() {
@@ -1426,16 +1523,13 @@
       e.preventDefault();
       clearErrors(signupForm);
 
-      const { name, email, password, confirm } = signupForm.elements;
-      const emailValue = email.value.trim().toLowerCase();
+      const { name, password, confirm } = signupForm.elements;
+      const smokerName = name.value.trim();
+      const userKey = smokerName.toLowerCase();
 
-      if (!name.value.trim()) {
+      if (!isValidSmokerName(smokerName)) {
         markInvalid(name);
-        return setError(signupForm, "Skriv dit navn");
-      }
-      if (!isValidEmail(emailValue)) {
-        markInvalid(email);
-        return setError(signupForm, "Skriv en gyldig e-mail");
+        return setError(signupForm, "Smoker name skal være 2-20 tegn: bogstaver, tal, _ . eller -");
       }
       if (password.value.length < 8) {
         markInvalid(password);
@@ -1447,21 +1541,22 @@
       }
 
       const users = getUsers();
-      if (users[emailValue]) {
-        markInvalid(email);
-        return setError(signupForm, "Der findes allerede en konto med denne e-mail");
+      if (users[userKey]) {
+        markInvalid(name);
+        return setError(signupForm, "Det smoker name er allerede taget");
       }
 
       const salt = randomSalt();
-      users[emailValue] = {
-        name: name.value.trim(),
+      users[userKey] = {
+        name: smokerName,
         salt,
         passwordHash: await hashPassword(password.value, salt),
+        createdAt: Date.now(),
       };
       saveUsers(users);
 
       signupForm.reset();
-      login(emailValue);
+      login(userKey);
       showToast("Konto oprettet 🎉");
     });
 
@@ -1470,27 +1565,27 @@
       e.preventDefault();
       clearErrors(loginForm);
 
-      const { email, password } = loginForm.elements;
-      const emailValue = email.value.trim().toLowerCase();
+      const { name, password } = loginForm.elements;
+      const userKey = name.value.trim().toLowerCase();
 
-      if (!isValidEmail(emailValue)) {
-        markInvalid(email);
-        return setError(loginForm, "Skriv en gyldig e-mail");
+      if (!userKey) {
+        markInvalid(name);
+        return setError(loginForm, "Skriv dit smoker name");
       }
       if (!password.value) {
         markInvalid(password);
         return setError(loginForm, "Skriv din adgangskode");
       }
 
-      const user = getUsers()[emailValue];
+      const user = getUsers()[userKey];
       const hash = user && (await hashPassword(password.value, user.salt));
 
       if (!user || hash !== user.passwordHash) {
-        return setError(loginForm, "Forkert e-mail eller adgangskode");
+        return setError(loginForm, "Forkert smoker name eller adgangskode");
       }
 
       loginForm.reset();
-      login(emailValue);
+      login(userKey);
       showToast("Du er logget ind");
     });
 
@@ -1500,14 +1595,14 @@
     });
 
     // ---------- Session ----------
-    function login(email) {
-      localStorage.setItem(SESSION_KEY, email);
+    function login(userKey) {
+      localStorage.setItem(SESSION_KEY, userKey);
       showApp();
     }
 
     function showApp() {
-      const email = localStorage.getItem(SESSION_KEY);
-      const user = getUsers()[email];
+      const userKey = localStorage.getItem(SESSION_KEY);
+      const user = getUsers()[userKey];
       if (!user) return showTab("login");
 
       authScreen.classList.add("hidden");
@@ -1515,7 +1610,9 @@
 
       document.getElementById("home-name").textContent = user.name;
       document.getElementById("profile-name").textContent = user.name;
-      document.getElementById("profile-email").textContent = email;
+      document.getElementById("profile-email").textContent = user.createdAt
+        ? "Smoker siden " + new Date(user.createdAt).toLocaleDateString("da-DK")
+        : "Smoker";
       document.getElementById("avatar").textContent = user.name.charAt(0).toUpperCase();
 
       // Man starter altid på hjemmeskærmen
@@ -1945,45 +2042,24 @@
             '<p class="map-error">Kortet kræver internetforbindelse 🌐</p>';
           return;
         }
-        map = L.map("map", { worldCopyJump: true, minZoom: 1, maxZoom: 20 }).setView([25, 10], 1);
-        map.zoomControl.setPosition("topleft");
+        map = L.map("map", {
+          zoomControl: false,
+          worldCopyJump: true,
+          minZoom: 2,
+          maxZoom: 21,
+        }).setView([30, 10], 2);
 
-        // To korttyper: almindeligt vejkort og satellitbilleder
-        const dark = matchMedia("(prefers-color-scheme: dark)").matches;
-        const streetLayer = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark ? "dark_all" : "rastertiles/voyager"}/{z}/{x}/{y}{r}.png`, {
-          attribution: "© OpenStreetMap © CARTO",
-          subdomains: "abcd",
-          maxNativeZoom: 19,
-          maxZoom: 20,
-        });
-        const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+        // Satellitbilleder + et tyndt lag med by- og landenavne ovenpå
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
           attribution: "© Esri",
-          maxNativeZoom: 18,
-          maxZoom: 20,
-        });
-        streetLayer.addTo(map);
-
-        // Knap oppe til højre: skift mellem Kort og Satellit
-        const LayerToggle = L.Control.extend({
-          onAdd() {
-            const box = L.DomUtil.create("div", "map-toggle");
-            box.innerHTML = `
-              <button type="button" class="active" data-layer="street">Kort</button>
-              <button type="button" data-layer="satellite">Satellit</button>`;
-            L.DomEvent.disableClickPropagation(box);
-            box.addEventListener("click", (e) => {
-              const btn = e.target.closest("[data-layer]");
-              if (!btn) return;
-              const satellite = btn.dataset.layer === "satellite";
-              map.removeLayer(satellite ? streetLayer : satelliteLayer);
-              map.addLayer(satellite ? satelliteLayer : streetLayer);
-              box.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b === btn));
-            });
-            return box;
-          },
-        });
-        new LayerToggle({ position: "topright" }).addTo(map);
-        L.control.scale({ imperial: false, position: "bottomleft" }).addTo(map);
+          maxNativeZoom: 19,
+          maxZoom: 21,
+        }).addTo(map);
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", {
+          maxNativeZoom: 19,
+          maxZoom: 21,
+          opacity: 0.85,
+        }).addTo(map);
 
         markerLayer = L.layerGroup().addTo(map);
         map.on("click", onMapClick);
@@ -2000,7 +2076,9 @@
         const avg = averageRating(bench);
         const icon = L.divIcon({
           className: "bench-pin",
-          html: `<div class="pin">${avg ? "★ " + avg.toFixed(1) : "Ny"}</div>`,
+          html: avg
+            ? `<div class="pin"><b>★</b>${avg.toFixed(1)}</div>`
+            : '<div class="pin new">Ny</div>',
           iconSize: [0, 0],
         });
         L.marker([bench.lat, bench.lng], { icon })
@@ -2038,6 +2116,8 @@
       startPlacing();
     });
     document.getElementById("cancel-place").addEventListener("click", cancelPlacing);
+    document.getElementById("zoom-in").addEventListener("click", () => map && map.zoomIn());
+    document.getElementById("zoom-out").addEventListener("click", () => map && map.zoomOut());
 
     document.getElementById("locate-btn").addEventListener("click", () => {
       if (!map || !navigator.geolocation) return showToast("Kan ikke finde din placering");
@@ -2229,7 +2309,7 @@
 
     function rateBench(stars) {
       const email = localStorage.getItem(SESSION_KEY);
-      // FieldPath bruges, fordi e-mails indeholder punktummer
+      // FieldPath bruges, fordi et smoker name kan indeholde punktummer
       benchesRef.doc(currentBenchId)
         .update(new firebase.firestore.FieldPath("ratings", email), stars)
         .then(() => showToast(`Du gav ${stars} ${stars === 1 ? "stjerne" : "stjerner"} ⭐`))
