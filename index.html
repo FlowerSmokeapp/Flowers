@@ -1161,6 +1161,221 @@
     }
 
     /* ==========================================================
+       SPROGVALG
+       ========================================================== */
+    .screen {
+      position: relative;
+    }
+
+    .lang-pill {
+      position: absolute;
+      top: calc(var(--safe-top) + 12px);
+      right: 20px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+
+    .lang-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+    }
+
+    .lang-option:active {
+      transform: scale(0.98);
+      border-color: var(--accent);
+    }
+
+    .flag {
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .lang-option strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .lang-option small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .lang-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .lang-toggle button {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .lang-toggle button.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* ==========================================================
+       PROFIL
+       ========================================================== */
+    .avatar {
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-lg {
+      width: 104px;
+      height: 104px;
+      font-size: 42px;
+      border: 3px solid var(--primary);
+    }
+
+    .bio {
+      max-width: 34ch;
+      margin: 12px auto 0;
+      line-height: 1.45;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .bio.empty {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 18px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 12px 0;
+    }
+
+    .stats div + div {
+      border-left: 1px solid var(--border);
+    }
+
+    .stats strong {
+      font-size: 22px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stats span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .avatar-edit {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .avatar-pick {
+      position: relative;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .avatar-pick .avatar {
+      margin: 0;
+    }
+
+    .avatar-pick input {
+      display: none;
+    }
+
+    .avatar-badge {
+      position: absolute;
+      right: -2px;
+      bottom: -2px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .avatar-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .link-btn {
+      border: none;
+      background: none;
+      padding: 4px 0;
+      color: var(--accent);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .link-btn.danger {
+      color: var(--error);
+    }
+
+    .counter {
+      align-self: flex-end;
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==========================================================
        TOAST-BESKED
        ========================================================== */
     .toast {
@@ -1202,8 +1417,30 @@
 
     <div class="phone-screen" id="phone-screen">
 
+      <!-- ================= Vælg sprog ================= -->
+      <section id="lang-screen" class="screen hidden">
+        <header class="brand">
+          <div class="logo"><img src="data:image/png;base64,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" alt="Logo"></div>
+          <h1>Vælg sprog</h1>
+          <p class="muted">Choose language</p>
+        </header>
+        <div class="lang-options">
+          <button type="button" class="lang-option" data-lang="da">
+            <span class="flag">🇩🇰</span>
+            <span><strong>Dansk</strong><small>Fortsæt på dansk</small></span>
+            <span class="chevron">›</span>
+          </button>
+          <button type="button" class="lang-option" data-lang="en">
+            <span class="flag">🇬🇧</span>
+            <span><strong>English</strong><small>Continue in English</small></span>
+            <span class="chevron">›</span>
+          </button>
+        </div>
+      </section>
+
       <!-- ================= Login / Opret konto ================= -->
       <main id="auth" class="screen">
+        <button type="button" class="lang-pill" id="lang-pill">🇩🇰 Dansk</button>
         <header class="brand">
           <div class="logo"><img src="data:image/png;base64,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" alt="Logo"></div>
           <h1 id="title">Velkommen tilbage</h1>
@@ -1212,8 +1449,8 @@
 
         <!-- Faneblade: Log ind / Opret konto -->
         <div class="tabs" role="tablist">
-          <button class="tab active" data-tab="login" role="tab">Log ind</button>
-          <button class="tab" data-tab="signup" role="tab">Opret konto</button>
+          <button class="tab active" data-tab="login" role="tab" data-i18n="auth.login">Log ind</button>
+          <button class="tab" data-tab="signup" role="tab" data-i18n="auth.signup">Opret konto</button>
           <span class="tab-indicator"></span>
         </div>
 
@@ -1224,7 +1461,7 @@
             <input type="text" name="name" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Smoker name" required>
           </label>
           <label class="field">
-            <span>Adgangskode</span>
+            <span data-i18n="auth.password">Adgangskode</span>
             <div class="password-wrap">
               <input type="password" name="password" autocomplete="current-password" placeholder="••••••••" required>
               <button type="button" class="toggle-pw" aria-label="Vis adgangskode">Vis</button>
@@ -1233,11 +1470,11 @@
           <label class="remember">
             <input type="checkbox" name="remember" checked>
             <span class="switch" aria-hidden="true"></span>
-            <span>Husk mig</span>
+            <span data-i18n="auth.remember">Husk mig</span>
           </label>
           <p class="error" aria-live="polite"></p>
-          <button type="submit" class="btn-primary">Log ind</button>
-          <a href="#" class="link" id="forgot">Glemt adgangskode?</a>
+          <button type="submit" class="btn-primary" data-i18n="auth.login">Log ind</button>
+          <a href="#" class="link" id="forgot" data-i18n="auth.forgot">Glemt adgangskode?</a>
         </form>
 
         <!-- Opret konto -->
@@ -1247,54 +1484,54 @@
             <input type="text" name="name" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Smoker name" maxlength="20" required>
           </label>
           <label class="field">
-            <span>Adgangskode</span>
+            <span data-i18n="auth.password">Adgangskode</span>
             <div class="password-wrap">
-              <input type="password" name="password" autocomplete="new-password" placeholder="Mindst 8 tegn" required minlength="8">
+              <input type="password" name="password" autocomplete="new-password" data-i18n-ph="auth.pwNewPh" placeholder="Mindst 8 tegn" required minlength="8">
               <button type="button" class="toggle-pw" aria-label="Vis adgangskode">Vis</button>
             </div>
           </label>
           <label class="field">
-            <span>Gentag adgangskode</span>
-            <input type="password" name="confirm" autocomplete="new-password" placeholder="Gentag adgangskode" required>
+            <span data-i18n="auth.confirm">Gentag adgangskode</span>
+            <input type="password" name="confirm" autocomplete="new-password" data-i18n-ph="auth.confirm" placeholder="Gentag adgangskode" required>
           </label>
           <p class="error" aria-live="polite"></p>
-          <button type="submit" class="btn-primary">Opret konto</button>
+          <button type="submit" class="btn-primary" data-i18n="auth.signup">Opret konto</button>
         </form>
       </main>
 
       <!-- ================= Appen (efter login) ================= -->
       <div id="app" class="app hidden">
         <section class="page" data-page="forum">
-          <h1 class="page-title">Forum</h1>
+          <h1 class="page-title" data-i18n="nav.forum">Forum</h1>
           <div class="card">
-            <h2>Ingen opslag endnu</h2>
-            <p class="muted">Her kommer diskussioner og spørgsmål fra fællesskabet.</p>
+            <h2 data-i18n="forum.empty">Ingen opslag endnu</h2>
+            <p class="muted" data-i18n="forum.emptySub">Her kommer diskussioner og spørgsmål fra fællesskabet.</p>
           </div>
         </section>
 
         <section class="page" data-page="handbook" id="handbook">
           <!-- Håndbog: forside med store knapper -->
           <div class="view active" data-view="hb-menu">
-            <h1 class="page-title">Håndbog</h1>
+            <h1 class="page-title" data-i18n="nav.handbook">Håndbog</h1>
             <button class="big-btn guides" data-go="guides">
               <span class="big-icon">📖</span>
               <span>
                 <strong>Guides</strong>
-                <small>Stole, bænke, borde og sofaer</small>
+                <small data-i18n="hb.guidesSub">Stole, bænke, borde og sofaer</small>
               </span>
             </button>
             <button class="big-btn map" data-go="map">
               <span class="big-icon">🌍</span>
               <span>
-                <strong>Verdenskort</strong>
-                <small>Find og del verdens fedeste bænke</small>
+                <strong data-i18n="hb.map">Verdenskort</strong>
+                <small data-i18n="hb.mapSub">Find og del verdens fedeste bænke</small>
               </span>
             </button>
           </div>
 
           <!-- Liste med guides -->
           <div class="view" data-view="guides">
-            <button class="back" data-back>‹ Håndbog</button>
+            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title">Guides</h1>
             <div class="chips" id="guide-chips"></div>
             <div id="guide-list"></div>
@@ -1310,86 +1547,99 @@
           <div class="view map-view" data-view="map" id="map-view">
             <div id="map"></div>
             <div class="map-header">
-              <button class="round-btn glass" data-back aria-label="Tilbage">
+              <button class="round-btn glass" data-back data-i18n-aria="map.back" aria-label="Tilbage">
                 <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
               </button>
-              <span class="map-title glass">Verdenskort</span>
-              <button class="round-btn glass" id="locate-btn" aria-label="Vis min placering">
+              <span class="map-title glass" data-i18n="hb.map">Verdenskort</span>
+              <button class="round-btn glass" id="locate-btn" data-i18n-aria="map.locate" aria-label="Vis min placering">
                 <svg viewBox="0 0 24 24"><path d="M21 3L3 10.5l7.5 3 3 7.5z"/></svg>
               </button>
             </div>
             <div class="zoom-group glass">
-              <button type="button" id="zoom-in" aria-label="Zoom ind">
+              <button type="button" id="zoom-in" data-i18n-aria="map.zoomIn" aria-label="Zoom ind">
                 <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
               </button>
-              <button type="button" id="zoom-out" aria-label="Zoom ud">
+              <button type="button" id="zoom-out" data-i18n-aria="map.zoomOut" aria-label="Zoom ud">
                 <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
               </button>
             </div>
             <div id="map-empty" class="place-hint glass hidden">
-              <span>Ingen bænke endnu. Sæt den første på kortet!</span>
+              <span data-i18n="map.empty">Ingen bænke endnu. Sæt den første på kortet!</span>
             </div>
             <div id="place-hint" class="place-hint glass hidden">
-              <span>Tryk på kortet, hvor bænken står</span>
-              <button type="button" id="cancel-place">Annuller</button>
+              <span data-i18n="map.placeHint">Tryk på kortet, hvor bænken står</span>
+              <button type="button" id="cancel-place" data-i18n="common.cancel">Annuller</button>
             </div>
-            <button class="fab" id="add-bench-btn"><span>+</span> Tilføj bænk</button>
+            <button class="fab" id="add-bench-btn"><span>+</span> <span data-i18n="map.add">Tilføj bænk</span></button>
           </div>
 
           <!-- En enkelt bænk -->
           <div class="view" data-view="bench">
-            <button class="back" data-back>‹ Kort</button>
+            <button class="back" data-back data-i18n="back.map">‹ Kort</button>
             <div id="bench-detail"></div>
           </div>
         </section>
 
         <section class="page" data-page="home">
-          <h1 class="page-title">Hjem</h1>
+          <h1 class="page-title" data-i18n="nav.home">Hjem</h1>
           <div class="card">
-            <h2>Hej, <span id="home-name"></span> 👋</h2>
-            <p class="muted">Velkommen til MinApp.</p>
+            <h2><span data-i18n="home.hello">Hej</span>, <span id="home-name"></span> 👋</h2>
+            <p class="muted" data-i18n="home.welcome">Velkommen til MinApp.</p>
           </div>
         </section>
 
         <section class="page" data-page="friends">
-          <h1 class="page-title">Venner</h1>
+          <h1 class="page-title" data-i18n="nav.friends">Venner</h1>
           <div class="card">
-            <h2>Ingen venner endnu</h2>
-            <p class="muted">Find og tilføj venner her.</p>
+            <h2 data-i18n="friends.empty">Ingen venner endnu</h2>
+            <p class="muted" data-i18n="friends.emptySub">Find og tilføj venner her.</p>
           </div>
         </section>
 
         <section class="page" data-page="profile">
-          <h1 class="page-title">Profil</h1>
+          <h1 class="page-title" data-i18n="nav.profile">Profil</h1>
           <div class="card profile-card">
-            <div class="avatar" id="avatar"></div>
+            <div class="avatar avatar-lg" id="avatar"></div>
             <h2 id="profile-name"></h2>
-            <p class="muted" id="profile-email"></p>
+            <p class="muted" id="profile-since"></p>
+            <p class="bio" id="profile-bio"></p>
+            <div class="stats">
+              <div><strong id="stat-benches">0</strong><span data-i18n="profile.benches">Bænke</span></div>
+              <div><strong id="stat-ratings">0</strong><span data-i18n="profile.ratings">Bedømmelser</span></div>
+            </div>
+            <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
           </div>
-          <button id="logout" class="btn-secondary">Log ud</button>
+          <div class="card">
+            <h3 data-i18n="profile.language">Sprog</h3>
+            <div class="lang-toggle">
+              <button type="button" data-lang="da">🇩🇰 Dansk</button>
+              <button type="button" data-lang="en">🇬🇧 English</button>
+            </div>
+          </div>
+          <button id="logout" class="btn-secondary" data-i18n="profile.logout">Log ud</button>
         </section>
 
         <!-- Menu i bunden -->
         <nav class="tabbar">
           <button class="tabbar-item" data-page="forum">
             <svg viewBox="0 0 24 24"><path d="M4 5h16v10H9l-5 4z"/></svg>
-            <span>Forum</span>
+            <span data-i18n="nav.forum">Forum</span>
           </button>
           <button class="tabbar-item" data-page="handbook">
             <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>
-            <span>Håndbog</span>
+            <span data-i18n="nav.handbook">Håndbog</span>
           </button>
           <button class="tabbar-item active" data-page="home">
             <svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg>
-            <span>Hjem</span>
+            <span data-i18n="nav.home">Hjem</span>
           </button>
           <button class="tabbar-item" data-page="friends">
             <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21.5 19"/></svg>
-            <span>Venner</span>
+            <span data-i18n="nav.friends">Venner</span>
           </button>
           <button class="tabbar-item" data-page="profile">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-            <span>Profil</span>
+            <span data-i18n="nav.profile">Profil</span>
           </button>
         </nav>
       </div>
@@ -1398,28 +1648,54 @@
     <!-- Bundark: tilføj en ny bænk -->
     <div id="sheet-backdrop" class="sheet-backdrop hidden"></div>
     <form id="bench-form" class="sheet hidden" novalidate>
-      <h2>Ny bænk</h2>
+      <h2 data-i18n="bench.new">Ny bænk</h2>
       <label class="photo-pick" id="photo-pick">
-        <span id="photo-text">📷 Tilføj billede af bænken</span>
+        <span id="photo-text" data-i18n="bench.addPhoto">📷 Tilføj billede af bænken</span>
         <img id="photo-preview" class="hidden" alt="">
         <input type="file" accept="image/*" id="photo-input">
       </label>
       <label class="field">
-        <span>Navn på bænken</span>
-        <input type="text" name="name" placeholder="Fx Bænken ved søen" maxlength="60">
+        <span data-i18n="bench.name">Navn på bænken</span>
+        <input type="text" name="name" data-i18n-ph="bench.namePh" placeholder="Fx Bænken ved søen" maxlength="60">
       </label>
       <label class="field">
-        <span>Hvorfor er den fed?</span>
-        <textarea name="desc" placeholder="Udsigt, sol, god til madpakken…" maxlength="400"></textarea>
+        <span data-i18n="bench.why">Hvorfor er den fed?</span>
+        <textarea name="desc" data-i18n-ph="bench.whyPh" placeholder="Udsigt, sol, god til madpakken…" maxlength="400"></textarea>
       </label>
       <div class="field">
-        <span>Din bedømmelse</span>
+        <span data-i18n="bench.yourRating">Din bedømmelse</span>
         <div class="star-input" id="form-stars"></div>
       </div>
       <p class="error" aria-live="polite"></p>
       <div class="sheet-actions">
-        <button type="button" class="btn-plain" id="sheet-cancel">Annuller</button>
-        <button type="submit" class="btn-primary">Sæt på kortet</button>
+        <button type="button" class="btn-plain" id="sheet-cancel" data-i18n="common.cancel">Annuller</button>
+        <button type="submit" class="btn-primary" data-i18n="bench.save">Sæt på kortet</button>
+      </div>
+    </form>
+
+    <!-- Bundark: rediger profil -->
+    <form id="profile-form" class="sheet hidden" novalidate>
+      <h2 data-i18n="profile.edit">Rediger profil</h2>
+      <div class="avatar-edit">
+        <label class="avatar-pick">
+          <span class="avatar avatar-lg" id="edit-avatar"></span>
+          <span class="avatar-badge" aria-hidden="true">📷</span>
+          <input type="file" accept="image/*" id="avatar-input">
+        </label>
+        <div class="avatar-actions">
+          <label class="link-btn" for="avatar-input" data-i18n="profile.photo">Skift profilbillede</label>
+          <button type="button" class="link-btn danger" id="remove-avatar" data-i18n="profile.removePhoto">Fjern billede</button>
+        </div>
+      </div>
+      <label class="field">
+        <span data-i18n="profile.bio">Bio</span>
+        <textarea name="bio" maxlength="160" data-i18n-ph="profile.bioPh" placeholder="Fortæl lidt om dig selv…"></textarea>
+        <small class="counter" id="bio-counter">0/160</small>
+      </label>
+      <p class="error" aria-live="polite"></p>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="profile-cancel" data-i18n="common.cancel">Annuller</button>
+        <button type="submit" class="btn-primary" data-i18n="profile.save">Gem</button>
       </div>
     </form>
 
@@ -1525,9 +1801,313 @@
       phoneScreen.scrollTop = 0;
     }
 
+    // ==========================================================
+    // SPROG: dansk og engelsk
+    // ==========================================================
+    const I18N = {
+      da: {
+        "locale": "da-DK",
+        "lang.title": "Vælg sprog",
+        "lang.sub": "Du kan altid skifte senere under Profil",
+        "auth.welcome": "Velkommen tilbage",
+        "auth.loginSub": "Log ind for at fortsætte",
+        "auth.signupTitle": "Opret konto",
+        "auth.signupSub": "Det tager kun et minut",
+        "auth.login": "Log ind",
+        "auth.signup": "Opret konto",
+        "auth.password": "Adgangskode",
+        "auth.pwNewPh": "Mindst 8 tegn",
+        "auth.confirm": "Gentag adgangskode",
+        "auth.remember": "Husk mig",
+        "auth.forgot": "Glemt adgangskode?",
+        "pw.show": "Vis",
+        "pw.hide": "Skjul",
+        "pw.aria": "Vis adgangskode",
+        "err.nameFormat": "Smoker name skal være 2-20 tegn: bogstaver, tal, _ . eller -",
+        "err.pwShort": "Adgangskoden skal være mindst 8 tegn",
+        "err.pwMismatch": "Adgangskoderne er ikke ens",
+        "err.nameTaken": "Det smoker name er allerede taget",
+        "err.nameMissing": "Skriv dit smoker name",
+        "err.pwMissing": "Skriv din adgangskode",
+        "err.wrongLogin": "Forkert smoker name eller adgangskode",
+        "toast.signedUp": "Konto oprettet 🎉",
+        "toast.loggedIn": "Du er logget ind",
+        "toast.loggedOut": "Du er logget ud",
+        "toast.soon": "Kommer snart",
+        "nav.forum": "Forum",
+        "nav.handbook": "Håndbog",
+        "nav.home": "Hjem",
+        "nav.friends": "Venner",
+        "nav.profile": "Profil",
+        "forum.empty": "Ingen opslag endnu",
+        "forum.emptySub": "Her kommer diskussioner og spørgsmål fra fællesskabet.",
+        "home.hello": "Hej",
+        "home.welcome": "Velkommen til MinApp.",
+        "friends.empty": "Ingen venner endnu",
+        "friends.emptySub": "Find og tilføj venner her.",
+        "hb.guidesSub": "Stole, bænke, borde og sofaer",
+        "hb.map": "Verdenskort",
+        "hb.mapSub": "Find og del verdens fedeste bænke",
+        "back.handbook": "‹ Håndbog",
+        "back.map": "‹ Kort",
+        "guides.all": "Alle",
+        "common.cancel": "Annuller",
+        "map.back": "Tilbage",
+        "map.locate": "Vis min placering",
+        "map.zoomIn": "Zoom ind",
+        "map.zoomOut": "Zoom ud",
+        "map.empty": "Ingen bænke endnu. Sæt den første på kortet!",
+        "map.placeHint": "Tryk på kortet, hvor bænken står",
+        "map.add": "Tilføj bænk",
+        "map.noInternet": "Kortet kræver internetforbindelse 🌐",
+        "map.notLoaded": "Kortet er ikke indlæst",
+        "map.noLocation": "Kan ikke finde din placering",
+        "db.noConnection": "Kunne ikke forbinde til databasen",
+        "db.fetchFailed": "Kunne ikke hente bænke fra databasen",
+        "db.offline": "Ingen forbindelse til databasen",
+        "img.failed": "Billedet kunne ikke indlæses",
+        "pin.new": "Ny",
+        "stars": "{n} stjerner",
+        "bench.new": "Ny bænk",
+        "bench.addPhoto": "📷 Tilføj billede af bænken",
+        "bench.name": "Navn på bænken",
+        "bench.namePh": "Fx Bænken ved søen",
+        "bench.why": "Hvorfor er den fed?",
+        "bench.whyPh": "Udsigt, sol, god til madpakken…",
+        "bench.yourRating": "Din bedømmelse",
+        "bench.giveStars": "Giv bænken stjerner",
+        "bench.save": "Sæt på kortet",
+        "bench.saving": "Gemmer…",
+        "bench.errPhoto": "Tilføj et billede af bænken",
+        "bench.errName": "Giv bænken et navn",
+        "bench.errSave": "Bænken kunne ikke gemmes. Tjek din internetforbindelse.",
+        "bench.added": "Bænken er sat på kortet 📍",
+        "bench.addedBy": "Tilføjet af {name} · {date}",
+        "bench.rating1": "bedømmelse",
+        "bench.ratingN": "bedømmelser",
+        "bench.showOnMap": "📍 Vis på kortet",
+        "bench.delete": "Slet bænk",
+        "bench.confirmDelete": "Vil du slette denne bænk?",
+        "bench.deleted": "Bænken er slettet",
+        "bench.deleteFailed": "Bænken kunne ikke slettes",
+        "bench.gone": "Bænken findes ikke længere.",
+        "bench.photoAlt": "Billede af {name}",
+        "bench.rated1": "Du gav 1 stjerne ⭐",
+        "bench.ratedN": "Du gav {n} stjerner ⭐",
+        "bench.rateFailed": "Bedømmelsen kunne ikke gemmes",
+        "profile.since": "Smoker siden {date}",
+        "profile.benches": "Bænke",
+        "profile.ratings": "Bedømmelser",
+        "profile.edit": "Rediger profil",
+        "profile.language": "Sprog",
+        "profile.logout": "Log ud",
+        "profile.noBio": "Ingen bio endnu. Tryk på Rediger profil og skriv lidt om dig selv.",
+        "profile.photo": "Skift profilbillede",
+        "profile.removePhoto": "Fjern billede",
+        "profile.bio": "Bio",
+        "profile.bioPh": "Fortæl lidt om dig selv…",
+        "profile.save": "Gem",
+        "profile.saved": "Profilen er gemt ✅",
+        "profile.noSpace": "Der er ikke plads til billedet. Prøv et mindre billede.",
+      },
+      en: {
+        "locale": "en-GB",
+        "lang.title": "Choose language",
+        "lang.sub": "You can always change it later in Profile",
+        "auth.welcome": "Welcome back",
+        "auth.loginSub": "Log in to continue",
+        "auth.signupTitle": "Create account",
+        "auth.signupSub": "It only takes a minute",
+        "auth.login": "Log in",
+        "auth.signup": "Sign up",
+        "auth.password": "Password",
+        "auth.pwNewPh": "At least 8 characters",
+        "auth.confirm": "Repeat password",
+        "auth.remember": "Remember me",
+        "auth.forgot": "Forgot password?",
+        "pw.show": "Show",
+        "pw.hide": "Hide",
+        "pw.aria": "Show password",
+        "err.nameFormat": "Smoker name must be 2-20 characters: letters, numbers, _ . or -",
+        "err.pwShort": "Password must be at least 8 characters",
+        "err.pwMismatch": "Passwords don't match",
+        "err.nameTaken": "That smoker name is already taken",
+        "err.nameMissing": "Enter your smoker name",
+        "err.pwMissing": "Enter your password",
+        "err.wrongLogin": "Wrong smoker name or password",
+        "toast.signedUp": "Account created 🎉",
+        "toast.loggedIn": "You're logged in",
+        "toast.loggedOut": "You're logged out",
+        "toast.soon": "Coming soon",
+        "nav.forum": "Forum",
+        "nav.handbook": "Handbook",
+        "nav.home": "Home",
+        "nav.friends": "Friends",
+        "nav.profile": "Profile",
+        "forum.empty": "No posts yet",
+        "forum.emptySub": "Discussions and questions from the community will show up here.",
+        "home.hello": "Hey",
+        "home.welcome": "Welcome to MinApp.",
+        "friends.empty": "No friends yet",
+        "friends.emptySub": "Find and add friends here.",
+        "hb.guidesSub": "Chairs, benches, tables and sofas",
+        "hb.map": "World map",
+        "hb.mapSub": "Find and share the world's best benches",
+        "back.handbook": "‹ Handbook",
+        "back.map": "‹ Map",
+        "guides.all": "All",
+        "common.cancel": "Cancel",
+        "map.back": "Back",
+        "map.locate": "Show my location",
+        "map.zoomIn": "Zoom in",
+        "map.zoomOut": "Zoom out",
+        "map.empty": "No benches yet. Put the first one on the map!",
+        "map.placeHint": "Tap the map where the bench is",
+        "map.add": "Add bench",
+        "map.noInternet": "The map needs an internet connection 🌐",
+        "map.notLoaded": "The map hasn't loaded",
+        "map.noLocation": "Can't find your location",
+        "db.noConnection": "Couldn't connect to the database",
+        "db.fetchFailed": "Couldn't load benches from the database",
+        "db.offline": "No connection to the database",
+        "img.failed": "The photo couldn't be loaded",
+        "pin.new": "New",
+        "stars": "{n} stars",
+        "bench.new": "New bench",
+        "bench.addPhoto": "📷 Add a photo of the bench",
+        "bench.name": "Bench name",
+        "bench.namePh": "E.g. The bench by the lake",
+        "bench.why": "Why is it great?",
+        "bench.whyPh": "View, sun, perfect for lunch…",
+        "bench.yourRating": "Your rating",
+        "bench.giveStars": "Rate this bench",
+        "bench.save": "Put on map",
+        "bench.saving": "Saving…",
+        "bench.errPhoto": "Add a photo of the bench",
+        "bench.errName": "Give the bench a name",
+        "bench.errSave": "The bench couldn't be saved. Check your internet connection.",
+        "bench.added": "The bench is on the map 📍",
+        "bench.addedBy": "Added by {name} · {date}",
+        "bench.rating1": "rating",
+        "bench.ratingN": "ratings",
+        "bench.showOnMap": "📍 Show on map",
+        "bench.delete": "Delete bench",
+        "bench.confirmDelete": "Do you want to delete this bench?",
+        "bench.deleted": "The bench was deleted",
+        "bench.deleteFailed": "The bench couldn't be deleted",
+        "bench.gone": "This bench no longer exists.",
+        "bench.photoAlt": "Photo of {name}",
+        "bench.rated1": "You gave 1 star ⭐",
+        "bench.ratedN": "You gave {n} stars ⭐",
+        "bench.rateFailed": "Your rating couldn't be saved",
+        "profile.since": "Smoker since {date}",
+        "profile.benches": "Benches",
+        "profile.ratings": "Ratings",
+        "profile.edit": "Edit profile",
+        "profile.language": "Language",
+        "profile.logout": "Log out",
+        "profile.noBio": "No bio yet. Tap Edit profile to tell people about yourself.",
+        "profile.photo": "Change profile photo",
+        "profile.removePhoto": "Remove photo",
+        "profile.bio": "Bio",
+        "profile.bioPh": "Tell people a bit about yourself…",
+        "profile.save": "Save",
+        "profile.saved": "Profile saved ✅",
+        "profile.noSpace": "There's not enough space for the photo. Try a smaller one.",
+      },
+    };
+
+    const LANG_KEY = "lang";
+    let lang = localStorage.getItem(LANG_KEY);
+
+    // Slå en tekst op på det valgte sprog, fx t("bench.addedBy", { name, date })
+    function t(key, vars = {}) {
+      const text = (I18N[lang] && I18N[lang][key]) ?? I18N.da[key] ?? key;
+      return text.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
+    }
+
+    function formatDate(time) {
+      return new Date(time).toLocaleDateString(t("locale"));
+    }
+
+    // Opdater alle tekster på siden til det valgte sprog
+    function applyLanguage() {
+      document.documentElement.lang = lang || "da";
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.textContent = t(el.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
+        el.placeholder = t(el.dataset.i18nPh);
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+        el.setAttribute("aria-label", t(el.dataset.i18nAria));
+      });
+      document.querySelectorAll(".toggle-pw").forEach((btn) => {
+        const shown = btn.previousElementSibling.type === "text";
+        btn.textContent = t(shown ? "pw.hide" : "pw.show");
+        btn.setAttribute("aria-label", t("pw.aria"));
+      });
+      document.getElementById("lang-pill").textContent = lang === "en" ? "🇬🇧 English" : "🇩🇰 Dansk";
+      document.querySelectorAll(".lang-toggle [data-lang]").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+      });
+
+      updateAuthTitles();
+      renderGuideChips();
+      renderGuideList();
+      if (currentGuideId) renderGuide();
+      renderMarkers();
+      if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) renderBench();
+      if (currentUserKey()) renderProfile();
+    }
+
+    function setLanguage(newLang) {
+      lang = newLang;
+      localStorage.setItem(LANG_KEY, newLang);
+      applyLanguage();
+    }
+
+    // Sprogvalg-skærmen vises første gang, og når man trykker på sprog-knappen
+    const langScreen = document.getElementById("lang-screen");
+
+    function showLangScreen() {
+      authScreen.classList.add("hidden");
+      appScreen.classList.add("hidden");
+      langScreen.classList.remove("hidden");
+      scrollToTop();
+    }
+
+    langScreen.querySelectorAll("[data-lang]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        setLanguage(btn.dataset.lang);
+        langScreen.classList.add("hidden");
+        if (currentUserKey()) {
+          showApp();
+        } else {
+          authScreen.classList.remove("hidden");
+          prefillLogin();
+        }
+      });
+    });
+
+    document.getElementById("lang-pill").addEventListener("click", showLangScreen);
+
+    document.querySelectorAll(".lang-toggle [data-lang]").forEach((btn) => {
+      btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+    });
+
     // ---------- Skift mellem Log ind / Opret konto ----------
+    let currentTab = "login";
+
+    function updateAuthTitles() {
+      const isSignup = currentTab === "signup";
+      title.textContent = t(isSignup ? "auth.signupTitle" : "auth.welcome");
+      subtitle.textContent = t(isSignup ? "auth.signupSub" : "auth.loginSub");
+    }
+
     function showTab(name) {
       const isSignup = name === "signup";
+      currentTab = name;
 
       tabs.classList.toggle("signup", isSignup);
       tabButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === name));
@@ -1535,9 +2115,7 @@
       loginForm.classList.toggle("hidden", isSignup);
       signupForm.classList.toggle("hidden", !isSignup);
 
-      title.textContent = isSignup ? "Opret konto" : "Velkommen tilbage";
-      subtitle.textContent = isSignup ? "Det tager kun et minut" : "Log ind for at fortsætte";
-
+      updateAuthTitles();
       clearErrors(loginForm);
       clearErrors(signupForm);
     }
@@ -1552,7 +2130,7 @@
         const input = btn.previousElementSibling;
         const show = input.type === "password";
         input.type = show ? "text" : "password";
-        btn.textContent = show ? "Skjul" : "Vis";
+        btn.textContent = t(show ? "pw.hide" : "pw.show");
       });
     });
 
@@ -1567,21 +2145,21 @@
 
       if (!isValidSmokerName(smokerName)) {
         markInvalid(name);
-        return setError(signupForm, "Smoker name skal være 2-20 tegn: bogstaver, tal, _ . eller -");
+        return setError(signupForm, t("err.nameFormat"));
       }
       if (password.value.length < 8) {
         markInvalid(password);
-        return setError(signupForm, "Adgangskoden skal være mindst 8 tegn");
+        return setError(signupForm, t("err.pwShort"));
       }
       if (password.value !== confirm.value) {
         markInvalid(confirm);
-        return setError(signupForm, "Adgangskoderne er ikke ens");
+        return setError(signupForm, t("err.pwMismatch"));
       }
 
       const users = getUsers();
       if (users[userKey]) {
         markInvalid(name);
-        return setError(signupForm, "Det smoker name er allerede taget");
+        return setError(signupForm, t("err.nameTaken"));
       }
 
       const salt = randomSalt();
@@ -1595,7 +2173,7 @@
 
       signupForm.reset();
       login(userKey);
-      showToast("Konto oprettet 🎉");
+      showToast(t("toast.signedUp"));
     });
 
     // ---------- Log ind ----------
@@ -1608,29 +2186,29 @@
 
       if (!userKey) {
         markInvalid(name);
-        return setError(loginForm, "Skriv dit smoker name");
+        return setError(loginForm, t("err.nameMissing"));
       }
       if (!password.value) {
         markInvalid(password);
-        return setError(loginForm, "Skriv din adgangskode");
+        return setError(loginForm, t("err.pwMissing"));
       }
 
       const user = getUsers()[userKey];
       const hash = user && (await hashPassword(password.value, user.salt));
 
       if (!user || hash !== user.passwordHash) {
-        return setError(loginForm, "Forkert smoker name eller adgangskode");
+        return setError(loginForm, t("err.wrongLogin"));
       }
 
       const remember = loginForm.elements.remember.checked;
       loginForm.reset();
       login(userKey, remember);
-      showToast("Du er logget ind");
+      showToast(t("toast.loggedIn"));
     });
 
     document.getElementById("forgot").addEventListener("click", (e) => {
       e.preventDefault();
-      showToast("Kommer snart");
+      showToast(t("toast.soon"));
     });
 
     // ---------- Session ----------
@@ -1651,12 +2229,9 @@
       authScreen.classList.add("hidden");
       appScreen.classList.remove("hidden");
 
-      document.getElementById("home-name").textContent = user.name;
-      document.getElementById("profile-name").textContent = user.name;
-      document.getElementById("profile-email").textContent = user.createdAt
-        ? "Smoker siden " + new Date(user.createdAt).toLocaleDateString("da-DK")
-        : "Smoker";
-      document.getElementById("avatar").textContent = user.name.charAt(0).toUpperCase();
+      renderProfile();
+      // Hent bænkene med det samme, så profilens tal er klar
+      connectBenches();
 
       // Man starter altid på hjemmeskærmen
       showPage("home");
@@ -1672,7 +2247,7 @@
       showTab("login");
       prefillLogin();
       scrollToTop();
-      showToast("Du er logget ud");
+      showToast(t("toast.loggedOut"));
     });
 
     // ---------- Menu i bunden ----------
@@ -1951,8 +2526,8 @@
     let guideFilter = "all";
 
     function renderGuideChips() {
-      const chips = [["all", "Alle"]].concat(
-        Object.entries(CATEGORIES).map(([key, cat]) => [key, `${cat.emoji} ${cat.name}`])
+      const chips = [["all", t("guides.all")]].concat(
+        Object.entries(CATEGORIES).map(([key, cat]) => [key, `${cat.emoji} ${catName(key)}`])
       );
       document.getElementById("guide-chips").innerHTML = chips
         .map(([key, label]) =>
@@ -1961,33 +2536,40 @@
     }
 
     function renderGuideList() {
-      const list = GUIDES.filter((g) => guideFilter === "all" || g.cat === guideFilter);
+      const list = GUIDES.filter((g) => guideFilter === "all" || g.cat === guideFilter).map(localGuide);
       document.getElementById("guide-list").innerHTML = list
         .map((g) => `
           <button class="guide-item" data-guide="${g.id}">
             <span class="guide-emoji">${CATEGORIES[g.cat].emoji}</span>
             <span>
               <strong>${g.title}</strong>
-              <small>${CATEGORIES[g.cat].name} · ${g.time}</small>
+              <small>${catName(g.cat)} · ${g.time}</small>
             </span>
             <span class="chevron">›</span>
           </button>`)
         .join("");
     }
 
+    let currentGuideId = null;
+
     function openGuide(id) {
-      const g = GUIDES.find((guide) => guide.id === id);
+      currentGuideId = id;
+      renderGuide();
+      goView("guide");
+    }
+
+    function renderGuide() {
+      const g = localGuide(GUIDES.find((guide) => guide.id === currentGuideId));
       const cat = CATEGORIES[g.cat];
       document.getElementById("guide-detail").innerHTML = `
         <div class="guide-head">
           <div class="guide-emoji">${cat.emoji}</div>
           <h1>${g.title}</h1>
-          <p class="muted">${cat.name} · ${g.time}</p>
+          <p class="muted">${catName(g.cat)} · ${g.time}</p>
         </div>
         <p class="intro">${g.intro}</p>
         <ol class="steps">${g.steps.map((step) => `<li>${step}</li>`).join("")}</ol>
         <p class="tip">💡 ${g.tip}</p>`;
-      goView("guide");
     }
 
     document.getElementById("guide-chips").addEventListener("click", (e) => {
@@ -2003,8 +2585,184 @@
       if (item) openGuide(item.dataset.guide);
     });
 
-    renderGuideChips();
-    renderGuideList();
+
+    // Engelske udgaver af guides og kategorier
+    const CATEGORY_NAMES_EN = { chairs: "Chairs", benches: "Benches", tables: "Tables", sofas: "Sofas" };
+
+    const GUIDES_EN = {
+      "chair-wobbly": {
+        title: "Fix a wobbly chair",
+        time: "15 min",
+        intro: "A wobbly chair almost always has a loose joint. Here's how to make it solid again.",
+        steps: [
+          "Turn the chair upside down and find the joints that move when you wiggle the legs.",
+          "If the chair has screws or brackets, tighten them with a screwdriver or Allen key.",
+          "If a glued joint is loose, carefully take it apart and scrape off the old glue.",
+          "Put fresh wood glue in the hole and on the tenon, then put the chair back together.",
+          "Press the joint together with a clamp or a tight strap, and wipe off excess glue with a damp cloth.",
+          "Let the glue dry for at least 24 hours before using the chair.",
+        ],
+        tip: "If one leg is just slightly too short, a felt pad underneath often fixes it, so you don't have to cut the other legs.",
+      },
+      "chair-reupholster": {
+        title: "Reupholster a chair seat",
+        time: "1 hour",
+        intro: "New fabric on the seat can make an old chair look brand new.",
+        steps: [
+          "Unscrew the seat. It's usually held on by 4 screws from underneath.",
+          "Remove the old fabric and staples with a small flathead screwdriver and pliers.",
+          "If the foam is flat, cut a new piece slightly larger than the seat board.",
+          "Lay the fabric face down and place the foam and board on top. Trim the fabric, leaving 5-7 cm extra all the way around.",
+          "Staple the middle of each side first while pulling the fabric tight, then work out towards the corners.",
+          "Fold the corners neatly, like wrapping a present, and staple them.",
+          "Screw the seat back onto the chair.",
+        ],
+        tip: "Use upholstery fabric. Regular fabric wears through quickly.",
+      },
+      "chair-office": {
+        title: "Choose the right office chair",
+        time: "5 min",
+        intro: "You may spend thousands of hours a year in your office chair, so it's worth choosing carefully.",
+        steps: [
+          "Height: your feet should rest flat on the floor with your knees at about 90 degrees.",
+          "Seat depth: leave 2-4 finger widths between the front of the seat and the back of your knee.",
+          "Back: choose a chair with lumbar support that can be adjusted in height.",
+          "Armrests: they should go low enough for your shoulders to relax while you work at the desk.",
+          "Try the chair for at least 10 minutes before you buy it.",
+        ],
+        tip: "The best sitting position is the next one. Change position and stand up regularly.",
+      },
+      "bench-build": {
+        title: "Build a simple garden bench",
+        time: "1 day",
+        intro: "With some wood, a saw and a drill you can build a sturdy bench for your garden.",
+        steps: [
+          "Buy pressure-treated wood or hardwood, e.g. 45×95 mm timber, and outdoor screws in stainless or galvanised steel.",
+          "Decide on the size: a seat height of about 45 cm and a seat depth of 35-45 cm is comfortable.",
+          "Cut and screw together two identical end frames (legs + crosspiece).",
+          "Screw 3-4 seat boards on top with 5-8 mm gaps so rainwater can run off.",
+          "If the bench is longer than about 150 cm, add an extra support in the middle.",
+          "Sand the edges round and treat the bench with wood oil.",
+        ],
+        tip: "Pre-drill the screw holes near the ends of the boards so the wood doesn't split.",
+      },
+      "bench-maintain": {
+        title: "Look after an outdoor wooden bench",
+        time: "2 hours",
+        intro: "A little care once a year keeps an outdoor bench going for many years.",
+        steps: [
+          "Brush off dirt, moss and algae, and wash the bench with water and a little soft soap.",
+          "Let it dry completely. This usually takes a couple of dry days.",
+          "Lightly sand with 120 grit sandpaper where the wood is rough or grey.",
+          "Apply wood oil with a brush along the grain.",
+          "After 15-20 minutes, wipe off any oil that hasn't soaked in.",
+          "Repeat 1-2 times a year, ideally in spring and autumn.",
+        ],
+        tip: "Oily rags can catch fire on their own! Put them in a bucket of water or let them dry spread out outdoors.",
+      },
+      "bench-find": {
+        title: "What makes a bench great?",
+        time: "3 min",
+        intro: "Some benches are just better than others. Here's what to look for when you're hunting for the perfect bench.",
+        steps: [
+          "View: water, a skyline, the sunset or just a good spot for people-watching.",
+          "Sun and shelter: a bench with afternoon sun and shelter from the wind is gold.",
+          "Comfort: a backrest, a good seat height and boards that aren't too narrow.",
+          "Peace and quiet: a bit away from traffic and noise.",
+          "Story: a memorial plaque, a special design or a local legend.",
+        ],
+        tip: "Found a great bench? Put it on the World map so others can find it too!",
+      },
+      "table-rings": {
+        title: "Remove white rings from a wooden table",
+        time: "20 min",
+        intro: "White rings from cups and glasses are moisture trapped in the finish, not in the wood itself. They can often be removed.",
+        steps: [
+          "Lay a dry cotton tea towel over the stain.",
+          "Iron it on low heat without steam for 10-20 seconds at a time.",
+          "Lift the towel and check. Repeat until the stain is gone.",
+          "If that doesn't work, gently rub with a little toothpaste (not gel) on a soft cloth along the grain.",
+          "Wipe clean and finish with furniture polish or oil.",
+        ],
+        tip: "Dark or black rings have gone into the wood and usually have to be sanded away.",
+      },
+      "table-refinish": {
+        title: "Sand and varnish an old table",
+        time: "A weekend",
+        intro: "A worn table can look like new again with sanding and a fresh finish.",
+        steps: [
+          "Clean the table thoroughly and let it dry.",
+          "Sand along the grain with 80 grit, then 120 and finally 180.",
+          "Vacuum and wipe with a slightly damp cloth so all the dust is gone.",
+          "Apply a thin coat of varnish or oil.",
+          "When the coat is dry, sand lightly with 240 grit and remove the dust.",
+          "Repeat until you have 2-3 coats.",
+        ],
+        tip: "Work in a well-ventilated room and wear a dust mask when you sand.",
+      },
+      "table-height": {
+        title: "Choose the right table height",
+        time: "3 min",
+        intro: "The right measurements make both the table and the chairs comfortable to use.",
+        steps: [
+          "Dining table: usually 72-76 cm high.",
+          "There should be 25-30 cm from the chair seat up to the tabletop.",
+          "Coffee table: about the same height as the sofa seat or a little lower, usually 40-50 cm.",
+          "Allow about 60 cm of table edge per person at a dining table.",
+          "Leave 80-100 cm from the table to the wall so chairs can be pulled out.",
+        ],
+        tip: "For a desk, a sit-stand desk is best, so you can switch between sitting and standing.",
+      },
+      "sofa-stains": {
+        title: "Remove stains from a fabric sofa",
+        time: "15 min",
+        intro: "The sooner you deal with a stain, the easier it is to get out.",
+        steps: [
+          "Find the sofa's care label: W = water, S = water-free cleaner, W/S = both, X = vacuum only.",
+          "Blot up spills with kitchen roll. Never rub, or the stain will spread.",
+          "Mix lukewarm water with a little washing-up liquid.",
+          "Dab the stain with a cloth, working from the edge towards the centre.",
+          "Dab again with a cloth and clean water, then blot dry.",
+          "Let it dry and brush the fabric lightly.",
+        ],
+        tip: "Always test on a hidden spot first, e.g. the back of a cushion.",
+      },
+      "sofa-leather": {
+        title: "Caring for a leather sofa",
+        time: "30 min",
+        intro: "Leather lasts for many years, as long as it doesn't dry out.",
+        steps: [
+          "Vacuum with a soft brush attachment, including the gaps.",
+          "Wipe the sofa with a slightly damp cloth.",
+          "Clean it with leather cleaner 2-4 times a year.",
+          "Finish with leather cream or conditioner so the leather doesn't dry out and crack.",
+          "Don't place the sofa in direct sunlight or close to a radiator.",
+        ],
+        tip: "Ask the shop what type of leather the sofa is made of. Aniline leather needs special care products.",
+      },
+      "sofa-measure": {
+        title: "Measure before you buy a sofa",
+        time: "10 min",
+        intro: "Nothing is worse than a new sofa that won't fit through the door.",
+        steps: [
+          "Measure the room and mark the sofa's size on the floor with painter's tape.",
+          "Measure doorways, hallways, stairwells and the lift, including diagonally.",
+          "A sofa is typically 85-100 cm deep. For lounging, a seat depth of 50-60 cm is good.",
+          "Leave about 40-50 cm between the sofa and the coffee table.",
+          "Check whether the legs and armrests can be unscrewed if it's a tight fit.",
+        ],
+        tip: "Sit on the sofa in the shop for at least 5 minutes, ideally in the position you usually sit in.",
+      },
+    };
+
+    // Guiden på det valgte sprog
+    function localGuide(g) {
+      return lang === "en" ? { ...g, ...GUIDES_EN[g.id] } : g;
+    }
+
+    function catName(key) {
+      return lang === "en" ? CATEGORY_NAMES_EN[key] : CATEGORIES[key].name;
+    }
 
     // ==========================================================
     // VERDENSKORT MED BÆNKE
@@ -2026,7 +2784,7 @@
     function connectBenches() {
       if (benchesRef) return;
       if (!window.firebase) {
-        showToast("Kunne ikke forbinde til databasen");
+        showToast(t("db.noConnection"));
         return;
       }
       firebase.initializeApp(firebaseConfig);
@@ -2042,10 +2800,11 @@
           if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) {
             renderBench();
           }
+          renderProfile();
         },
         (error) => {
           console.error(error);
-          showToast("Kunne ikke hente bænke fra databasen");
+          showToast(t("db.fetchFailed"));
         }
       );
     }
@@ -2067,7 +2826,7 @@
 
     function starInputHTML(value) {
       return [1, 2, 3, 4, 5]
-        .map((n) => `<button type="button" data-rate="${n}" class="${n <= value ? "on" : ""}" aria-label="${n} stjerner">★</button>`)
+        .map((n) => `<button type="button" data-rate="${n}" class="${n <= value ? "on" : ""}" aria-label="${t("stars", { n })}">★</button>`)
         .join("");
     }
 
@@ -2084,7 +2843,7 @@
       if (!map) {
         if (!window.L) {
           document.getElementById("map").innerHTML =
-            '<p class="map-error">Kortet kræver internetforbindelse 🌐</p>';
+            `<p class="map-error">${t("map.noInternet")}</p>`;
           return;
         }
         map = L.map("map", {
@@ -2123,7 +2882,7 @@
           className: "bench-pin",
           html: avg
             ? `<div class="pin"><b>★</b>${avg.toFixed(1)}</div>`
-            : '<div class="pin new">Ny</div>',
+            : `<div class="pin new">${t("pin.new")}</div>`,
           iconSize: [0, 0],
         });
         L.marker([bench.lat, bench.lng], { icon })
@@ -2156,8 +2915,8 @@
     }
 
     addBenchBtn.addEventListener("click", () => {
-      if (!map) return showToast("Kortet er ikke indlæst");
-      if (!benchesRef) return showToast("Ingen forbindelse til databasen");
+      if (!map) return showToast(t("map.notLoaded"));
+      if (!benchesRef) return showToast(t("db.offline"));
       startPlacing();
     });
     document.getElementById("cancel-place").addEventListener("click", cancelPlacing);
@@ -2165,10 +2924,10 @@
     document.getElementById("zoom-out").addEventListener("click", () => map && map.zoomOut());
 
     document.getElementById("locate-btn").addEventListener("click", () => {
-      if (!map || !navigator.geolocation) return showToast("Kan ikke finde din placering");
+      if (!map || !navigator.geolocation) return showToast(t("map.noLocation"));
       navigator.geolocation.getCurrentPosition(
         (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15),
-        () => showToast("Kan ikke finde din placering")
+        () => showToast(t("map.noLocation"))
       );
     });
 
@@ -2197,6 +2956,7 @@
     function closeSheet() {
       sheetBackdrop.classList.add("hidden");
       benchForm.classList.add("hidden");
+      profileForm.classList.add("hidden");
     }
 
     sheetBackdrop.addEventListener("click", closeSheet);
@@ -2236,7 +2996,7 @@
         photoPreview.classList.remove("hidden");
         photoText.classList.add("hidden");
       } catch {
-        showToast("Billedet kunne ikke indlæses");
+        showToast(t("img.failed"));
       }
     });
 
@@ -2246,11 +3006,11 @@
       const { name, desc } = benchForm.elements;
 
       if (!pendingPhoto) {
-        return setError(benchForm, "Tilføj et billede af bænken");
+        return setError(benchForm, t("bench.errPhoto"));
       }
       if (!name.value.trim()) {
         markInvalid(name);
-        return setError(benchForm, "Giv bænken et navn");
+        return setError(benchForm, t("bench.errName"));
       }
 
       const email = currentUserKey();
@@ -2262,27 +3022,27 @@
         lng: pendingLatLng.lng,
         photo: pendingPhoto,
         addedBy: email,
-        addedByName: user ? user.name : "Ukendt",
+        addedByName: user ? user.name : "?",
         createdAt: Date.now(),
         ratings: formRating ? { [email]: formRating } : {},
       };
 
       const submitBtn = benchForm.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
-      submitBtn.textContent = "Gemmer…";
+      submitBtn.textContent = t("bench.saving");
       try {
         // Giv op efter 15 sekunder, så knappen ikke hænger for evigt
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 15000));
         const doc = await Promise.race([benchesRef.add(bench), timeout]);
         closeSheet();
-        showToast("Bænken er sat på kortet 📍");
+        showToast(t("bench.added"));
         openBench(doc.id);
       } catch (error) {
         console.error(error);
-        setError(benchForm, "Bænken kunne ikke gemmes. Tjek din internetforbindelse.");
+        setError(benchForm, t("bench.errSave"));
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = "Sæt på kortet";
+        submitBtn.textContent = t("bench.save");
       }
     });
 
@@ -2299,7 +3059,7 @@
       const bench = getBenches().find((b) => b.id === currentBenchId);
       const el = document.getElementById("bench-detail");
       if (!bench) {
-        el.innerHTML = '<p class="muted">Bænken findes ikke længere.</p>';
+        el.innerHTML = `<p class="muted">${t("bench.gone")}</p>`;
         return;
       }
 
@@ -2307,25 +3067,25 @@
       const avg = averageRating(bench);
       const count = Object.keys(bench.ratings || {}).length;
       const mine = (bench.ratings || {})[email] || 0;
-      const date = new Date(bench.createdAt).toLocaleDateString("da-DK");
+      const date = formatDate(bench.createdAt);
 
       el.innerHTML = `
-        <img class="bench-photo" src="${bench.photo}" alt="Billede af ${esc(bench.name)}">
+        <img class="bench-photo" src="${bench.photo}" alt="${t("bench.photoAlt", { name: esc(bench.name) })}">
         <h1 class="bench-name">${esc(bench.name)}</h1>
-        <p class="muted">Tilføjet af ${esc(bench.addedByName)} · ${date}</p>
+        <p class="muted">${t("bench.addedBy", { name: esc(bench.addedByName), date })}</p>
         <div class="rating-row">
           <span class="stars">${starsText(avg)}</span>
           <strong>${avg ? avg.toFixed(1) : "-"}</strong>
-          <span class="muted">(${count} ${count === 1 ? "bedømmelse" : "bedømmelser"})</span>
+          <span class="muted">(${count} ${t(count === 1 ? "bench.rating1" : "bench.ratingN")})</span>
         </div>
         ${bench.desc ? `<div class="card"><p>${esc(bench.desc)}</p></div>` : ""}
         <div class="card">
-          <h3>${mine ? "Din bedømmelse" : "Giv bænken stjerner"}</h3>
+          <h3>${t(mine ? "bench.yourRating" : "bench.giveStars")}</h3>
           <div class="star-input" id="bench-stars">${starInputHTML(mine)}</div>
         </div>
         <div class="bench-actions">
-          <button class="btn-plain" id="show-on-map">📍 Vis på kortet</button>
-          ${bench.addedBy === email ? '<button class="btn-secondary" id="delete-bench">Slet bænk</button>' : ""}
+          <button class="btn-plain" id="show-on-map">${t("bench.showOnMap")}</button>
+          ${bench.addedBy === email ? `<button class="btn-secondary" id="delete-bench">${t("bench.delete")}</button>` : ""}
         </div>`;
 
       document.getElementById("bench-stars").addEventListener("click", (e) => {
@@ -2341,13 +3101,13 @@
       const deleteBtn = document.getElementById("delete-bench");
       if (deleteBtn) {
         deleteBtn.addEventListener("click", () => {
-          if (!confirm("Vil du slette denne bænk?")) return;
+          if (!confirm(t("bench.confirmDelete"))) return;
           benchesRef.doc(bench.id).delete()
             .then(() => {
               backView();
-              showToast("Bænken er slettet");
+              showToast(t("bench.deleted"));
             })
-            .catch(() => showToast("Bænken kunne ikke slettes"));
+            .catch(() => showToast(t("bench.deleteFailed")));
         });
       }
     }
@@ -2357,12 +3117,135 @@
       // FieldPath bruges, fordi et smoker name kan indeholde punktummer
       benchesRef.doc(currentBenchId)
         .update(new firebase.firestore.FieldPath("ratings", email), stars)
-        .then(() => showToast(`Du gav ${stars} ${stars === 1 ? "stjerne" : "stjerner"} ⭐`))
-        .catch(() => showToast("Bedømmelsen kunne ikke gemmes"));
+        .then(() => showToast(stars === 1 ? t("bench.rated1") : t("bench.ratedN", { n: stars })))
+        .catch(() => showToast(t("bench.rateFailed")));
     }
 
-    // Hvis man allerede er logget ind, så spring login over
-    if (currentUserKey()) {
+
+    // ==========================================================
+    // PROFIL: profilbillede, bio og statistik
+    // ==========================================================
+    const profileForm = document.getElementById("profile-form");
+    const avatarInput = document.getElementById("avatar-input");
+    const editAvatar = document.getElementById("edit-avatar");
+    const bioCounter = document.getElementById("bio-counter");
+    let pendingAvatar = null;
+
+    // Profilbillede eller forbogstav i en rund ramme
+    function avatarHTML(user, avatar = user.avatar) {
+      return avatar ? `<img src="${avatar}" alt="">` : esc(user.name.charAt(0).toUpperCase());
+    }
+
+    function renderProfile() {
+      const userKey = currentUserKey();
+      const user = getUsers()[userKey];
+      if (!user) return;
+
+      document.getElementById("home-name").textContent = user.name;
+      document.getElementById("avatar").innerHTML = avatarHTML(user);
+      document.getElementById("profile-name").textContent = user.name;
+      document.getElementById("profile-since").textContent = user.createdAt
+        ? t("profile.since", { date: formatDate(user.createdAt) })
+        : "Smoker";
+
+      const bio = document.getElementById("profile-bio");
+      bio.textContent = user.bio || t("profile.noBio");
+      bio.classList.toggle("empty", !user.bio);
+
+      // Antal bænke man har sat på kortet, og antal bænke man har bedømt
+      document.getElementById("stat-benches").textContent =
+        benches.filter((b) => b.addedBy === userKey).length;
+      document.getElementById("stat-ratings").textContent =
+        benches.filter((b) => b.ratings && b.ratings[userKey]).length;
+    }
+
+    // Klip billedet til en firkant og gør det lille
+    function cropSquare(file, size = 320) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const side = Math.min(img.width, img.height);
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          canvas.getContext("2d").drawImage(
+            img,
+            (img.width - side) / 2, (img.height - side) / 2, side, side,
+            0, 0, size, size
+          );
+          URL.revokeObjectURL(img.src);
+          resolve(canvas.toDataURL("image/jpeg", 0.8));
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    function updateAvatarPreview() {
+      const user = getUsers()[currentUserKey()];
+      editAvatar.innerHTML = avatarHTML(user, pendingAvatar);
+      document.getElementById("remove-avatar").classList.toggle("hidden", !pendingAvatar);
+    }
+
+    function updateBioCounter() {
+      bioCounter.textContent = `${profileForm.elements.bio.value.length}/160`;
+    }
+
+    function openProfileSheet() {
+      const user = getUsers()[currentUserKey()];
+      clearErrors(profileForm);
+      pendingAvatar = user.avatar || null;
+      profileForm.elements.bio.value = user.bio || "";
+      avatarInput.value = "";
+      updateAvatarPreview();
+      updateBioCounter();
+      sheetBackdrop.classList.remove("hidden");
+      profileForm.classList.remove("hidden");
+    }
+
+    document.getElementById("edit-profile").addEventListener("click", openProfileSheet);
+    document.getElementById("profile-cancel").addEventListener("click", closeSheet);
+    profileForm.elements.bio.addEventListener("input", updateBioCounter);
+
+    avatarInput.addEventListener("change", async () => {
+      const file = avatarInput.files[0];
+      if (!file) return;
+      try {
+        pendingAvatar = await cropSquare(file);
+        updateAvatarPreview();
+      } catch {
+        showToast(t("img.failed"));
+      }
+    });
+
+    document.getElementById("remove-avatar").addEventListener("click", () => {
+      pendingAvatar = null;
+      avatarInput.value = "";
+      updateAvatarPreview();
+    });
+
+    profileForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const users = getUsers();
+      const user = users[currentUserKey()];
+      user.avatar = pendingAvatar;
+      user.bio = profileForm.elements.bio.value.trim();
+      try {
+        saveUsers(users);
+      } catch {
+        return setError(profileForm, t("profile.noSpace"));
+      }
+      closeSheet();
+      renderProfile();
+      showToast(t("profile.saved"));
+    });
+
+    // ---------- Start ----------
+    // Første gang vælger man sprog. Er man logget ind, springes login over.
+    applyLanguage();
+    if (!lang) {
+      showLangScreen();
+    } else if (currentUserKey()) {
       showApp();
     } else {
       prefillLogin();
