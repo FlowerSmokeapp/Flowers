@@ -29,17 +29,20 @@
        ========================================================== */
     :root {
       color-scheme: dark;
-      --bg: #0c0d0c;            /* mat sort */
-      --card: #161816;          /* kort og felter */
-      --text: #e9ece9;
-      --muted: #858d86;
-      --border: #262a27;
-      --primary: #1f6b3a;       /* mørkegrøn: knapper og flader */
-      --primary-pressed: #18552e;
-      --accent: #5dbb7a;        /* lysere grøn: tekst, links og ikoner */
+      --bg: #0a0b0a;            /* mat sort */
+      --card: #131513;          /* kort og felter */
+      --card-2: #1a1d1a;        /* hævede flader */
+      --text: #f1f3f1;
+      --muted: #8a928b;
+      --border: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.12);
+      --primary: #2f8a4e;       /* mørkegrøn: knapper og flader */
+      --primary-pressed: #26703f;
+      --accent: #6fd08f;        /* lysere grøn: tekst, links og ikoner */
+      --accent-soft: rgba(111, 208, 143, 0.12);
       --error: #ff6159;
-      --tabbar-bg: rgba(14, 15, 14, 0.88);
-      --radius: 14px;
+      --tabbar-bg: rgba(22, 24, 22, 0.78);
+      --radius: 18px;
 
       /* Plads til notch/Dynamic Island og home-linjen.
          På en rigtig iPhone kommer værdierne fra telefonen selv. */
@@ -299,10 +302,12 @@
     }
 
     .field > span {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--muted);
       padding-left: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     /* 16px skriftstørrelse forhindrer at iOS zoomer ind ved fokus */
@@ -313,8 +318,8 @@
       font-size: 16px;
       color: var(--text);
       background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
       padding: 14px 16px;
       outline: none;
       -webkit-appearance: none;
@@ -329,8 +334,8 @@
 
     input:focus,
     textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(93, 187, 122, 0.25);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-soft);
     }
 
     input.invalid,
@@ -374,7 +379,7 @@
     .btn-secondary {
       width: 100%;
       border: none;
-      border-radius: var(--radius);
+      border-radius: 14px;
       padding: 16px;
       font: inherit;
       font-size: 17px;
@@ -384,19 +389,24 @@
     }
 
     .btn-primary {
-      background: var(--primary);
+      background: linear-gradient(180deg, #37a05b, #2a7f47);
       color: #fff;
+      box-shadow: 0 8px 22px rgba(47, 138, 78, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
     }
 
     .btn-primary:active {
-      background: var(--primary-pressed);
       transform: scale(0.98);
+      filter: brightness(0.92);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
     }
 
     .btn-secondary {
       background: var(--card);
       color: var(--error);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-strong);
     }
 
     .btn-secondary:active {
@@ -474,7 +484,7 @@
       max-width: 600px;
       margin: 0 auto;
       /* Plads i bunden så indholdet ikke gemmer sig bag menuen */
-      padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 100px);
+      padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 110px);
       animation: fadeIn 0.2s ease;
     }
 
@@ -483,17 +493,18 @@
     }
 
     .page-title {
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 20px;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 18px;
     }
 
     .card {
       background: var(--card);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 20px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .card h2 {
@@ -510,7 +521,7 @@
       height: 80px;
       margin: 0 auto 12px;
       border-radius: 50%;
-      background: linear-gradient(145deg, #1f6b3a, #0f3a1f);
+      background: linear-gradient(145deg, #2f8a4e, #12401f);
       color: #fff;
       font-size: 34px;
       font-weight: 700;
@@ -522,16 +533,20 @@
     /* Menu i bunden (tab bar) */
     .tabbar {
       position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      left: 12px;
+      right: 12px;
+      bottom: calc(var(--safe-bottom) + 8px);
       z-index: 10;
       display: flex;
-      padding: 6px 4px calc(var(--safe-bottom) + 6px);
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 7px 6px;
+      border: 1px solid var(--border-strong);
+      border-radius: 26px;
       background: var(--tabbar-bg);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
-      border-top: 0.5px solid var(--border);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      backdrop-filter: blur(24px) saturate(160%);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
     }
 
     .tabbar-item {
@@ -545,23 +560,31 @@
       color: var(--muted);
       font: inherit;
       font-size: 10px;
-      font-weight: 500;
-      padding: 4px 0;
+      font-weight: 600;
+      padding: 0;
       cursor: pointer;
     }
 
     .tabbar-item svg {
-      width: 26px;
-      height: 26px;
+      box-sizing: content-box;
+      width: 22px;
+      height: 22px;
+      padding: 5px 16px;
+      border-radius: 999px;
       fill: none;
       stroke: currentColor;
-      stroke-width: 1.8;
+      stroke-width: 1.9;
       stroke-linecap: round;
       stroke-linejoin: round;
+      transition: background 0.2s;
     }
 
     .tabbar-item.active {
       color: var(--accent);
+    }
+
+    .tabbar-item.active svg {
+      background: var(--accent-soft);
     }
 
     .tabbar-item:active svg {
@@ -601,18 +624,19 @@
     .tile {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      align-items: flex-start;
+      justify-content: space-between;
       gap: 12px;
       aspect-ratio: 1;
-      padding: 16px;
+      padding: 18px;
       border: 1px solid var(--border);
       border-radius: 22px;
-      background: var(--card);
+      background: linear-gradient(160deg, var(--card-2), var(--card));
       color: var(--text);
       font: inherit;
+      text-align: left;
       cursor: pointer;
-      transition: transform 0.1s, border-color 0.15s;
+      transition: transform 0.12s, border-color 0.15s;
     }
 
     .tile:active {
@@ -621,20 +645,61 @@
     }
 
     .tile-img {
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(145deg, #1f6b3a, #0f3a1f);
-      font-size: 38px;
-      box-shadow: 0 8px 20px rgba(31, 107, 58, 0.3);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .tile-img svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Game of Joints fylder hele bredden */
+    .tile.wide {
+      grid-column: span 2;
+      aspect-ratio: auto;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+      padding: 20px;
+      border-color: rgba(111, 208, 143, 0.25);
+      background:
+        radial-gradient(circle at 85% 20%, rgba(111, 208, 143, 0.22), transparent 55%),
+        linear-gradient(150deg, #1d3a26, #0f1a12);
+    }
+
+    .tile.wide .tile-img {
+      flex-shrink: 0;
+      width: 60px;
+      height: 60px;
+      background: rgba(111, 208, 143, 0.18);
+    }
+
+    .tile small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
     }
 
     .tile strong {
+      display: block;
       font-size: 17px;
-      text-align: center;
+      font-weight: 700;
+      letter-spacing: -0.2px;
     }
 
     .chevron {
@@ -764,7 +829,7 @@
     .fab {
       position: absolute;
       left: 50%;
-      bottom: calc(var(--safe-bottom) + 78px);
+      bottom: calc(var(--safe-bottom) + 92px);
       transform: translateX(-50%);
       z-index: 5;
       display: flex;
@@ -830,7 +895,7 @@
     }
 
     .leaflet-bottom {
-      bottom: calc(var(--safe-bottom) + 62px);
+      bottom: calc(var(--safe-bottom) + 80px);
     }
 
     /* Knappenål på kortet */
@@ -979,9 +1044,21 @@
       flex-direction: column;
       gap: 12px;
       padding: 20px 20px calc(var(--safe-bottom) + 20px);
-      border-radius: 20px 20px 0 0;
-      background: var(--bg);
+      border-radius: 26px 26px 0 0;
+      border-top: 1px solid var(--border-strong);
+      background: var(--card);
       animation: slideUp 0.3s ease;
+    }
+
+    .sheet::before {
+      content: "";
+      align-self: center;
+      flex-shrink: 0;
+      width: 40px;
+      height: 5px;
+      margin: -8px 0 4px;
+      border-radius: 999px;
+      background: var(--border-strong);
     }
 
     @keyframes slideUp {
@@ -1318,6 +1395,7 @@
       border-radius: var(--radius);
       background: var(--card);
       cursor: pointer;
+      border: 1px solid var(--border);
     }
 
     .person:active {
@@ -1408,8 +1486,8 @@
 
     .badge {
       position: absolute;
-      top: 0;
-      left: calc(50% + 6px);
+      top: -2px;
+      left: calc(50% + 8px);
       min-width: 18px;
       padding: 1px 5px;
       border-radius: 999px;
@@ -1432,6 +1510,7 @@
       margin-bottom: 18px;
       border-radius: var(--radius);
       background: var(--card);
+      border: 1px solid var(--border);
     }
 
     .composer-top {
@@ -1492,6 +1571,7 @@
       padding: 14px;
       border-radius: var(--radius);
       background: var(--card);
+      border: 1px solid var(--border);
     }
 
     .post-head {
@@ -1567,6 +1647,7 @@
       overflow: hidden;
       border-radius: var(--radius);
       background: var(--card);
+      border: 1px solid var(--border);
     }
 
     .diary-photo {
@@ -1610,6 +1691,7 @@
       border-radius: var(--radius);
       background: var(--card);
       font-variant-numeric: tabular-nums;
+      border: 1px solid var(--border);
     }
 
     .progress-card strong {
@@ -1672,7 +1754,7 @@
       gap: 12px;
       width: 100%;
       padding: 12px 14px;
-      border: none;
+      border: 1px solid var(--border);
       border-radius: 12px;
       background: var(--card);
       color: var(--text);
@@ -1732,6 +1814,293 @@
     .type-tag.landrace { color: #ff9a76; }
 
     /* ==========================================================
+       HJEM
+       ========================================================== */
+    .home-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .home-head .page-title {
+      margin: 2px 0 0;
+      overflow-wrap: anywhere;
+    }
+
+    .greeting {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .avatar-md {
+      flex-shrink: 0;
+      width: 52px;
+      height: 52px;
+      margin: 0;
+      font-size: 22px;
+      border: 2px solid var(--border-strong);
+      cursor: pointer;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(111, 208, 143, 0.25);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(111, 208, 143, 0.25), transparent 50%),
+        linear-gradient(150deg, #1d3a26, #0e1610);
+    }
+
+    .hero small {
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .hero h2 {
+      margin: 6px 0 4px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      max-width: 26ch;
+      margin-bottom: 16px;
+      color: rgba(241, 243, 241, 0.75);
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .hero .mini-btn {
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .quick {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .quick:active {
+      background: var(--card-2);
+    }
+
+    .quick .tile-img {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+    }
+
+    .quick .tile-img svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ==========================================================
+       GAME OF JOINTS
+       ========================================================== */
+    .game-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 0 22px;
+      text-align: center;
+    }
+
+    .game-hero .tile-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      margin-bottom: 8px;
+    }
+
+    .game-hero .tile-img svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .game-hero h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+
+    .player-add {
+      display: flex;
+      gap: 8px;
+    }
+
+    .player-add .mini-btn {
+      flex-shrink: 0;
+      padding: 0 18px;
+    }
+
+    #player-form .error:empty {
+      display: none;
+    }
+
+    .player-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 6px;
+    }
+
+    .player-list .empty-note {
+      width: 100%;
+    }
+
+    .player-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 8px 8px 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: var(--card);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .player-chip button {
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 50%;
+      background: var(--card-2);
+      color: var(--muted);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    #game-error {
+      margin-bottom: 8px;
+    }
+
+    .game-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .game-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 14px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .turn {
+      margin: 14px 0 12px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .turn strong {
+      display: block;
+      color: var(--text);
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .game-card {
+      --cat: var(--accent);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 340px;
+      padding: 24px;
+      margin-bottom: 16px;
+      border: 1px solid color-mix(in srgb, var(--cat) 40%, transparent);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--cat) 28%, transparent), transparent 55%),
+        linear-gradient(160deg, var(--card-2), #0d0f0d);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+    }
+
+    .game-card.flip {
+      animation: cardIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: perspective(800px) rotateY(-70deg) scale(0.92); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .game-cat {
+      align-self: flex-start;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--cat) 18%, transparent);
+      color: var(--cat);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .game-text {
+      font-size: 23px;
+      font-weight: 600;
+      line-height: 1.35;
+      letter-spacing: -0.3px;
+    }
+
+    .game-text b {
+      color: var(--cat);
+    }
+
+    .game-brand {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .game-card.flip {
+        animation: none;
+      }
+    }
+
+    /* ==========================================================
        TOAST-BESKED
        ========================================================== */
     .toast {
@@ -1741,7 +2110,10 @@
       z-index: 60;
       transform: translate(-50%, 20px);
       opacity: 0;
-      background: rgba(30, 30, 30, 0.92);
+      background: rgba(30, 34, 30, 0.88);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-strong);
       color: #fff;
       padding: 12px 20px;
       border-radius: 999px;
@@ -1887,20 +2259,24 @@
           <div class="view active" data-view="hb-menu">
             <h1 class="page-title" data-i18n="nav.handbook">Håndbog</h1>
             <div class="tile-grid">
+              <button class="tile wide" data-go="game">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
+                <span><strong>Game of Joints</strong><small data-i18n="game.tagline">Festspillet for dig og vennerne</small></span>
+              </button>
               <button class="tile" data-go="guides">
-                <span class="tile-img" aria-hidden="true">📖</span>
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>
                 <strong>Guides</strong>
               </button>
               <button class="tile" data-go="map">
-                <span class="tile-img" aria-hidden="true">📍</span>
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
                 <strong data-i18n="hb.map">Smoke spots</strong>
               </button>
               <button class="tile" data-go="diary">
-                <span class="tile-img" aria-hidden="true">📓</span>
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
                 <strong data-i18n="hb.diary">Dagbog</strong>
               </button>
               <button class="tile" data-go="checklist">
-                <span class="tile-img" aria-hidden="true">✅</span>
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span>
                 <strong data-i18n="hb.checklist">Tjekliste</strong>
               </button>
             </div>
@@ -1938,6 +2314,43 @@
             </label>
             <div class="chips" id="check-chips"></div>
             <div id="check-list" class="check-list"></div>
+          </div>
+
+          <!-- Game of Joints -->
+          <div class="view" data-view="game">
+            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
+
+            <!-- Vælg spillere -->
+            <div id="game-setup">
+              <div class="game-hero">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
+                <h1>Game of Joints</h1>
+                <p class="muted" data-i18n="game.tagline">Festspillet for dig og vennerne</p>
+              </div>
+              <h2 class="section-title" data-i18n="game.players">Spillere</h2>
+              <form id="player-form" novalidate>
+                <div class="player-add">
+                  <input type="text" name="player" maxlength="16" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+                  <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+                </div>
+                <p class="error" aria-live="polite"></p>
+              </form>
+              <div id="player-list" class="player-list"></div>
+              <p class="error" id="game-error" aria-live="polite"></p>
+              <button type="button" class="btn-primary" id="game-start" data-i18n="game.start">Start spillet</button>
+              <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
+            </div>
+
+            <!-- Selve spillet -->
+            <div id="game-play" class="hidden">
+              <div class="game-top">
+                <span id="game-progress"></span>
+                <button type="button" class="link-btn" id="game-end" data-i18n="game.end">Afslut</button>
+              </div>
+              <p class="turn"><span data-i18n="game.turn">Tur</span> <strong id="game-player"></strong></p>
+              <div class="game-card" id="game-card" role="button" tabindex="0"></div>
+              <button type="button" class="btn-primary" id="game-next"></button>
+            </div>
           </div>
 
           <!-- Smoke spots-kort -->
@@ -1978,10 +2391,27 @@
         </section>
 
         <section class="page" data-page="home">
-          <h1 class="page-title" data-i18n="nav.home">Hjem</h1>
-          <div class="card">
-            <h2><span data-i18n="home.hello">Hej</span>, <span id="home-name"></span> 👋</h2>
-            <p class="muted" data-i18n="home.welcome">Velkommen til MinApp.</p>
+          <header class="home-head">
+            <div>
+              <p class="greeting" id="home-greeting"></p>
+              <h1 class="page-title" id="home-name"></h1>
+            </div>
+            <span class="avatar avatar-md" id="home-avatar" data-shortcut="profile"></span>
+          </header>
+
+          <div class="hero">
+            <small data-i18n="home.heroLabel">Aftenens spil</small>
+            <h2>Game of Joints</h2>
+            <p data-i18n="home.heroText">Saml vennerne, træk et kort og se, hvad aftenen byder på.</p>
+            <button type="button" class="mini-btn primary" data-shortcut="game" data-i18n="home.play">Spil nu</button>
+          </div>
+
+          <h2 class="section-title" data-i18n="home.shortcuts">Genveje</h2>
+          <div class="quick-grid">
+            <button type="button" class="quick" data-shortcut="map"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span data-i18n="hb.map">Smoke spots</span></button>
+            <button type="button" class="quick" data-shortcut="diary"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span><span data-i18n="hb.diary">Dagbog</span></button>
+            <button type="button" class="quick" data-shortcut="checklist"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span><span data-i18n="hb.checklist">Tjekliste</span></button>
+            <button type="button" class="quick" data-shortcut="forum"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></span><span data-i18n="nav.forum">Forum</span></button>
           </div>
         </section>
 
@@ -2238,6 +2668,37 @@
     const I18N = {
       da: {
         "locale": "da-DK",
+        "home.morning": "Godmorgen",
+        "home.afternoon": "God eftermiddag",
+        "home.evening": "God aften",
+        "home.night": "Godnat",
+        "home.heroLabel": "Aftenens spil",
+        "home.heroText": "Saml vennerne, træk et kort og se, hvad aftenen byder på.",
+        "home.play": "Spil nu",
+        "home.shortcuts": "Genveje",
+        "game.tagline": "Festspillet for dig og vennerne",
+        "game.players": "Spillere",
+        "game.addPh": "Navn på spiller",
+        "game.add": "Tilføj",
+        "game.remove": "Fjern spiller",
+        "game.noPlayers": "Tilføj mindst 2 spillere for at starte.",
+        "game.duplicate": "Den spiller er der allerede",
+        "game.max": "Der kan højst være 12 spillere",
+        "game.needPlayers": "I skal være mindst 2 spillere",
+        "game.start": "Start spillet",
+        "game.note": "Alle kan altid sige pas. Husk vand og snacks 💧",
+        "game.end": "Afslut",
+        "game.turn": "Tur",
+        "game.progress": "Kort {n} af {total}",
+        "game.next": "Næste: {name} →",
+        "gcat.hit": "Hit",
+        "gcat.truth": "Sandhed",
+        "gcat.dare": "Udfordring",
+        "gcat.rule": "Ny regel",
+        "gcat.all": "Alle",
+        "gcat.vote": "Afstemning",
+        "gcat.chill": "Chill",
+        "gcat.game": "Minispil",
         "hb.diary": "Dagbog",
         "hb.checklist": "Tjekliste",
         "forum.placeholder": "Hvad sker der?",
@@ -2301,8 +2762,6 @@
         "nav.home": "Hjem",
         "nav.friends": "Venner",
         "nav.profile": "Profil",
-        "home.hello": "Hej",
-        "home.welcome": "Velkommen til MinApp.",
         "hb.map": "Smoke spots",
         "back.handbook": "‹ Håndbog",
         "back.map": "‹ Kort",
@@ -2393,6 +2852,37 @@
       },
       en: {
         "locale": "en-GB",
+        "home.morning": "Good morning",
+        "home.afternoon": "Good afternoon",
+        "home.evening": "Good evening",
+        "home.night": "Good night",
+        "home.heroLabel": "Tonight's game",
+        "home.heroText": "Gather your friends, draw a card and see what the night brings.",
+        "home.play": "Play now",
+        "home.shortcuts": "Shortcuts",
+        "game.tagline": "The party game for you and your friends",
+        "game.players": "Players",
+        "game.addPh": "Player name",
+        "game.add": "Add",
+        "game.remove": "Remove player",
+        "game.noPlayers": "Add at least 2 players to start.",
+        "game.duplicate": "That player is already added",
+        "game.max": "There can be at most 12 players",
+        "game.needPlayers": "You need at least 2 players",
+        "game.start": "Start game",
+        "game.note": "Anyone can always pass. Remember water and snacks 💧",
+        "game.end": "End",
+        "game.turn": "Turn",
+        "game.progress": "Card {n} of {total}",
+        "game.next": "Next: {name} →",
+        "gcat.hit": "Hit",
+        "gcat.truth": "Truth",
+        "gcat.dare": "Dare",
+        "gcat.rule": "New rule",
+        "gcat.all": "Everyone",
+        "gcat.vote": "Vote",
+        "gcat.chill": "Chill",
+        "gcat.game": "Mini game",
         "hb.diary": "Diary",
         "hb.checklist": "Checklist",
         "forum.placeholder": "What's happening?",
@@ -2456,8 +2946,6 @@
         "nav.home": "Home",
         "nav.friends": "Friends",
         "nav.profile": "Profile",
-        "home.hello": "Hey",
-        "home.welcome": "Welcome to MinApp.",
         "hb.map": "Smoke spots",
         "back.handbook": "‹ Handbook",
         "back.map": "‹ Map",
@@ -2588,6 +3076,8 @@
       if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) renderBench();
       renderChecklistChips();
       renderChecklist();
+      renderPlayers();
+      renderGameCard();
       if (currentUserKey()) {
         renderProfile();
         renderFriends();
@@ -3291,6 +3781,8 @@
       if (!uid || !myProfile) return;
 
       document.getElementById("home-name").textContent = myProfile.name;
+      document.getElementById("home-greeting").textContent = t(greetingKey());
+      document.getElementById("home-avatar").innerHTML = avatarHTML(myProfile);
       document.getElementById("avatar").innerHTML = avatarHTML(myProfile);
       document.getElementById("composer-avatar").innerHTML = avatarHTML(myProfile);
       document.getElementById("profile-name").textContent = myProfile.name;
@@ -4133,6 +4625,249 @@
     });
 
     renderChecklistChips();
+
+    // ==========================================================
+    // GAME OF JOINTS: kortspil til hyggeaftener med vennerne
+    // ==========================================================
+    // {p} = spilleren, der har tur   {r} = en tilfældig anden spiller
+    const GAME_CATEGORIES = {
+      hit:   { emoji: "🔥", color: "#ff8a5c" },
+      truth: { emoji: "💬", color: "#7cc4ff" },
+      dare:  { emoji: "🎯", color: "#ff7eb6" },
+      rule:  { emoji: "👑", color: "#ffd166" },
+      all:   { emoji: "🌀", color: "#b59bff" },
+      vote:  { emoji: "🗳️", color: "#6fd08f" },
+      chill: { emoji: "🧘", color: "#5ee0d0" },
+      game:  { emoji: "🎲", color: "#ffb347" },
+    };
+
+    const GAME_CARDS = [
+      // Hit
+      { cat: "hit", da: "Vandfald! {p} starter, og alle tager et hit på skift. Ingen må tale, før den er tilbage hos {p}.", en: "Waterfall! {p} starts and everyone takes a hit in turn. No talking until it's back with {p}." },
+      { cat: "hit", da: "{p} bestemmer, hvem der får næste hit.", en: "{p} decides who gets the next hit." },
+      { cat: "hit", da: "Spring over! {p} sender videre uden at tage et hit.", en: "Skip! {p} passes it on without taking a hit." },
+      { cat: "hit", da: "Retningen skifter! Fra nu af går den den anden vej rundt.", en: "Reverse! From now on it goes the other way round." },
+      { cat: "hit", da: "Den yngste i rummet får næste hit.", en: "The youngest person in the room gets the next hit." },
+      { cat: "hit", da: "{p} fortæller en joke. Griner nogen, får {p} næste hit. Ellers går den til {r}.", en: "{p} tells a joke. If anyone laughs, {p} gets the next hit. If not, it goes to {r}." },
+      { cat: "hit", da: "{p} og {r} deler næste runde, men skal holde øjenkontakt hele tiden.", en: "{p} and {r} share the next round, but must keep eye contact the whole time." },
+      { cat: "hit", da: "Den med de største sokker tager næste hit.", en: "Whoever has the biggest socks takes the next hit." },
+
+      // Sandhed
+      { cat: "truth", da: "{p}: Hvad er det sjoveste, du har lavet, mens du var skæv?", en: "{p}: What's the funniest thing you've done while high?" },
+      { cat: "truth", da: "{p}: Hvilken snack ville du tage med på en øde ø?", en: "{p}: Which snack would you bring to a desert island?" },
+      { cat: "truth", da: "{p}: Hvad er din mest skøre teori om universet?", en: "{p}: What's your wildest theory about the universe?" },
+      { cat: "truth", da: "{p}: Hvem i rummet ville overleve længst i en zombieapokalypse?", en: "{p}: Who in this room would survive the longest in a zombie apocalypse?" },
+      { cat: "truth", da: "{p}: Hvad er det mest pinlige, du har googlet?", en: "{p}: What's the most embarrassing thing you've ever googled?" },
+      { cat: "truth", da: "{p}: Hvad var dit første indtryk af {r}?", en: "{p}: What was your first impression of {r}?" },
+      { cat: "truth", da: "{p}: Hvis du kunne have én superkraft resten af aftenen, hvad skulle det være?", en: "{p}: If you could have one superpower for the rest of the night, what would it be?" },
+      { cat: "truth", da: "{p}: Hvad er den bedste idé, du har fået sent om natten?", en: "{p}: What's the best idea you've ever had late at night?" },
+      { cat: "truth", da: "{p}: Hvilken sang får dig altid i godt humør?", en: "{p}: Which song always puts you in a good mood?" },
+
+      // Udfordring
+      { cat: "dare", da: "{p} taler som en nyhedsoplæser indtil sin næste tur.", en: "{p} talks like a news anchor until their next turn." },
+      { cat: "dare", da: "{p} laver sin bedste dyrelyd. De andre gætter dyret.", en: "{p} does their best animal sound. The others guess the animal." },
+      { cat: "dare", da: "{p} og {r} bytter plads.", en: "{p} and {r} swap seats." },
+      { cat: "dare", da: "{p} beskriver sin dag som en dramatisk filmtrailer.", en: "{p} describes their day as a dramatic movie trailer." },
+      { cat: "dare", da: "{p} viser det sidste meme, der fik dem til at grine.", en: "{p} shows the last meme that made them laugh." },
+      { cat: "dare", da: "{p} giver {r} et kompliment uden at grine.", en: "{p} gives {r} a compliment without laughing." },
+      { cat: "dare", da: "{p} laver 10 squats, mens alle tæller højt.", en: "{p} does 10 squats while everyone counts out loud." },
+      { cat: "dare", da: "{p} synger omkvædet fra en sang, som {r} vælger.", en: "{p} sings the chorus of a song that {r} picks." },
+      { cat: "dare", da: "{p} må kun svare med spørgsmål indtil sin næste tur.", en: "{p} can only answer with questions until their next turn." },
+
+      // Ny regel
+      { cat: "rule", da: "Alle skal sige \"skål\" med fransk accent, før de tager et hit.", en: "Everyone must say \"cheers\" in a French accent before taking a hit." },
+      { cat: "rule", da: "{p} er konge. Man skal bukke, før man taler til {p}.", en: "{p} is royalty. You must bow before speaking to {p}." },
+      { cat: "rule", da: "Ingen må pege. Den, der gør, laver 5 armbøjninger.", en: "No pointing. Whoever does it does 5 push-ups." },
+      { cat: "rule", da: "Man skal klappe to gange, før man tager et hit.", en: "You have to clap twice before taking a hit." },
+      { cat: "rule", da: "Ingen navne! Alle skal kaldes \"makker\".", en: "No names! Everyone must be called \"buddy\"." },
+      { cat: "rule", da: "Tommelfinger-mester: Når {p} lægger tommelfingeren på bordet, skal alle gøre det samme. Den sidste tager et hit.", en: "Thumb master: when {p} puts a thumb on the table, everyone must do the same. The last one takes a hit." },
+
+      // Alle
+      { cat: "all", da: "Alle, der har sneakers på, tager et hit.", en: "Everyone wearing sneakers takes a hit." },
+      { cat: "all", da: "Historie-runde: Alle siger ét ord på skift og bygger en historie. Den, der går i stå, tager et hit.", en: "Story time: everyone says one word in turn to build a story. Whoever gets stuck takes a hit." },
+      { cat: "all", da: "Alle, der har været ude at rejse i år, tager et hit.", en: "Everyone who has travelled abroad this year takes a hit." },
+      { cat: "all", da: "Skål for {p}! Alle siger én ting, de godt kan lide ved {p}.", en: "A toast to {p}! Everyone says one thing they like about {p}." },
+      { cat: "all", da: "Den sidste, der rører sin næse, fortæller en hemmelighed.", en: "The last person to touch their nose tells a secret." },
+      { cat: "all", da: "Alle, der har et kæledyr, tager et hit og viser et billede af det.", en: "Everyone with a pet takes a hit and shows a photo of it." },
+
+      // Afstemning
+      { cat: "vote", da: "Hvem ville spise en hel pose chips alene? Vinderen vælger næste sang.", en: "Who would eat a whole bag of crisps alone? The winner picks the next song." },
+      { cat: "vote", da: "Hvem ville være den bedste præsident? Vinderen holder en kort tale.", en: "Who would make the best president? The winner gives a short speech." },
+      { cat: "vote", da: "Hvem har det mest smittende grin? Vinderen tager næste hit.", en: "Who has the most contagious laugh? The winner takes the next hit." },
+      { cat: "vote", da: "Hvem ville fare vild i sin egen opgang? Vinderen får næste hit.", en: "Who would get lost in their own building? The winner gets the next hit." },
+      { cat: "vote", da: "Hvem har den bedste stil i aften? Vinderen bestemmer, hvem der trækker næste kort.", en: "Who has the best style tonight? The winner decides who draws the next card." },
+
+      // Chill
+      { cat: "chill", da: "Vandpause! Alle drikker et glas vand, før spillet fortsætter. 💧", en: "Water break! Everyone drinks a glass of water before the game continues. 💧" },
+      { cat: "chill", da: "Snackpause! {p} henter snacks til bordet. 🍕", en: "Snack break! {p} brings snacks to the table. 🍕" },
+      { cat: "chill", da: "DJ-tid: {p} vælger næste sang.", en: "DJ time: {p} picks the next song." },
+      { cat: "chill", da: "Alle tager en dyb indånding og strækker sig. Ahh.", en: "Everyone takes a deep breath and stretches. Ahh." },
+      { cat: "chill", da: "Frisk luft: Åbn et vindue, og fortæl hinanden én god ting ved dagen.", en: "Fresh air: open a window and tell each other one good thing about today." },
+
+      // Minispil
+      { cat: "game", da: "Kategorier: {p} vælger en kategori, fx snacks. Gå på skift. Den, der ikke kan komme på noget, tager et hit.", en: "Categories: {p} picks a category, e.g. snacks. Take turns. Whoever can't think of one takes a hit." },
+      { cat: "game", da: "Rim-runde: {p} siger et ord, og alle skal rime på det. Den første, der går i stå, tager et hit.", en: "Rhyme time: {p} says a word and everyone must rhyme with it. The first to get stuck takes a hit." },
+      { cat: "game", da: "Jeg har aldrig: {p} siger noget, de aldrig har gjort. Alle, der har, tager et hit.", en: "Never have I ever: {p} says something they've never done. Everyone who has takes a hit." },
+      { cat: "game", da: "Stirrekonkurrence mellem {p} og {r}. Taberen tager et hit.", en: "Staring contest between {p} and {r}. The loser takes a hit." },
+      { cat: "game", da: "Sten, saks, papir: {p} mod {r}. Taberen tager et hit.", en: "Rock, paper, scissors: {p} vs {r}. The loser takes a hit." },
+      { cat: "game", da: "Gæt sangen: {p} nynner en sang. Den, der gætter først, bestemmer, hvem der trækker næste kort.", en: "Name that tune: {p} hums a song. Whoever guesses first decides who draws the next card." },
+      { cat: "game", da: "Ordkæde: {p} siger et ord. Den næste siger et ord, der starter med sidste bogstav. Den, der fejler, tager et hit.", en: "Word chain: {p} says a word. The next person says a word starting with its last letter. Whoever fails takes a hit." },
+      { cat: "game", da: "Hvem er jeg? {r} tænker på en kendt person. {p} har 10 ja/nej-spørgsmål til at gætte.", en: "Who am I? {r} thinks of a famous person. {p} has 10 yes/no questions to guess." },
+    ];
+
+    const PLAYERS_KEY = "gamePlayers";
+    const gameSetup = document.getElementById("game-setup");
+    const gamePlay = document.getElementById("game-play");
+    const gameCard = document.getElementById("game-card");
+    const playerForm = document.getElementById("player-form");
+    let players = [];
+    let deck = [];
+    let deckIndex = 0;
+    let turn = -1;
+    let currentCard = null;   // { card, player, other }
+
+    try {
+      players = JSON.parse(localStorage.getItem(PLAYERS_KEY)) || [];
+    } catch {
+      players = [];
+    }
+
+    function savePlayers() {
+      try {
+        localStorage.setItem(PLAYERS_KEY, JSON.stringify(players));
+      } catch {
+        // Spillet virker også uden at huske spillerne
+      }
+    }
+
+    function shuffle(list) {
+      const copy = [...list];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function renderPlayers() {
+      document.getElementById("player-list").innerHTML = players.length
+        ? players.map((name, i) => `
+            <span class="player-chip">
+              ${esc(name)}
+              <button type="button" data-remove-player="${i}" aria-label="${t("game.remove")}">✕</button>
+            </span>`).join("")
+        : `<p class="empty-note">${t("game.noPlayers")}</p>`;
+    }
+
+    playerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearErrors(playerForm);
+      const input = playerForm.elements.player;
+      const name = input.value.trim();
+      if (!name) return;
+      if (players.some((p) => p.toLowerCase() === name.toLowerCase())) {
+        return setError(playerForm, t("game.duplicate"));
+      }
+      if (players.length >= 12) return setError(playerForm, t("game.max"));
+      players.push(name);
+      savePlayers();
+      input.value = "";
+      renderPlayers();
+    });
+
+    document.getElementById("player-list").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-remove-player]");
+      if (!btn) return;
+      players.splice(Number(btn.dataset.removePlayer), 1);
+      savePlayers();
+      renderPlayers();
+    });
+
+    function renderGameCard() {
+      if (!currentCard) return;
+      const { card, player, other } = currentCard;
+      const category = GAME_CATEGORIES[card.cat];
+      const text = esc(lang === "en" ? card.en : card.da)
+        .replaceAll("{p}", `<b>${esc(player)}</b>`)
+        .replaceAll("{r}", `<b>${esc(other)}</b>`);
+
+      gameCard.style.setProperty("--cat", category.color);
+      gameCard.innerHTML = `
+        <span class="game-cat">${category.emoji} ${t("gcat." + card.cat)}</span>
+        <p class="game-text">${text}</p>
+        <span class="game-brand">Game of Joints</span>`;
+      document.getElementById("game-player").textContent = player;
+      document.getElementById("game-progress").textContent =
+        t("game.progress", { n: deckIndex, total: deck.length });
+      document.getElementById("game-next").textContent =
+        t("game.next", { name: players[(turn + 1) % players.length] });
+    }
+
+    function drawCard() {
+      if (deckIndex >= deck.length) {
+        deck = shuffle(GAME_CARDS);
+        deckIndex = 0;
+      }
+      turn = (turn + 1) % players.length;
+      const player = players[turn];
+      const others = players.filter((_, i) => i !== turn);
+      const other = others[Math.floor(Math.random() * others.length)];
+      currentCard = { card: deck[deckIndex++], player, other };
+      renderGameCard();
+
+      // Vend kortet med en lille animation
+      gameCard.classList.remove("flip");
+      void gameCard.offsetWidth;
+      gameCard.classList.add("flip");
+    }
+
+    document.getElementById("game-start").addEventListener("click", () => {
+      const error = document.getElementById("game-error");
+      if (players.length < 2) {
+        error.textContent = t("game.needPlayers");
+        return;
+      }
+      error.textContent = "";
+      deck = shuffle(GAME_CARDS);
+      deckIndex = 0;
+      turn = -1;
+      gameSetup.classList.add("hidden");
+      gamePlay.classList.remove("hidden");
+      drawCard();
+      scrollToTop();
+    });
+
+    document.getElementById("game-next").addEventListener("click", drawCard);
+    gameCard.addEventListener("click", drawCard);
+
+    document.getElementById("game-end").addEventListener("click", () => {
+      currentCard = null;
+      gamePlay.classList.add("hidden");
+      gameSetup.classList.remove("hidden");
+      renderPlayers();
+      scrollToTop();
+    });
+
+    renderPlayers();
+
+    // ---------- Genveje på hjemmeskærmen ----------
+    function greetingKey() {
+      const hour = new Date().getHours();
+      if (hour < 5) return "home.night";
+      if (hour < 12) return "home.morning";
+      if (hour < 18) return "home.afternoon";
+      return "home.evening";
+    }
+
+    document.querySelector('[data-page="home"]').addEventListener("click", (e) => {
+      const shortcut = e.target.closest("[data-shortcut]");
+      if (!shortcut) return;
+      const target = shortcut.dataset.shortcut;
+      if (target === "forum" || target === "profile") return showPage(target);
+      showPage("handbook");
+      viewStack = ["hb-menu"];
+      goView(target);
+    });
 
     // ---------- Start ----------
     // Første gang vælger man sprog. Er man logget ind, springes login over.
