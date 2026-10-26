@@ -1892,11 +1892,40 @@
       display: none;
     }
 
+    /* Farvevælger */
+    .color-pick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .swatch {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--bg);
+      border-radius: 50%;
+      background: var(--c);
+      box-shadow: 0 0 0 1px var(--border-strong);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .swatch.active {
+      box-shadow: 0 0 0 2px var(--text);
+      transform: scale(1.1);
+    }
+
+    .swatch:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+    }
+
     .player-list {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 14px 0 6px;
+      margin: 16px 0 6px;
     }
 
     .player-list .empty-note {
@@ -1906,8 +1935,8 @@
     .player-chip {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 8px 8px 14px;
+      gap: 8px;
+      padding: 7px 7px 7px 10px;
       border: 1px solid var(--border-strong);
       border-radius: 999px;
       background: var(--card);
@@ -1926,6 +1955,18 @@
       cursor: pointer;
     }
 
+    /* Brik i spillerens farve */
+    .token {
+      display: inline-block;
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(0, 0, 0, 0.55);
+      border-radius: 50%;
+      background: var(--c);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
     #game-error {
       margin-bottom: 8px;
     }
@@ -1941,85 +1982,282 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      color: var(--muted);
-      font-size: 14px;
-      font-variant-numeric: tabular-nums;
+      margin-bottom: 10px;
     }
 
-    .turn {
-      margin: 14px 0 12px;
-      font-size: 15px;
-      color: var(--muted);
-    }
-
-    .turn strong {
-      display: block;
-      color: var(--text);
-      font-size: 26px;
+    .game-top h1 {
+      font-size: 22px;
       font-weight: 800;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.4px;
     }
 
-    .game-card {
-      --cat: var(--accent);
+    /* Brættet: 6 kolonner, felterne snor sig frem og tilbage */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      padding: 8px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+    }
+
+    .cell {
+      position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-      min-height: 340px;
-      padding: 24px;
-      margin-bottom: 16px;
-      border: 1px solid color-mix(in srgb, var(--cat) 40%, transparent);
-      border-radius: 28px;
-      background:
-        radial-gradient(circle at 80% 0%, color-mix(in srgb, var(--cat) 28%, transparent), transparent 55%),
-        linear-gradient(160deg, var(--card-2), #0d0f0d);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
-      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      aspect-ratio: 1;
+      min-width: 0;
+      padding: 2px;
+      border-radius: 10px;
+      background: var(--card-2);
+      text-align: center;
     }
 
-    .game-card.flip {
-      animation: cardIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    .cell-icon {
+      font-size: 17px;
+      line-height: 1;
     }
 
-    @keyframes cardIn {
-      from { opacity: 0; transform: perspective(800px) rotateY(-70deg) scale(0.92); }
-      to   { opacity: 1; transform: none; }
+    .cell.is-puffs .cell-icon {
+      color: var(--accent);
+      font-size: 18px;
+      font-weight: 800;
     }
 
-    .game-cat {
-      align-self: flex-start;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--cat) 18%, transparent);
-      color: var(--cat);
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-
-    .game-text {
-      font-size: 23px;
+    .cell-lbl {
+      max-width: 100%;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 8.5px;
       font-weight: 600;
-      line-height: 1.35;
-      letter-spacing: -0.3px;
+      line-height: 1.1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    .game-text b {
-      color: var(--cat);
+    .cell.is-start,
+    .cell.is-goal {
+      background: var(--primary);
     }
 
-    .game-brand {
+    .cell.is-start .cell-lbl,
+    .cell.is-goal .cell-lbl {
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .cell.is-back {
+      background: rgba(255, 92, 92, 0.16);
+    }
+
+    .cell.is-wheel {
+      background: rgba(255, 209, 102, 0.16);
+    }
+
+    .tokens {
+      position: absolute;
+      inset: auto 2px 2px 2px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1px;
+    }
+
+    .tokens .token {
+      width: 12px;
+      height: 12px;
+    }
+
+    .token.current {
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      50% { transform: scale(1.25); }
+    }
+
+    /* Tur og terning */
+    .turn-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+    }
+
+    .turn-bar .token {
+      width: 22px;
+      height: 22px;
+    }
+
+    .turn-name {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .turn-bar small {
+      display: block;
       color: var(--muted);
       font-size: 12px;
+    }
+
+    .turn-bar strong {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .die {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      flex-shrink: 0;
+      width: 54px;
+      height: 54px;
+      padding: 9px;
+      border-radius: 14px;
+      background: #f6f7f6;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .pip {
+      border-radius: 50%;
+    }
+
+    .pip.on {
+      background: #111;
+    }
+
+    .die.red {
+      width: 72px;
+      height: 72px;
+      margin: 4px auto 14px;
+      padding: 12px;
+      background: #ff5c5c;
+    }
+
+    .die.red .pip.on {
+      background: #fff;
+    }
+
+    .die.rolling {
+      animation: shake 0.15s linear infinite;
+    }
+
+    @keyframes shake {
+      25% { transform: rotate(-12deg) translateY(-3px); }
+      75% { transform: rotate(12deg) translateY(2px); }
+    }
+
+    .danger-btn {
+      background: linear-gradient(180deg, #ff6b6b, #e04848);
+      box-shadow: 0 8px 22px rgba(255, 92, 92, 0.3);
+    }
+
+    /* Bundark med feltets straf */
+    .game-sheet {
+      align-items: stretch;
+      text-align: center;
+    }
+
+    #tile-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tile-hero {
+      font-size: 56px;
+      line-height: 1.1;
+    }
+
+    .tile-who {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
       font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
+    }
+
+    #tile-body h2 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+
+    .tile-desc {
+      margin-bottom: 6px;
+      color: rgba(241, 243, 241, 0.8);
+      font-size: 17px;
+      line-height: 1.4;
+    }
+
+    /* Lykkehjulet */
+    .wheel-wrap {
+      position: relative;
+      width: 210px;
+      height: 210px;
+      margin: 8px auto 4px;
+    }
+
+    .wheel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border: 4px solid var(--card-2);
+      border-radius: 50%;
+      background: conic-gradient(
+        #ff5c5c 0 45deg, #ffb020 0 90deg, #ffe14d 0 135deg, #5fd47a 0 180deg,
+        #4dc3ff 0 225deg, #8b7bff 0 270deg, #ff6fd8 0 315deg, #2f8a4e 0 360deg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 1);
+    }
+
+    .wheel-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      margin: -15px 0 0 -15px;
+      font-size: 22px;
+      line-height: 30px;
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      z-index: 1;
+      transform: translateX(-50%);
+      border: 12px solid transparent;
+      border-top: 20px solid var(--text);
+      border-bottom: 0;
+    }
+
+    .wheel-result {
+      min-height: 24px;
+      font-size: 18px;
+      font-weight: 700;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .game-card.flip {
+      .wheel {
+        transition-duration: 0.3s;
+      }
+
+      .token.current,
+      .die.rolling {
         animation: none;
       }
     }
@@ -2171,7 +2409,7 @@
             <div class="tile-grid">
               <button class="tile wide" data-go="game">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
-                <span><strong>Game of Joints</strong><small data-i18n="game.tagline">Festspillet for dig og vennerne</small></span>
+                <span><strong>Game of Joints</strong><small data-i18n="game.tagline">Brætspillet for dig og vennerne</small></span>
               </button>
               <button class="tile" data-go="guides">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>
@@ -2230,12 +2468,12 @@
           <div class="view" data-view="game">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
 
-            <!-- Vælg spillere -->
+            <!-- Vælg spillere og farver -->
             <div id="game-setup">
               <div class="game-hero">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
                 <h1>Game of Joints</h1>
-                <p class="muted" data-i18n="game.tagline">Festspillet for dig og vennerne</p>
+                <p class="muted" data-i18n="game.tagline">Brætspillet for dig og vennerne</p>
               </div>
               <h2 class="section-title" data-i18n="game.players">Spillere</h2>
               <form id="player-form" novalidate>
@@ -2243,6 +2481,7 @@
                   <input type="text" name="player" maxlength="16" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
                   <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
                 </div>
+                <div class="color-pick" id="color-pick" role="group"></div>
                 <p class="error" aria-live="polite"></p>
               </form>
               <div id="player-list" class="player-list"></div>
@@ -2251,15 +2490,22 @@
               <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
             </div>
 
-            <!-- Selve spillet -->
+            <!-- Brættet -->
             <div id="game-play" class="hidden">
               <div class="game-top">
-                <span id="game-progress"></span>
+                <h1>Game of Joints</h1>
                 <button type="button" class="link-btn" id="game-end" data-i18n="game.end">Afslut</button>
               </div>
-              <p class="turn"><span data-i18n="game.turn">Tur</span> <strong id="game-player"></strong></p>
-              <div class="game-card" id="game-card" role="button" tabindex="0"></div>
-              <button type="button" class="btn-primary" id="game-next"></button>
+              <div class="board" id="board"></div>
+              <div class="turn-bar">
+                <span class="token" id="turn-dot"></span>
+                <div class="turn-name">
+                  <small data-i18n="game.turn">Tur</small>
+                  <strong id="game-player"></strong>
+                </div>
+                <div class="die" id="die" role="img"></div>
+              </div>
+              <button type="button" class="btn-primary" id="roll-btn"></button>
             </div>
           </div>
 
@@ -2312,7 +2558,7 @@
           <div class="hero">
             <small data-i18n="home.heroLabel">Aftenens spil</small>
             <h2>Game of Joints</h2>
-            <p data-i18n="home.heroText">Saml vennerne, træk et kort og se, hvad aftenen byder på.</p>
+            <p data-i18n="home.heroText">Saml vennerne, slå med terningen og se, hvor du lander.</p>
             <button type="button" class="mini-btn primary" data-shortcut="game" data-i18n="home.play">Spil nu</button>
           </div>
 
@@ -2456,6 +2702,11 @@
       </div>
     </form>
 
+    <!-- Bundark: feltet i Game of Joints -->
+    <div id="tile-sheet" class="sheet game-sheet hidden" role="dialog">
+      <div id="tile-body"></div>
+    </div>
+
     <!-- Bundark: rediger profil -->
     <form id="profile-form" class="sheet hidden" novalidate>
       <h2 data-i18n="profile.edit">Rediger profil</h2>
@@ -2578,6 +2829,31 @@
     const I18N = {
       da: {
         "locale": "da-DK",
+        "home.heroText": "Saml vennerne, slå med terningen og se, hvor du lander.",
+        "game.tagline": "Brætspillet for dig og vennerne",
+        "game.players": "Spillere",
+        "game.addPh": "Navn på spiller",
+        "game.add": "Tilføj",
+        "game.remove": "Fjern spiller",
+        "game.noPlayers": "Skriv et navn, vælg en farve og tryk Tilføj. I skal være mindst 2.",
+        "game.duplicate": "Den spiller er der allerede",
+        "game.max": "Alle farver er taget",
+        "game.needPlayers": "I skal være mindst 2 spillere",
+        "game.start": "Start spillet",
+        "game.note": "Alle kan altid sige pas. Husk vand og snacks 💧",
+        "game.end": "Afslut",
+        "game.turn": "Tur",
+        "game.roll": "🎲 Slå med terningen",
+        "game.continue": "Videre",
+        "game.rollBack": "Slå med den røde terning",
+        "game.moveBack": "Ryk {n} felter tilbage",
+        "game.backToStart": "Tilbage til start!",
+        "game.spin": "Drej hjulet",
+        "game.won": "{name} vandt!",
+        "game.wonText": "Første spiller i mål. Godt spillet!",
+        "game.playAgain": "Spil igen",
+        "game.startTile": "START",
+        "game.goalTile": "MÅL",
         "forum.newTitle": "Nyt opslag",
         "forum.note": "Opslag fra dig og dine venner",
         "home.morning": "Godmorgen",
@@ -2585,32 +2861,8 @@
         "home.evening": "God aften",
         "home.night": "Godnat",
         "home.heroLabel": "Aftenens spil",
-        "home.heroText": "Saml vennerne, træk et kort og se, hvad aftenen byder på.",
         "home.play": "Spil nu",
         "home.shortcuts": "Genveje",
-        "game.tagline": "Festspillet for dig og vennerne",
-        "game.players": "Spillere",
-        "game.addPh": "Navn på spiller",
-        "game.add": "Tilføj",
-        "game.remove": "Fjern spiller",
-        "game.noPlayers": "Tilføj mindst 2 spillere for at starte.",
-        "game.duplicate": "Den spiller er der allerede",
-        "game.max": "Der kan højst være 12 spillere",
-        "game.needPlayers": "I skal være mindst 2 spillere",
-        "game.start": "Start spillet",
-        "game.note": "Alle kan altid sige pas. Husk vand og snacks 💧",
-        "game.end": "Afslut",
-        "game.turn": "Tur",
-        "game.progress": "Kort {n} af {total}",
-        "game.next": "Næste: {name} →",
-        "gcat.hit": "Hit",
-        "gcat.truth": "Sandhed",
-        "gcat.dare": "Udfordring",
-        "gcat.rule": "Ny regel",
-        "gcat.all": "Alle",
-        "gcat.vote": "Afstemning",
-        "gcat.chill": "Chill",
-        "gcat.game": "Minispil",
         "hb.diary": "Joint Log",
         "hb.checklist": "Tjekliste",
         "forum.share": "Del",
@@ -2762,6 +3014,31 @@
       },
       en: {
         "locale": "en-GB",
+        "home.heroText": "Gather your friends, roll the die and see where you land.",
+        "game.tagline": "The board game for you and your friends",
+        "game.players": "Players",
+        "game.addPh": "Player name",
+        "game.add": "Add",
+        "game.remove": "Remove player",
+        "game.noPlayers": "Type a name, pick a colour and tap Add. You need at least 2 players.",
+        "game.duplicate": "That player is already added",
+        "game.max": "All colours are taken",
+        "game.needPlayers": "You need at least 2 players",
+        "game.start": "Start game",
+        "game.note": "Anyone can always pass. Remember water and snacks 💧",
+        "game.end": "End",
+        "game.turn": "Turn",
+        "game.roll": "🎲 Roll the die",
+        "game.continue": "Continue",
+        "game.rollBack": "Roll the red die",
+        "game.moveBack": "Move back {n} spaces",
+        "game.backToStart": "Back to start!",
+        "game.spin": "Spin the wheel",
+        "game.won": "{name} wins!",
+        "game.wonText": "First player to the finish. Well played!",
+        "game.playAgain": "Play again",
+        "game.startTile": "START",
+        "game.goalTile": "FINISH",
         "forum.newTitle": "New post",
         "forum.note": "Posts from you and your friends",
         "home.morning": "Good morning",
@@ -2769,32 +3046,8 @@
         "home.evening": "Good evening",
         "home.night": "Good night",
         "home.heroLabel": "Tonight's game",
-        "home.heroText": "Gather your friends, draw a card and see what the night brings.",
         "home.play": "Play now",
         "home.shortcuts": "Shortcuts",
-        "game.tagline": "The party game for you and your friends",
-        "game.players": "Players",
-        "game.addPh": "Player name",
-        "game.add": "Add",
-        "game.remove": "Remove player",
-        "game.noPlayers": "Add at least 2 players to start.",
-        "game.duplicate": "That player is already added",
-        "game.max": "There can be at most 12 players",
-        "game.needPlayers": "You need at least 2 players",
-        "game.start": "Start game",
-        "game.note": "Anyone can always pass. Remember water and snacks 💧",
-        "game.end": "End",
-        "game.turn": "Turn",
-        "game.progress": "Card {n} of {total}",
-        "game.next": "Next: {name} →",
-        "gcat.hit": "Hit",
-        "gcat.truth": "Truth",
-        "gcat.dare": "Dare",
-        "gcat.rule": "New rule",
-        "gcat.all": "Everyone",
-        "gcat.vote": "Vote",
-        "gcat.chill": "Chill",
-        "gcat.game": "Mini game",
         "hb.diary": "Joint Log",
         "hb.checklist": "Checklist",
         "forum.share": "Post",
@@ -2987,7 +3240,7 @@
       renderChecklistChips();
       renderChecklist();
       renderPlayers();
-      renderGameCard();
+      renderGame();
       if (currentUserKey()) {
         renderProfile();
         renderFriends();
@@ -3508,7 +3761,9 @@
       diaryForm.classList.add("hidden");
     }
 
-    sheetBackdrop.addEventListener("click", closeSheet);
+    sheetBackdrop.addEventListener("click", () => {
+      if (document.getElementById("tile-sheet").classList.contains("hidden")) closeSheet();
+    });
     document.getElementById("sheet-cancel").addEventListener("click", closeSheet);
 
     formStars.addEventListener("click", (e) => {
@@ -4504,107 +4759,97 @@
     renderChecklistChips();
 
     // ==========================================================
-    // GAME OF JOINTS: kortspil til hyggeaftener med vennerne
+    // GAME OF JOINTS: brætspil som Ludo
     // ==========================================================
-    // {p} = spilleren, der har tur   {r} = en tilfældig anden spiller
-    const GAME_CATEGORIES = {
-      hit:   { emoji: "🔥", color: "#ff8a5c" },
-      truth: { emoji: "💬", color: "#7cc4ff" },
-      dare:  { emoji: "🎯", color: "#ff7eb6" },
-      rule:  { emoji: "👑", color: "#ffd166" },
-      all:   { emoji: "🌀", color: "#b59bff" },
-      vote:  { emoji: "🗳️", color: "#6fd08f" },
-      chill: { emoji: "🧘", color: "#5ee0d0" },
-      game:  { emoji: "🎲", color: "#ffb347" },
+    // Man slår med terningen, rykker frem og laver det, der står på feltet.
+    // Den første spiller i mål vinder.
+    const TILES = {
+      s1: { icon: "1", da: { name: "1 sug", short: "sug" }, en: { name: "1 puff", short: "puff" } },
+      s2: { icon: "2", da: { name: "2 sug", short: "sug" }, en: { name: "2 puffs", short: "puffs" } },
+      s3: { icon: "3", da: { name: "3 sug", short: "sug" }, en: { name: "3 puffs", short: "puffs" } },
+      s4: { icon: "4", da: { name: "4 sug", short: "sug" }, en: { name: "4 puffs", short: "puffs" } },
+      s5: { icon: "5", da: { name: "5 sug", short: "sug" }, en: { name: "5 puffs", short: "puffs" } },
+      turtle: {
+        icon: "🐢",
+        da: { name: "Skildpadde", short: "Skildpadde", desc: "Tag et rigtig langt sug, mindst 5 sekunder." },
+        en: { name: "Turtle", short: "Turtle", desc: "Take a really long puff, at least 5 seconds." },
+      },
+      tornado: {
+        icon: "🌪️",
+        da: { name: "Tornado", short: "Tornado", desc: "Tag 3×3 sug og drej rundt om dig selv 10 gange. Prøv at holde det inde!" },
+        en: { name: "Tornado", short: "Tornado", desc: "Take 3×3 puffs and spin around 10 times. Try to hold it in!" },
+      },
+      x510: { icon: "⏱️", da: { name: "5×10 sek", short: "5×10 sek" }, en: { name: "5×10 sec", short: "5×10 sec" } },
+      bobLong: { icon: "🇯🇲", da: { name: "Lang Bob Marley", short: "Lang Bob" }, en: { name: "Long Bob Marley", short: "Long Bob" } },
+      bobShort: { icon: "🇯🇲", da: { name: "Kort Bob Marley", short: "Kort Bob" }, en: { name: "Short Bob Marley", short: "Short Bob" } },
+      wheel: {
+        icon: "🎡",
+        type: "wheel",
+        da: { name: "Lykkehjulet", short: "Lykkehjul", desc: "Drej hjulet og se, hvad der sker!" },
+        en: { name: "Wheel of fortune", short: "Wheel", desc: "Spin the wheel and see what happens!" },
+      },
+      x3102: { icon: "🔥", da: { name: "3×10×2", short: "3×10×2" }, en: { name: "3×10×2", short: "3×10×2" } },
+      lung: {
+        icon: "🫁",
+        da: { name: "Lunge", short: "Lunge", desc: "Bong med hånden." },
+        en: { name: "Lung", short: "Lung", desc: "Hand bong." },
+      },
+      diy: {
+        icon: "👑",
+        da: { name: "DIY konge", short: "DIY konge", desc: "Mellem tænderne med den." },
+        en: { name: "DIY king", short: "DIY king", desc: "Between your teeth with it." },
+      },
+      chimney: {
+        icon: "🏭",
+        da: { name: "Skorstenen", short: "Skorsten", desc: "Tag et stort sug, og sug så røgen fra jointen bagefter." },
+        en: { name: "The chimney", short: "Chimney", desc: "Take a big puff, then inhale the smoke from the joint afterwards." },
+      },
+      back: {
+        icon: "⏪",
+        type: "back",
+        da: { name: "Slå tilbage", short: "Slå tilbage", desc: "Slå med den røde terning og ryk det antal felter tilbage." },
+        en: { name: "Roll back", short: "Roll back", desc: "Roll the red die and move back that many spaces." },
+      },
+      pass: { icon: "🤝", da: { name: "Pass til spliff", short: "Pass" }, en: { name: "Pass the spliff", short: "Pass" } },
     };
 
-    const GAME_CARDS = [
-      // Hit
-      { cat: "hit", da: "Vandfald! {p} starter, og alle tager et hit på skift. Ingen må tale, før den er tilbage hos {p}.", en: "Waterfall! {p} starts and everyone takes a hit in turn. No talking until it's back with {p}." },
-      { cat: "hit", da: "{p} bestemmer, hvem der får næste hit.", en: "{p} decides who gets the next hit." },
-      { cat: "hit", da: "Spring over! {p} sender videre uden at tage et hit.", en: "Skip! {p} passes it on without taking a hit." },
-      { cat: "hit", da: "Retningen skifter! Fra nu af går den den anden vej rundt.", en: "Reverse! From now on it goes the other way round." },
-      { cat: "hit", da: "Den yngste i rummet får næste hit.", en: "The youngest person in the room gets the next hit." },
-      { cat: "hit", da: "{p} fortæller en joke. Griner nogen, får {p} næste hit. Ellers går den til {r}.", en: "{p} tells a joke. If anyone laughs, {p} gets the next hit. If not, it goes to {r}." },
-      { cat: "hit", da: "{p} og {r} deler næste runde, men skal holde øjenkontakt hele tiden.", en: "{p} and {r} share the next round, but must keep eye contact the whole time." },
-      { cat: "hit", da: "Den med de største sokker tager næste hit.", en: "Whoever has the biggest socks takes the next hit." },
-
-      // Sandhed
-      { cat: "truth", da: "{p}: Hvad er det sjoveste, du har lavet, mens du var skæv?", en: "{p}: What's the funniest thing you've done while high?" },
-      { cat: "truth", da: "{p}: Hvilken snack ville du tage med på en øde ø?", en: "{p}: Which snack would you bring to a desert island?" },
-      { cat: "truth", da: "{p}: Hvad er din mest skøre teori om universet?", en: "{p}: What's your wildest theory about the universe?" },
-      { cat: "truth", da: "{p}: Hvem i rummet ville overleve længst i en zombieapokalypse?", en: "{p}: Who in this room would survive the longest in a zombie apocalypse?" },
-      { cat: "truth", da: "{p}: Hvad er det mest pinlige, du har googlet?", en: "{p}: What's the most embarrassing thing you've ever googled?" },
-      { cat: "truth", da: "{p}: Hvad var dit første indtryk af {r}?", en: "{p}: What was your first impression of {r}?" },
-      { cat: "truth", da: "{p}: Hvis du kunne have én superkraft resten af aftenen, hvad skulle det være?", en: "{p}: If you could have one superpower for the rest of the night, what would it be?" },
-      { cat: "truth", da: "{p}: Hvad er den bedste idé, du har fået sent om natten?", en: "{p}: What's the best idea you've ever had late at night?" },
-      { cat: "truth", da: "{p}: Hvilken sang får dig altid i godt humør?", en: "{p}: Which song always puts you in a good mood?" },
-
-      // Udfordring
-      { cat: "dare", da: "{p} taler som en nyhedsoplæser indtil sin næste tur.", en: "{p} talks like a news anchor until their next turn." },
-      { cat: "dare", da: "{p} laver sin bedste dyrelyd. De andre gætter dyret.", en: "{p} does their best animal sound. The others guess the animal." },
-      { cat: "dare", da: "{p} og {r} bytter plads.", en: "{p} and {r} swap seats." },
-      { cat: "dare", da: "{p} beskriver sin dag som en dramatisk filmtrailer.", en: "{p} describes their day as a dramatic movie trailer." },
-      { cat: "dare", da: "{p} viser det sidste meme, der fik dem til at grine.", en: "{p} shows the last meme that made them laugh." },
-      { cat: "dare", da: "{p} giver {r} et kompliment uden at grine.", en: "{p} gives {r} a compliment without laughing." },
-      { cat: "dare", da: "{p} laver 10 squats, mens alle tæller højt.", en: "{p} does 10 squats while everyone counts out loud." },
-      { cat: "dare", da: "{p} synger omkvædet fra en sang, som {r} vælger.", en: "{p} sings the chorus of a song that {r} picks." },
-      { cat: "dare", da: "{p} må kun svare med spørgsmål indtil sin næste tur.", en: "{p} can only answer with questions until their next turn." },
-
-      // Ny regel
-      { cat: "rule", da: "Alle skal sige \"skål\" med fransk accent, før de tager et hit.", en: "Everyone must say \"cheers\" in a French accent before taking a hit." },
-      { cat: "rule", da: "{p} er konge. Man skal bukke, før man taler til {p}.", en: "{p} is royalty. You must bow before speaking to {p}." },
-      { cat: "rule", da: "Ingen må pege. Den, der gør, laver 5 armbøjninger.", en: "No pointing. Whoever does it does 5 push-ups." },
-      { cat: "rule", da: "Man skal klappe to gange, før man tager et hit.", en: "You have to clap twice before taking a hit." },
-      { cat: "rule", da: "Ingen navne! Alle skal kaldes \"makker\".", en: "No names! Everyone must be called \"buddy\"." },
-      { cat: "rule", da: "Tommelfinger-mester: Når {p} lægger tommelfingeren på bordet, skal alle gøre det samme. Den sidste tager et hit.", en: "Thumb master: when {p} puts a thumb on the table, everyone must do the same. The last one takes a hit." },
-
-      // Alle
-      { cat: "all", da: "Alle, der har sneakers på, tager et hit.", en: "Everyone wearing sneakers takes a hit." },
-      { cat: "all", da: "Historie-runde: Alle siger ét ord på skift og bygger en historie. Den, der går i stå, tager et hit.", en: "Story time: everyone says one word in turn to build a story. Whoever gets stuck takes a hit." },
-      { cat: "all", da: "Alle, der har været ude at rejse i år, tager et hit.", en: "Everyone who has travelled abroad this year takes a hit." },
-      { cat: "all", da: "Skål for {p}! Alle siger én ting, de godt kan lide ved {p}.", en: "A toast to {p}! Everyone says one thing they like about {p}." },
-      { cat: "all", da: "Den sidste, der rører sin næse, fortæller en hemmelighed.", en: "The last person to touch their nose tells a secret." },
-      { cat: "all", da: "Alle, der har et kæledyr, tager et hit og viser et billede af det.", en: "Everyone with a pet takes a hit and shows a photo of it." },
-
-      // Afstemning
-      { cat: "vote", da: "Hvem ville spise en hel pose chips alene? Vinderen vælger næste sang.", en: "Who would eat a whole bag of crisps alone? The winner picks the next song." },
-      { cat: "vote", da: "Hvem ville være den bedste præsident? Vinderen holder en kort tale.", en: "Who would make the best president? The winner gives a short speech." },
-      { cat: "vote", da: "Hvem har det mest smittende grin? Vinderen tager næste hit.", en: "Who has the most contagious laugh? The winner takes the next hit." },
-      { cat: "vote", da: "Hvem ville fare vild i sin egen opgang? Vinderen får næste hit.", en: "Who would get lost in their own building? The winner gets the next hit." },
-      { cat: "vote", da: "Hvem har den bedste stil i aften? Vinderen bestemmer, hvem der trækker næste kort.", en: "Who has the best style tonight? The winner decides who draws the next card." },
-
-      // Chill
-      { cat: "chill", da: "Vandpause! Alle drikker et glas vand, før spillet fortsætter. 💧", en: "Water break! Everyone drinks a glass of water before the game continues. 💧" },
-      { cat: "chill", da: "Snackpause! {p} henter snacks til bordet. 🍕", en: "Snack break! {p} brings snacks to the table. 🍕" },
-      { cat: "chill", da: "DJ-tid: {p} vælger næste sang.", en: "DJ time: {p} picks the next song." },
-      { cat: "chill", da: "Alle tager en dyb indånding og strækker sig. Ahh.", en: "Everyone takes a deep breath and stretches. Ahh." },
-      { cat: "chill", da: "Frisk luft: Åbn et vindue, og fortæl hinanden én god ting ved dagen.", en: "Fresh air: open a window and tell each other one good thing about today." },
-
-      // Minispil
-      { cat: "game", da: "Kategorier: {p} vælger en kategori, fx snacks. Gå på skift. Den, der ikke kan komme på noget, tager et hit.", en: "Categories: {p} picks a category, e.g. snacks. Take turns. Whoever can't think of one takes a hit." },
-      { cat: "game", da: "Rim-runde: {p} siger et ord, og alle skal rime på det. Den første, der går i stå, tager et hit.", en: "Rhyme time: {p} says a word and everyone must rhyme with it. The first to get stuck takes a hit." },
-      { cat: "game", da: "Jeg har aldrig: {p} siger noget, de aldrig har gjort. Alle, der har, tager et hit.", en: "Never have I ever: {p} says something they've never done. Everyone who has takes a hit." },
-      { cat: "game", da: "Stirrekonkurrence mellem {p} og {r}. Taberen tager et hit.", en: "Staring contest between {p} and {r}. The loser takes a hit." },
-      { cat: "game", da: "Sten, saks, papir: {p} mod {r}. Taberen tager et hit.", en: "Rock, paper, scissors: {p} vs {r}. The loser takes a hit." },
-      { cat: "game", da: "Gæt sangen: {p} nynner en sang. Den, der gætter først, bestemmer, hvem der trækker næste kort.", en: "Name that tune: {p} hums a song. Whoever guesses first decides who draws the next card." },
-      { cat: "game", da: "Ordkæde: {p} siger et ord. Den næste siger et ord, der starter med sidste bogstav. Den, der fejler, tager et hit.", en: "Word chain: {p} says a word. The next person says a word starting with its last letter. Whoever fails takes a hit." },
-      { cat: "game", da: "Hvem er jeg? {r} tænker på en kendt person. {p} har 10 ja/nej-spørgsmål til at gætte.", en: "Who am I? {r} thinks of a famous person. {p} has 10 yes/no questions to guess." },
+    // Lykkehjulet: 8 felter
+    const WHEEL = [
+      { icon: "🙌", da: "Alle tager 1 sug.", en: "Everyone takes 1 puff." },
+      { icon: "🎁", da: "Giv 3 sug væk til hvem du vil.", en: "Give 3 puffs to whoever you want." },
+      { icon: "😂", da: "Fortæl en joke. Griner ingen, tager du 2 sug.", en: "Tell a joke. If nobody laughs, you take 2 puffs." },
+      { icon: "🔁", da: "Slå igen!", en: "Roll again!", again: true },
+      { icon: "🎤", da: "Syng et omkvæd, eller tag 3 sug.", en: "Sing a chorus, or take 3 puffs." },
+      { icon: "👉", da: "Vælg en spiller, der tager 2 sug.", en: "Pick a player who takes 2 puffs." },
+      { icon: "🧘", da: "Fri! Du slipper denne gang.", en: "Free pass! You're off the hook this time." },
+      { icon: "🔄", da: "Byt plads på brættet med en tilfældig spiller.", en: "Swap places on the board with a random player.", swap: true },
     ];
 
+    const PLAYER_COLORS = ["#ff5c5c", "#ffb020", "#ffe14d", "#5fd47a", "#4dc3ff", "#8b7bff", "#ff6fd8", "#f1f3f1"];
+    const BOARD_COLUMNS = 6;
+    const BOARD_SIZE = 36;   // START + 34 felter + MÅL
     const PLAYERS_KEY = "gamePlayers";
+
     const gameSetup = document.getElementById("game-setup");
     const gamePlay = document.getElementById("game-play");
-    const gameCard = document.getElementById("game-card");
     const playerForm = document.getElementById("player-form");
-    let players = [];
-    let deck = [];
-    let deckIndex = 0;
-    let turn = -1;
-    let currentCard = null;   // { card, player, other }
+    const boardEl = document.getElementById("board");
+    const rollBtn = document.getElementById("roll-btn");
+    const dieEl = document.getElementById("die");
+    const tileSheet = document.getElementById("tile-sheet");
+    const tileBody = document.getElementById("tile-body");
+
+    let players = [];          // [{ name, color }]
+    let selectedColor = PLAYER_COLORS[0];
+    let board = [];            // felt-id'er, fx "s3" eller "wheel"
+    let positions = [];        // hvor hver spiller står
+    let turn = 0;
+    let busy = false;          // terningen ruller eller brikken flytter sig
+    let wheelRotation = 0;
 
     try {
-      players = JSON.parse(localStorage.getItem(PLAYERS_KEY)) || [];
+      players = (JSON.parse(localStorage.getItem(PLAYERS_KEY)) || [])
+        .map((p, i) => (typeof p === "string" ? { name: p, color: PLAYER_COLORS[i % PLAYER_COLORS.length] } : p));
     } catch {
       players = [];
     }
@@ -4626,15 +4871,42 @@
       return copy;
     }
 
+    function tileText(id) {
+      return TILES[id][lang === "en" ? "en" : "da"];
+    }
+
+    // ---------- Spillere og farver ----------
+    function freeColor() {
+      return PLAYER_COLORS.find((c) => !players.some((p) => p.color === c)) || PLAYER_COLORS[0];
+    }
+
+    function renderColorPick() {
+      if (players.some((p) => p.color === selectedColor)) selectedColor = freeColor();
+      document.getElementById("color-pick").innerHTML = PLAYER_COLORS.map((color) => {
+        const taken = players.some((p) => p.color === color);
+        return `<button type="button" class="swatch ${color === selectedColor ? "active" : ""}" data-color="${color}"
+          style="--c:${color}" ${taken ? "disabled" : ""} aria-label="${color}"></button>`;
+      }).join("");
+    }
+
     function renderPlayers() {
       document.getElementById("player-list").innerHTML = players.length
-        ? players.map((name, i) => `
+        ? players.map((p, i) => `
             <span class="player-chip">
-              ${esc(name)}
+              <span class="token" style="--c:${p.color}"></span>
+              ${esc(p.name)}
               <button type="button" data-remove-player="${i}" aria-label="${t("game.remove")}">✕</button>
             </span>`).join("")
         : `<p class="empty-note">${t("game.noPlayers")}</p>`;
+      renderColorPick();
     }
+
+    document.getElementById("color-pick").addEventListener("click", (e) => {
+      const swatch = e.target.closest("[data-color]");
+      if (!swatch || swatch.disabled) return;
+      selectedColor = swatch.dataset.color;
+      renderColorPick();
+    });
 
     playerForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -4642,11 +4914,11 @@
       const input = playerForm.elements.player;
       const name = input.value.trim();
       if (!name) return;
-      if (players.some((p) => p.toLowerCase() === name.toLowerCase())) {
+      if (players.some((p) => p.name.toLowerCase() === name.toLowerCase())) {
         return setError(playerForm, t("game.duplicate"));
       }
-      if (players.length >= 12) return setError(playerForm, t("game.max"));
-      players.push(name);
+      if (players.length >= PLAYER_COLORS.length) return setError(playerForm, t("game.max"));
+      players.push({ name, color: selectedColor });
       savePlayers();
       input.value = "";
       renderPlayers();
@@ -4660,42 +4932,249 @@
       renderPlayers();
     });
 
-    function renderGameCard() {
-      if (!currentCard) return;
-      const { card, player, other } = currentCard;
-      const category = GAME_CATEGORIES[card.cat];
-      const text = esc(lang === "en" ? card.en : card.da)
-        .replaceAll("{p}", `<b>${esc(player)}</b>`)
-        .replaceAll("{r}", `<b>${esc(other)}</b>`);
-
-      gameCard.style.setProperty("--cat", category.color);
-      gameCard.innerHTML = `
-        <span class="game-cat">${category.emoji} ${t("gcat." + card.cat)}</span>
-        <p class="game-text">${text}</p>
-        <span class="game-brand">Game of Joints</span>`;
-      document.getElementById("game-player").textContent = player;
-      document.getElementById("game-progress").textContent =
-        t("game.progress", { n: deckIndex, total: deck.length });
-      document.getElementById("game-next").textContent =
-        t("game.next", { name: players[(turn + 1) % players.length] });
+    // ---------- Brættet ----------
+    // Felterne snor sig frem og tilbage: række 1 fra venstre, række 2 fra højre osv.
+    function cellPosition(index) {
+      const row = Math.floor(index / BOARD_COLUMNS);
+      const step = index % BOARD_COLUMNS;
+      const col = row % 2 === 0 ? step : BOARD_COLUMNS - 1 - step;
+      return { row: row + 1, col: col + 1 };
     }
 
-    function drawCard() {
-      if (deckIndex >= deck.length) {
-        deck = shuffle(GAME_CARDS);
-        deckIndex = 0;
-      }
-      turn = (turn + 1) % players.length;
-      const player = players[turn];
-      const others = players.filter((_, i) => i !== turn);
-      const other = others[Math.floor(Math.random() * others.length)];
-      currentCard = { card: deck[deckIndex++], player, other };
-      renderGameCard();
+    function renderBoard() {
+      if (!board.length) return;
+      boardEl.innerHTML = board.map((id, index) => {
+        const { row, col } = cellPosition(index);
+        const tokens = players
+          .map((p, i) => (positions[i] === index ? `<span class="token ${i === turn ? "current" : ""}" style="--c:${p.color}"></span>` : ""))
+          .join("");
+        let kind = "";
+        let content;
+        if (index === 0) {
+          kind = "is-start";
+          content = `<span class="cell-lbl">${t("game.startTile")}</span>`;
+        } else if (index === board.length - 1) {
+          kind = "is-goal";
+          content = `<span class="cell-icon">🏁</span><span class="cell-lbl">${t("game.goalTile")}</span>`;
+        } else {
+          const tile = TILES[id];
+          kind = tile.type ? `is-${tile.type}` : /^s\d$/.test(id) ? "is-puffs" : "";
+          content = `<span class="cell-icon">${tile.icon}</span><span class="cell-lbl">${esc(tileText(id).short)}</span>`;
+        }
+        return `
+          <div class="cell ${kind}" style="grid-row:${row};grid-column:${col}">
+            ${content}
+            <span class="tokens">${tokens}</span>
+          </div>`;
+      }).join("");
+    }
 
-      // Vend kortet med en lille animation
-      gameCard.classList.remove("flip");
-      void gameCard.offsetWidth;
-      gameCard.classList.add("flip");
+    function renderTurn() {
+      const p = players[turn];
+      if (!p) return;
+      document.getElementById("turn-dot").style.setProperty("--c", p.color);
+      document.getElementById("game-player").textContent = p.name;
+      rollBtn.textContent = t("game.roll");
+    }
+
+    function renderGame() {
+      if (gamePlay.classList.contains("hidden")) return;
+      renderBoard();
+      renderTurn();
+    }
+
+    // ---------- Terninger ----------
+    const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+
+    function showDie(el, value) {
+      el.innerHTML = Array.from({ length: 9 }, (_, i) => `<span class="pip ${PIPS[value].includes(i) ? "on" : ""}"></span>`).join("");
+      el.setAttribute("aria-label", String(value));
+    }
+
+    // Ryst terningen et øjeblik og land på et tilfældigt tal
+    function rollDie(el) {
+      return new Promise((resolve) => {
+        el.classList.add("rolling");
+        let ticks = 0;
+        const timer = setInterval(() => {
+          showDie(el, 1 + Math.floor(Math.random() * 6));
+          if (++ticks >= 9) {
+            clearInterval(timer);
+            const value = 1 + Math.floor(Math.random() * 6);
+            showDie(el, value);
+            el.classList.remove("rolling");
+            resolve(value);
+          }
+        }, 70);
+      });
+    }
+
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    // Flyt brikken ét felt ad gangen
+    async function moveBy(player, steps) {
+      const last = board.length - 1;
+      const direction = Math.sign(steps);
+      for (let i = 0; i < Math.abs(steps); i++) {
+        const next = positions[player] + direction;
+        if (next < 0 || next > last) break;
+        positions[player] = next;
+        renderBoard();
+        await wait(230);
+      }
+    }
+
+    // ---------- En tur ----------
+    rollBtn.addEventListener("click", async () => {
+      if (busy) return;
+      busy = true;
+      rollBtn.disabled = true;
+      const value = await rollDie(dieEl);
+      await wait(250);
+      await moveBy(turn, value);
+      busy = false;
+      rollBtn.disabled = false;
+      landOn(turn);
+    });
+
+    function landOn(player) {
+      const index = positions[player];
+      if (index === board.length - 1) return showWinner(player);
+      if (index === 0) return showTile(`
+        <div class="tile-hero">⏮️</div>
+        <h2>${t("game.backToStart")}</h2>`, true);
+
+      const id = board[index];
+      const text = tileText(id);
+      const head = `
+        <div class="tile-hero">${TILES[id].icon}</div>
+        <p class="tile-who"><span class="token" style="--c:${players[player].color}"></span>${esc(players[player].name)}</p>
+        <h2>${esc(text.name)}</h2>
+        ${text.desc ? `<p class="tile-desc">${esc(text.desc)}</p>` : ""}`;
+
+      if (TILES[id].type === "back") return showBackTile(head);
+      if (TILES[id].type === "wheel") return showWheelTile(head);
+      showTile(head, true);
+    }
+
+    function showTile(html, withContinue) {
+      tileBody.innerHTML = html + (withContinue
+        ? `<button type="button" class="btn-primary" data-tile-action="next">${t("game.continue")}</button>`
+        : "");
+      sheetBackdrop.classList.remove("hidden");
+      tileSheet.classList.remove("hidden");
+    }
+
+    function hideTile() {
+      tileSheet.classList.add("hidden");
+      sheetBackdrop.classList.add("hidden");
+    }
+
+    function nextTurn(sameAgain = false) {
+      hideTile();
+      if (!sameAgain) turn = (turn + 1) % players.length;
+      renderBoard();
+      renderTurn();
+    }
+
+    // "Slå tilbage": en ekstra rød terning dukker op
+    function showBackTile(head) {
+      showTile(`${head}
+        <div class="die red" id="red-die"></div>
+        <button type="button" class="btn-primary danger-btn" data-tile-action="roll-back">${t("game.rollBack")}</button>`, false);
+      showDie(document.getElementById("red-die"), 6);
+    }
+
+    async function rollBack(button) {
+      button.disabled = true;
+      const steps = await rollDie(document.getElementById("red-die"));
+      button.textContent = t("game.moveBack", { n: steps });
+      await wait(900);
+      hideTile();
+      await moveBy(turn, -steps);
+      landOn(turn);
+    }
+
+    // "Lykkehjulet"
+    function showWheelTile(head) {
+      const labels = WHEEL.map((w, i) =>
+        `<span class="wheel-label" style="transform: rotate(${i * 45 + 22.5}deg) translateY(-78px) rotate(-${i * 45 + 22.5}deg)">${w.icon}</span>`).join("");
+      showTile(`${head}
+        <div class="wheel-wrap">
+          <span class="wheel-pointer"></span>
+          <div class="wheel" id="wheel" style="transform: rotate(${wheelRotation}deg)">${labels}</div>
+        </div>
+        <p class="wheel-result" id="wheel-result"></p>
+        <button type="button" class="btn-primary" data-tile-action="spin">${t("game.spin")}</button>`, false);
+    }
+
+    async function spinWheel(button) {
+      button.disabled = true;
+      const pick = Math.floor(Math.random() * WHEEL.length);
+      // Drej mindst 5 omgange og stop med det valgte felt under pilen
+      const target = 360 - (pick * 45 + 22.5);
+      wheelRotation += 360 * 5 + ((target - (wheelRotation % 360)) + 360) % 360;
+      document.getElementById("wheel").style.transform = `rotate(${wheelRotation}deg)`;
+      await wait(3200);
+
+      const outcome = WHEEL[pick];
+      document.getElementById("wheel-result").textContent = `${outcome.icon} ${lang === "en" ? outcome.en : outcome.da}`;
+      if (outcome.swap && players.length > 1) {
+        const others = players.map((_, i) => i).filter((i) => i !== turn);
+        const other = others[Math.floor(Math.random() * others.length)];
+        [positions[turn], positions[other]] = [positions[other], positions[turn]];
+        renderBoard();
+      }
+      button.disabled = false;
+      button.textContent = t("game.continue");
+      button.dataset.tileAction = outcome.again ? "again" : "next";
+    }
+
+    tileBody.addEventListener("click", (e) => {
+      const button = e.target.closest("[data-tile-action]");
+      if (!button) return;
+      const action = button.dataset.tileAction;
+      if (action === "next") nextTurn();
+      if (action === "again") nextTurn(true);
+      if (action === "roll-back") rollBack(button);
+      if (action === "spin") spinWheel(button);
+      if (action === "play-again") startGame();
+      if (action === "end") endGame();
+    });
+
+    function showWinner(player) {
+      const p = players[player];
+      showTile(`
+        <div class="tile-hero">🏆</div>
+        <p class="tile-who"><span class="token" style="--c:${p.color}"></span>${esc(p.name)}</p>
+        <h2>${t("game.won", { name: esc(p.name) })}</h2>
+        <p class="tile-desc">${t("game.wonText")}</p>
+        <button type="button" class="btn-primary" data-tile-action="play-again">${t("game.playAgain")}</button>
+        <button type="button" class="btn-plain" data-tile-action="end">${t("game.end")}</button>`, false);
+    }
+
+    // ---------- Start og slut ----------
+    function startGame() {
+      hideTile();
+      const middle = shuffle([...Object.keys(TILES), ...Object.keys(TILES)]);
+      board = ["start", ...middle.slice(0, BOARD_SIZE - 2), "goal"];
+      positions = players.map(() => 0);
+      turn = 0;
+      busy = false;
+      rollBtn.disabled = false;
+      showDie(dieEl, 1);
+      gameSetup.classList.add("hidden");
+      gamePlay.classList.remove("hidden");
+      renderGame();
+      scrollToTop();
+    }
+
+    function endGame() {
+      hideTile();
+      gamePlay.classList.add("hidden");
+      gameSetup.classList.remove("hidden");
+      renderPlayers();
+      scrollToTop();
     }
 
     document.getElementById("game-start").addEventListener("click", () => {
@@ -4705,25 +5184,10 @@
         return;
       }
       error.textContent = "";
-      deck = shuffle(GAME_CARDS);
-      deckIndex = 0;
-      turn = -1;
-      gameSetup.classList.add("hidden");
-      gamePlay.classList.remove("hidden");
-      drawCard();
-      scrollToTop();
+      startGame();
     });
 
-    document.getElementById("game-next").addEventListener("click", drawCard);
-    gameCard.addEventListener("click", drawCard);
-
-    document.getElementById("game-end").addEventListener("click", () => {
-      currentCard = null;
-      gamePlay.classList.add("hidden");
-      gameSetup.classList.remove("hidden");
-      renderPlayers();
-      scrollToTop();
-    });
+    document.getElementById("game-end").addEventListener("click", endGame);
 
     renderPlayers();
 
