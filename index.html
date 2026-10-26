@@ -665,36 +665,6 @@
       stroke-linejoin: round;
     }
 
-    /* Game of Joints fylder hele bredden */
-    .tile.wide {
-      grid-column: span 2;
-      aspect-ratio: auto;
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 16px;
-      padding: 20px;
-      border-color: rgba(111, 208, 143, 0.25);
-      background:
-        radial-gradient(circle at 85% 20%, rgba(111, 208, 143, 0.22), transparent 55%),
-        linear-gradient(150deg, #1d3a26, #0f1a12);
-    }
-
-    .tile.wide .tile-img {
-      flex-shrink: 0;
-      width: 60px;
-      height: 60px;
-      background: rgba(111, 208, 143, 0.18);
-    }
-
-    .tile small {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 500;
-    }
-
     .tile strong {
       display: block;
       font-size: 17px;
@@ -2016,26 +1986,31 @@
       text-align: center;
     }
 
-    .game-top {
+    /* Hele skærmen under spillet (vandret) */
+    .game-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 45;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
+      padding:
+        max(10px, env(safe-area-inset-top))
+        max(14px, env(safe-area-inset-right))
+        max(10px, env(safe-area-inset-bottom))
+        max(14px, env(safe-area-inset-left));
+      background:
+        radial-gradient(circle at 50% 0%, rgba(111, 208, 143, 0.12), transparent 60%),
+        var(--bg);
     }
 
-    .game-top h1 {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.4px;
-    }
-
-    /* Brættet: 6 kolonner, felterne snor sig frem og tilbage */
+    /* Brættet: 9 kolonner og 4 rækker, der snor sig frem og tilbage */
     .board {
+      flex: 1;
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 5px;
+      grid-template-columns: repeat(9, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 6px;
+      min-width: 0;
       padding: 8px;
-      margin-bottom: 14px;
       border: 1px solid var(--border);
       border-radius: 20px;
       background: var(--card);
@@ -2047,23 +2022,23 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1px;
-      aspect-ratio: 1;
+      gap: 3px;
       min-width: 0;
-      padding: 2px;
-      border-radius: 10px;
+      min-height: 0;
+      padding: 4px;
+      border-radius: 12px;
       background: var(--card-2);
       text-align: center;
     }
 
     .cell-icon {
-      font-size: 17px;
+      font-size: 22px;
       line-height: 1;
     }
 
     .cell.is-puffs .cell-icon {
       color: var(--accent);
-      font-size: 18px;
+      font-size: 24px;
       font-weight: 800;
     }
 
@@ -2071,7 +2046,7 @@
       max-width: 100%;
       overflow: hidden;
       color: var(--muted);
-      font-size: 8.5px;
+      font-size: 10px;
       font-weight: 600;
       line-height: 1.1;
       white-space: nowrap;
@@ -2086,7 +2061,7 @@
     .cell.is-start .cell-lbl,
     .cell.is-goal .cell-lbl {
       color: #fff;
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 800;
     }
 
@@ -2100,16 +2075,16 @@
 
     .tokens {
       position: absolute;
-      inset: auto 2px 2px 2px;
+      inset: auto 3px 3px 3px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 1px;
+      gap: 2px;
     }
 
     .tokens .token {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
     }
 
     .token.current {
@@ -2117,51 +2092,87 @@
     }
 
     @keyframes pulse {
-      50% { transform: scale(1.25); }
+      50% { transform: scale(1.3); }
     }
 
-    /* Tur og terning */
-    .turn-bar {
+    /* Lag oven på brættet: terning eller straf */
+    .stage-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: var(--card);
+      justify-content: center;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.45);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      animation: fadeIn 0.2s ease;
     }
 
-    .turn-bar .token {
-      width: 22px;
-      height: 22px;
+    .roll-panel,
+    .tile-card {
+      border: 1px solid var(--border-strong);
+      border-radius: 26px;
+      background: rgba(19, 21, 19, 0.94);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     }
 
-    .turn-name {
-      flex: 1;
-      min-width: 0;
+    .roll-panel {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 20px;
     }
 
-    .turn-bar small {
+    .roll-panel .token {
+      width: 26px;
+      height: 26px;
+    }
+
+    .turn-name small {
       display: block;
       color: var(--muted);
       font-size: 12px;
     }
 
-    .turn-bar strong {
-      font-size: 19px;
+    .turn-name strong {
+      display: block;
+      max-width: 160px;
+      overflow: hidden;
+      font-size: 22px;
       font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .roll-panel .btn-primary {
+      width: auto;
+      padding: 14px 20px;
+      white-space: nowrap;
+    }
+
+    .roll-panel .link-btn {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .roll-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
 
     .die {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
+      gap: 4px;
       flex-shrink: 0;
-      width: 54px;
-      height: 54px;
-      padding: 9px;
-      border-radius: 14px;
+      width: 66px;
+      height: 66px;
+      padding: 11px;
+      border-radius: 16px;
       background: #f6f7f6;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.12);
     }
@@ -2175,10 +2186,10 @@
     }
 
     .die.red {
-      width: 72px;
-      height: 72px;
-      margin: 4px auto 14px;
-      padding: 12px;
+      width: 96px;
+      height: 96px;
+      padding: 16px;
+      gap: 6px;
       background: #ff5c5c;
     }
 
@@ -2200,52 +2211,84 @@
       box-shadow: 0 8px 22px rgba(255, 92, 92, 0.3);
     }
 
-    /* Bundark med feltets straf */
-    .game-sheet {
-      align-items: stretch;
-      text-align: center;
+    /* Kortet med straffen */
+    .tile-card {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      width: min(620px, 100%);
+      max-height: 100%;
+      overflow-y: auto;
+      padding: 22px 26px;
+      animation: popIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    #tile-body {
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .tile-visual {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 170px;
+      font-size: 88px;
+      line-height: 1;
+    }
+
+    .tile-info {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-    }
-
-    .tile-hero {
-      font-size: 56px;
-      line-height: 1.1;
+      align-items: flex-start;
+      gap: 8px;
     }
 
     .tile-who {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 8px;
       color: var(--muted);
       font-size: 14px;
       font-weight: 600;
     }
 
-    #tile-body h2 {
-      font-size: 28px;
+    .tile-info h2 {
+      font-size: 30px;
       font-weight: 800;
       letter-spacing: -0.6px;
+      line-height: 1.1;
     }
 
     .tile-desc {
-      margin-bottom: 6px;
       color: rgba(241, 243, 241, 0.8);
       font-size: 17px;
       line-height: 1.4;
     }
 
+    .tile-info .btn-primary {
+      margin-top: 6px;
+    }
+
+    .tile-buttons {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .tile-buttons > * {
+      flex: 1;
+    }
+
     /* Lykkehjulet */
     .wheel-wrap {
       position: relative;
-      width: 210px;
-      height: 210px;
-      margin: 8px auto 4px;
+      width: 160px;
+      height: 160px;
     }
 
     .wheel {
@@ -2265,11 +2308,11 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 30px;
-      height: 30px;
-      margin: -15px 0 0 -15px;
-      font-size: 22px;
-      line-height: 30px;
+      width: 26px;
+      height: 26px;
+      margin: -13px 0 0 -13px;
+      font-size: 19px;
+      line-height: 26px;
     }
 
     .wheel-pointer {
@@ -2278,15 +2321,51 @@
       left: 50%;
       z-index: 1;
       transform: translateX(-50%);
-      border: 12px solid transparent;
-      border-top: 20px solid var(--text);
+      border: 11px solid transparent;
+      border-top: 18px solid var(--text);
       border-bottom: 0;
     }
 
     .wheel-result {
-      min-height: 24px;
-      font-size: 18px;
+      min-height: 22px;
+      font-size: 17px;
       font-weight: 700;
+    }
+
+    /* Telefonen holdes på højkant: bed om at dreje den */
+    .rotate-hint {
+      display: none;
+    }
+
+    @media (orientation: portrait) {
+      .rotate-hint {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 30px;
+        background: var(--bg);
+        text-align: center;
+      }
+
+      .rotate-hint .phone-icon {
+        font-size: 64px;
+        animation: turn 2s ease-in-out infinite;
+      }
+
+      .rotate-hint h2 {
+        font-size: 24px;
+        font-weight: 800;
+      }
+    }
+
+    @keyframes turn {
+      0%, 30% { transform: rotate(0deg); }
+      60%, 100% { transform: rotate(-90deg); }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2295,8 +2374,39 @@
       }
 
       .token.current,
-      .die.rolling {
+      .die.rolling,
+      .rotate-hint .phone-icon {
         animation: none;
+      }
+    }
+
+    /* På computeren drejes telefonrammen vandret under spillet */
+    @media (min-width: 600px) and (min-height: 700px) {
+      .phone {
+        transition: width 0.4s ease, height 0.4s ease;
+      }
+
+      body.game-landscape .phone {
+        width: 852px;
+        height: 393px;
+        max-width: calc(100vw - 48px);
+        max-height: none;
+      }
+
+      body.game-landscape .island {
+        top: 50%;
+        left: 11px;
+        width: 36px;
+        height: 122px;
+        transform: translateY(-50%);
+      }
+
+      body.game-landscape .status-bar {
+        display: none;
+      }
+
+      body.game-landscape .game-stage {
+        padding: 12px 24px 20px 58px;
       }
     }
 
@@ -2445,9 +2555,9 @@
           <div class="view active" data-view="hb-menu">
             <h1 class="page-title" data-i18n="nav.handbook">Håndbog</h1>
             <div class="tile-grid">
-              <button class="tile wide" data-go="game">
+              <button class="tile" data-go="game">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
-                <span><strong>Game of Joints</strong><small data-i18n="game.tagline">Brætspillet for dig og vennerne</small></span>
+                <strong>Game of Joints</strong>
               </button>
               <button class="tile" data-go="guides">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>
@@ -2526,24 +2636,6 @@
               <p class="error" id="game-error" aria-live="polite"></p>
               <button type="button" class="btn-primary" id="game-start" data-i18n="game.start">Start spillet</button>
               <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
-            </div>
-
-            <!-- Brættet -->
-            <div id="game-play" class="hidden">
-              <div class="game-top">
-                <h1>Game of Joints</h1>
-                <button type="button" class="link-btn" id="game-end" data-i18n="game.end">Afslut</button>
-              </div>
-              <div class="board" id="board"></div>
-              <div class="turn-bar">
-                <span class="token" id="turn-dot"></span>
-                <div class="turn-name">
-                  <small data-i18n="game.turn">Tur</small>
-                  <strong id="game-player"></strong>
-                </div>
-                <div class="die" id="die" role="img"></div>
-              </div>
-              <button type="button" class="btn-primary" id="roll-btn"></button>
             </div>
           </div>
 
@@ -2740,11 +2832,6 @@
       </div>
     </form>
 
-    <!-- Bundark: feltet i Game of Joints -->
-    <div id="tile-sheet" class="sheet game-sheet hidden" role="dialog">
-      <div id="tile-body"></div>
-    </div>
-
     <!-- Bundark: rediger profil -->
     <form id="profile-form" class="sheet hidden" novalidate>
       <h2 data-i18n="profile.edit">Rediger profil</h2>
@@ -2770,6 +2857,34 @@
         <button type="submit" class="btn-primary" data-i18n="profile.save">Gem</button>
       </div>
     </form>
+
+    <!-- Game of Joints: brættet fylder hele skærmen (vandret) -->
+    <div id="game-stage" class="game-stage hidden">
+      <div class="board" id="board"></div>
+      <div class="stage-overlay hidden" id="stage-overlay">
+        <!-- Terningen, når det er ens tur -->
+        <div class="roll-panel" id="roll-panel">
+          <span class="token" id="turn-dot"></span>
+          <div class="turn-name">
+            <small data-i18n="game.turn">Tur</small>
+            <strong id="game-player"></strong>
+          </div>
+          <div class="die" id="die" role="img"></div>
+          <div class="roll-actions">
+            <button type="button" class="btn-primary" id="roll-btn"></button>
+            <button type="button" class="link-btn" data-game-end data-i18n="game.end">Afslut</button>
+          </div>
+        </div>
+        <!-- Straffen, når man er landet -->
+        <div class="tile-card hidden" id="tile-card"></div>
+      </div>
+      <div class="rotate-hint">
+        <span class="phone-icon" aria-hidden="true">📱</span>
+        <h2 data-i18n="game.rotate">Drej telefonen vandret</h2>
+        <p class="muted" data-i18n="game.rotateText">Game of Joints spilles med telefonen på langs.</p>
+        <button type="button" class="link-btn" data-game-end data-i18n="game.end">Afslut</button>
+      </div>
+    </div>
 
     <div id="toast" class="toast"></div>
   </div>
@@ -2882,7 +2997,9 @@
         "game.end": "Afslut",
         "game.turn": "Tur",
         "game.roll": "🎲 Slå med terningen",
-        "game.continue": "Videre",
+        "game.continue": "Næste",
+        "game.rotate": "Drej telefonen vandret",
+        "game.rotateText": "Game of Joints spilles med telefonen på langs.",
         "game.rollBack": "Slå med den røde terning",
         "game.moveBack": "Ryk {n} felter tilbage",
         "game.backToStart": "Tilbage til start!",
@@ -3070,7 +3187,9 @@
         "game.end": "End",
         "game.turn": "Turn",
         "game.roll": "🎲 Roll the die",
-        "game.continue": "Continue",
+        "game.continue": "Next",
+        "game.rotate": "Turn your phone sideways",
+        "game.rotateText": "Game of Joints is played in landscape.",
         "game.rollBack": "Roll the red die",
         "game.moveBack": "Move back {n} spaces",
         "game.backToStart": "Back to start!",
@@ -3838,9 +3957,7 @@
       diaryForm.classList.add("hidden");
     }
 
-    sheetBackdrop.addEventListener("click", () => {
-      if (document.getElementById("tile-sheet").classList.contains("hidden")) closeSheet();
-    });
+    sheetBackdrop.addEventListener("click", closeSheet);
     document.getElementById("sheet-cancel").addEventListener("click", closeSheet);
 
     formStars.addEventListener("click", (e) => {
@@ -4922,18 +5039,18 @@
     ];
 
     const PLAYER_COLORS = ["#ff5c5c", "#ffb020", "#ffe14d", "#5fd47a", "#4dc3ff", "#8b7bff", "#ff6fd8", "#f1f3f1"];
-    const BOARD_COLUMNS = 6;
-    const BOARD_SIZE = 36;   // START + 34 felter + MÅL
+    const BOARD_COLUMNS = 9;
+    const BOARD_SIZE = 36;   // START + 34 felter + MÅL (9 × 4)
     const PLAYERS_KEY = "gamePlayers";
 
-    const gameSetup = document.getElementById("game-setup");
-    const gamePlay = document.getElementById("game-play");
+    const gameStage = document.getElementById("game-stage");
+    const stageOverlay = document.getElementById("stage-overlay");
+    const rollPanel = document.getElementById("roll-panel");
+    const tileCard = document.getElementById("tile-card");
     const playerForm = document.getElementById("player-form");
     const boardEl = document.getElementById("board");
     const rollBtn = document.getElementById("roll-btn");
     const dieEl = document.getElementById("die");
-    const tileSheet = document.getElementById("tile-sheet");
-    const tileBody = document.getElementById("tile-body");
 
     let players = [];          // [{ name, color }]
     let selectedColor = PLAYER_COLORS[0];
@@ -5074,7 +5191,7 @@
     }
 
     function renderGame() {
-      if (gamePlay.classList.contains("hidden")) return;
+      if (gameStage.classList.contains("hidden")) return;
       renderBoard();
       renderTurn();
     }
@@ -5116,8 +5233,39 @@
         if (next < 0 || next > last) break;
         positions[player] = next;
         renderBoard();
-        await wait(230);
+        await wait(260);
       }
+    }
+
+    // ---------- Det, der ligger oven på brættet ----------
+    // Enten terningen (når det er ens tur) eller kortet med straffen
+    function showRollPanel() {
+      rollBtn.disabled = false;
+      tileCard.classList.add("hidden");
+      rollPanel.classList.remove("hidden");
+      stageOverlay.classList.remove("hidden");
+    }
+
+    function showTile(visual, info, withNext) {
+      tileCard.innerHTML = `
+        <div class="tile-visual">${visual}</div>
+        <div class="tile-info">
+          ${info}
+          ${withNext ? `<button type="button" class="btn-primary" data-tile-action="next">${t("game.continue")}</button>` : ""}
+        </div>`;
+      rollPanel.classList.add("hidden");
+      tileCard.classList.remove("hidden");
+      stageOverlay.classList.remove("hidden");
+    }
+
+    // Skjul alt, så man kan se brikken rykke
+    function hideOverlay() {
+      stageOverlay.classList.add("hidden");
+    }
+
+    function whoHTML(player) {
+      const p = players[player];
+      return `<p class="tile-who"><span class="token" style="--c:${p.color}"></span>${esc(p.name)}</p>`;
     }
 
     // ---------- En tur ----------
@@ -5126,57 +5274,41 @@
       busy = true;
       rollBtn.disabled = true;
       const value = await rollDie(dieEl);
-      await wait(250);
+      await wait(500);
+      hideOverlay();
       await moveBy(turn, value);
+      await wait(250);
       busy = false;
-      rollBtn.disabled = false;
       landOn(turn);
     });
 
     function landOn(player) {
       const index = positions[player];
       if (index === board.length - 1) return showWinner(player);
-      if (index === 0) return showTile(`
-        <div class="tile-hero">⏮️</div>
-        <h2>${t("game.backToStart")}</h2>`, true);
+      if (index === 0) return showTile("⏮️", `${whoHTML(player)}<h2>${t("game.backToStart")}</h2>`, true);
 
       const id = board[index];
       const text = tileText(id);
-      const head = `
-        <div class="tile-hero">${TILES[id].icon}</div>
-        <p class="tile-who"><span class="token" style="--c:${players[player].color}"></span>${esc(players[player].name)}</p>
+      const info = `
+        ${whoHTML(player)}
         <h2>${esc(text.name)}</h2>
         ${text.desc ? `<p class="tile-desc">${esc(text.desc)}</p>` : ""}`;
 
-      if (TILES[id].type === "back") return showBackTile(head);
-      if (TILES[id].type === "wheel") return showWheelTile(head);
-      showTile(head, true);
-    }
-
-    function showTile(html, withContinue) {
-      tileBody.innerHTML = html + (withContinue
-        ? `<button type="button" class="btn-primary" data-tile-action="next">${t("game.continue")}</button>`
-        : "");
-      sheetBackdrop.classList.remove("hidden");
-      tileSheet.classList.remove("hidden");
-    }
-
-    function hideTile() {
-      tileSheet.classList.add("hidden");
-      sheetBackdrop.classList.add("hidden");
+      if (TILES[id].type === "back") return showBackTile(info);
+      if (TILES[id].type === "wheel") return showWheelTile(info);
+      showTile(TILES[id].icon, info, true);
     }
 
     function nextTurn(sameAgain = false) {
-      hideTile();
       if (!sameAgain) turn = (turn + 1) % players.length;
       renderBoard();
       renderTurn();
+      showRollPanel();
     }
 
     // "Slå tilbage": en ekstra rød terning dukker op
-    function showBackTile(head) {
-      showTile(`${head}
-        <div class="die red" id="red-die"></div>
+    function showBackTile(info) {
+      showTile('<div class="die red" id="red-die"></div>', `${info}
         <button type="button" class="btn-primary danger-btn" data-tile-action="roll-back">${t("game.rollBack")}</button>`, false);
       showDie(document.getElementById("red-die"), 6);
     }
@@ -5186,20 +5318,21 @@
       const steps = await rollDie(document.getElementById("red-die"));
       button.textContent = t("game.moveBack", { n: steps });
       await wait(900);
-      hideTile();
+      hideOverlay();
       await moveBy(turn, -steps);
+      await wait(250);
       landOn(turn);
     }
 
     // "Lykkehjulet"
-    function showWheelTile(head) {
+    function showWheelTile(info) {
       const labels = WHEEL.map((w, i) =>
-        `<span class="wheel-label" style="transform: rotate(${i * 45 + 22.5}deg) translateY(-78px) rotate(-${i * 45 + 22.5}deg)">${w.icon}</span>`).join("");
-      showTile(`${head}
+        `<span class="wheel-label" style="transform: rotate(${i * 45 + 22.5}deg) translateY(-56px) rotate(-${i * 45 + 22.5}deg)">${w.icon}</span>`).join("");
+      showTile(`
         <div class="wheel-wrap">
           <span class="wheel-pointer"></span>
           <div class="wheel" id="wheel" style="transform: rotate(${wheelRotation}deg)">${labels}</div>
-        </div>
+        </div>`, `${info}
         <p class="wheel-result" id="wheel-result"></p>
         <button type="button" class="btn-primary" data-tile-action="spin">${t("game.spin")}</button>`, false);
     }
@@ -5226,7 +5359,7 @@
       button.dataset.tileAction = outcome.again ? "again" : "next";
     }
 
-    tileBody.addEventListener("click", (e) => {
+    tileCard.addEventListener("click", (e) => {
       const button = e.target.closest("[data-tile-action]");
       if (!button) return;
       const action = button.dataset.tileAction;
@@ -5239,38 +5372,36 @@
     });
 
     function showWinner(player) {
-      const p = players[player];
-      showTile(`
-        <div class="tile-hero">🏆</div>
-        <p class="tile-who"><span class="token" style="--c:${p.color}"></span>${esc(p.name)}</p>
-        <h2>${t("game.won", { name: esc(p.name) })}</h2>
+      showTile("🏆", `
+        ${whoHTML(player)}
+        <h2>${t("game.won", { name: esc(players[player].name) })}</h2>
         <p class="tile-desc">${t("game.wonText")}</p>
-        <button type="button" class="btn-primary" data-tile-action="play-again">${t("game.playAgain")}</button>
-        <button type="button" class="btn-plain" data-tile-action="end">${t("game.end")}</button>`, false);
+        <div class="tile-buttons">
+          <button type="button" class="btn-plain" data-tile-action="end">${t("game.end")}</button>
+          <button type="button" class="btn-primary" data-tile-action="play-again">${t("game.playAgain")}</button>
+        </div>`, false);
     }
 
     // ---------- Start og slut ----------
+    // Spillet fylder hele skærmen og spilles med telefonen vandret
     function startGame() {
-      hideTile();
       const middle = shuffle([...Object.keys(TILES), ...Object.keys(TILES)]);
       board = ["start", ...middle.slice(0, BOARD_SIZE - 2), "goal"];
       positions = players.map(() => 0);
       turn = 0;
       busy = false;
-      rollBtn.disabled = false;
       showDie(dieEl, 1);
-      gameSetup.classList.add("hidden");
-      gamePlay.classList.remove("hidden");
+      document.body.classList.add("game-landscape");
+      gameStage.classList.remove("hidden");
       renderGame();
-      scrollToTop();
+      showRollPanel();
     }
 
     function endGame() {
-      hideTile();
-      gamePlay.classList.add("hidden");
-      gameSetup.classList.remove("hidden");
+      busy = false;
+      gameStage.classList.add("hidden");
+      document.body.classList.remove("game-landscape");
       renderPlayers();
-      scrollToTop();
     }
 
     document.getElementById("game-start").addEventListener("click", () => {
@@ -5283,7 +5414,7 @@
       startGame();
     });
 
-    document.getElementById("game-end").addEventListener("click", endGame);
+    document.querySelectorAll("[data-game-end]").forEach((btn) => btn.addEventListener("click", endGame));
 
     renderPlayers();
 
