@@ -1422,6 +1422,316 @@
     }
 
     /* ==========================================================
+       FORUM
+       ========================================================== */
+    .composer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 14px;
+      margin-bottom: 18px;
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+
+    .composer-top {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .composer textarea {
+      min-height: 0;
+      padding: 10px 12px;
+      font-size: 16px;
+    }
+
+    .composer-photo {
+      position: relative;
+    }
+
+    .composer-photo img {
+      display: block;
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .remove-photo {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .composer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .composer .error:empty {
+      display: none;
+    }
+
+    .feed {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .post {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+
+    .post-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .post-head [data-person] {
+      cursor: pointer;
+    }
+
+    .post-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .post-meta strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .post-meta small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .post-text {
+      margin-top: 10px;
+      line-height: 1.45;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .post-photo {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 12px;
+    }
+
+    .link-btn.small {
+      font-size: 13px;
+    }
+
+    /* ==========================================================
+       DAGBOG
+       ========================================================== */
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .title-row .page-title {
+      margin-bottom: 0;
+    }
+
+    .private-note {
+      margin: 8px 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .diary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .diary-entry {
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+
+    .diary-photo {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .diary-body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 14px;
+    }
+
+    .diary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .diary-top .stars {
+      font-size: 16px;
+    }
+
+    .diary-text {
+      line-height: 1.45;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    /* ==========================================================
+       TJEKLISTE
+       ========================================================== */
+    .progress-card {
+      padding: 14px;
+      margin-bottom: 14px;
+      border-radius: var(--radius);
+      background: var(--card);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-card strong {
+      font-size: 22px;
+      color: var(--accent);
+    }
+
+    .progress {
+      height: 8px;
+      margin-top: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--border);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin: -6px 0 14px;
+      scrollbar-width: none;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 14px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .check-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .check-box {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .check-row.done .check-box {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .check-row.done .check-name {
+      color: var(--muted);
+    }
+
+    .check-name {
+      flex: 1;
+      min-width: 0;
+      font-size: 15px;
+    }
+
+    .flag-sm {
+      font-size: 14px;
+    }
+
+    .type-tag {
+      flex-shrink: 0;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .type-tag.indica { color: #b59bff; }
+    .type-tag.sativa { color: #ffc34d; }
+    .type-tag.hybrid { color: var(--accent); }
+    .type-tag.landrace { color: #ff9a76; }
+
+    /* ==========================================================
        TOAST-BESKED
        ========================================================== */
     .toast {
@@ -1549,10 +1859,27 @@
       <div id="app" class="app hidden">
         <section class="page" data-page="forum">
           <h1 class="page-title" data-i18n="nav.forum">Forum</h1>
-          <div class="card">
-            <h2 data-i18n="forum.empty">Ingen opslag endnu</h2>
-            <p class="muted" data-i18n="forum.emptySub">Her kommer diskussioner og spørgsmål fra fællesskabet.</p>
-          </div>
+
+          <!-- Skriv et opslag -->
+          <form id="post-form" class="composer" novalidate>
+            <div class="composer-top">
+              <span class="avatar avatar-sm" id="composer-avatar"></span>
+              <textarea name="text" maxlength="500" rows="2" data-i18n-ph="forum.placeholder" placeholder="Hvad sker der?"></textarea>
+            </div>
+            <div class="composer-photo hidden" id="post-photo-wrap">
+              <img id="post-photo-preview" alt="">
+              <button type="button" class="remove-photo" id="post-photo-remove" data-i18n-aria="profile.removePhoto" aria-label="Fjern billede">✕</button>
+            </div>
+            <p class="error" aria-live="polite"></p>
+            <div class="composer-actions">
+              <label class="link-btn" for="post-photo-input">📷 <span data-i18n="forum.photo">Billede</span></label>
+              <input type="file" accept="image/*" id="post-photo-input" class="hidden">
+              <button type="submit" class="mini-btn primary" data-i18n="forum.share">Del</button>
+            </div>
+          </form>
+
+          <!-- Opslag fra mig og mine venner -->
+          <div id="feed" class="feed"></div>
         </section>
 
         <section class="page" data-page="handbook" id="handbook">
@@ -1568,6 +1895,14 @@
                 <span class="tile-img" aria-hidden="true">📍</span>
                 <strong data-i18n="hb.map">Smoke spots</strong>
               </button>
+              <button class="tile" data-go="diary">
+                <span class="tile-img" aria-hidden="true">📓</span>
+                <strong data-i18n="hb.diary">Dagbog</strong>
+              </button>
+              <button class="tile" data-go="checklist">
+                <span class="tile-img" aria-hidden="true">✅</span>
+                <strong data-i18n="hb.checklist">Tjekliste</strong>
+              </button>
             </div>
           </div>
 
@@ -1576,6 +1911,33 @@
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title">Guides</h1>
             <p class="empty-note" data-i18n="guides.empty">Der er ingen guides endnu.</p>
+          </div>
+
+          <!-- Dagbog (privat) -->
+          <div class="view" data-view="diary">
+            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
+            <div class="title-row">
+              <h1 class="page-title" data-i18n="hb.diary">Dagbog</h1>
+              <button type="button" class="mini-btn primary" id="new-diary" data-i18n="diary.new">＋ Nyt opslag</button>
+            </div>
+            <p class="private-note" data-i18n="diary.private">🔒 Kun du kan se din dagbog</p>
+            <div id="diary-list" class="diary-list"></div>
+          </div>
+
+          <!-- Tjekliste over cannabissorter -->
+          <div class="view" data-view="checklist">
+            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
+            <h1 class="page-title" data-i18n="hb.checklist">Tjekliste</h1>
+            <div class="progress-card">
+              <p><strong id="check-count">0</strong> / <span id="check-total">0</span> <span data-i18n="check.tried">prøvet</span></p>
+              <div class="progress"><span id="check-bar"></span></div>
+            </div>
+            <label class="search">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+              <input type="search" id="check-search" data-i18n-ph="check.searchPh" placeholder="Søg efter sort" autocomplete="off" autocapitalize="off" spellcheck="false">
+            </label>
+            <div class="chips" id="check-chips"></div>
+            <div id="check-list" class="check-list"></div>
           </div>
 
           <!-- Smoke spots-kort -->
@@ -1731,6 +2093,29 @@
       </div>
     </form>
 
+    <!-- Bundark: nyt dagbogsopslag -->
+    <form id="diary-form" class="sheet hidden" novalidate>
+      <h2 data-i18n="diary.newTitle">Nyt dagbogsopslag</h2>
+      <label class="photo-pick">
+        <span id="diary-photo-text" data-i18n="diary.addPhoto">📷 Tilføj billede</span>
+        <img id="diary-photo-preview" class="hidden" alt="">
+        <input type="file" accept="image/*" id="diary-photo-input">
+      </label>
+      <label class="field">
+        <span data-i18n="diary.text">Tekst</span>
+        <textarea name="text" maxlength="1000" data-i18n-ph="diary.textPh" placeholder="Hvordan var det?"></textarea>
+      </label>
+      <div class="field">
+        <span data-i18n="diary.rating">Rating</span>
+        <div class="star-input" id="diary-stars"></div>
+      </div>
+      <p class="error" aria-live="polite"></p>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="diary-cancel" data-i18n="common.cancel">Annuller</button>
+        <button type="submit" class="btn-primary" data-i18n="profile.save">Gem</button>
+      </div>
+    </form>
+
     <!-- Bundark: rediger profil -->
     <form id="profile-form" class="sheet hidden" novalidate>
       <h2 data-i18n="profile.edit">Rediger profil</h2>
@@ -1853,6 +2238,36 @@
     const I18N = {
       da: {
         "locale": "da-DK",
+        "hb.diary": "Dagbog",
+        "hb.checklist": "Tjekliste",
+        "forum.placeholder": "Hvad sker der?",
+        "forum.photo": "Billede",
+        "forum.share": "Del",
+        "forum.empty": "Ingen opslag endnu. Del noget, eller tilføj venner for at se deres opslag.",
+        "forum.errEmpty": "Skriv noget eller tilføj et billede",
+        "forum.posted": "Opslaget er delt",
+        "forum.delete": "Slet",
+        "forum.confirmDelete": "Vil du slette opslaget?",
+        "forum.deleted": "Opslaget er slettet",
+        "forum.justNow": "lige nu",
+        "diary.new": "＋ Nyt opslag",
+        "diary.newTitle": "Nyt dagbogsopslag",
+        "diary.private": "🔒 Kun du kan se din dagbog",
+        "diary.empty": "Din dagbog er tom. Tryk på ＋ Nyt opslag for at skrive det første.",
+        "diary.addPhoto": "📷 Tilføj billede",
+        "diary.text": "Tekst",
+        "diary.textPh": "Hvordan var det?",
+        "diary.rating": "Rating",
+        "diary.saved": "Gemt i din dagbog 📓",
+        "diary.confirmDelete": "Vil du slette dette dagbogsopslag?",
+        "check.tried": "prøvet",
+        "check.searchPh": "Søg efter sort",
+        "check.none": "Ingen sorter fundet",
+        "check.all": "Alle",
+        "type.indica": "Indica",
+        "type.sativa": "Sativa",
+        "type.hybrid": "Hybrid",
+        "type.landrace": "Landrace",
         "guides.empty": "Der er ingen guides endnu.",
         "lang.title": "Vælg sprog",
         "lang.sub": "Du kan altid skifte senere under Profil",
@@ -1886,8 +2301,6 @@
         "nav.home": "Hjem",
         "nav.friends": "Venner",
         "nav.profile": "Profil",
-        "forum.empty": "Ingen opslag endnu",
-        "forum.emptySub": "Her kommer diskussioner og spørgsmål fra fællesskabet.",
         "home.hello": "Hej",
         "home.welcome": "Velkommen til MinApp.",
         "hb.map": "Smoke spots",
@@ -1980,6 +2393,36 @@
       },
       en: {
         "locale": "en-GB",
+        "hb.diary": "Diary",
+        "hb.checklist": "Checklist",
+        "forum.placeholder": "What's happening?",
+        "forum.photo": "Photo",
+        "forum.share": "Post",
+        "forum.empty": "No posts yet. Share something, or add friends to see their posts.",
+        "forum.errEmpty": "Write something or add a photo",
+        "forum.posted": "Your post is live",
+        "forum.delete": "Delete",
+        "forum.confirmDelete": "Delete this post?",
+        "forum.deleted": "Post deleted",
+        "forum.justNow": "just now",
+        "diary.new": "＋ New entry",
+        "diary.newTitle": "New diary entry",
+        "diary.private": "🔒 Only you can see your diary",
+        "diary.empty": "Your diary is empty. Tap ＋ New entry to write the first one.",
+        "diary.addPhoto": "📷 Add a photo",
+        "diary.text": "Text",
+        "diary.textPh": "How was it?",
+        "diary.rating": "Rating",
+        "diary.saved": "Saved to your diary 📓",
+        "diary.confirmDelete": "Delete this diary entry?",
+        "check.tried": "tried",
+        "check.searchPh": "Search strains",
+        "check.none": "No strains found",
+        "check.all": "All",
+        "type.indica": "Indica",
+        "type.sativa": "Sativa",
+        "type.hybrid": "Hybrid",
+        "type.landrace": "Landrace",
         "guides.empty": "There are no guides yet.",
         "lang.title": "Choose language",
         "lang.sub": "You can always change it later in Profile",
@@ -2013,8 +2456,6 @@
         "nav.home": "Home",
         "nav.friends": "Friends",
         "nav.profile": "Profile",
-        "forum.empty": "No posts yet",
-        "forum.emptySub": "Discussions and questions from the community will show up here.",
         "home.hello": "Hey",
         "home.welcome": "Welcome to MinApp.",
         "hb.map": "Smoke spots",
@@ -2145,9 +2586,13 @@
       updateAuthTitles();
       renderMarkers();
       if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) renderBench();
+      renderChecklistChips();
+      renderChecklist();
       if (currentUserKey()) {
         renderProfile();
         renderFriends();
+        renderFeed();
+        renderDiary();
       }
     }
 
@@ -2373,6 +2818,9 @@
       }
       connectBenches();
       listenToFriends();
+      listenToPosts();
+      listenToDiary();
+      listenToChecklist();
 
       // Man starter altid på hjemmeskærmen
       showPage("home");
@@ -2383,6 +2831,9 @@
       profileUnsub = null;
       myProfile = null;
       stopFriends();
+      stopPosts();
+      stopDiary();
+      stopChecklist();
     }
 
     document.getElementById("logout").addEventListener("click", async () => {
@@ -2654,6 +3105,7 @@
       sheetBackdrop.classList.add("hidden");
       benchForm.classList.add("hidden");
       profileForm.classList.add("hidden");
+      diaryForm.classList.add("hidden");
     }
 
     sheetBackdrop.addEventListener("click", closeSheet);
@@ -2840,6 +3292,7 @@
 
       document.getElementById("home-name").textContent = myProfile.name;
       document.getElementById("avatar").innerHTML = avatarHTML(myProfile);
+      document.getElementById("composer-avatar").innerHTML = avatarHTML(myProfile);
       document.getElementById("profile-name").textContent = myProfile.name;
       document.getElementById("profile-since").textContent = myProfile.createdAt
         ? t("profile.since", { date: formatDate(myProfile.createdAt) })
@@ -2985,6 +3438,7 @@
         db.collection("friendships").where("users", "array-contains", me).onSnapshot((snap) => {
           friendships = toList(snap);
           renderFriends();
+          listenToPosts();
         }, onError),
         db.collection("friendRequests").where("to", "==", me).onSnapshot((snap) => {
           requestsIn = toList(snap);
@@ -3252,6 +3706,433 @@
         t("friends.removedToast", { name: nameOf(uid) })
       );
     }
+
+    // ==========================================================
+    // FORUM: opslag fra mig og mine venner
+    // ==========================================================
+    const postForm = document.getElementById("post-form");
+    const postPhotoInput = document.getElementById("post-photo-input");
+    const postPhotoWrap = document.getElementById("post-photo-wrap");
+    const postPhotoPreview = document.getElementById("post-photo-preview");
+    const feedEl = document.getElementById("feed");
+    let pendingPostPhoto = null;
+    let posts = [];
+    let postUnsubs = [];
+    let postAuthorsKey = "";
+    const postChunks = new Map();
+
+    // "for 5 minutter siden" / "5 minutes ago"
+    function timeAgo(time) {
+      const rtf = new Intl.RelativeTimeFormat(t("locale"), { numeric: "auto" });
+      const seconds = Math.round((time - Date.now()) / 1000);
+      const units = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
+      for (const [unit, size] of units) {
+        if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
+      }
+      return t("forum.justNow");
+    }
+
+    // Lyt efter opslag fra mig og alle mine venner
+    function listenToPosts() {
+      const me = currentUserKey();
+      if (!me || !db) return;
+      const authors = [me, ...friendships.map(otherUser)].sort();
+      const key = authors.join(",");
+      if (key === postAuthorsKey) return; // samme personer som før
+      stopPosts();
+      postAuthorsKey = key;
+
+      // Firestore kan højst søge på 30 personer ad gangen
+      for (let i = 0; i < authors.length; i += 30) {
+        const chunkIndex = i;
+        postUnsubs.push(
+          db.collection("posts").where("author", "in", authors.slice(i, i + 30)).onSnapshot(
+            (snap) => {
+              postChunks.set(chunkIndex, snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+              posts = [...postChunks.values()].flat().sort((a, b) => b.createdAt - a.createdAt).slice(0, 100);
+              renderFeed();
+            },
+            (error) => console.error(error)
+          )
+        );
+      }
+    }
+
+    function stopPosts() {
+      postUnsubs.forEach((unsub) => unsub());
+      postUnsubs = [];
+      postChunks.clear();
+      posts = [];
+      postAuthorsKey = "";
+    }
+
+    let feedToken = 0;
+
+    async function renderFeed() {
+      const me = currentUserKey();
+      if (!me) return;
+      const token = ++feedToken;
+      const others = [...new Set(posts.map((p) => p.author))].filter((uid) => uid !== me);
+      try {
+        await Promise.all(others.map((uid) => getProfile(uid)));
+      } catch (error) {
+        console.error(error);
+      }
+      if (token !== feedToken) return;
+
+      if (!posts.length) {
+        feedEl.innerHTML = `<p class="empty-note">${t("forum.empty")}</p>`;
+        return;
+      }
+      feedEl.innerHTML = posts.map((post) => {
+        const own = post.author === me;
+        const profile = (own ? myProfile : profileCache.get(post.author)) || { name: post.authorName || "?" };
+        return `
+          <article class="post">
+            <header class="post-head">
+              <span class="avatar avatar-sm" data-person="${esc(post.author)}">${avatarHTML(profile)}</span>
+              <span class="post-meta" data-person="${esc(post.author)}">
+                <strong>${esc(profile.name)}</strong>
+                <small>${timeAgo(post.createdAt)}</small>
+              </span>
+              ${own ? `<button type="button" class="link-btn danger small" data-delete-post="${esc(post.id)}">${t("forum.delete")}</button>` : ""}
+            </header>
+            ${post.text ? `<p class="post-text">${esc(post.text)}</p>` : ""}
+            ${post.photo ? `<img class="post-photo" src="${esc(post.photo)}" alt="">` : ""}
+          </article>`;
+      }).join("");
+    }
+
+    function clearPostPhoto() {
+      pendingPostPhoto = null;
+      postPhotoInput.value = "";
+      postPhotoWrap.classList.add("hidden");
+    }
+
+    postPhotoInput.addEventListener("change", async () => {
+      const file = postPhotoInput.files[0];
+      if (!file) return;
+      try {
+        pendingPostPhoto = await resizeImage(file);
+        postPhotoPreview.src = pendingPostPhoto;
+        postPhotoWrap.classList.remove("hidden");
+      } catch {
+        showToast(t("img.failed"));
+      }
+    });
+
+    document.getElementById("post-photo-remove").addEventListener("click", clearPostPhoto);
+
+    postForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors(postForm);
+      const text = postForm.elements.text.value.trim();
+      if (!text && !pendingPostPhoto) return setError(postForm, t("forum.errEmpty"));
+
+      setBusy(postForm, true);
+      try {
+        await db.collection("posts").add({
+          author: currentUserKey(),
+          authorName: myProfile ? myProfile.name : "?",
+          text,
+          photo: pendingPostPhoto,
+          createdAt: Date.now(),
+        });
+        postForm.reset();
+        clearPostPhoto();
+        showToast(t("forum.posted"));
+      } catch (error) {
+        console.error(error);
+        setError(postForm, t("friends.failed"));
+      } finally {
+        setBusy(postForm, false);
+      }
+    });
+
+    feedEl.addEventListener("click", (e) => {
+      const del = e.target.closest("[data-delete-post]");
+      if (del) {
+        if (!confirm(t("forum.confirmDelete"))) return;
+        db.collection("posts").doc(del.dataset.deletePost).delete()
+          .then(() => showToast(t("forum.deleted")))
+          .catch(() => showToast(t("friends.failed")));
+        return;
+      }
+      // Tryk på en vens navn eller billede åbner deres profil
+      const person = e.target.closest("[data-person]");
+      if (person && person.dataset.person !== currentUserKey()) {
+        showPage("friends");
+        openPerson(person.dataset.person);
+      }
+    });
+
+    // ==========================================================
+    // DAGBOG: private opslag med billede, tekst og rating
+    // ==========================================================
+    // Gemmes i diary/{mit id}/entries, som kun jeg selv kan læse
+    const diaryForm = document.getElementById("diary-form");
+    const diaryList = document.getElementById("diary-list");
+    const diaryStars = document.getElementById("diary-stars");
+    const diaryPhotoInput = document.getElementById("diary-photo-input");
+    const diaryPhotoPreview = document.getElementById("diary-photo-preview");
+    const diaryPhotoText = document.getElementById("diary-photo-text");
+    let diaryEntries = [];
+    let diaryUnsub = null;
+    let pendingDiaryPhoto = null;
+    let diaryRating = 0;
+
+    function diaryRef() {
+      return db.collection("diary").doc(currentUserKey()).collection("entries");
+    }
+
+    function listenToDiary() {
+      if (diaryUnsub) return;
+      diaryUnsub = diaryRef().orderBy("createdAt", "desc").onSnapshot(
+        (snap) => {
+          diaryEntries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          renderDiary();
+        },
+        (error) => console.error(error)
+      );
+    }
+
+    function stopDiary() {
+      if (diaryUnsub) diaryUnsub();
+      diaryUnsub = null;
+      diaryEntries = [];
+    }
+
+    function renderDiary() {
+      if (!diaryEntries.length) {
+        diaryList.innerHTML = `<p class="empty-note">${t("diary.empty")}</p>`;
+        return;
+      }
+      diaryList.innerHTML = diaryEntries.map((entry) => `
+        <article class="diary-entry">
+          ${entry.photo ? `<img class="diary-photo" src="${esc(entry.photo)}" alt="">` : ""}
+          <div class="diary-body">
+            <div class="diary-top">
+              <small class="muted">${formatDate(entry.createdAt)}</small>
+              ${entry.rating ? `<span class="stars">${starsText(entry.rating)}</span>` : ""}
+            </div>
+            ${entry.text ? `<p class="diary-text">${esc(entry.text)}</p>` : ""}
+            <button type="button" class="link-btn danger small" data-delete-diary="${esc(entry.id)}">${t("forum.delete")}</button>
+          </div>
+        </article>`).join("");
+    }
+
+    function openDiarySheet() {
+      diaryForm.reset();
+      clearErrors(diaryForm);
+      pendingDiaryPhoto = null;
+      diaryRating = 0;
+      diaryStars.innerHTML = starInputHTML(0);
+      diaryPhotoPreview.classList.add("hidden");
+      diaryPhotoText.classList.remove("hidden");
+      sheetBackdrop.classList.remove("hidden");
+      diaryForm.classList.remove("hidden");
+    }
+
+    document.getElementById("new-diary").addEventListener("click", openDiarySheet);
+    document.getElementById("diary-cancel").addEventListener("click", closeSheet);
+
+    diaryStars.addEventListener("click", (e) => {
+      const star = e.target.closest("[data-rate]");
+      if (!star) return;
+      diaryRating = Number(star.dataset.rate);
+      diaryStars.innerHTML = starInputHTML(diaryRating);
+    });
+
+    diaryPhotoInput.addEventListener("change", async () => {
+      const file = diaryPhotoInput.files[0];
+      if (!file) return;
+      try {
+        pendingDiaryPhoto = await resizeImage(file);
+        diaryPhotoPreview.src = pendingDiaryPhoto;
+        diaryPhotoPreview.classList.remove("hidden");
+        diaryPhotoText.classList.add("hidden");
+      } catch {
+        showToast(t("img.failed"));
+      }
+    });
+
+    diaryForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors(diaryForm);
+      const text = diaryForm.elements.text.value.trim();
+      if (!text && !pendingDiaryPhoto) return setError(diaryForm, t("forum.errEmpty"));
+
+      setBusy(diaryForm, true);
+      try {
+        await diaryRef().add({ text, photo: pendingDiaryPhoto, rating: diaryRating, createdAt: Date.now() });
+        closeSheet();
+        showToast(t("diary.saved"));
+      } catch (error) {
+        console.error(error);
+        setError(diaryForm, t("friends.failed"));
+      } finally {
+        setBusy(diaryForm, false);
+      }
+    });
+
+    diaryList.addEventListener("click", (e) => {
+      const del = e.target.closest("[data-delete-diary]");
+      if (!del || !confirm(t("diary.confirmDelete"))) return;
+      diaryRef().doc(del.dataset.deleteDiary).delete().catch(() => showToast(t("friends.failed")));
+    });
+
+    // ==========================================================
+    // TJEKLISTE: cannabissorter fra hele verden
+    // ==========================================================
+    // [navn, type, flag for landrace-sorter fra et bestemt land]
+    const STRAINS = [
+      // Landrace: oprindelige sorter, der er vokset vildt i deres hjemland
+      ["Afghani", "landrace", "🇦🇫"], ["Hindu Kush", "landrace", "🇦🇫"], ["Mazar-i-Sharif", "landrace", "🇦🇫"],
+      ["Kandahar", "landrace", "🇦🇫"], ["Lashkar Gah", "landrace", "🇦🇫"], ["Pakistani Chitral Kush", "landrace", "🇵🇰"],
+      ["Kashmiri", "landrace", "🇮🇳"], ["Malana Cream", "landrace", "🇮🇳"], ["Nepalese", "landrace", "🇳🇵"],
+      ["Lebanese", "landrace", "🇱🇧"], ["Moroccan", "landrace", "🇲🇦"], ["Durban Poison", "landrace", "🇿🇦"],
+      ["Transkei", "landrace", "🇿🇦"], ["Swazi Gold", "landrace", "🇸🇿"], ["Malawi Gold", "landrace", "🇲🇼"],
+      ["Congolese", "landrace", "🇨🇩"], ["Angola Red", "landrace", "🇦🇴"], ["Ethiopian Highland", "landrace", "🇪🇹"],
+      ["Zamal", "landrace", "🇷🇪"], ["Acapulco Gold", "landrace", "🇲🇽"], ["Oaxacan", "landrace", "🇲🇽"],
+      ["Michoacán", "landrace", "🇲🇽"], ["Guerrero", "landrace", "🇲🇽"], ["Panama Red", "landrace", "🇵🇦"],
+      ["Colombian Gold", "landrace", "🇨🇴"], ["Punta Roja", "landrace", "🇨🇴"], ["Lamb's Bread", "landrace", "🇯🇲"],
+      ["King's Bread", "landrace", "🇯🇲"], ["Manga Rosa", "landrace", "🇧🇷"], ["Thai", "landrace", "🇹🇭"],
+      ["Chocolate Thai", "landrace", "🇹🇭"], ["Vietnamese Black", "landrace", "🇻🇳"], ["Cambodian", "landrace", "🇰🇭"],
+      ["Laos", "landrace", "🇱🇦"], ["Burmese", "landrace", "🇲🇲"], ["Kona Gold", "landrace", "🇺🇸"],
+      ["Puna Budder", "landrace", "🇺🇸"], ["Ruderalis", "landrace", "🇷🇺"],
+
+      // Indica
+      ["Northern Lights", "indica"], ["Granddaddy Purple", "indica"], ["Bubba Kush", "indica"],
+      ["Purple Kush", "indica"], ["Master Kush", "indica"], ["Afghan Kush", "indica"], ["Hash Plant", "indica"],
+      ["Blueberry", "indica"], ["Critical Mass", "indica"], ["Ice Cream Cake", "indica"], ["Mendo Breath", "indica"],
+      ["Purple Urkle", "indica"], ["Grape Ape", "indica"], ["God's Gift", "indica"], ["Death Star", "indica"],
+      ["Skywalker OG", "indica"], ["Kosher Kush", "indica"], ["9 Pound Hammer", "indica"], ["Platinum OG", "indica"],
+      ["MK Ultra", "indica"], ["Romulan", "indica"], ["Black Domina", "indica"], ["LA Confidential", "indica"],
+      ["Purple Punch", "indica"], ["Big Bud", "indica"], ["White Rhino", "indica"], ["Critical Kush", "indica"],
+      ["Zkittlez", "indica"], ["Do-Si-Dos", "indica"], ["Peanut Butter Breath", "indica"], ["Blackberry Kush", "indica"],
+      ["Pink Kush", "indica"], ["Lavender", "indica"], ["Sensi Star", "indica"], ["G13", "indica"],
+
+      // Sativa
+      ["Jack Herer", "sativa"], ["Sour Diesel", "sativa"], ["Green Crack", "sativa"], ["Super Silver Haze", "sativa"],
+      ["Amnesia Haze", "sativa"], ["Strawberry Cough", "sativa"], ["Super Lemon Haze", "sativa"], ["Lemon Haze", "sativa"],
+      ["Tangie", "sativa"], ["Maui Wowie", "sativa"], ["Harlequin", "sativa"], ["Ghost Train Haze", "sativa"],
+      ["Trainwreck", "sativa"], ["Willie Nelson", "sativa"], ["Red Congolese", "sativa"], ["Neville's Haze", "sativa"],
+      ["Original Haze", "sativa"], ["Kali Mist", "sativa"], ["Cinderella 99", "sativa"], ["Clementine", "sativa"],
+      ["Agent Orange", "sativa"], ["XJ-13", "sativa"], ["Island Sweet Skunk", "sativa"], ["Laughing Buddha", "sativa"],
+      ["Chocolope", "sativa"], ["J1", "sativa"], ["Mango Haze", "sativa"], ["Silver Haze", "sativa"],
+      ["Purple Haze", "sativa"], ["Candyland", "sativa"], ["Hawaiian Snow", "sativa"], ["Golden Goat", "sativa"],
+      ["Charlotte's Web", "sativa"], ["Moby Dick", "sativa"], ["Power Plant", "sativa"], ["Casey Jones", "sativa"],
+      ["Allen Wrench", "sativa"], ["Chernobyl", "sativa"], ["NYC Diesel", "sativa"], ["Durban Thai", "sativa"],
+
+      // Hybrid
+      ["OG Kush", "hybrid"], ["Girl Scout Cookies", "hybrid"], ["Gelato", "hybrid"], ["Wedding Cake", "hybrid"],
+      ["Gorilla Glue #4", "hybrid"], ["Runtz", "hybrid"], ["Pink Runtz", "hybrid"], ["White Widow", "hybrid"],
+      ["AK-47", "hybrid"], ["Skunk #1", "hybrid"], ["Super Skunk", "hybrid"], ["Pineapple Express", "hybrid"],
+      ["Bruce Banner", "hybrid"], ["Blue Dream", "hybrid"], ["Headband", "hybrid"], ["Cherry Pie", "hybrid"],
+      ["Sunset Sherbet", "hybrid"], ["Biscotti", "hybrid"], ["Gary Payton", "hybrid"], ["Jealousy", "hybrid"],
+      ["Apple Fritter", "hybrid"], ["Banana OG", "hybrid"], ["Banana Kush", "hybrid"], ["Lemon Cherry Gelato", "hybrid"],
+      ["MAC (Miracle Alien Cookies)", "hybrid"], ["Tropicana Cookies", "hybrid"], ["Animal Cookies", "hybrid"],
+      ["Thin Mint GSC", "hybrid"], ["Fire OG", "hybrid"], ["SFV OG", "hybrid"], ["Larry OG", "hybrid"],
+      ["Tahoe OG", "hybrid"], ["Triangle Kush", "hybrid"], ["Cookies and Cream", "hybrid"], ["Slurricane", "hybrid"],
+      ["Cereal Milk", "hybrid"], ["Gushers", "hybrid"], ["Oreoz", "hybrid"], ["Permanent Marker", "hybrid"],
+      ["Blue Cookies", "hybrid"], ["Lava Cake", "hybrid"], ["Kush Mints", "hybrid"], ["GMO Cookies", "hybrid"],
+      ["Stardawg", "hybrid"], ["Chemdawg", "hybrid"], ["Cheese", "hybrid"], ["Exodus Cheese", "hybrid"],
+      ["Blue Cheese", "hybrid"], ["Strawberry Banana", "hybrid"], ["Mimosa", "hybrid"], ["Jillybean", "hybrid"],
+      ["Lemon Skunk", "hybrid"], ["Bubblegum", "hybrid"], ["Orange Bud", "hybrid"], ["White Russian", "hybrid"],
+      ["Cannatonic", "hybrid"], ["ACDC", "hybrid"], ["Dutch Treat", "hybrid"], ["Lemon Kush", "hybrid"],
+      ["Pineapple Kush", "hybrid"], ["Lemon Tree", "hybrid"], ["Wedding Crasher", "hybrid"], ["Platinum Cookies", "hybrid"],
+      ["Grape Pie", "hybrid"], ["Forbidden Fruit", "hybrid"], ["Papaya", "hybrid"], ["Sundae Driver", "hybrid"],
+      ["London Pound Cake", "hybrid"], ["Blue Mystic", "hybrid"], ["Big Buddha Cheese", "hybrid"], ["Royal Kush", "hybrid"],
+    ];
+
+    const checkList = document.getElementById("check-list");
+    const checkSearch = document.getElementById("check-search");
+    let checked = {};
+    let checklistUnsub = null;
+    let checkFilter = "all";
+
+    function strainId(name) {
+      return name.toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    }
+
+    function checklistRef() {
+      return db.collection("checklists").doc(currentUserKey());
+    }
+
+    function listenToChecklist() {
+      if (checklistUnsub) return;
+      checklistUnsub = checklistRef().onSnapshot(
+        (doc) => {
+          checked = (doc.exists && doc.data().checked) || {};
+          renderChecklist();
+        },
+        (error) => console.error(error)
+      );
+    }
+
+    function stopChecklist() {
+      if (checklistUnsub) checklistUnsub();
+      checklistUnsub = null;
+      checked = {};
+    }
+
+    function renderChecklistChips() {
+      const filters = ["all", "indica", "sativa", "hybrid", "landrace"];
+      document.getElementById("check-chips").innerHTML = filters
+        .map((f) => `<button type="button" class="chip ${f === checkFilter ? "active" : ""}" data-filter="${f}">${t(f === "all" ? "check.all" : "type." + f)}</button>`)
+        .join("");
+    }
+
+    function renderChecklist() {
+      const query = checkSearch.value.trim().toLowerCase();
+      const done = STRAINS.filter(([name]) => checked[strainId(name)]).length;
+      document.getElementById("check-count").textContent = done;
+      document.getElementById("check-total").textContent = STRAINS.length;
+      document.getElementById("check-bar").style.width = `${(done / STRAINS.length) * 100}%`;
+
+      const list = STRAINS
+        .filter(([name, type]) => (checkFilter === "all" || type === checkFilter) && name.toLowerCase().includes(query))
+        .sort((a, b) => a[0].localeCompare(b[0]));
+
+      checkList.innerHTML = list.length
+        ? list.map(([name, type, flag]) => {
+            const id = strainId(name);
+            const on = !!checked[id];
+            return `
+              <button type="button" class="check-row ${on ? "done" : ""}" data-strain="${id}" aria-pressed="${on}">
+                <span class="check-box">${on ? "✓" : ""}</span>
+                <span class="check-name">${esc(name)}${flag ? ` <span class="flag-sm">${flag}</span>` : ""}</span>
+                <span class="type-tag ${type}">${t("type." + type)}</span>
+              </button>`;
+          }).join("")
+        : `<p class="empty-note">${t("check.none")}</p>`;
+    }
+
+    document.getElementById("check-chips").addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-filter]");
+      if (!chip) return;
+      checkFilter = chip.dataset.filter;
+      renderChecklistChips();
+      renderChecklist();
+    });
+
+    checkSearch.addEventListener("input", renderChecklist);
+
+    // Sæt eller fjern flueben (vises med det samme, gemmes bagefter)
+    checkList.addEventListener("click", (e) => {
+      const row = e.target.closest("[data-strain]");
+      if (!row) return;
+      const id = row.dataset.strain;
+      const on = !checked[id];
+      if (on) checked[id] = true;
+      else delete checked[id];
+      renderChecklist();
+      checklistRef()
+        .set({ checked: { [id]: on ? true : firebase.firestore.FieldValue.delete() } }, { merge: true })
+        .catch(() => showToast(t("friends.failed")));
+    });
+
+    renderChecklistChips();
 
     // ---------- Start ----------
     // Første gang vælger man sprog. Er man logget ind, springes login over.
