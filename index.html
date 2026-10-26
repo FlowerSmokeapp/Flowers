@@ -1471,18 +1471,21 @@
       min-width: 0;
     }
 
-    .person-text strong {
+    .person-text strong,
+    .person-text small {
       display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .person-text strong {
       font-size: 16px;
     }
 
     .person-text small {
-      display: block;
       color: var(--muted);
       font-size: 13px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .row-actions {
