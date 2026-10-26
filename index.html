@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+
+  <!-- iPhone: kan føjes til hjemmeskærmen og køre i fuldskærm -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MinApp">
+  <meta name="theme-color" content="#f5f5f7">
+
+  <title>MinApp</title>
+
+  <!-- Leaflet: gratis kortbibliotek til Verdenskortet (kræver internet) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Firebase: fælles database, så alle kan se bænkene (kræver internet) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    /* ==========================================================
+       FARVER OG VARIABLER
+       ========================================================== */
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --border: #d2d2d7;
+      --primary: #007aff;
+      --primary-pressed: #0062cc;
+      --error: #ff3b30;
+      --tabbar-bg: rgba(249, 249, 249, 0.85);
+      --radius: 14px;
+
+      /* Plads til notch/Dynamic Island og home-linjen.
+         På en rigtig iPhone kommer værdierne fra telefonen selv. */
+      --safe-top: env(safe-area-inset-top);
+      --safe-bottom: env(safe-area-inset-bottom);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000;
+        --card: #1c1c1e;
+        --text: #f5f5f7;
+        --muted: #98989d;
+        --border: #38383a;
+        --primary: #0a84ff;
+        --primary-pressed: #0066cc;
+        --error: #ff453a;
+        --tabbar-bg: rgba(28, 28, 30, 0.85);
+      }
+    }
+
+    /* ==========================================================
+       GRUNDLÆGGENDE
+       ========================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    /* ==========================================================
+       TELEFONRAMME (kun på computerskærm)
+       På en rigtig telefon fylder appen bare hele skærmen.
+       ========================================================== */
+    .phone,
+    .phone-screen {
+      height: 100%;
+    }
+
+    .status-bar,
+    .home-indicator,
+    .island {
+      display: none;
+    }
+
+    @media (min-width: 600px) and (min-height: 700px) {
+      :root {
+        --safe-top: 54px;
+        --safe-bottom: 34px;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 24px;
+        background: radial-gradient(circle at 30% 20%, #dfe7f5, #b9c3d6);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: radial-gradient(circle at 30% 20%, #2a2f3a, #0d0f14);
+        }
+      }
+
+      .phone {
+        position: relative;
+        width: 393px;
+        height: 852px;
+        max-height: calc(100vh - 48px);
+        flex-shrink: 0;
+        border-radius: 60px;
+        border: 12px solid #1a1a1a;
+        background: var(--bg);
+        box-shadow:
+          0 0 0 2px #3a3a3a,
+          0 30px 80px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+        /* Gør at "position: fixed" (menu, toast) sidder fast i telefonen
+           i stedet for i browservinduet */
+        transform: translateZ(0);
+      }
+
+      .phone-screen {
+        height: 100%;
+        overflow-y: auto;
+        scrollbar-width: none;
+      }
+
+      .phone-screen::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Dynamic Island */
+      .island {
+        display: block;
+        position: absolute;
+        top: 11px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 122px;
+        height: 36px;
+        border-radius: 20px;
+        background: #000;
+        z-index: 30;
+      }
+
+      /* Statuslinje med ur, signal og batteri */
+      .status-bar {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 54px;
+        padding: 0 30px 0 44px;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        background: var(--bg);
+        z-index: 20;
+      }
+
+      .status-icons {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .status-icons svg {
+        height: 12px;
+        fill: currentColor;
+      }
+
+      /* Home-linjen i bunden */
+      .home-indicator {
+        display: block;
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 134px;
+        height: 5px;
+        border-radius: 3px;
+        background: var(--text);
+        z-index: 30;
+      }
+    }
+
+    /* ==========================================================
+       LOGIN / OPRET KONTO
+       ========================================================== */
+    .screen {
+      min-height: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+      padding: calc(var(--safe-top) + 48px) 20px calc(var(--safe-bottom) + 24px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+    }
+
+    .brand h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 6px;
+    }
+
+    .brand p {
+      font-size: 16px;
+    }
+
+    /* Faneblade (segmented control) */
+    .tabs {
+      position: relative;
+      display: flex;
+      background: var(--border);
+      border-radius: 10px;
+      padding: 2px;
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      padding: 9px 0;
+      cursor: pointer;
+    }
+
+    .tab-indicator {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: calc(50% - 2px);
+      height: calc(100% - 4px);
+      background: var(--card);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      transition: transform 0.25s ease;
+    }
+
+    .tabs.signup .tab-indicator {
+      transform: translateX(100%);
+    }
+
+    /* Formular */
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field > span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      padding-left: 4px;
+    }
+
+    /* 16px skriftstørrelse forhindrer at iOS zoomer ind ved fokus */
+    input,
+    textarea {
+      width: 100%;
+      font: inherit;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    textarea {
+      resize: none;
+      min-height: 80px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+    }
+
+    input.invalid,
+    input.invalid:focus {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.2);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 64px;
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      color: var(--primary);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .error {
+      min-height: 18px;
+      font-size: 14px;
+      color: var(--error);
+      padding-left: 4px;
+    }
+
+    /* Knapper */
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+      border: none;
+      border-radius: var(--radius);
+      padding: 16px;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:active {
+      background: var(--primary-pressed);
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--error);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .link {
+      text-align: center;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 15px;
+      padding: 8px;
+    }
+
+    /* ==========================================================
+       APPEN EFTER LOGIN
+       ========================================================== */
+    .app {
+      height: 100%;
+    }
+
+    .page {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+      /* Plads i bunden så indholdet ikke gemmer sig bag menuen */
+      padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 100px);
+      animation: fadeIn 0.2s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page-title {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .profile-card {
+      text-align: center;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Menu i bunden (tab bar) */
+    .tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      display: flex;
+      padding: 6px 4px calc(var(--safe-bottom) + 6px);
+      background: var(--tabbar-bg);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border-top: 0.5px solid var(--border);
+    }
+
+    .tabbar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 4px 0;
+      cursor: pointer;
+    }
+
+    .tabbar-item svg {
+      width: 26px;
+      height: 26px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tabbar-item.active {
+      color: var(--primary);
+    }
+
+    .tabbar-item:active svg {
+      transform: scale(0.9);
+    }
+
+    /* ==========================================================
+       HÅNDBOG: undersider (menu, guides, kort, bænk)
+       ========================================================== */
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .back {
+      border: none;
+      background: none;
+      color: var(--primary);
+      font: inherit;
+      font-size: 17px;
+      padding: 4px 0;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    /* Store knapper i håndbogen */
+    .big-btn {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      width: 100%;
+      min-height: 130px;
+      padding: 24px 22px;
+      margin-bottom: 16px;
+      border: none;
+      border-radius: 22px;
+      color: #fff;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s;
+    }
+
+    .big-btn:active {
+      transform: scale(0.97);
+    }
+
+    .big-btn.guides {
+      background: linear-gradient(135deg, #ff9f0a, #ff5e3a);
+    }
+
+    .big-btn.map {
+      background: linear-gradient(135deg, #30d158, #0a84ff);
+    }
+
+    .big-icon {
+      font-size: 46px;
+    }
+
+    .big-btn strong {
+      display: block;
+      font-size: 26px;
+      margin-bottom: 4px;
+    }
+
+    .big-btn small {
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    /* Kategori-knapper */
+    .chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+      scrollbar-width: none;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 14px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* Liste med guides */
+    .guide-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--card);
+      color: var(--text);
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .guide-emoji {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+
+    .guide-item strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    .guide-item small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .chevron {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 20px;
+    }
+
+    /* En enkelt guide */
+    .guide-head {
+      margin-bottom: 16px;
+    }
+
+    .guide-head .guide-emoji {
+      width: 64px;
+      height: 64px;
+      font-size: 36px;
+      background: var(--card);
+      margin-bottom: 12px;
+    }
+
+    .guide-head h1 {
+      font-size: 28px;
+      letter-spacing: -0.4px;
+      margin-bottom: 4px;
+    }
+
+    .intro {
+      font-size: 17px;
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    .steps {
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .steps li {
+      position: relative;
+      counter-increment: step;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 14px 14px 54px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tip {
+      background: rgba(255, 204, 0, 0.18);
+      border-radius: var(--radius);
+      padding: 14px;
+      line-height: 1.4;
+      margin-top: 6px;
+    }
+
+    /* Verdenskort */
+    .page.map-mode.active {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding-bottom: calc(var(--safe-bottom) + 76px);
+    }
+
+    .map-view.active {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
+
+    .map-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .map-header h1 {
+      font-size: 22px;
+    }
+
+    .map-header .back {
+      margin: 0;
+      min-width: 90px;
+      text-align: left;
+    }
+
+    .icon-btn {
+      min-width: 90px;
+      text-align: right;
+      border: none;
+      background: none;
+      color: var(--primary);
+      font: inherit;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #map {
+      flex: 1;
+      z-index: 0;
+      border-radius: var(--radius);
+      background: var(--border);
+    }
+
+    .map-error {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .placing #map {
+      cursor: crosshair;
+    }
+
+    .fab {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 5;
+      border: none;
+      border-radius: 999px;
+      padding: 13px 18px;
+      background: var(--primary);
+      color: #fff;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    /* Kort/Satellit-knap på kortet */
+    .map-toggle {
+      display: flex;
+      padding: 2px;
+      border-radius: 10px;
+      background: var(--card);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .map-toggle button {
+      border: none;
+      background: none;
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .map-toggle button.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .leaflet-bar a {
+      width: 36px !important;
+      height: 36px !important;
+      line-height: 36px !important;
+      font-size: 20px !important;
+    }
+
+    .place-hint {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 70px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .place-hint button {
+      border: none;
+      background: none;
+      color: #5ac8fa;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Knappenål på kortet */
+    .bench-pin {
+      background: none;
+      border: none;
+    }
+
+    .pin {
+      position: absolute;
+      transform: translate(-50%, calc(-100% - 7px));
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 2px solid #fff;
+      background: #ff3b30;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    }
+
+    .pin::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -8px;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #fff;
+    }
+
+    /* Bænk-side */
+    .bench-photo {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: var(--radius);
+      background: var(--border);
+      margin-bottom: 16px;
+    }
+
+    .bench-name {
+      font-size: 26px;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
+
+    .stars {
+      color: #ffcc00;
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    .star-input {
+      display: flex;
+      gap: 4px;
+    }
+
+    .star-input button {
+      border: none;
+      background: none;
+      color: var(--border);
+      font-size: 34px;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .star-input button.on {
+      color: #ffcc00;
+    }
+
+    .star-input button:active {
+      transform: scale(1.2);
+    }
+
+    .card h3 {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .bench-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-plain {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: var(--card);
+      color: var(--primary);
+      font: inherit;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Bundark til at tilføje en bænk */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 51;
+      max-height: 92%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px 20px calc(var(--safe-bottom) + 20px);
+      border-radius: 20px 20px 0 0;
+      background: var(--bg);
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: none; }
+    }
+
+    .sheet h2 {
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .photo-pick {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      color: var(--muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .photo-pick img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-pick input {
+      display: none;
+    }
+
+    .sheet-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .sheet-actions button {
+      flex: 1;
+    }
+
+    /* ==========================================================
+       TOAST-BESKED
+       ========================================================== */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--safe-bottom) + 90px);
+      z-index: 60;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      background: rgba(30, 30, 30, 0.92);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 15px;
+      white-space: nowrap;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <!-- Kun synlige i telefonrammen på computer -->
+    <div class="island"></div>
+    <div class="status-bar">
+      <span id="clock">9:41</span>
+      <span class="status-icons">
+        <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+        <svg viewBox="0 0 16 12"><path d="M8 2.5a9 9 0 0 1 6.4 2.6l1.1-1.1A10.6 10.6 0 0 0 8 1 10.6 10.6 0 0 0 .5 4l1.1 1.1A9 9 0 0 1 8 2.5zm0 3.2a5.8 5.8 0 0 1 4.1 1.7l1.1-1.1A7.4 7.4 0 0 0 8 4.2a7.4 7.4 0 0 0-5.2 2.1l1.1 1.1A5.8 5.8 0 0 1 8 5.7zM8 9a2.4 2.4 0 0 0-1.7.7L8 11.5l1.7-1.8A2.4 2.4 0 0 0 8 9z"/></svg>
+        <svg viewBox="0 0 27 12"><rect x="0.5" y="0.5" width="23" height="11" rx="3" fill="none" stroke="currentColor" opacity="0.4"/><rect x="2" y="2" width="20" height="8" rx="1.8"/><rect x="24.5" y="4" width="2" height="4" rx="1" opacity="0.4"/></svg>
+      </span>
+    </div>
+    <div class="home-indicator"></div>
+
+    <div class="phone-screen" id="phone-screen">
+
+      <!-- ================= Login / Opret konto ================= -->
+      <main id="auth" class="screen">
+        <header class="brand">
+          <div class="logo">M</div>
+          <h1 id="title">Velkommen tilbage</h1>
+          <p id="subtitle" class="muted">Log ind for at fortsætte</p>
+        </header>
+
+        <!-- Faneblade: Log ind / Opret konto -->
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="login" role="tab">Log ind</button>
+          <button class="tab" data-tab="signup" role="tab">Opret konto</button>
+          <span class="tab-indicator"></span>
+        </div>
+
+        <!-- Log ind -->
+        <form id="login-form" class="form" novalidate>
+          <label class="field">
+            <span>E-mail</span>
+            <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="dig@eksempel.dk" required>
+          </label>
+          <label class="field">
+            <span>Adgangskode</span>
+            <div class="password-wrap">
+              <input type="password" name="password" autocomplete="current-password" placeholder="••••••••" required>
+              <button type="button" class="toggle-pw" aria-label="Vis adgangskode">Vis</button>
+            </div>
+          </label>
+          <p class="error" aria-live="polite"></p>
+          <button type="submit" class="btn-primary">Log ind</button>
+          <a href="#" class="link" id="forgot">Glemt adgangskode?</a>
+        </form>
+
+        <!-- Opret konto -->
+        <form id="signup-form" class="form hidden" novalidate>
+          <label class="field">
+            <span>Navn</span>
+            <input type="text" name="name" autocomplete="name" placeholder="Dit navn" required>
+          </label>
+          <label class="field">
+            <span>E-mail</span>
+            <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="dig@eksempel.dk" required>
+          </label>
+          <label class="field">
+            <span>Adgangskode</span>
+            <div class="password-wrap">
+              <input type="password" name="password" autocomplete="new-password" placeholder="Mindst 8 tegn" required minlength="8">
+              <button type="button" class="toggle-pw" aria-label="Vis adgangskode">Vis</button>
+            </div>
+          </label>
+          <label class="field">
+            <span>Gentag adgangskode</span>
+            <input type="password" name="confirm" autocomplete="new-password" placeholder="Gentag adgangskode" required>
+          </label>
+          <p class="error" aria-live="polite"></p>
+          <button type="submit" class="btn-primary">Opret konto</button>
+        </form>
+      </main>
+
+      <!-- ================= Appen (efter login) ================= -->
+      <div id="app" class="app hidden">
+        <section class="page" data-page="forum">
+          <h1 class="page-title">Forum</h1>
+          <div class="card">
+            <h2>Ingen opslag endnu</h2>
+            <p class="muted">Her kommer diskussioner og spørgsmål fra fællesskabet.</p>
+          </div>
+        </section>
+
+        <section class="page" data-page="handbook" id="handbook">
+          <!-- Håndbog: forside med store knapper -->
+          <div class="view active" data-view="hb-menu">
+            <h1 class="page-title">Håndbog</h1>
+            <button class="big-btn guides" data-go="guides">
+              <span class="big-icon">📖</span>
+              <span>
+                <strong>Guides</strong>
+                <small>Stole, bænke, borde og sofaer</small>
+              </span>
+            </button>
+            <button class="big-btn map" data-go="map">
+              <span class="big-icon">🌍</span>
+              <span>
+                <strong>Verdenskort</strong>
+                <small>Find og del verdens fedeste bænke</small>
+              </span>
+            </button>
+          </div>
+
+          <!-- Liste med guides -->
+          <div class="view" data-view="guides">
+            <button class="back" data-back>‹ Håndbog</button>
+            <h1 class="page-title">Guides</h1>
+            <div class="chips" id="guide-chips"></div>
+            <div id="guide-list"></div>
+          </div>
+
+          <!-- En enkelt guide -->
+          <div class="view" data-view="guide">
+            <button class="back" data-back>‹ Guides</button>
+            <div id="guide-detail"></div>
+          </div>
+
+          <!-- Verdenskort -->
+          <div class="view map-view" data-view="map" id="map-view">
+            <div class="map-header">
+              <button class="back" data-back>‹ Håndbog</button>
+              <h1>Verdenskort</h1>
+              <button class="icon-btn" id="locate-btn">📍 Mig</button>
+            </div>
+            <div id="map"></div>
+            <div id="map-empty" class="place-hint hidden">
+              <span>Ingen bænke endnu. Tryk på "+ Tilføj bænk" og sæt den første!</span>
+            </div>
+            <div id="place-hint" class="place-hint hidden">
+              <span>Tryk på kortet, hvor bænken står</span>
+              <button type="button" id="cancel-place">Annuller</button>
+            </div>
+            <button class="fab" id="add-bench-btn">+ Tilføj bænk</button>
+          </div>
+
+          <!-- En enkelt bænk -->
+          <div class="view" data-view="bench">
+            <button class="back" data-back>‹ Kort</button>
+            <div id="bench-detail"></div>
+          </div>
+        </section>
+
+        <section class="page" data-page="home">
+          <h1 class="page-title">Hjem</h1>
+          <div class="card">
+            <h2>Hej, <span id="home-name"></span> 👋</h2>
+            <p class="muted">Velkommen til MinApp.</p>
+          </div>
+        </section>
+
+        <section class="page" data-page="friends">
+          <h1 class="page-title">Venner</h1>
+          <div class="card">
+            <h2>Ingen venner endnu</h2>
+            <p class="muted">Find og tilføj venner her.</p>
+          </div>
+        </section>
+
+        <section class="page" data-page="profile">
+          <h1 class="page-title">Profil</h1>
+          <div class="card profile-card">
+            <div class="avatar" id="avatar"></div>
+            <h2 id="profile-name"></h2>
+            <p class="muted" id="profile-email"></p>
+          </div>
+          <button id="logout" class="btn-secondary">Log ud</button>
+        </section>
+
+        <!-- Menu i bunden -->
+        <nav class="tabbar">
+          <button class="tabbar-item" data-page="forum">
+            <svg viewBox="0 0 24 24"><path d="M4 5h16v10H9l-5 4z"/></svg>
+            <span>Forum</span>
+          </button>
+          <button class="tabbar-item" data-page="handbook">
+            <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>
+            <span>Håndbog</span>
+          </button>
+          <button class="tabbar-item active" data-page="home">
+            <svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg>
+            <span>Hjem</span>
+          </button>
+          <button class="tabbar-item" data-page="friends">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21.5 19"/></svg>
+            <span>Venner</span>
+          </button>
+          <button class="tabbar-item" data-page="profile">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            <span>Profil</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Bundark: tilføj en ny bænk -->
+    <div id="sheet-backdrop" class="sheet-backdrop hidden"></div>
+    <form id="bench-form" class="sheet hidden" novalidate>
+      <h2>Ny bænk</h2>
+      <label class="photo-pick" id="photo-pick">
+        <span id="photo-text">📷 Tilføj billede af bænken</span>
+        <img id="photo-preview" class="hidden" alt="">
+        <input type="file" accept="image/*" id="photo-input">
+      </label>
+      <label class="field">
+        <span>Navn på bænken</span>
+        <input type="text" name="name" placeholder="Fx Bænken ved søen" maxlength="60">
+      </label>
+      <label class="field">
+        <span>Hvorfor er den fed?</span>
+        <textarea name="desc" placeholder="Udsigt, sol, god til madpakken…" maxlength="400"></textarea>
+      </label>
+      <div class="field">
+        <span>Din bedømmelse</span>
+        <div class="star-input" id="form-stars"></div>
+      </div>
+      <p class="error" aria-live="polite"></p>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="sheet-cancel">Annuller</button>
+        <button type="submit" class="btn-primary">Sæt på kortet</button>
+      </div>
+    </form>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script>
+    // ---------- Elementer ----------
+    const tabs = document.querySelector(".tabs");
+    const tabButtons = document.querySelectorAll(".tab");
+    const loginForm = document.getElementById("login-form");
+    const signupForm = document.getElementById("signup-form");
+    const authScreen = document.getElementById("auth");
+    const appScreen = document.getElementById("app");
+    const phoneScreen = document.getElementById("phone-screen");
+    const title = document.getElementById("title");
+    const subtitle = document.getElementById("subtitle");
+    const toast = document.getElementById("toast");
+
+    // ---------- Ur i statuslinjen ----------
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent =
+        now.getHours() + ":" + String(now.getMinutes()).padStart(2, "0");
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+
+    // ---------- Lagring ----------
+    // OBS: Brugere gemmes lokalt i browseren (localStorage). Det er fint til
+    // udvikling, men en rigtig app skal have en server/database til login.
+    const USERS_KEY = "users";
+    const SESSION_KEY = "currentUser";
+
+    function getUsers() {
+      try {
+        return JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function toHex(bytes) {
+      return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    // Adgangskoder gemmes aldrig i klartekst - kun som SHA-256 hash med salt
+    async function hashPassword(password, salt) {
+      const data = new TextEncoder().encode(salt + password);
+      const hash = await crypto.subtle.digest("SHA-256", data);
+      return toHex(new Uint8Array(hash));
+    }
+
+    function randomSalt() {
+      return toHex(crypto.getRandomValues(new Uint8Array(16)));
+    }
+
+    // ---------- Hjælpefunktioner ----------
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    function setError(form, message) {
+      form.querySelector(".error").textContent = message;
+    }
+
+    function clearErrors(form) {
+      setError(form, "");
+      form.querySelectorAll("input").forEach((input) => input.classList.remove("invalid"));
+    }
+
+    function markInvalid(input) {
+      input.classList.add("invalid");
+      input.focus();
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function scrollToTop() {
+      window.scrollTo(0, 0);
+      phoneScreen.scrollTop = 0;
+    }
+
+    // ---------- Skift mellem Log ind / Opret konto ----------
+    function showTab(name) {
+      const isSignup = name === "signup";
+
+      tabs.classList.toggle("signup", isSignup);
+      tabButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === name));
+
+      loginForm.classList.toggle("hidden", isSignup);
+      signupForm.classList.toggle("hidden", !isSignup);
+
+      title.textContent = isSignup ? "Opret konto" : "Velkommen tilbage";
+      subtitle.textContent = isSignup ? "Det tager kun et minut" : "Log ind for at fortsætte";
+
+      clearErrors(loginForm);
+      clearErrors(signupForm);
+    }
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => showTab(btn.dataset.tab));
+    });
+
+    // ---------- Vis/skjul adgangskode ----------
+    document.querySelectorAll(".toggle-pw").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const input = btn.previousElementSibling;
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        btn.textContent = show ? "Skjul" : "Vis";
+      });
+    });
+
+    // ---------- Opret konto ----------
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors(signupForm);
+
+      const { name, email, password, confirm } = signupForm.elements;
+      const emailValue = email.value.trim().toLowerCase();
+
+      if (!name.value.trim()) {
+        markInvalid(name);
+        return setError(signupForm, "Skriv dit navn");
+      }
+      if (!isValidEmail(emailValue)) {
+        markInvalid(email);
+        return setError(signupForm, "Skriv en gyldig e-mail");
+      }
+      if (password.value.length < 8) {
+        markInvalid(password);
+        return setError(signupForm, "Adgangskoden skal være mindst 8 tegn");
+      }
+      if (password.value !== confirm.value) {
+        markInvalid(confirm);
+        return setError(signupForm, "Adgangskoderne er ikke ens");
+      }
+
+      const users = getUsers();
+      if (users[emailValue]) {
+        markInvalid(email);
+        return setError(signupForm, "Der findes allerede en konto med denne e-mail");
+      }
+
+      const salt = randomSalt();
+      users[emailValue] = {
+        name: name.value.trim(),
+        salt,
+        passwordHash: await hashPassword(password.value, salt),
+      };
+      saveUsers(users);
+
+      signupForm.reset();
+      login(emailValue);
+      showToast("Konto oprettet 🎉");
+    });
+
+    // ---------- Log ind ----------
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors(loginForm);
+
+      const { email, password } = loginForm.elements;
+      const emailValue = email.value.trim().toLowerCase();
+
+      if (!isValidEmail(emailValue)) {
+        markInvalid(email);
+        return setError(loginForm, "Skriv en gyldig e-mail");
+      }
+      if (!password.value) {
+        markInvalid(password);
+        return setError(loginForm, "Skriv din adgangskode");
+      }
+
+      const user = getUsers()[emailValue];
+      const hash = user && (await hashPassword(password.value, user.salt));
+
+      if (!user || hash !== user.passwordHash) {
+        return setError(loginForm, "Forkert e-mail eller adgangskode");
+      }
+
+      loginForm.reset();
+      login(emailValue);
+      showToast("Du er logget ind");
+    });
+
+    document.getElementById("forgot").addEventListener("click", (e) => {
+      e.preventDefault();
+      showToast("Kommer snart");
+    });
+
+    // ---------- Session ----------
+    function login(email) {
+      localStorage.setItem(SESSION_KEY, email);
+      showApp();
+    }
+
+    function showApp() {
+      const email = localStorage.getItem(SESSION_KEY);
+      const user = getUsers()[email];
+      if (!user) return showTab("login");
+
+      authScreen.classList.add("hidden");
+      appScreen.classList.remove("hidden");
+
+      document.getElementById("home-name").textContent = user.name;
+      document.getElementById("profile-name").textContent = user.name;
+      document.getElementById("profile-email").textContent = email;
+      document.getElementById("avatar").textContent = user.name.charAt(0).toUpperCase();
+
+      // Man starter altid på hjemmeskærmen
+      showPage("home");
+    }
+
+    document.getElementById("logout").addEventListener("click", () => {
+      localStorage.removeItem(SESSION_KEY);
+      closeSheet();
+      resetHandbook();
+      appScreen.classList.add("hidden");
+      authScreen.classList.remove("hidden");
+      showTab("login");
+      scrollToTop();
+      showToast("Du er logget ud");
+    });
+
+    // ---------- Menu i bunden ----------
+    const pages = document.querySelectorAll(".page");
+    const tabbarItems = document.querySelectorAll(".tabbar-item");
+
+    function showPage(name) {
+      const current = document.querySelector(".page.active");
+      // Tryk på Håndbog igen, når man allerede er der = tilbage til forsiden
+      if (name === "handbook" && current && current.dataset.page === "handbook") {
+        resetHandbook();
+      }
+      if (name !== "handbook") cancelPlacing();
+
+      pages.forEach((page) => page.classList.toggle("active", page.dataset.page === name));
+      tabbarItems.forEach((item) => item.classList.toggle("active", item.dataset.page === name));
+      scrollToTop();
+    }
+
+    tabbarItems.forEach((item) => {
+      item.addEventListener("click", () => showPage(item.dataset.page));
+    });
+
+    function esc(text) {
+      return String(text).replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+      })[c]);
+    }
+
+    // ==========================================================
+    // HÅNDBOG: navigation mellem undersider
+    // ==========================================================
+    const handbookPage = document.getElementById("handbook");
+    let viewStack = ["hb-menu"];
+
+    function showView(name) {
+      handbookPage.querySelectorAll(".view").forEach((view) => {
+        view.classList.toggle("active", view.dataset.view === name);
+      });
+      handbookPage.classList.toggle("map-mode", name === "map");
+      if (name !== "map") cancelPlacing();
+      if (name === "map") openMap();
+      scrollToTop();
+    }
+
+    function goView(name) {
+      viewStack.push(name);
+      showView(name);
+    }
+
+    function backView() {
+      if (viewStack.length > 1) viewStack.pop();
+      showView(viewStack[viewStack.length - 1]);
+    }
+
+    function resetHandbook() {
+      viewStack = ["hb-menu"];
+      showView("hb-menu");
+    }
+
+    handbookPage.querySelectorAll("[data-go]").forEach((btn) => {
+      btn.addEventListener("click", () => goView(btn.dataset.go));
+    });
+
+    handbookPage.querySelectorAll("[data-back]").forEach((btn) => {
+      btn.addEventListener("click", backView);
+    });
+
+    // ==========================================================
+    // GUIDES
+    // ==========================================================
+    const CATEGORIES = {
+      chairs:  { name: "Stole",  emoji: "🪑" },
+      benches: { name: "Bænke",  emoji: "🌳" },
+      tables:  { name: "Borde",  emoji: "🪵" },
+      sofas:   { name: "Sofaer", emoji: "🛋️" },
+    };
+
+    const GUIDES = [
+      // ---------- Stole ----------
+      {
+        id: "chair-wobbly",
+        cat: "chairs",
+        title: "Stram en vakkelvorn stol",
+        time: "15 min",
+        intro: "En stol, der vakler, har næsten altid en løs samling. Sådan får du den fast igen.",
+        steps: [
+          "Vend stolen om og find de samlinger, der giver sig, når du vrikker med benene.",
+          "Har stolen skruer eller beslag, så spænd dem med en skruetrækker eller unbrakonøgle.",
+          "Er samlingen limet og løs, så skil den forsigtigt ad og skrab den gamle lim af.",
+          "Kom ny trælim i hullet og på tappen, og saml stolen igen.",
+          "Pres samlingen sammen med en skruetvinge eller en stram strop, og tør overskydende lim af med en fugtig klud.",
+          "Lad limen tørre i mindst 24 timer, før stolen bruges.",
+        ],
+        tip: "Er et ben bare lidt for kort, kan en filtdup under benet ofte løse det, så du ikke skal save i de andre.",
+      },
+      {
+        id: "chair-reupholster",
+        cat: "chairs",
+        title: "Betræk et stolesæde",
+        time: "1 time",
+        intro: "Et nyt stof på sædet kan få en gammel stol til at se helt ny ud.",
+        steps: [
+          "Skru sædet af. Det sidder typisk fast med 4 skruer nedefra.",
+          "Fjern det gamle stof og hæfteklammerne med en lille fladskruetrækker og en tang.",
+          "Er skummet fladt, så skær et nyt stykke til, der er lidt større end sædepladen.",
+          "Læg stoffet med forsiden nedad, og læg skum og plade ovenpå. Klip stoffet til med 5-7 cm overskud hele vejen rundt.",
+          "Hæft først midt på hver side, mens du strammer stoffet, og arbejd dig derefter ud mod hjørnerne.",
+          "Fold hjørnerne pænt ind, som når man pakker en gave ind, og hæft dem.",
+          "Skru sædet på stolen igen.",
+        ],
+        tip: "Brug møbelstof. Almindeligt stof bliver hurtigt slidt igennem.",
+      },
+      {
+        id: "chair-office",
+        cat: "chairs",
+        title: "Vælg den rigtige kontorstol",
+        time: "5 min",
+        intro: "Du sidder måske flere tusind timer om året på din kontorstol, så den er værd at vælge med omhu.",
+        steps: [
+          "Højde: Fødderne skal stå fladt på gulvet, og knæene skal være i cirka 90 grader.",
+          "Siddedybde: Der skal være 2-4 fingres bredde mellem sædets forkant og knæhasen.",
+          "Ryg: Vælg en stol med lændestøtte, som kan justeres i højden.",
+          "Armlæn: De skal kunne sænkes, så skuldrene er afslappede, når du arbejder ved bordet.",
+          "Prøv stolen i mindst 10 minutter, før du køber den.",
+        ],
+        tip: "Den bedste siddestilling er den næste. Skift stilling og rejs dig jævnligt.",
+      },
+
+      // ---------- Bænke ----------
+      {
+        id: "bench-build",
+        cat: "benches",
+        title: "Byg en simpel havebænk",
+        time: "1 dag",
+        intro: "Med lidt træ, en sav og en skruemaskine kan du bygge en solid bænk til haven.",
+        steps: [
+          "Køb trykimprægneret træ eller hårdttræ, fx 45×95 mm reglar, og udendørs skruer i rustfrit eller galvaniseret stål.",
+          "Bestem målene: en sædehøjde på cirka 45 cm og en siddedybde på 35-45 cm er behageligt.",
+          "Sav og skru to ens endegavle (ben + tværstykke) sammen.",
+          "Skru 3-4 sædebrædder fast ovenpå med 5-8 mm mellemrum, så regnvand kan løbe af.",
+          "Er bænken længere end cirka 150 cm, så sæt en ekstra støtte på midten.",
+          "Slib kanterne runde, og behandl bænken med træolie.",
+        ],
+        tip: "Forbor skruehullerne tæt på enderne af brædderne, så træet ikke flækker.",
+      },
+      {
+        id: "bench-maintain",
+        cat: "benches",
+        title: "Vedligehold en træbænk udendørs",
+        time: "2 timer",
+        intro: "Lidt pleje en gang om året får en udendørs bænk til at holde i mange år.",
+        steps: [
+          "Børst snavs, mos og alger af, og vask bænken med vand og lidt brun sæbe.",
+          "Lad den tørre helt. Det kræver gerne et par tørre dage.",
+          "Slib let med sandpapir (korn 120) de steder, hvor træet er ru eller gråt.",
+          "Påfør træolie med en pensel i træets retning.",
+          "Tør den olie af, som ikke er trukket ind, efter 15-20 minutter.",
+          "Gentag 1-2 gange om året, gerne forår og efterår.",
+        ],
+        tip: "Klude med olie kan selvantænde! Læg dem i en spand vand, eller lad dem tørre udfoldet udendørs.",
+      },
+      {
+        id: "bench-find",
+        cat: "benches",
+        title: "Hvad gør en bænk fed?",
+        time: "3 min",
+        intro: "Nogle bænke er bare bedre end andre. Her er hvad du skal kigge efter, når du jagter den perfekte bænk.",
+        steps: [
+          "Udsigt: vand, skyline, solnedgang eller bare et godt sted at kigge på folk.",
+          "Sol og læ: en bænk med eftermiddagssol og læ for vinden er guld værd.",
+          "Komfort: ryglæn, en god sædehøjde og ikke for smalle brædder.",
+          "Ro: lidt væk fra trafik og larm.",
+          "Historie: en mindeplade, et særligt design eller en lokal legende.",
+        ],
+        tip: "Har du fundet en fed bænk? Sæt den på Verdenskortet, så andre også kan finde den!",
+      },
+
+      // ---------- Borde ----------
+      {
+        id: "table-rings",
+        cat: "tables",
+        title: "Fjern hvide ringe fra et træbord",
+        time: "20 min",
+        intro: "Hvide ringe fra kopper og glas er fugt, der sidder fast i overfladebehandlingen, ikke i selve træet. De kan ofte fjernes.",
+        steps: [
+          "Læg et tørt viskestykke af bomuld over pletten.",
+          "Stryg med et strygejern på lav varme og uden damp i 10-20 sekunder ad gangen.",
+          "Løft viskestykket og se efter. Gentag, indtil pletten er væk.",
+          "Hjælper det ikke, så gnid forsigtigt med en smule tandpasta (ikke gel) på en blød klud i træets retning.",
+          "Tør af og afslut med møbelpleje eller olie.",
+        ],
+        tip: "Mørke eller sorte ringe er trængt ind i træet og skal som regel slibes væk.",
+      },
+      {
+        id: "table-refinish",
+        cat: "tables",
+        title: "Slib og lakér et gammelt bord",
+        time: "En weekend",
+        intro: "Et slidt bord kan blive som nyt med slibning og ny overfladebehandling.",
+        steps: [
+          "Rengør bordet grundigt og lad det tørre.",
+          "Slib i træets retning med korn 80, derefter 120 og til sidst 180.",
+          "Støvsug og tør af med en let fugtig klud, så alt støv er væk.",
+          "Påfør et tyndt lag lak eller olie.",
+          "Slib let med korn 240, når laget er tørt, og fjern støvet.",
+          "Gentag, til du har 2-3 lag.",
+        ],
+        tip: "Arbejd i et rum med god udluftning, og brug støvmaske, når du sliber.",
+      },
+      {
+        id: "table-height",
+        cat: "tables",
+        title: "Vælg den rigtige bordhøjde",
+        time: "3 min",
+        intro: "De rigtige mål gør, at både bord og stole bliver behagelige at bruge.",
+        steps: [
+          "Spisebord: typisk 72-76 cm højt.",
+          "Der bør være 25-30 cm fra stolens sæde op til bordpladen.",
+          "Sofabord: cirka samme højde som sofaens sæde eller lidt lavere, typisk 40-50 cm.",
+          "Beregn cirka 60 cm bordkant per person ved et spisebord.",
+          "Hav 80-100 cm fra bordet til væggen, så stolene kan trækkes ud.",
+        ],
+        tip: "Til skrivebord er et hæve-sænkebord bedst, så du kan skifte mellem at sidde og stå.",
+      },
+
+      // ---------- Sofaer ----------
+      {
+        id: "sofa-stains",
+        cat: "sofas",
+        title: "Fjern pletter fra en stofsofa",
+        time: "15 min",
+        intro: "Jo hurtigere du tager fat i en plet, jo lettere er den at få væk.",
+        steps: [
+          "Find sofaens vaskemærke: W = vand, S = rensemiddel uden vand, W/S = begge dele, X = kun støvsugning.",
+          "Dup spildt væske op med køkkenrulle. Gnid aldrig, så spreder pletten sig.",
+          "Bland lunkent vand med lidt opvaskemiddel.",
+          "Dup pletten med en klud, og arbejd fra kanten ind mod midten.",
+          "Dup efter med en klud med rent vand, og dup derefter tørt.",
+          "Lad det tørre, og børst stoffet let op.",
+        ],
+        tip: "Test altid først et skjult sted, fx bag på en hynde.",
+      },
+      {
+        id: "sofa-leather",
+        cat: "sofas",
+        title: "Pleje af lædersofa",
+        time: "30 min",
+        intro: "Læder holder i mange år, hvis det ikke tørrer ud.",
+        steps: [
+          "Støvsug med et blødt børstemundstykke, også i sprækkerne.",
+          "Tør sofaen af med en let fugtig klud.",
+          "Rens med læderrens 2-4 gange om året.",
+          "Afslut med lædercreme eller balsam, så læderet ikke tørrer ud og revner.",
+          "Undgå at stille sofaen i direkte sol eller tæt på en radiator.",
+        ],
+        tip: "Spørg forhandleren hvilken type læder sofaen er lavet af. Anilinlæder kræver særlige plejemidler.",
+      },
+      {
+        id: "sofa-measure",
+        cat: "sofas",
+        title: "Mål op før du køber en sofa",
+        time: "10 min",
+        intro: "Intet er værre end en ny sofa, der ikke kan komme ind ad døren.",
+        steps: [
+          "Mål rummet, og marker sofaens mål på gulvet med malertape.",
+          "Mål døråbninger, gange, trappeopgange og elevator, også diagonalt.",
+          "En sofa er typisk 85-100 cm dyb. Vil du kunne slappe af, er en siddedybde på 50-60 cm god.",
+          "Hav cirka 40-50 cm mellem sofaen og sofabordet.",
+          "Tjek om ben og armlæn kan skrues af, hvis det bliver stramt.",
+        ],
+        tip: "Sæt dig i sofaen i butikken i mindst 5 minutter, gerne i den stilling du plejer at sidde i.",
+      },
+    ];
+
+    let guideFilter = "all";
+
+    function renderGuideChips() {
+      const chips = [["all", "Alle"]].concat(
+        Object.entries(CATEGORIES).map(([key, cat]) => [key, `${cat.emoji} ${cat.name}`])
+      );
+      document.getElementById("guide-chips").innerHTML = chips
+        .map(([key, label]) =>
+          `<button class="chip ${key === guideFilter ? "active" : ""}" data-cat="${key}">${label}</button>`)
+        .join("");
+    }
+
+    function renderGuideList() {
+      const list = GUIDES.filter((g) => guideFilter === "all" || g.cat === guideFilter);
+      document.getElementById("guide-list").innerHTML = list
+        .map((g) => `
+          <button class="guide-item" data-guide="${g.id}">
+            <span class="guide-emoji">${CATEGORIES[g.cat].emoji}</span>
+            <span>
+              <strong>${g.title}</strong>
+              <small>${CATEGORIES[g.cat].name} · ${g.time}</small>
+            </span>
+            <span class="chevron">›</span>
+          </button>`)
+        .join("");
+    }
+
+    function openGuide(id) {
+      const g = GUIDES.find((guide) => guide.id === id);
+      const cat = CATEGORIES[g.cat];
+      document.getElementById("guide-detail").innerHTML = `
+        <div class="guide-head">
+          <div class="guide-emoji">${cat.emoji}</div>
+          <h1>${g.title}</h1>
+          <p class="muted">${cat.name} · ${g.time}</p>
+        </div>
+        <p class="intro">${g.intro}</p>
+        <ol class="steps">${g.steps.map((step) => `<li>${step}</li>`).join("")}</ol>
+        <p class="tip">💡 ${g.tip}</p>`;
+      goView("guide");
+    }
+
+    document.getElementById("guide-chips").addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+      guideFilter = chip.dataset.cat;
+      renderGuideChips();
+      renderGuideList();
+    });
+
+    document.getElementById("guide-list").addEventListener("click", (e) => {
+      const item = e.target.closest(".guide-item");
+      if (item) openGuide(item.dataset.guide);
+    });
+
+    renderGuideChips();
+    renderGuideList();
+
+    // ==========================================================
+    // VERDENSKORT MED BÆNKE
+    // ==========================================================
+    // Bænkene gemmes i en fælles Firebase-database (Firestore),
+    // så alle brugere ser de samme bænke, billeder og ratings.
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGS0JZBnrk5ozRrSgmypds9dNnnoBriyo",
+      authDomain: "flower-438b9.firebaseapp.com",
+      projectId: "flower-438b9",
+      storageBucket: "flower-438b9.firebasestorage.app",
+      messagingSenderId: "634084372436",
+      appId: "1:634084372436:web:595ae8db1711f5ae9e3041",
+    };
+
+    let benchesRef = null;   // "benches"-samlingen i databasen
+    let benches = [];        // Seneste bænke hentet fra databasen
+
+    function connectBenches() {
+      if (benchesRef) return;
+      if (!window.firebase) {
+        showToast("Kunne ikke forbinde til databasen");
+        return;
+      }
+      firebase.initializeApp(firebaseConfig);
+      benchesRef = firebase.firestore().collection("benches");
+
+      // Lyt efter ændringer: kortet opdateres med det samme,
+      // når nogen tilføjer, bedømmer eller sletter en bænk
+      benchesRef.onSnapshot(
+        (snapshot) => {
+          benches = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          renderMarkers();
+          document.getElementById("map-empty").classList.toggle("hidden", benches.length > 0 || placing);
+          if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) {
+            renderBench();
+          }
+        },
+        (error) => {
+          console.error(error);
+          showToast("Kunne ikke hente bænke fra databasen");
+        }
+      );
+    }
+
+    function getBenches() {
+      return benches;
+    }
+
+    function averageRating(bench) {
+      const values = Object.values(bench.ratings || {});
+      if (!values.length) return 0;
+      return values.reduce((sum, v) => sum + v, 0) / values.length;
+    }
+
+    function starsText(value) {
+      const full = Math.round(value);
+      return "★".repeat(full) + "☆".repeat(5 - full);
+    }
+
+    function starInputHTML(value) {
+      return [1, 2, 3, 4, 5]
+        .map((n) => `<button type="button" data-rate="${n}" class="${n <= value ? "on" : ""}" aria-label="${n} stjerner">★</button>`)
+        .join("");
+    }
+
+    // ---------- Kortet ----------
+    const mapView = document.getElementById("map-view");
+    const addBenchBtn = document.getElementById("add-bench-btn");
+    const placeHint = document.getElementById("place-hint");
+    let map = null;
+    let markerLayer = null;
+    let placing = false;
+    let pendingLatLng = null;
+
+    function openMap() {
+      if (!map) {
+        if (!window.L) {
+          document.getElementById("map").innerHTML =
+            '<p class="map-error">Kortet kræver internetforbindelse 🌐</p>';
+          return;
+        }
+        map = L.map("map", { worldCopyJump: true, minZoom: 1, maxZoom: 20 }).setView([25, 10], 1);
+        map.zoomControl.setPosition("topleft");
+
+        // To korttyper: almindeligt vejkort og satellitbilleder
+        const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+        const streetLayer = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark ? "dark_all" : "rastertiles/voyager"}/{z}/{x}/{y}{r}.png`, {
+          attribution: "© OpenStreetMap © CARTO",
+          subdomains: "abcd",
+          maxNativeZoom: 19,
+          maxZoom: 20,
+        });
+        const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+          attribution: "© Esri",
+          maxNativeZoom: 18,
+          maxZoom: 20,
+        });
+        streetLayer.addTo(map);
+
+        // Knap oppe til højre: skift mellem Kort og Satellit
+        const LayerToggle = L.Control.extend({
+          onAdd() {
+            const box = L.DomUtil.create("div", "map-toggle");
+            box.innerHTML = `
+              <button type="button" class="active" data-layer="street">Kort</button>
+              <button type="button" data-layer="satellite">Satellit</button>`;
+            L.DomEvent.disableClickPropagation(box);
+            box.addEventListener("click", (e) => {
+              const btn = e.target.closest("[data-layer]");
+              if (!btn) return;
+              const satellite = btn.dataset.layer === "satellite";
+              map.removeLayer(satellite ? streetLayer : satelliteLayer);
+              map.addLayer(satellite ? satelliteLayer : streetLayer);
+              box.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b === btn));
+            });
+            return box;
+          },
+        });
+        new LayerToggle({ position: "topright" }).addTo(map);
+        L.control.scale({ imperial: false, position: "bottomleft" }).addTo(map);
+
+        markerLayer = L.layerGroup().addTo(map);
+        map.on("click", onMapClick);
+        connectBenches();
+      }
+      // Kortet skal måle sin størrelse igen, når det bliver synligt
+      setTimeout(() => map.invalidateSize(), 50);
+    }
+
+    function renderMarkers() {
+      if (!markerLayer) return;
+      markerLayer.clearLayers();
+      getBenches().forEach((bench) => {
+        const avg = averageRating(bench);
+        const icon = L.divIcon({
+          className: "bench-pin",
+          html: `<div class="pin">${avg ? "★ " + avg.toFixed(1) : "Ny"}</div>`,
+          iconSize: [0, 0],
+        });
+        L.marker([bench.lat, bench.lng], { icon })
+          .on("click", () => openBench(bench.id))
+          .addTo(markerLayer);
+      });
+    }
+
+    function startPlacing() {
+      placing = true;
+      document.getElementById("map-empty").classList.add("hidden");
+      mapView.classList.add("placing");
+      placeHint.classList.remove("hidden");
+      addBenchBtn.classList.add("hidden");
+    }
+
+    function cancelPlacing() {
+      placing = false;
+      mapView.classList.remove("placing");
+      placeHint.classList.add("hidden");
+      addBenchBtn.classList.remove("hidden");
+      document.getElementById("map-empty").classList.toggle("hidden", !benchesRef || benches.length > 0);
+    }
+
+    function onMapClick(e) {
+      if (!placing) return;
+      pendingLatLng = e.latlng;
+      cancelPlacing();
+      openSheet();
+    }
+
+    addBenchBtn.addEventListener("click", () => {
+      if (!map) return showToast("Kortet er ikke indlæst");
+      if (!benchesRef) return showToast("Ingen forbindelse til databasen");
+      startPlacing();
+    });
+    document.getElementById("cancel-place").addEventListener("click", cancelPlacing);
+
+    document.getElementById("locate-btn").addEventListener("click", () => {
+      if (!map || !navigator.geolocation) return showToast("Kan ikke finde din placering");
+      navigator.geolocation.getCurrentPosition(
+        (pos) => map.setView([pos.coords.latitude, pos.coords.longitude], 15),
+        () => showToast("Kan ikke finde din placering")
+      );
+    });
+
+    // ---------- Bundark: tilføj bænk ----------
+    const benchForm = document.getElementById("bench-form");
+    const sheetBackdrop = document.getElementById("sheet-backdrop");
+    const photoInput = document.getElementById("photo-input");
+    const photoPreview = document.getElementById("photo-preview");
+    const photoText = document.getElementById("photo-text");
+    const formStars = document.getElementById("form-stars");
+    let pendingPhoto = null;
+    let formRating = 0;
+
+    function openSheet() {
+      benchForm.reset();
+      clearErrors(benchForm);
+      pendingPhoto = null;
+      formRating = 0;
+      formStars.innerHTML = starInputHTML(0);
+      photoPreview.classList.add("hidden");
+      photoText.classList.remove("hidden");
+      sheetBackdrop.classList.remove("hidden");
+      benchForm.classList.remove("hidden");
+    }
+
+    function closeSheet() {
+      sheetBackdrop.classList.add("hidden");
+      benchForm.classList.add("hidden");
+    }
+
+    sheetBackdrop.addEventListener("click", closeSheet);
+    document.getElementById("sheet-cancel").addEventListener("click", closeSheet);
+
+    formStars.addEventListener("click", (e) => {
+      const star = e.target.closest("[data-rate]");
+      if (!star) return;
+      formRating = Number(star.dataset.rate);
+      formStars.innerHTML = starInputHTML(formRating);
+    });
+
+    // Gør billedet mindre, så det fylder mindre i hukommelsen
+    function resizeImage(file, maxSize = 900) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(img.src);
+          resolve(canvas.toDataURL("image/jpeg", 0.75));
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    photoInput.addEventListener("change", async () => {
+      const file = photoInput.files[0];
+      if (!file) return;
+      try {
+        pendingPhoto = await resizeImage(file);
+        photoPreview.src = pendingPhoto;
+        photoPreview.classList.remove("hidden");
+        photoText.classList.add("hidden");
+      } catch {
+        showToast("Billedet kunne ikke indlæses");
+      }
+    });
+
+    benchForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors(benchForm);
+      const { name, desc } = benchForm.elements;
+
+      if (!pendingPhoto) {
+        return setError(benchForm, "Tilføj et billede af bænken");
+      }
+      if (!name.value.trim()) {
+        markInvalid(name);
+        return setError(benchForm, "Giv bænken et navn");
+      }
+
+      const email = localStorage.getItem(SESSION_KEY);
+      const user = getUsers()[email];
+      const bench = {
+        name: name.value.trim(),
+        desc: desc.value.trim(),
+        lat: pendingLatLng.lat,
+        lng: pendingLatLng.lng,
+        photo: pendingPhoto,
+        addedBy: email,
+        addedByName: user ? user.name : "Ukendt",
+        createdAt: Date.now(),
+        ratings: formRating ? { [email]: formRating } : {},
+      };
+
+      const submitBtn = benchForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Gemmer…";
+      try {
+        // Giv op efter 15 sekunder, så knappen ikke hænger for evigt
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 15000));
+        const doc = await Promise.race([benchesRef.add(bench), timeout]);
+        closeSheet();
+        showToast("Bænken er sat på kortet 📍");
+        openBench(doc.id);
+      } catch (error) {
+        console.error(error);
+        setError(benchForm, "Bænken kunne ikke gemmes. Tjek din internetforbindelse.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Sæt på kortet";
+      }
+    });
+
+    // ---------- En enkelt bænk ----------
+    let currentBenchId = null;
+
+    function openBench(id) {
+      currentBenchId = id;
+      renderBench();
+      goView("bench");
+    }
+
+    function renderBench() {
+      const bench = getBenches().find((b) => b.id === currentBenchId);
+      const el = document.getElementById("bench-detail");
+      if (!bench) {
+        el.innerHTML = '<p class="muted">Bænken findes ikke længere.</p>';
+        return;
+      }
+
+      const email = localStorage.getItem(SESSION_KEY);
+      const avg = averageRating(bench);
+      const count = Object.keys(bench.ratings || {}).length;
+      const mine = (bench.ratings || {})[email] || 0;
+      const date = new Date(bench.createdAt).toLocaleDateString("da-DK");
+
+      el.innerHTML = `
+        <img class="bench-photo" src="${bench.photo}" alt="Billede af ${esc(bench.name)}">
+        <h1 class="bench-name">${esc(bench.name)}</h1>
+        <p class="muted">Tilføjet af ${esc(bench.addedByName)} · ${date}</p>
+        <div class="rating-row">
+          <span class="stars">${starsText(avg)}</span>
+          <strong>${avg ? avg.toFixed(1) : "-"}</strong>
+          <span class="muted">(${count} ${count === 1 ? "bedømmelse" : "bedømmelser"})</span>
+        </div>
+        ${bench.desc ? `<div class="card"><p>${esc(bench.desc)}</p></div>` : ""}
+        <div class="card">
+          <h3>${mine ? "Din bedømmelse" : "Giv bænken stjerner"}</h3>
+          <div class="star-input" id="bench-stars">${starInputHTML(mine)}</div>
+        </div>
+        <div class="bench-actions">
+          <button class="btn-plain" id="show-on-map">📍 Vis på kortet</button>
+          ${bench.addedBy === email ? '<button class="btn-secondary" id="delete-bench">Slet bænk</button>' : ""}
+        </div>`;
+
+      document.getElementById("bench-stars").addEventListener("click", (e) => {
+        const star = e.target.closest("[data-rate]");
+        if (star) rateBench(Number(star.dataset.rate));
+      });
+
+      document.getElementById("show-on-map").addEventListener("click", () => {
+        backView();
+        if (map) map.setView([bench.lat, bench.lng], 16);
+      });
+
+      const deleteBtn = document.getElementById("delete-bench");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", () => {
+          if (!confirm("Vil du slette denne bænk?")) return;
+          benchesRef.doc(bench.id).delete()
+            .then(() => {
+              backView();
+              showToast("Bænken er slettet");
+            })
+            .catch(() => showToast("Bænken kunne ikke slettes"));
+        });
+      }
+    }
+
+    function rateBench(stars) {
+      const email = localStorage.getItem(SESSION_KEY);
+      // FieldPath bruges, fordi e-mails indeholder punktummer
+      benchesRef.doc(currentBenchId)
+        .update(new firebase.firestore.FieldPath("ratings", email), stars)
+        .then(() => showToast(`Du gav ${stars} ${stars === 1 ? "stjerne" : "stjerner"} ⭐`))
+        .catch(() => showToast("Bedømmelsen kunne ikke gemmes"));
+    }
+
+    // Hvis man allerede er logget ind, så spring login over
+    if (localStorage.getItem(SESSION_KEY)) {
+      showApp();
+    }
+  </script>
+</body>
+</html>
