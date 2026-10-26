@@ -983,7 +983,7 @@
     .star-input button {
       border: none;
       background: none;
-      color: var(--border);
+      color: #3a413b;
       font-size: 34px;
       line-height: 1;
       padding: 0;
@@ -1502,76 +1502,14 @@
     /* ==========================================================
        FORUM
        ========================================================== */
-    .composer {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 14px;
-      margin-bottom: 18px;
-      border-radius: var(--radius);
-      background: var(--card);
-      border: 1px solid var(--border);
-    }
-
-    .composer-top {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .composer textarea {
-      min-height: 0;
-      padding: 10px 12px;
-      font-size: 16px;
-    }
-
-    .composer-photo {
-      position: relative;
-    }
-
-    .composer-photo img {
-      display: block;
-      width: 100%;
-      max-height: 280px;
-      object-fit: cover;
-      border-radius: 12px;
-    }
-
-    .remove-photo {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 30px;
-      height: 30px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.65);
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .composer-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .composer .error:empty {
-      display: none;
-    }
-
     .feed {
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .post {
-      padding: 14px;
-      border-radius: var(--radius);
-      background: var(--card);
-      border: 1px solid var(--border);
+    .entry-head {
+      padding: 12px 14px;
     }
 
     .post-head {
@@ -1599,26 +1537,12 @@
       font-size: 12px;
     }
 
-    .post-text {
-      margin-top: 10px;
-      line-height: 1.45;
-      white-space: pre-line;
-      overflow-wrap: anywhere;
-    }
-
-    .post-photo {
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-      border-radius: 12px;
-    }
-
     .link-btn.small {
       font-size: 13px;
     }
 
     /* ==========================================================
-       DAGBOG
+       JOINT LOG
        ========================================================== */
     .title-row {
       display: flex;
@@ -2230,25 +2154,11 @@
       <!-- ================= Appen (efter login) ================= -->
       <div id="app" class="app hidden">
         <section class="page" data-page="forum">
-          <h1 class="page-title" data-i18n="nav.forum">Forum</h1>
-
-          <!-- Skriv et opslag -->
-          <form id="post-form" class="composer" novalidate>
-            <div class="composer-top">
-              <span class="avatar avatar-sm" id="composer-avatar"></span>
-              <textarea name="text" maxlength="500" rows="2" data-i18n-ph="forum.placeholder" placeholder="Hvad sker der?"></textarea>
-            </div>
-            <div class="composer-photo hidden" id="post-photo-wrap">
-              <img id="post-photo-preview" alt="">
-              <button type="button" class="remove-photo" id="post-photo-remove" data-i18n-aria="profile.removePhoto" aria-label="Fjern billede">✕</button>
-            </div>
-            <p class="error" aria-live="polite"></p>
-            <div class="composer-actions">
-              <label class="link-btn" for="post-photo-input">📷 <span data-i18n="forum.photo">Billede</span></label>
-              <input type="file" accept="image/*" id="post-photo-input" class="hidden">
-              <button type="submit" class="mini-btn primary" data-i18n="forum.share">Del</button>
-            </div>
-          </form>
+          <div class="title-row">
+            <h1 class="page-title" data-i18n="nav.forum">Forum</h1>
+            <button type="button" class="mini-btn primary" id="new-post" data-i18n="diary.new">＋ Nyt opslag</button>
+          </div>
+          <p class="private-note" data-i18n="forum.note">Opslag fra dig og dine venner</p>
 
           <!-- Opslag fra mig og mine venner -->
           <div id="feed" class="feed"></div>
@@ -2273,7 +2183,7 @@
               </button>
               <button class="tile" data-go="diary">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
-                <strong data-i18n="hb.diary">Dagbog</strong>
+                <strong data-i18n="hb.diary">Joint Log</strong>
               </button>
               <button class="tile" data-go="checklist">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span>
@@ -2289,14 +2199,14 @@
             <p class="empty-note" data-i18n="guides.empty">Der er ingen guides endnu.</p>
           </div>
 
-          <!-- Dagbog (privat) -->
+          <!-- Joint Log (privat) -->
           <div class="view" data-view="diary">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <div class="title-row">
-              <h1 class="page-title" data-i18n="hb.diary">Dagbog</h1>
+              <h1 class="page-title" data-i18n="hb.diary">Joint Log</h1>
               <button type="button" class="mini-btn primary" id="new-diary" data-i18n="diary.new">＋ Nyt opslag</button>
             </div>
-            <p class="private-note" data-i18n="diary.private">🔒 Kun du kan se din dagbog</p>
+            <p class="private-note" data-i18n="diary.private">🔒 Kun du kan se din Joint Log</p>
             <div id="diary-list" class="diary-list"></div>
           </div>
 
@@ -2409,7 +2319,7 @@
           <h2 class="section-title" data-i18n="home.shortcuts">Genveje</h2>
           <div class="quick-grid">
             <button type="button" class="quick" data-shortcut="map"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span data-i18n="hb.map">Smoke spots</span></button>
-            <button type="button" class="quick" data-shortcut="diary"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span><span data-i18n="hb.diary">Dagbog</span></button>
+            <button type="button" class="quick" data-shortcut="diary"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span><span data-i18n="hb.diary">Joint Log</span></button>
             <button type="button" class="quick" data-shortcut="checklist"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span><span data-i18n="hb.checklist">Tjekliste</span></button>
             <button type="button" class="quick" data-shortcut="forum"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></span><span data-i18n="nav.forum">Forum</span></button>
           </div>
@@ -2523,9 +2433,9 @@
       </div>
     </form>
 
-    <!-- Bundark: nyt dagbogsopslag -->
+    <!-- Bundark: nyt opslag i Joint Log eller Forum (samme skema) -->
     <form id="diary-form" class="sheet hidden" novalidate>
-      <h2 data-i18n="diary.newTitle">Nyt dagbogsopslag</h2>
+      <h2 id="entry-title">Nyt log-opslag</h2>
       <label class="photo-pick">
         <span id="diary-photo-text" data-i18n="diary.addPhoto">📷 Tilføj billede</span>
         <img id="diary-photo-preview" class="hidden" alt="">
@@ -2533,7 +2443,7 @@
       </label>
       <label class="field">
         <span data-i18n="diary.text">Tekst</span>
-        <textarea name="text" maxlength="1000" data-i18n-ph="diary.textPh" placeholder="Hvordan var det?"></textarea>
+        <textarea name="text" maxlength="1000" data-i18n-ph="diary.textPh" placeholder="Hvad røg du, hvor og med hvem?"></textarea>
       </label>
       <div class="field">
         <span data-i18n="diary.rating">Rating</span>
@@ -2542,7 +2452,7 @@
       <p class="error" aria-live="polite"></p>
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="diary-cancel" data-i18n="common.cancel">Annuller</button>
-        <button type="submit" class="btn-primary" data-i18n="profile.save">Gem</button>
+        <button type="submit" class="btn-primary" id="entry-submit">Gem</button>
       </div>
     </form>
 
@@ -2668,6 +2578,8 @@
     const I18N = {
       da: {
         "locale": "da-DK",
+        "forum.newTitle": "Nyt opslag",
+        "forum.note": "Opslag fra dig og dine venner",
         "home.morning": "Godmorgen",
         "home.afternoon": "God eftermiddag",
         "home.evening": "God aften",
@@ -2699,10 +2611,8 @@
         "gcat.vote": "Afstemning",
         "gcat.chill": "Chill",
         "gcat.game": "Minispil",
-        "hb.diary": "Dagbog",
+        "hb.diary": "Joint Log",
         "hb.checklist": "Tjekliste",
-        "forum.placeholder": "Hvad sker der?",
-        "forum.photo": "Billede",
         "forum.share": "Del",
         "forum.empty": "Ingen opslag endnu. Del noget, eller tilføj venner for at se deres opslag.",
         "forum.errEmpty": "Skriv noget eller tilføj et billede",
@@ -2712,15 +2622,15 @@
         "forum.deleted": "Opslaget er slettet",
         "forum.justNow": "lige nu",
         "diary.new": "＋ Nyt opslag",
-        "diary.newTitle": "Nyt dagbogsopslag",
-        "diary.private": "🔒 Kun du kan se din dagbog",
-        "diary.empty": "Din dagbog er tom. Tryk på ＋ Nyt opslag for at skrive det første.",
+        "diary.newTitle": "Nyt log-opslag",
+        "diary.private": "🔒 Kun du kan se din Joint Log",
+        "diary.empty": "Din Joint Log er tom. Tryk på ＋ Nyt opslag for at skrive det første.",
         "diary.addPhoto": "📷 Tilføj billede",
         "diary.text": "Tekst",
-        "diary.textPh": "Hvordan var det?",
+        "diary.textPh": "Hvad røg du, hvor og med hvem?",
         "diary.rating": "Rating",
-        "diary.saved": "Gemt i din dagbog 📓",
-        "diary.confirmDelete": "Vil du slette dette dagbogsopslag?",
+        "diary.saved": "Gemt i din Joint Log 📓",
+        "diary.confirmDelete": "Vil du slette dette log-opslag?",
         "check.tried": "prøvet",
         "check.searchPh": "Søg efter sort",
         "check.none": "Ingen sorter fundet",
@@ -2852,6 +2762,8 @@
       },
       en: {
         "locale": "en-GB",
+        "forum.newTitle": "New post",
+        "forum.note": "Posts from you and your friends",
         "home.morning": "Good morning",
         "home.afternoon": "Good afternoon",
         "home.evening": "Good evening",
@@ -2883,10 +2795,8 @@
         "gcat.vote": "Vote",
         "gcat.chill": "Chill",
         "gcat.game": "Mini game",
-        "hb.diary": "Diary",
+        "hb.diary": "Joint Log",
         "hb.checklist": "Checklist",
-        "forum.placeholder": "What's happening?",
-        "forum.photo": "Photo",
         "forum.share": "Post",
         "forum.empty": "No posts yet. Share something, or add friends to see their posts.",
         "forum.errEmpty": "Write something or add a photo",
@@ -2896,15 +2806,15 @@
         "forum.deleted": "Post deleted",
         "forum.justNow": "just now",
         "diary.new": "＋ New entry",
-        "diary.newTitle": "New diary entry",
-        "diary.private": "🔒 Only you can see your diary",
-        "diary.empty": "Your diary is empty. Tap ＋ New entry to write the first one.",
+        "diary.newTitle": "New log entry",
+        "diary.private": "🔒 Only you can see your Joint Log",
+        "diary.empty": "Your Joint Log is empty. Tap ＋ New entry to write the first one.",
         "diary.addPhoto": "📷 Add a photo",
         "diary.text": "Text",
-        "diary.textPh": "How was it?",
+        "diary.textPh": "What did you smoke, where and with who?",
         "diary.rating": "Rating",
-        "diary.saved": "Saved to your diary 📓",
-        "diary.confirmDelete": "Delete this diary entry?",
+        "diary.saved": "Saved to your Joint Log 📓",
+        "diary.confirmDelete": "Delete this log entry?",
         "check.tried": "tried",
         "check.searchPh": "Search strains",
         "check.none": "No strains found",
@@ -3784,7 +3694,6 @@
       document.getElementById("home-greeting").textContent = t(greetingKey());
       document.getElementById("home-avatar").innerHTML = avatarHTML(myProfile);
       document.getElementById("avatar").innerHTML = avatarHTML(myProfile);
-      document.getElementById("composer-avatar").innerHTML = avatarHTML(myProfile);
       document.getElementById("profile-name").textContent = myProfile.name;
       document.getElementById("profile-since").textContent = myProfile.createdAt
         ? t("profile.since", { date: formatDate(myProfile.createdAt) })
@@ -4202,12 +4111,7 @@
     // ==========================================================
     // FORUM: opslag fra mig og mine venner
     // ==========================================================
-    const postForm = document.getElementById("post-form");
-    const postPhotoInput = document.getElementById("post-photo-input");
-    const postPhotoWrap = document.getElementById("post-photo-wrap");
-    const postPhotoPreview = document.getElementById("post-photo-preview");
     const feedEl = document.getElementById("feed");
-    let pendingPostPhoto = null;
     let posts = [];
     let postUnsubs = [];
     let postAuthorsKey = "";
@@ -4280,8 +4184,8 @@
         const own = post.author === me;
         const profile = (own ? myProfile : profileCache.get(post.author)) || { name: post.authorName || "?" };
         return `
-          <article class="post">
-            <header class="post-head">
+          <article class="diary-entry">
+            <header class="post-head entry-head">
               <span class="avatar avatar-sm" data-person="${esc(post.author)}">${avatarHTML(profile)}</span>
               <span class="post-meta" data-person="${esc(post.author)}">
                 <strong>${esc(profile.name)}</strong>
@@ -4289,57 +4193,15 @@
               </span>
               ${own ? `<button type="button" class="link-btn danger small" data-delete-post="${esc(post.id)}">${t("forum.delete")}</button>` : ""}
             </header>
-            ${post.text ? `<p class="post-text">${esc(post.text)}</p>` : ""}
-            ${post.photo ? `<img class="post-photo" src="${esc(post.photo)}" alt="">` : ""}
+            ${post.photo ? `<img class="diary-photo" src="${esc(post.photo)}" alt="">` : ""}
+            ${post.rating || post.text ? `
+              <div class="diary-body">
+                ${post.rating ? `<span class="stars">${starsText(post.rating)}</span>` : ""}
+                ${post.text ? `<p class="diary-text">${esc(post.text)}</p>` : ""}
+              </div>` : ""}
           </article>`;
       }).join("");
     }
-
-    function clearPostPhoto() {
-      pendingPostPhoto = null;
-      postPhotoInput.value = "";
-      postPhotoWrap.classList.add("hidden");
-    }
-
-    postPhotoInput.addEventListener("change", async () => {
-      const file = postPhotoInput.files[0];
-      if (!file) return;
-      try {
-        pendingPostPhoto = await resizeImage(file);
-        postPhotoPreview.src = pendingPostPhoto;
-        postPhotoWrap.classList.remove("hidden");
-      } catch {
-        showToast(t("img.failed"));
-      }
-    });
-
-    document.getElementById("post-photo-remove").addEventListener("click", clearPostPhoto);
-
-    postForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      clearErrors(postForm);
-      const text = postForm.elements.text.value.trim();
-      if (!text && !pendingPostPhoto) return setError(postForm, t("forum.errEmpty"));
-
-      setBusy(postForm, true);
-      try {
-        await db.collection("posts").add({
-          author: currentUserKey(),
-          authorName: myProfile ? myProfile.name : "?",
-          text,
-          photo: pendingPostPhoto,
-          createdAt: Date.now(),
-        });
-        postForm.reset();
-        clearPostPhoto();
-        showToast(t("forum.posted"));
-      } catch (error) {
-        console.error(error);
-        setError(postForm, t("friends.failed"));
-      } finally {
-        setBusy(postForm, false);
-      }
-    });
 
     feedEl.addEventListener("click", (e) => {
       const del = e.target.closest("[data-delete-post]");
@@ -4359,8 +4221,9 @@
     });
 
     // ==========================================================
-    // DAGBOG: private opslag med billede, tekst og rating
+    // JOINT LOG: private opslag med billede, tekst og rating
     // ==========================================================
+    // Forum-opslag bruger samme skema, men deles med vennerne
     // Gemmes i diary/{mit id}/entries, som kun jeg selv kan læse
     const diaryForm = document.getElementById("diary-form");
     const diaryList = document.getElementById("diary-list");
@@ -4372,6 +4235,7 @@
     let diaryUnsub = null;
     let pendingDiaryPhoto = null;
     let diaryRating = 0;
+    let entryTarget = "log";   // "log" = privat Joint Log, "post" = Forum
 
     function diaryRef() {
       return db.collection("diary").doc(currentUserKey()).collection("entries");
@@ -4413,7 +4277,10 @@
         </article>`).join("");
     }
 
-    function openDiarySheet() {
+    function openEntrySheet(target) {
+      entryTarget = target;
+      document.getElementById("entry-title").textContent = t(target === "post" ? "forum.newTitle" : "diary.newTitle");
+      document.getElementById("entry-submit").textContent = t(target === "post" ? "forum.share" : "profile.save");
       diaryForm.reset();
       clearErrors(diaryForm);
       pendingDiaryPhoto = null;
@@ -4425,7 +4292,8 @@
       diaryForm.classList.remove("hidden");
     }
 
-    document.getElementById("new-diary").addEventListener("click", openDiarySheet);
+    document.getElementById("new-diary").addEventListener("click", () => openEntrySheet("log"));
+    document.getElementById("new-post").addEventListener("click", () => openEntrySheet("post"));
     document.getElementById("diary-cancel").addEventListener("click", closeSheet);
 
     diaryStars.addEventListener("click", (e) => {
@@ -4454,11 +4322,20 @@
       const text = diaryForm.elements.text.value.trim();
       if (!text && !pendingDiaryPhoto) return setError(diaryForm, t("forum.errEmpty"));
 
+      const entry = { text, photo: pendingDiaryPhoto, rating: diaryRating, createdAt: Date.now() };
       setBusy(diaryForm, true);
       try {
-        await diaryRef().add({ text, photo: pendingDiaryPhoto, rating: diaryRating, createdAt: Date.now() });
+        if (entryTarget === "post") {
+          await db.collection("posts").add({
+            ...entry,
+            author: currentUserKey(),
+            authorName: myProfile ? myProfile.name : "?",
+          });
+        } else {
+          await diaryRef().add(entry);
+        }
         closeSheet();
-        showToast(t("diary.saved"));
+        showToast(t(entryTarget === "post" ? "forum.posted" : "diary.saved"));
       } catch (error) {
         console.error(error);
         setError(diaryForm, t("friends.failed"));
