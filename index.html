@@ -7,9 +7,10 @@
   <!-- iPhone: kan føjes til hjemmeskærmen og køre i fuldskærm -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="apple-mobile-web-app-title" content="MinApp">
-  <meta name="theme-color" content="#f5f5f7">
+  <meta name="theme-color" content="#0c0d0c">
 
   <title>MinApp</title>
 
@@ -26,35 +27,23 @@
        FARVER OG VARIABLER
        ========================================================== */
     :root {
-      --bg: #f5f5f7;
-      --card: #ffffff;
-      --text: #1d1d1f;
-      --muted: #6e6e73;
-      --border: #d2d2d7;
-      --primary: #007aff;
-      --primary-pressed: #0062cc;
-      --error: #ff3b30;
-      --tabbar-bg: rgba(249, 249, 249, 0.85);
+      color-scheme: dark;
+      --bg: #0c0d0c;            /* mat sort */
+      --card: #161816;          /* kort og felter */
+      --text: #e9ece9;
+      --muted: #858d86;
+      --border: #262a27;
+      --primary: #1f6b3a;       /* mørkegrøn: knapper og flader */
+      --primary-pressed: #18552e;
+      --accent: #5dbb7a;        /* lysere grøn: tekst, links og ikoner */
+      --error: #ff6159;
+      --tabbar-bg: rgba(14, 15, 14, 0.88);
       --radius: 14px;
 
       /* Plads til notch/Dynamic Island og home-linjen.
          På en rigtig iPhone kommer værdierne fra telefonen selv. */
       --safe-top: env(safe-area-inset-top);
       --safe-bottom: env(safe-area-inset-bottom);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #000000;
-        --card: #1c1c1e;
-        --text: #f5f5f7;
-        --muted: #98989d;
-        --border: #38383a;
-        --primary: #0a84ff;
-        --primary-pressed: #0066cc;
-        --error: #ff453a;
-        --tabbar-bg: rgba(28, 28, 30, 0.85);
-      }
     }
 
     /* ==========================================================
@@ -114,13 +103,7 @@
         justify-content: center;
         min-height: 100vh;
         padding: 24px;
-        background: radial-gradient(circle at 30% 20%, #dfe7f5, #b9c3d6);
-      }
-
-      @media (prefers-color-scheme: dark) {
-        body {
-          background: radial-gradient(circle at 30% 20%, #2a2f3a, #0d0f14);
-        }
+        background: radial-gradient(circle at 30% 20%, #1a2a1f, #070807);
       }
 
       .phone {
@@ -231,16 +214,16 @@
       height: 72px;
       margin: 0 auto 16px;
       border-radius: 18px;
-      background: linear-gradient(135deg, #34c759, #1a7f37);
+      background: linear-gradient(145deg, #1f6b3a, #0f3a1f);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 20px rgba(26, 127, 55, 0.35);
+      box-shadow: 0 10px 30px rgba(31, 107, 58, 0.35);
     }
 
-    .logo svg {
-      width: 66px;
-      height: 66px;
+    .logo img {
+      width: 52px;
+      height: auto;
     }
 
     .brand h1 {
@@ -258,7 +241,8 @@
     .tabs {
       position: relative;
       display: flex;
-      background: var(--border);
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 10px;
       padding: 2px;
       margin-bottom: 24px;
@@ -284,7 +268,7 @@
       left: 2px;
       width: calc(50% - 2px);
       height: calc(100% - 4px);
-      background: var(--card);
+      background: var(--primary);
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
       transition: transform 0.25s ease;
@@ -345,7 +329,7 @@
     input:focus,
     textarea:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.2);
+      box-shadow: 0 0 0 3px rgba(93, 187, 122, 0.25);
     }
 
     input.invalid,
@@ -369,7 +353,7 @@
       transform: translateY(-50%);
       border: none;
       background: none;
-      color: var(--primary);
+      color: var(--accent);
       font: inherit;
       font-size: 14px;
       font-weight: 600;
@@ -418,9 +402,60 @@
       transform: scale(0.98);
     }
 
+    /* "Husk mig"-kontakt i iOS-stil */
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 4px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .remember input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch {
+      position: relative;
+      flex-shrink: 0;
+      width: 44px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--border);
+      transition: background 0.2s;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s;
+    }
+
+    .remember input:checked + .switch {
+      background: var(--primary);
+    }
+
+    .remember input:checked + .switch::after {
+      transform: translateX(18px);
+    }
+
+    .remember input:focus-visible + .switch {
+      box-shadow: 0 0 0 3px rgba(93, 187, 122, 0.35);
+    }
+
     .link {
       text-align: center;
-      color: var(--primary);
+      color: var(--accent);
       text-decoration: none;
       font-size: 15px;
       padding: 8px;
@@ -474,7 +509,7 @@
       height: 80px;
       margin: 0 auto 12px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      background: linear-gradient(145deg, #1f6b3a, #0f3a1f);
       color: #fff;
       font-size: 34px;
       font-weight: 700;
@@ -525,7 +560,7 @@
     }
 
     .tabbar-item.active {
-      color: var(--primary);
+      color: var(--accent);
     }
 
     .tabbar-item:active svg {
@@ -547,7 +582,7 @@
     .back {
       border: none;
       background: none;
-      color: var(--primary);
+      color: var(--accent);
       font: inherit;
       font-size: 17px;
       padding: 4px 0;
@@ -579,11 +614,12 @@
     }
 
     .big-btn.guides {
-      background: linear-gradient(135deg, #ff9f0a, #ff5e3a);
+      background: linear-gradient(145deg, #1f6b3a, #0e2f19);
     }
 
     .big-btn.map {
-      background: linear-gradient(135deg, #30d158, #0a84ff);
+      background: linear-gradient(145deg, #232a25, #0f120f);
+      border: 1px solid #2c3a30;
     }
 
     .big-icon {
@@ -732,7 +768,8 @@
     }
 
     .tip {
-      background: rgba(255, 204, 0, 0.18);
+      background: rgba(93, 187, 122, 0.1);
+      border: 1px solid rgba(93, 187, 122, 0.2);
       border-radius: var(--radius);
       padding: 14px;
       line-height: 1.4;
@@ -907,7 +944,7 @@
     .place-hint button {
       border: none;
       background: none;
-      color: #9be89b;
+      color: var(--accent);
       font: inherit;
       font-weight: 600;
       cursor: pointer;
@@ -968,12 +1005,12 @@
     }
 
     .pin.new {
-      background: #2fbf4a;
+      background: var(--primary);
       color: #fff;
     }
 
     .pin.new::after {
-      border-top-color: #2fbf4a;
+      border-top-color: var(--primary);
     }
 
     /* Bænk-side */
@@ -1048,7 +1085,7 @@
       border-radius: var(--radius);
       padding: 16px;
       background: var(--card);
-      color: var(--primary);
+      color: var(--accent);
       font: inherit;
       font-size: 17px;
       font-weight: 600;
@@ -1168,24 +1205,7 @@
       <!-- ================= Login / Opret konto ================= -->
       <main id="auth" class="screen">
         <header class="brand">
-          <div class="logo">
-            <svg viewBox="0 0 100 100" aria-hidden="true">
-              <defs>
-                <path id="leaflet" d="M0.0 0.0 L1.6 -1.6 L2.0 -3.3 L3.7 -4.9 L3.2 -6.6 L5.2 -8.2 L4.2 -9.9 L6.3 -11.5 L4.8 -13.1 L7.0 -14.8 L5.2 -16.4 L7.4 -18.1 L5.4 -19.7 L7.5 -21.4 L5.3 -23.0 L7.2 -24.6 L5.0 -26.3 L6.7 -27.9 L4.6 -29.6 L5.9 -31.2 L3.9 -32.9 L4.9 -34.5 L3.2 -36.1 L3.8 -37.8 L2.2 -39.4 L2.4 -41.1 L1.2 -42.7 L0.9 -44.4 L0.0 -46.0 L-0.9 -44.4 L-1.2 -42.7 L-2.4 -41.1 L-2.2 -39.4 L-3.8 -37.8 L-3.2 -36.1 L-4.9 -34.5 L-3.9 -32.9 L-5.9 -31.2 L-4.6 -29.6 L-6.7 -27.9 L-5.0 -26.3 L-7.2 -24.6 L-5.3 -23.0 L-7.5 -21.4 L-5.4 -19.7 L-7.4 -18.1 L-5.2 -16.4 L-7.0 -14.8 L-4.8 -13.1 L-6.3 -11.5 L-4.2 -9.9 L-5.2 -8.2 L-3.2 -6.6 L-3.7 -4.9 L-2.0 -3.3 L-1.6 -1.6Z"/>
-              </defs>
-              <!-- Cannabisblad: 7 småblade drejet ud fra midten -->
-              <g transform="translate(50 64)" fill="#fff">
-                <rect x="-1.2" y="0" width="2.4" height="22" rx="1.2"/>
-                <use href="#leaflet" transform="rotate(-100) scale(0.42)"/>
-                <use href="#leaflet" transform="rotate(100) scale(0.42)"/>
-                <use href="#leaflet" transform="rotate(-62) scale(0.7)"/>
-                <use href="#leaflet" transform="rotate(62) scale(0.7)"/>
-                <use href="#leaflet" transform="rotate(-30) scale(0.9)"/>
-                <use href="#leaflet" transform="rotate(30) scale(0.9)"/>
-                <use href="#leaflet" transform="scale(1.05)"/>
-              </g>
-            </svg>
-          </div>
+          <div class="logo"><img src="data:image/png;base64,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" alt="Logo"></div>
           <h1 id="title">Velkommen tilbage</h1>
           <p id="subtitle" class="muted">Log ind for at fortsætte</p>
         </header>
@@ -1209,6 +1229,11 @@
               <input type="password" name="password" autocomplete="current-password" placeholder="••••••••" required>
               <button type="button" class="toggle-pw" aria-label="Vis adgangskode">Vis</button>
             </div>
+          </label>
+          <label class="remember">
+            <input type="checkbox" name="remember" checked>
+            <span class="switch" aria-hidden="true"></span>
+            <span>Husk mig</span>
           </label>
           <p class="error" aria-live="polite"></p>
           <button type="submit" class="btn-primary">Log ind</button>
@@ -1428,6 +1453,19 @@
     // udvikling, men en rigtig app skal have en server/database til login.
     const USERS_KEY = "users";
     const SESSION_KEY = "currentUser";
+    const LAST_USER_KEY = "lastSmokerName";
+
+    // Med "Husk mig" gemmes login i localStorage (bliver husket, også når
+    // appen lukkes). Uden gemmes det i sessionStorage (glemmes ved lukning).
+    function currentUserKey() {
+      return localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY);
+    }
+
+    // Udfyld sidste smoker name, så man kun skal skrive adgangskoden
+    function prefillLogin() {
+      const last = localStorage.getItem(LAST_USER_KEY);
+      if (last) loginForm.elements.name.value = last;
+    }
 
     function getUsers() {
       try {
@@ -1584,8 +1622,9 @@
         return setError(loginForm, "Forkert smoker name eller adgangskode");
       }
 
+      const remember = loginForm.elements.remember.checked;
       loginForm.reset();
-      login(userKey);
+      login(userKey, remember);
       showToast("Du er logget ind");
     });
 
@@ -1595,15 +1634,19 @@
     });
 
     // ---------- Session ----------
-    function login(userKey) {
-      localStorage.setItem(SESSION_KEY, userKey);
+    function login(userKey, remember = true) {
+      (remember ? localStorage : sessionStorage).setItem(SESSION_KEY, userKey);
+      localStorage.setItem(LAST_USER_KEY, getUsers()[userKey].name);
       showApp();
     }
 
     function showApp() {
-      const userKey = localStorage.getItem(SESSION_KEY);
+      const userKey = currentUserKey();
       const user = getUsers()[userKey];
-      if (!user) return showTab("login");
+      if (!user) {
+        prefillLogin();
+        return showTab("login");
+      }
 
       authScreen.classList.add("hidden");
       appScreen.classList.remove("hidden");
@@ -1621,11 +1664,13 @@
 
     document.getElementById("logout").addEventListener("click", () => {
       localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
       closeSheet();
       resetHandbook();
       appScreen.classList.add("hidden");
       authScreen.classList.remove("hidden");
       showTab("login");
+      prefillLogin();
       scrollToTop();
       showToast("Du er logget ud");
     });
@@ -2208,7 +2253,7 @@
         return setError(benchForm, "Giv bænken et navn");
       }
 
-      const email = localStorage.getItem(SESSION_KEY);
+      const email = currentUserKey();
       const user = getUsers()[email];
       const bench = {
         name: name.value.trim(),
@@ -2258,7 +2303,7 @@
         return;
       }
 
-      const email = localStorage.getItem(SESSION_KEY);
+      const email = currentUserKey();
       const avg = averageRating(bench);
       const count = Object.keys(bench.ratings || {}).length;
       const mine = (bench.ratings || {})[email] || 0;
@@ -2308,7 +2353,7 @@
     }
 
     function rateBench(stars) {
-      const email = localStorage.getItem(SESSION_KEY);
+      const email = currentUserKey();
       // FieldPath bruges, fordi et smoker name kan indeholde punktummer
       benchesRef.doc(currentBenchId)
         .update(new firebase.firestore.FieldPath("ratings", email), stars)
@@ -2317,8 +2362,10 @@
     }
 
     // Hvis man allerede er logget ind, så spring login over
-    if (localStorage.getItem(SESSION_KEY)) {
+    if (currentUserKey()) {
       showApp();
+    } else {
+      prefillLogin();
     }
   </script>
 </body>
