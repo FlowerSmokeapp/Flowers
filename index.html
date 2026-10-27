@@ -1566,12 +1566,6 @@
       font-size: 13px;
     }
 
-    .diary-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
     .diary-entry {
       overflow: hidden;
       border-radius: var(--radius);
@@ -2546,23 +2540,6 @@
       font-size: 12px;
     }
 
-    .log-form {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .log-form h2 {
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .log-form .field b {
-      color: var(--text);
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
     .stepper {
       display: flex;
       align-items: center;
@@ -2704,6 +2681,361 @@
     }
 
     /* ==========================================================
+       LOG EN SMOKE, STATISTIK OG KØRE-TIMER
+       ========================================================== */
+    .log-cta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      padding: 20px;
+      margin-bottom: 14px;
+      border: none;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.18), transparent 50%),
+        linear-gradient(150deg, #37a05b, #1f6b3a);
+      box-shadow: 0 12px 30px rgba(47, 138, 78, 0.35);
+      color: #fff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.12s;
+    }
+
+    .log-cta:active {
+      transform: scale(0.98);
+    }
+
+    .log-cta-icon {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+    }
+
+    .log-cta strong {
+      display: block;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .log-cta small {
+      display: block;
+      margin-top: 2px;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 14px;
+    }
+
+    .home-drive {
+      margin: -4px 4px 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .small-pick {
+      aspect-ratio: auto;
+      min-height: 64px;
+    }
+
+    .small-pick img {
+      max-height: 200px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-grid .card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      padding: 14px 12px;
+      margin: 0;
+    }
+
+    .stat-grid strong {
+      font-size: 20px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .stat-grid span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    /* Køre-timer */
+    .drive-card .drive-label {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .drive-time {
+      margin: 2px 0 10px;
+      color: #ffb347;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .drive-card .progress {
+      margin: 0 0 12px;
+    }
+
+    .drive-card .progress span {
+      background: #ffb347;
+    }
+
+    .drive-card.done .drive-label {
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .drive-card.done .progress span {
+      background: var(--accent);
+    }
+
+    .drive-basis {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .drive-warning {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 179, 71, 0.1);
+      color: rgba(241, 243, 241, 0.85);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* Grafer */
+    .chart-card h3 {
+      margin-bottom: 14px;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .chart-card h3.spaced {
+      margin-top: 18px;
+    }
+
+    .bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 120px;
+    }
+
+    .bars.dense {
+      gap: 2px;
+    }
+
+    .bar-col {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      height: 100%;
+      min-width: 0;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    .bar {
+      width: 100%;
+      min-height: 2px;
+      border-radius: 4px 4px 0 0;
+      background: var(--accent);
+      transition: opacity 0.15s;
+    }
+
+    .bar.empty {
+      background: var(--card-2);
+    }
+
+    .bars:hover .bar,
+    .bars:has(.active-mark) .bar {
+      opacity: 0.45;
+    }
+
+    .bar-col.active-mark .bar,
+    .bar-col:hover .bar {
+      opacity: 1;
+    }
+
+    .bar-axis {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      border-top: 1px solid var(--border-strong);
+      padding-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .bars:not(.dense) + .bar-axis span {
+      flex: 1;
+      text-align: center;
+    }
+
+    .chart-caption {
+      min-height: 18px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .line-chart {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+    .line-chart .axis {
+      stroke: var(--border-strong);
+      stroke-width: 1;
+    }
+
+    .line-chart .line {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    .line-chart .dot {
+      fill: var(--accent);
+      stroke: var(--card);
+      stroke-width: 2;
+    }
+
+    .line-chart .hit {
+      fill: transparent;
+      cursor: pointer;
+    }
+
+    .line-chart .active-mark .dot {
+      fill: var(--text);
+    }
+
+    .line-chart .tick {
+      fill: var(--muted);
+      font-size: 10px;
+    }
+
+    .line-chart .tick.end {
+      text-anchor: end;
+    }
+
+    .hbar {
+      display: grid;
+      grid-template-columns: 90px 1fr 28px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .hbar strong {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hbar-track {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 0 4px 4px 0;
+      background: var(--card-2);
+    }
+
+    .hbar-track span {
+      display: block;
+      height: 100%;
+      border-radius: 0 4px 4px 0;
+      background: var(--accent);
+    }
+
+    .log-photo {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .log-note {
+      display: block;
+      margin-top: 2px;
+      color: rgba(241, 243, 241, 0.75);
+      overflow-wrap: anywhere;
+    }
+
+    .tbreak-count {
+      margin: -8px 0 12px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* Lav din profil */
+    .onb-avatar {
+      align-self: center;
+    }
+
+    .avatar-xl {
+      width: 132px;
+      height: 132px;
+      margin: 0;
+      font-size: 54px;
+      border: 3px solid var(--primary);
+    }
+
+    .onb-avatar .avatar-badge {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+
+    .onb-hint {
+      margin-top: -4px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    #log-form .field b {
+      color: var(--text);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ==========================================================
        TOAST-BESKED
        ========================================================== */
     .toast {
@@ -2830,6 +3162,29 @@
         </form>
       </main>
 
+      <!-- ================= Lav din profil (efter ny konto) ================= -->
+      <section id="onboarding" class="screen hidden">
+        <header class="brand">
+          <h1 data-i18n="onb.title">Lav din profil</h1>
+          <p class="muted" data-i18n="onb.sub">Vis dine venner, hvem du er</p>
+        </header>
+        <form id="onboarding-form" class="form" novalidate>
+          <label class="avatar-pick onb-avatar">
+            <span class="avatar avatar-xl" id="onb-avatar"></span>
+            <span class="avatar-badge" aria-hidden="true">📷</span>
+            <input type="file" accept="image/*" id="onb-avatar-input">
+          </label>
+          <p class="onb-hint muted" data-i18n="onb.photo">Tryk på cirklen for at vælge et profilbillede</p>
+          <label class="field">
+            <span data-i18n="profile.bio">Bio</span>
+            <textarea name="bio" maxlength="160" data-i18n-ph="profile.bioPh" placeholder="Fortæl lidt om dig selv…"></textarea>
+            <small class="counter" id="onb-counter">0/160</small>
+          </label>
+          <p class="error" aria-live="polite"></p>
+          <button type="submit" class="btn-primary" data-i18n="onb.save">Gem og fortsæt</button>
+        </form>
+      </section>
+
       <!-- ================= Appen (efter login) ================= -->
       <div id="app" class="app hidden">
         <section class="page" data-page="forum">
@@ -2860,9 +3215,9 @@
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
                 <strong data-i18n="hb.map">Smoke spots</strong>
               </button>
-              <button class="tile" data-go="diary">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span>
-                <strong data-i18n="hb.diary">Joint Log</strong>
+              <button class="tile" data-go="stats">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span>
+                <strong data-i18n="hb.stats">Statistik</strong>
               </button>
               <button class="tile" data-go="checklist">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span>
@@ -2870,7 +3225,7 @@
               </button>
               <button class="tile" data-go="pause">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span>
-                <strong data-i18n="hb.pause">Pause-AI</strong>
+                <strong data-i18n="hb.pause">T-Break beregner</strong>
               </button>
             </div>
           </div>
@@ -2880,17 +3235,6 @@
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title">Guides</h1>
             <p class="empty-note" data-i18n="guides.empty">Der er ingen guides endnu.</p>
-          </div>
-
-          <!-- Joint Log (privat) -->
-          <div class="view" data-view="diary">
-            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
-            <div class="title-row">
-              <h1 class="page-title" data-i18n="hb.diary">Joint Log</h1>
-              <button type="button" class="mini-btn primary" id="new-diary" data-i18n="diary.new">＋ Nyt opslag</button>
-            </div>
-            <p class="private-note" data-i18n="diary.private">🔒 Kun du kan se din Joint Log</p>
-            <div id="diary-list" class="diary-list"></div>
           </div>
 
           <!-- Tjekliste over cannabissorter -->
@@ -2936,53 +3280,14 @@
             </div>
           </div>
 
-          <!-- Pause-AI -->
+          <!-- T-Break-beregner (AI) -->
           <div class="view" data-view="pause">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
-            <h1 class="page-title" data-i18n="hb.pause">Pause-AI</h1>
-            <p class="private-note" data-i18n="ai.intro">Registrér din rygning, så beregner AI'en, hvornår en pause giver mest mening for dig.</p>
+            <h1 class="page-title" data-i18n="hb.pause">T-Break beregner</h1>
+            <p class="private-note" data-i18n="ai.intro">AI'en bruger dine registreringer fra "Log en smoke" til at beregne, hvornår en pause giver mest mening for dig.</p>
 
             <!-- Seneste AI-beregning -->
             <div id="ai-result"></div>
-
-            <!-- Ny registrering -->
-            <form id="log-form" class="card log-form" novalidate>
-              <h2 data-i18n="ai.newLog">Ny registrering</h2>
-              <label class="field">
-                <span data-i18n="ai.date">Dato</span>
-                <input type="date" name="date">
-              </label>
-              <div class="field">
-                <span data-i18n="ai.times">Hvor mange gange røg du?</span>
-                <div class="stepper">
-                  <button type="button" data-step="-1" aria-label="−">−</button>
-                  <strong id="log-times">1</strong>
-                  <button type="button" data-step="1" aria-label="+">+</button>
-                </div>
-              </div>
-              <label class="field">
-                <span data-i18n="ai.grams">Hvor meget i alt? (gram)</span>
-                <input type="text" name="grams" inputmode="decimal" data-i18n-ph="ai.gramsPh" placeholder="Fx 0,5">
-              </label>
-              <div class="field">
-                <span><span data-i18n="ai.high">Hvor skæv blev du?</span> <b id="log-high-value"></b></span>
-                <input type="range" name="high" min="1" max="10" value="5" class="range">
-              </div>
-              <div class="field">
-                <span data-i18n="ai.methodLabel">Hvordan?</span>
-                <div class="chips wrap" id="log-methods"></div>
-              </div>
-              <div class="field">
-                <span data-i18n="ai.productLabel">Hvad?</span>
-                <div class="chips wrap" id="log-products"></div>
-              </div>
-              <label class="field">
-                <span data-i18n="ai.thc">THC % (hvis du ved det)</span>
-                <input type="text" name="thc" inputmode="decimal" data-i18n-ph="ai.thcPh" placeholder="Valgfrit">
-              </label>
-              <p class="error" aria-live="polite"></p>
-              <button type="submit" class="btn-primary" data-i18n="ai.saveLog">Gem registrering</button>
-            </form>
 
             <!-- Om dig -->
             <details class="card about-me">
@@ -3022,11 +3327,17 @@
             <!-- Beregn -->
             <button type="button" class="btn-primary ai-run" id="ai-run">✨ Beregn med AI</button>
             <p class="ai-status" id="ai-status" aria-live="polite"></p>
+            <p class="tbreak-count muted" id="tbreak-count"></p>
+            <p class="pause-disclaimer" data-i18n="ai.disclaimer">T-Break beregneren er et estimat ud fra dine egne registreringer og ikke lægefaglig rådgivning. Er det svært at holde pause, så snak med din læge.</p>
+          </div>
 
-            <!-- Mine registreringer -->
+          <!-- Statistik og køre-timer -->
+          <div class="view" data-view="stats">
+            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
+            <h1 class="page-title" data-i18n="hb.stats">Statistik</h1>
+            <div id="stats-content"></div>
             <h2 class="section-title" data-i18n="ai.myLogs">Dine registreringer</h2>
             <div id="log-list" class="log-list"></div>
-            <p class="pause-disclaimer" data-i18n="ai.disclaimer">Pause-AI er et estimat ud fra dine egne registreringer og ikke lægefaglig rådgivning. Er det svært at holde pause, så snak med din læge.</p>
           </div>
 
           <!-- Smoke spots-kort -->
@@ -3075,6 +3386,15 @@
             <span class="avatar avatar-md" id="home-avatar" data-shortcut="profile"></span>
           </header>
 
+          <button type="button" class="log-cta" data-shortcut="log">
+            <span class="log-cta-icon" aria-hidden="true">🌿</span>
+            <span>
+              <strong data-i18n="home.logCta">Log en smoke</strong>
+              <small data-i18n="home.logSub">Hvor meget, hvordan og hvor skæv du blev</small>
+            </span>
+          </button>
+          <p class="home-drive hidden" id="home-drive"></p>
+
           <div class="hero">
             <small data-i18n="home.heroLabel">Aftenens spil</small>
             <h2>Game of Joints</h2>
@@ -3085,8 +3405,8 @@
           <h2 class="section-title" data-i18n="home.shortcuts">Genveje</h2>
           <div class="quick-grid">
             <button type="button" class="quick" data-shortcut="map"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span data-i18n="hb.map">Smoke spots</span></button>
-            <button type="button" class="quick" data-shortcut="diary"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span><span data-i18n="hb.diary">Joint Log</span></button>
-            <button type="button" class="quick" data-shortcut="checklist"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/></svg></span><span data-i18n="hb.checklist">Tjekliste</span></button>
+            <button type="button" class="quick" data-shortcut="pause"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span><span data-i18n="hb.pause">T-Break beregner</span></button>
+            <button type="button" class="quick" data-shortcut="stats"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span><span data-i18n="hb.stats">Statistik</span></button>
             <button type="button" class="quick" data-shortcut="forum"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></span><span data-i18n="nav.forum">Forum</span></button>
           </div>
         </section>
@@ -3199,9 +3519,66 @@
       </div>
     </form>
 
-    <!-- Bundark: nyt opslag i Joint Log eller Forum (samme skema) -->
+    <!-- Bundark: Log en smoke -->
+    <form id="log-form" class="sheet hidden" novalidate>
+      <h2 data-i18n="home.logTitle">🌿 Log en smoke</h2>
+      <div class="field-row">
+        <label class="field">
+          <span data-i18n="ai.date">Dato</span>
+          <input type="date" name="date">
+        </label>
+        <label class="field">
+          <span data-i18n="ai.time">Klokken</span>
+          <input type="time" name="time">
+        </label>
+      </div>
+      <div class="field">
+        <span data-i18n="ai.times">Hvor mange gange røg du?</span>
+        <div class="stepper">
+          <button type="button" data-step="-1" aria-label="−">−</button>
+          <strong id="log-times">1</strong>
+          <button type="button" data-step="1" aria-label="+">+</button>
+        </div>
+      </div>
+      <label class="field">
+        <span data-i18n="ai.grams">Hvor meget i alt? (gram)</span>
+        <input type="text" name="grams" inputmode="decimal" data-i18n-ph="ai.gramsPh" placeholder="Fx 0,5">
+      </label>
+      <div class="field">
+        <span><span data-i18n="ai.high">Hvor skæv blev du?</span> <b id="log-high-value"></b></span>
+        <input type="range" name="high" min="1" max="10" value="5" class="range">
+      </div>
+      <div class="field">
+        <span data-i18n="ai.methodLabel">Hvordan?</span>
+        <div class="chips wrap" id="log-methods"></div>
+      </div>
+      <div class="field">
+        <span data-i18n="ai.productLabel">Hvad?</span>
+        <div class="chips wrap" id="log-products"></div>
+      </div>
+      <label class="field">
+        <span data-i18n="ai.thc">THC % (hvis du ved det)</span>
+        <input type="text" name="thc" inputmode="decimal" data-i18n-ph="ai.thcPh" placeholder="Valgfrit">
+      </label>
+      <label class="field">
+        <span data-i18n="ai.note">Note (valgfrit)</span>
+        <textarea name="note" maxlength="300" data-i18n-ph="ai.notePh" placeholder="Hvad røg du, hvor og med hvem?"></textarea>
+      </label>
+      <label class="photo-pick small-pick">
+        <span id="log-photo-text" data-i18n="ai.photo">📷 Tilføj billede (valgfrit)</span>
+        <img id="log-photo-preview" class="hidden" alt="">
+        <input type="file" accept="image/*" id="log-photo-input">
+      </label>
+      <p class="error" aria-live="polite"></p>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="log-cancel" data-i18n="common.cancel">Annuller</button>
+        <button type="submit" class="btn-primary" data-i18n="ai.saveLog">Gem</button>
+      </div>
+    </form>
+
+    <!-- Bundark: nyt Forum-opslag -->
     <form id="diary-form" class="sheet hidden" novalidate>
-      <h2 id="entry-title">Nyt log-opslag</h2>
+      <h2 id="entry-title">Nyt opslag</h2>
       <label class="photo-pick">
         <span id="diary-photo-text" data-i18n="diary.addPhoto">📷 Tilføj billede</span>
         <img id="diary-photo-preview" class="hidden" alt="">
@@ -3218,7 +3595,7 @@
       <p class="error" aria-live="polite"></p>
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="diary-cancel" data-i18n="common.cancel">Annuller</button>
-        <button type="submit" class="btn-primary" id="entry-submit">Gem</button>
+        <button type="submit" class="btn-primary" id="entry-submit">Del</button>
       </div>
     </form>
 
@@ -3372,9 +3749,55 @@
     const I18N = {
       da: {
         "locale": "da-DK",
-        "hb.pause": "Pause-AI",
-        "ai.intro": "Registrér din rygning, så beregner AI'en, hvornår en pause giver mest mening for dig.",
-        "ai.newLog": "Ny registrering",
+        "hb.pause": "T-Break beregner",
+        "hb.stats": "Statistik",
+        "home.logTitle": "🌿 Log en smoke",
+        "home.logCta": "Log en smoke",
+        "home.logSub": "Hvor meget, hvordan og hvor skæv du blev",
+        "ai.intro": "AI'en bruger dine registreringer fra \"Log en smoke\" til at beregne, hvornår en pause giver mest mening for dig.",
+        "ai.time": "Klokken",
+        "ai.note": "Note (valgfrit)",
+        "ai.notePh": "Hvad røg du, hvor og med hvem?",
+        "ai.photo": "📷 Tilføj billede (valgfrit)",
+        "ai.saveLog": "Gem",
+        "ai.errFuture": "Tidspunktet kan ikke ligge i fremtiden",
+        "ai.confirmDelete": "Vil du slette denne registrering?",
+        "ai.basedOn1": "Bruger 1 registrering",
+        "ai.basedOnN": "Bruger {n} registreringer",
+        "ai.disclaimer": "T-Break beregneren er et estimat ud fra dine egne registreringer og ikke lægefaglig rådgivning. Er det svært at holde pause, så snak med din læge.",
+        "ai.noLogs": "Ingen registreringer endnu. Tryk på \"Log en smoke\" på hjemmeskærmen.",
+        "drive.title": "Køre-timer",
+        "drive.waitAtLeast": "Vent mindst",
+        "drive.passed": "Den estimerede ventetid er gået",
+        "drive.duration": "{d} d {h} t {m} m",
+        "drive.basis": "Ud fra din seneste registrering ({last}) og {n} røgdage de sidste 14 dage.",
+        "drive.usage.occasional": "Du ryger sjældent, så estimatet er mindst 2 døgn (3 døgn efter koncentrat eller spiseligt).",
+        "drive.usage.regular": "Du ryger flere gange om ugen, så THC kan blive i blodet i mindst en uge.",
+        "drive.usage.daily": "Du ryger næsten dagligt, så THC kan blive i blodet i op til flere uger.",
+        "drive.warning": "⚠️ Kun et groft estimat, ingen garanti. I Danmark er der nultolerance for THC i blodet, og hvor længe det kan spores, er forskelligt fra person til person. Er du i tvivl, så lad bilen stå.",
+        "drive.homeWait": "Køre-timer: vent mindst {time}",
+        "drive.homePassed": "Køre-timer: den estimerede ventetid er gået",
+        "stats.emptyTitle": "Ingen statistik endnu",
+        "stats.emptyText": "Når du har logget dine smokes, ser du grafer over hvor meget og hvor ofte, og hvor længe du bør vente, før du kører bil.",
+        "stats.week": "Gram de sidste 7 dage",
+        "stats.weekTimes": "Gange de sidste 7 dage",
+        "stats.avgHigh": "Gns. skæv (30 dage)",
+        "stats.gramsPerDay": "Gram pr. dag, sidste 30 dage",
+        "stats.month": "{g} g i alt de sidste 30 dage. Tryk på en søjle for at se dagen.",
+        "stats.highPerGram": "Hvor skæv pr. gram",
+        "stats.highPerGramHelp": "Falder kurven, skal du bruge mere for at blive lige så skæv. Det er et tegn på, at din tolerance stiger.",
+        "stats.weekTip": "Ugen til {date}: {v} skæv pr. gram",
+        "stats.weeksAgo": "For {n} uger siden",
+        "stats.thisWeek": "Denne uge",
+        "stats.weekdays": "Hvilke dage du ryger (30 dage)",
+        "stats.weekdaysHelp": "Antal gange pr. ugedag. Tryk på en søjle for at se tallet.",
+        "stats.breakdownHelp": "Antal gange de sidste 30 dage.",
+        "onb.title": "Lav din profil",
+        "onb.sub": "Vis dine venner, hvem du er",
+        "onb.photo": "Tryk på cirklen for at vælge et profilbillede",
+        "onb.save": "Gem og fortsæt",
+        "onb.errEmpty": "Vælg et profilbillede eller skriv en bio",
+        "onb.welcome": "Velkommen, {name} 🌿",
         "ai.date": "Dato",
         "ai.times": "Hvor mange gange røg du?",
         "ai.grams": "Hvor meget i alt? (gram)",
@@ -3384,7 +3807,6 @@
         "ai.productLabel": "Hvad?",
         "ai.thc": "THC % (hvis du ved det)",
         "ai.thcPh": "Valgfrit",
-        "ai.saveLog": "Gem registrering",
         "ai.saved": "Registreringen er gemt ✅",
         "ai.errDate": "Vælg en dato",
         "ai.errGrams": "Skriv hvor mange gram, fx 0,5",
@@ -3438,10 +3860,8 @@
         "ai.tips": "Tips til pausen",
         "ai.calculated": "Beregnet {date}",
         "ai.myLogs": "Dine registreringer",
-        "ai.noLogs": "Ingen registreringer endnu. Brug skemaet ovenfor.",
         "ai.times1": "1 gang",
         "ai.timesN": "{n} gange",
-        "ai.disclaimer": "Pause-AI er et estimat ud fra dine egne registreringer og ikke lægefaglig rådgivning. Er det svært at holde pause, så snak med din læge.",
         "home.heroText": "Saml vennerne, slå med terningen og se, hvor du lander.",
         "game.tagline": "Brætspillet for dig og vennerne",
         "game.players": "Spillere",
@@ -3478,7 +3898,6 @@
         "home.heroLabel": "Aftenens spil",
         "home.play": "Spil nu",
         "home.shortcuts": "Genveje",
-        "hb.diary": "Joint Log",
         "hb.checklist": "Tjekliste",
         "forum.share": "Del",
         "forum.empty": "Ingen opslag endnu. Del noget, eller tilføj venner for at se deres opslag.",
@@ -3489,15 +3908,10 @@
         "forum.deleted": "Opslaget er slettet",
         "forum.justNow": "lige nu",
         "diary.new": "＋ Nyt opslag",
-        "diary.newTitle": "Nyt log-opslag",
-        "diary.private": "🔒 Kun du kan se din Joint Log",
-        "diary.empty": "Din Joint Log er tom. Tryk på ＋ Nyt opslag for at skrive det første.",
         "diary.addPhoto": "📷 Tilføj billede",
         "diary.text": "Tekst",
         "diary.textPh": "Hvad røg du, hvor og med hvem?",
         "diary.rating": "Rating",
-        "diary.saved": "Gemt i din Joint Log 📓",
-        "diary.confirmDelete": "Vil du slette dette log-opslag?",
         "check.tried": "prøvet",
         "check.searchPh": "Søg i tjeklisten",
         "type.hash": "Hash",
@@ -3632,9 +4046,55 @@
       },
       en: {
         "locale": "en-GB",
-        "hb.pause": "Break AI",
-        "ai.intro": "Log your smoking and the AI works out when a break makes the most sense for you.",
-        "ai.newLog": "New log",
+        "hb.pause": "T-Break calculator",
+        "hb.stats": "Stats",
+        "home.logTitle": "🌿 Log a smoke",
+        "home.logCta": "Log a smoke",
+        "home.logSub": "How much, how and how high you got",
+        "ai.intro": "The AI uses what you've logged with \"Log a smoke\" to work out when a break makes the most sense for you.",
+        "ai.time": "Time",
+        "ai.note": "Note (optional)",
+        "ai.notePh": "What did you smoke, where and with who?",
+        "ai.photo": "📷 Add a photo (optional)",
+        "ai.saveLog": "Save",
+        "ai.errFuture": "The time can't be in the future",
+        "ai.confirmDelete": "Delete this log?",
+        "ai.basedOn1": "Using 1 log",
+        "ai.basedOnN": "Using {n} logs",
+        "ai.disclaimer": "The T-Break calculator is an estimate based on your own logs and not medical advice. If taking a break is hard, talk to your doctor.",
+        "ai.noLogs": "Nothing logged yet. Tap \"Log a smoke\" on the home screen.",
+        "drive.title": "Driving timer",
+        "drive.waitAtLeast": "Wait at least",
+        "drive.passed": "The estimated waiting time has passed",
+        "drive.duration": "{d}d {h}h {m}m",
+        "drive.basis": "Based on your latest log ({last}) and {n} smoking days in the last 14 days.",
+        "drive.usage.occasional": "You smoke rarely, so the estimate is at least 2 days (3 days after concentrates or edibles).",
+        "drive.usage.regular": "You smoke several times a week, so THC can stay in your blood for at least a week.",
+        "drive.usage.daily": "You smoke almost daily, so THC can stay in your blood for several weeks.",
+        "drive.warning": "⚠️ Only a rough estimate, no guarantee. Denmark has zero tolerance for THC in the blood, and how long it can be detected varies from person to person. If in doubt, don't drive.",
+        "drive.homeWait": "Driving timer: wait at least {time}",
+        "drive.homePassed": "Driving timer: the estimated waiting time has passed",
+        "stats.emptyTitle": "No stats yet",
+        "stats.emptyText": "Once you've logged your smokes, you'll see charts of how much and how often, and how long you should wait before driving.",
+        "stats.week": "Grams in the last 7 days",
+        "stats.weekTimes": "Times in the last 7 days",
+        "stats.avgHigh": "Avg. high (30 days)",
+        "stats.gramsPerDay": "Grams per day, last 30 days",
+        "stats.month": "{g} g in total over the last 30 days. Tap a bar to see the day.",
+        "stats.highPerGram": "How high per gram",
+        "stats.highPerGramHelp": "If the line drops, you need more to get as high. That's a sign your tolerance is rising.",
+        "stats.weekTip": "Week to {date}: {v} high per gram",
+        "stats.weeksAgo": "{n} weeks ago",
+        "stats.thisWeek": "This week",
+        "stats.weekdays": "Which days you smoke (30 days)",
+        "stats.weekdaysHelp": "Times per weekday. Tap a bar to see the number.",
+        "stats.breakdownHelp": "Times in the last 30 days.",
+        "onb.title": "Create your profile",
+        "onb.sub": "Show your friends who you are",
+        "onb.photo": "Tap the circle to pick a profile photo",
+        "onb.save": "Save and continue",
+        "onb.errEmpty": "Pick a profile photo or write a bio",
+        "onb.welcome": "Welcome, {name} 🌿",
         "ai.date": "Date",
         "ai.times": "How many times did you smoke?",
         "ai.grams": "How much in total? (grams)",
@@ -3644,7 +4104,6 @@
         "ai.productLabel": "What?",
         "ai.thc": "THC % (if you know it)",
         "ai.thcPh": "Optional",
-        "ai.saveLog": "Save log",
         "ai.saved": "Log saved ✅",
         "ai.errDate": "Pick a date",
         "ai.errGrams": "Enter how many grams, e.g. 0.5",
@@ -3698,10 +4157,8 @@
         "ai.tips": "Tips for your break",
         "ai.calculated": "Calculated {date}",
         "ai.myLogs": "Your logs",
-        "ai.noLogs": "Nothing logged yet. Use the form above.",
         "ai.times1": "1 time",
         "ai.timesN": "{n} times",
-        "ai.disclaimer": "Break AI is an estimate based on your own logs and not medical advice. If taking a break is hard, talk to your doctor.",
         "home.heroText": "Gather your friends, roll the die and see where you land.",
         "game.tagline": "The board game for you and your friends",
         "game.players": "Players",
@@ -3738,7 +4195,6 @@
         "home.heroLabel": "Tonight's game",
         "home.play": "Play now",
         "home.shortcuts": "Shortcuts",
-        "hb.diary": "Joint Log",
         "hb.checklist": "Checklist",
         "forum.share": "Post",
         "forum.empty": "No posts yet. Share something, or add friends to see their posts.",
@@ -3749,15 +4205,10 @@
         "forum.deleted": "Post deleted",
         "forum.justNow": "just now",
         "diary.new": "＋ New entry",
-        "diary.newTitle": "New log entry",
-        "diary.private": "🔒 Only you can see your Joint Log",
-        "diary.empty": "Your Joint Log is empty. Tap ＋ New entry to write the first one.",
         "diary.addPhoto": "📷 Add a photo",
         "diary.text": "Text",
         "diary.textPh": "What did you smoke, where and with who?",
         "diary.rating": "Rating",
-        "diary.saved": "Saved to your Joint Log 📓",
-        "diary.confirmDelete": "Delete this log entry?",
         "check.tried": "tried",
         "check.searchPh": "Search the checklist",
         "type.hash": "Hash",
@@ -3939,7 +4390,6 @@
         renderProfile();
         renderFriends();
         renderFeed();
-        renderDiary();
       }
     }
 
@@ -4128,6 +4578,7 @@
 
     function showAuthScreen() {
       appScreen.classList.add("hidden");
+      onboarding.classList.add("hidden");
       authScreen.classList.remove("hidden");
       showTab("login");
       prefillLogin();
@@ -4159,6 +4610,7 @@
           (doc) => {
             myProfile = doc.exists ? { id: doc.id, ...doc.data() } : null;
             renderProfile();
+            checkOnboarding();
           },
           (error) => console.error(error)
         );
@@ -4166,7 +4618,6 @@
       connectBenches();
       listenToFriends();
       listenToPosts();
-      listenToDiary();
       listenToChecklist();
       listenToLogs();
 
@@ -4180,7 +4631,6 @@
       myProfile = null;
       stopFriends();
       stopPosts();
-      stopDiary();
       stopChecklist();
       stopLogs();
     }
@@ -4235,7 +4685,7 @@
       handbookPage.classList.toggle("map-mode", name === "map");
       if (name !== "map") cancelPlacing();
       if (name === "map") openMap();
-      if (name === "pause") renderPause();
+      if (name === "pause" || name === "stats") renderPause();
       scrollToTop();
     }
 
@@ -4489,6 +4939,7 @@
       benchForm.classList.add("hidden");
       profileForm.classList.add("hidden");
       diaryForm.classList.add("hidden");
+      logForm.classList.add("hidden");
     }
 
     sheetBackdrop.addEventListener("click", closeSheet);
@@ -5204,66 +5655,17 @@
     });
 
     // ==========================================================
-    // JOINT LOG: private opslag med billede, tekst og rating
+    // FORUM-OPSLAG: skema med billede, tekst og rating
     // ==========================================================
-    // Forum-opslag bruger samme skema, men deles med vennerne
-    // Gemmes i diary/{mit id}/entries, som kun jeg selv kan læse
     const diaryForm = document.getElementById("diary-form");
-    const diaryList = document.getElementById("diary-list");
     const diaryStars = document.getElementById("diary-stars");
     const diaryPhotoInput = document.getElementById("diary-photo-input");
     const diaryPhotoPreview = document.getElementById("diary-photo-preview");
     const diaryPhotoText = document.getElementById("diary-photo-text");
-    let diaryEntries = [];
-    let diaryUnsub = null;
     let pendingDiaryPhoto = null;
     let diaryRating = 0;
-    let entryTarget = "log";   // "log" = privat Joint Log, "post" = Forum
 
-    function diaryRef() {
-      return db.collection("diary").doc(currentUserKey()).collection("entries");
-    }
-
-    function listenToDiary() {
-      if (diaryUnsub) return;
-      diaryUnsub = diaryRef().orderBy("createdAt", "desc").onSnapshot(
-        (snap) => {
-          diaryEntries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          renderDiary();
-        },
-        (error) => console.error(error)
-      );
-    }
-
-    function stopDiary() {
-      if (diaryUnsub) diaryUnsub();
-      diaryUnsub = null;
-      diaryEntries = [];
-    }
-
-    function renderDiary() {
-      if (!diaryEntries.length) {
-        diaryList.innerHTML = `<p class="empty-note">${t("diary.empty")}</p>`;
-        return;
-      }
-      diaryList.innerHTML = diaryEntries.map((entry) => `
-        <article class="diary-entry">
-          ${entry.photo ? `<img class="diary-photo" src="${esc(entry.photo)}" alt="">` : ""}
-          <div class="diary-body">
-            <div class="diary-top">
-              <small class="muted">${formatDate(entry.createdAt)}</small>
-              ${entry.rating ? `<span class="stars">${starsText(entry.rating)}</span>` : ""}
-            </div>
-            ${entry.text ? `<p class="diary-text">${esc(entry.text)}</p>` : ""}
-            <button type="button" class="link-btn danger small" data-delete-diary="${esc(entry.id)}">${t("forum.delete")}</button>
-          </div>
-        </article>`).join("");
-    }
-
-    function openEntrySheet(target) {
-      entryTarget = target;
-      document.getElementById("entry-title").textContent = t(target === "post" ? "forum.newTitle" : "diary.newTitle");
-      document.getElementById("entry-submit").textContent = t(target === "post" ? "forum.share" : "profile.save");
+    function openEntrySheet() {
       diaryForm.reset();
       clearErrors(diaryForm);
       pendingDiaryPhoto = null;
@@ -5275,8 +5677,7 @@
       diaryForm.classList.remove("hidden");
     }
 
-    document.getElementById("new-diary").addEventListener("click", () => openEntrySheet("log"));
-    document.getElementById("new-post").addEventListener("click", () => openEntrySheet("post"));
+    document.getElementById("new-post").addEventListener("click", openEntrySheet);
     document.getElementById("diary-cancel").addEventListener("click", closeSheet);
 
     diaryStars.addEventListener("click", (e) => {
@@ -5305,32 +5706,24 @@
       const text = diaryForm.elements.text.value.trim();
       if (!text && !pendingDiaryPhoto) return setError(diaryForm, t("forum.errEmpty"));
 
-      const entry = { text, photo: pendingDiaryPhoto, rating: diaryRating, createdAt: Date.now() };
       setBusy(diaryForm, true);
       try {
-        if (entryTarget === "post") {
-          await db.collection("posts").add({
-            ...entry,
-            author: currentUserKey(),
-            authorName: myProfile ? myProfile.name : "?",
-          });
-        } else {
-          await diaryRef().add(entry);
-        }
+        await db.collection("posts").add({
+          text,
+          photo: pendingDiaryPhoto,
+          rating: diaryRating,
+          createdAt: Date.now(),
+          author: currentUserKey(),
+          authorName: myProfile ? myProfile.name : "?",
+        });
         closeSheet();
-        showToast(t(entryTarget === "post" ? "forum.posted" : "diary.saved"));
+        showToast(t("forum.posted"));
       } catch (error) {
         console.error(error);
         setError(diaryForm, t("friends.failed"));
       } finally {
         setBusy(diaryForm, false);
       }
-    });
-
-    diaryList.addEventListener("click", (e) => {
-      const del = e.target.closest("[data-delete-diary]");
-      if (!del || !confirm(t("diary.confirmDelete"))) return;
-      diaryRef().doc(del.dataset.deleteDiary).delete().catch(() => showToast(t("friends.failed")));
     });
 
     // ==========================================================
@@ -5953,17 +6346,21 @@
     renderPlayers();
 
     // ==========================================================
-    // PAUSE-AI: registrér din rygning og få en AI-beregning
+    // LOG EN SMOKE: registreringer, T-Break-beregner og statistik
     // ==========================================================
     // Registreringerne gemmes i logs/{mit id}/entries, som kun jeg kan læse.
-    // Beregningen laves af Claude via vores egen lille server (ai-server/),
-    // som holder API-nøglen hemmelig og tjekker, at man er logget ind.
+    // T-Break-beregningen laves af Claude via vores egen lille server
+    // (ai-server/), som holder API-nøglen hemmelig og tjekker, at man er logget ind.
     const AI_URL = "";   // adressen på serveren, sættes når den er lagt op
     const logForm = document.getElementById("log-form");
     const logList = document.getElementById("log-list");
+    const statsEl = document.getElementById("stats-content");
     const aiResult = document.getElementById("ai-result");
     const aiButton = document.getElementById("ai-run");
     const aiStatus = document.getElementById("ai-status");
+    const logPhotoInput = document.getElementById("log-photo-input");
+    const logPhotoPreview = document.getElementById("log-photo-preview");
+    const logPhotoText = document.getElementById("log-photo-text");
     let logEntries = [];
     let aiProfile = {};
     let lastAnalysis = null;
@@ -5971,14 +6368,33 @@
     let logTimes = 1;
     let logMethod = "joint";
     let logProduct = "flower";
+    let pendingLogPhoto = null;
 
+    const HOUR = 36e5;
+    const DAY = 864e5;
     const METHODS = ["joint", "spliff", "bong", "pipe", "vape", "dab", "edible"];
     const PRODUCTS = ["flower", "hash", "concentrate", "edible", "other"];
     const HIGH_EMOJI = ["😐", "🙂", "😊", "😌", "😎", "🤩", "😵‍💫", "🥴", "🛸", "🚀"];
 
+    const pad2 = (n) => String(n).padStart(2, "0");
+
     function todayISO() {
       const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+    }
+
+    function nowTime() {
+      const d = new Date();
+      return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    }
+
+    // Hvornår registreringen skete (ældre registreringer har kun en dato)
+    function entryTime(entry) {
+      return entry.at || new Date(`${entry.date}T${entry.time || "20:00"}`).getTime();
+    }
+
+    function formatGrams(grams) {
+      return Number(grams || 0).toLocaleString(t("locale"), { maximumFractionDigits: 2 });
     }
 
     function logsDoc() {
@@ -5989,17 +6405,18 @@
       if (logUnsubs.length) return;
       const onError = (error) => console.error(error);
       logUnsubs = [
-        logsDoc().collection("entries").orderBy("date", "desc").limit(90).onSnapshot((snap) => {
+        logsDoc().collection("entries").orderBy("date", "desc").limit(120).onSnapshot((snap) => {
           logEntries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          renderLogList();
+          renderStats();
+          renderTBreak();
+          updateDriveTimers();
         }, onError),
-        // Mine svar under "Om dig" og den seneste AI-beregning
+        // Mine svar under "Om dig" og den seneste T-Break-beregning
         logsDoc().onSnapshot((doc) => {
           const data = doc.exists ? doc.data() : {};
           aiProfile = data.profile || {};
           lastAnalysis = data.lastAnalysis || null;
-          renderAiProfile();
-          renderAiResult();
+          renderTBreak();
         }, onError),
       ];
     }
@@ -6012,7 +6429,7 @@
       lastAnalysis = null;
     }
 
-    // ---------- Skemaet ----------
+    // ---------- Skemaet "Log en smoke" ----------
     function renderChoice(containerId, options, selected, prefix) {
       document.getElementById(containerId).innerHTML = options
         .map((o) => `<button type="button" class="chip ${o === selected ? "active" : ""}" data-value="${o}">${t(prefix + o)}</button>`)
@@ -6025,8 +6442,21 @@
       document.getElementById("log-high-value").textContent = `${HIGH_EMOJI[high - 1]} ${high}/10`;
       renderChoice("log-methods", METHODS, logMethod, "ai.method.");
       renderChoice("log-products", PRODUCTS, logProduct, "ai.product.");
-      if (!logForm.elements.date.value) logForm.elements.date.value = todayISO();
       logForm.elements.date.max = todayISO();
+    }
+
+    function openLogSheet() {
+      logForm.reset();
+      clearErrors(logForm);
+      logForm.elements.date.value = todayISO();
+      logForm.elements.time.value = nowTime();
+      logTimes = 1;
+      pendingLogPhoto = null;
+      logPhotoPreview.classList.add("hidden");
+      logPhotoText.classList.remove("hidden");
+      renderLogForm();
+      sheetBackdrop.classList.remove("hidden");
+      logForm.classList.remove("hidden");
     }
 
     document.getElementById("log-methods").addEventListener("click", (e) => {
@@ -6051,13 +6481,29 @@
     });
 
     logForm.elements.high.addEventListener("input", renderLogForm);
+    document.getElementById("log-cancel").addEventListener("click", closeSheet);
+
+    logPhotoInput.addEventListener("change", async () => {
+      const file = logPhotoInput.files[0];
+      if (!file) return;
+      try {
+        pendingLogPhoto = await resizeImage(file);
+        logPhotoPreview.src = pendingLogPhoto;
+        logPhotoPreview.classList.remove("hidden");
+        logPhotoText.classList.add("hidden");
+      } catch {
+        showToast(t("img.failed"));
+      }
+    });
 
     logForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearErrors(logForm);
-      const { date, grams, high, thc } = logForm.elements;
+      const { date, time, grams, high, thc, note } = logForm.elements;
       const gramValue = Number(String(grams.value).replace(",", "."));
       if (!date.value) return setError(logForm, t("ai.errDate"));
+      const at = new Date(`${date.value}T${time.value || "12:00"}`).getTime();
+      if (at > Date.now() + 5 * 60e3) return setError(logForm, t("ai.errFuture"));
       if (!gramValue || gramValue <= 0 || gramValue > 50) {
         markInvalid(grams);
         return setError(logForm, t("ai.errGrams"));
@@ -6068,18 +6514,19 @@
       try {
         await logsDoc().collection("entries").add({
           date: date.value,
+          time: time.value || "12:00",
+          at,
           times: logTimes,
           grams: gramValue,
           high: Number(high.value),
           method: logMethod,
           product: logProduct,
           thc: thcValue && thcValue > 0 && thcValue <= 100 ? thcValue : null,
+          note: note.value.trim(),
+          photo: pendingLogPhoto,
           createdAt: Date.now(),
         });
-        grams.value = "";
-        thc.value = "";
-        logTimes = 1;
-        renderLogForm();
+        closeSheet();
         showToast(t("ai.saved"));
       } catch (error) {
         console.error(error);
@@ -6089,7 +6536,9 @@
       }
     });
 
-    // ---------- Om dig ----------
+    // ==========================================================
+    // T-BREAK-BEREGNER (AI)
+    // ==========================================================
     function renderAiProfile() {
       document.querySelectorAll("[data-profile-field]").forEach((select) => {
         select.value = aiProfile[select.dataset.profileField] || "";
@@ -6103,31 +6552,6 @@
       });
     });
 
-    // ---------- Mine registreringer ----------
-    function renderLogList() {
-      if (!logEntries.length) {
-        logList.innerHTML = `<p class="empty-note">${t("ai.noLogs")}</p>`;
-        return;
-      }
-      logList.innerHTML = logEntries.slice(0, 30).map((entry) => `
-        <div class="log-row">
-          <div class="log-main">
-            <strong>${formatDate(entry.date + "T12:00")}</strong>
-            <small>${t(entry.times === 1 ? "ai.times1" : "ai.timesN", { n: entry.times })} · ${String(entry.grams).replace(".", t("locale") === "da-DK" ? "," : ".")} g · ${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}</small>
-          </div>
-          <span class="log-high">${HIGH_EMOJI[(entry.high || 1) - 1]} ${entry.high}/10</span>
-          <button type="button" class="log-delete" data-delete-log="${esc(entry.id)}" aria-label="${t("forum.delete")}">✕</button>
-        </div>`).join("");
-    }
-
-    logList.addEventListener("click", (e) => {
-      const del = e.target.closest("[data-delete-log]");
-      if (!del) return;
-      logsDoc().collection("entries").doc(del.dataset.deleteLog).delete()
-        .catch(() => showToast(t("friends.failed")));
-    });
-
-    // ---------- AI-beregningen ----------
     const LEVEL_COLORS = { low: "#6fd08f", moderate: "#ffd166", high: "#ffb347", very_high: "#ff6159" };
 
     function renderAiResult() {
@@ -6165,6 +6589,15 @@
         </div>`;
     }
 
+    function renderTBreak() {
+      renderAiProfile();
+      renderAiResult();
+      document.getElementById("tbreak-count").textContent = logEntries.length === 1
+        ? t("ai.basedOn1")
+        : t("ai.basedOnN", { n: logEntries.length });
+      if (!aiButton.disabled) aiButton.textContent = t("ai.run");
+    }
+
     function aiErrorText(code) {
       const known = ["not_logged_in", "no_entries", "busy", "refusal", "server_key"];
       return t(known.includes(code) ? "ai.err." + code : "ai.err.general");
@@ -6191,8 +6624,8 @@
             lang: lang === "en" ? "en" : "da",
             today: todayISO(),
             profile: aiProfile,
-            entries: logEntries.map(({ date, times, grams, high, method, product, thc }) =>
-              ({ date, times, grams, high, method, product, thc })),
+            entries: logEntries.map(({ date, time, times, grams, high, method, product, thc }) =>
+              ({ date, time, times, grams, high, method, product, thc })),
           }),
         });
         const data = await response.json();
@@ -6211,13 +6644,302 @@
       }
     });
 
-    function renderPause() {
-      renderLogForm();
-      renderAiProfile();
-      renderLogList();
-      renderAiResult();
-      aiButton.textContent = t("ai.run");
+    // ==========================================================
+    // KØRE-TIMER: groft estimat af, hvor længe man bør vente
+    // ==========================================================
+    // I Danmark er der nultolerance for THC i blodet ved bilkørsel. THC kan
+    // spores i op til flere døgn efter rygning og hos dem, der ryger hver dag,
+    // i flere uger. Derfor er estimatet bevidst forsigtigt.
+    function driveEstimate() {
+      if (!logEntries.length) return null;
+      const last = Math.max(...logEntries.map(entryTime));
+      const now = Date.now();
+      const useDays = new Set(logEntries.filter((e) => entryTime(e) > now - 14 * DAY).map((e) => e.date)).size;
+      const lastEntry = logEntries.find((e) => entryTime(e) === last);
+      let hours;
+      let usage;
+      if (useDays >= 10) [hours, usage] = [30 * 24, "daily"];
+      else if (useDays >= 3) [hours, usage] = [7 * 24, "regular"];
+      else {
+        const strong = lastEntry && ["concentrate", "edible"].includes(lastEntry.product);
+        [hours, usage] = [strong ? 72 : 48, "occasional"];
+      }
+      return { last, until: last + hours * HOUR, hours, usage, useDays };
     }
+
+    function formatDuration(ms) {
+      const total = Math.max(0, Math.ceil(ms / 60e3));
+      const d = Math.floor(total / 1440);
+      const h = Math.floor((total % 1440) / 60);
+      const m = total % 60;
+      return t("drive.duration", { d, h, m });
+    }
+
+    function driveCardHTML() {
+      const est = driveEstimate();
+      if (!est) return "";
+      const left = est.until - Date.now();
+      const done = left <= 0;
+      const pct = Math.min(100, Math.max(0, ((Date.now() - est.last) / (est.until - est.last)) * 100));
+      const lastText = `${formatDate(est.last)} ${new Date(est.last).toLocaleTimeString(t("locale"), { hour: "2-digit", minute: "2-digit" })}`;
+      return `
+        <div class="card drive-card ${done ? "done" : ""}">
+          <small class="eyebrow">🚗 ${t("drive.title")}</small>
+          <p class="drive-label">${done ? t("drive.passed") : t("drive.waitAtLeast")}</p>
+          ${done ? "" : `<p class="drive-time" data-drive-countdown>${formatDuration(left)}</p>`}
+          <div class="progress"><span style="width:${pct}%"></span></div>
+          <p class="muted drive-basis">${t("drive.basis", { last: lastText, n: est.useDays })} ${t("drive.usage." + est.usage)}</p>
+          <p class="drive-warning">${t("drive.warning")}</p>
+        </div>`;
+    }
+
+    // Opdater nedtællingen på statistiksiden og hjemmeskærmen
+    function updateDriveTimers() {
+      const est = driveEstimate();
+      const left = est ? est.until - Date.now() : 0;
+      document.querySelectorAll("[data-drive-countdown]").forEach((el) => {
+        el.textContent = formatDuration(left);
+      });
+      const chip = document.getElementById("home-drive");
+      if (!est) {
+        chip.classList.add("hidden");
+      } else {
+        chip.classList.remove("hidden");
+        chip.textContent = left > 0
+          ? `🚗 ${t("drive.homeWait", { time: formatDuration(left) })}`
+          : `🚗 ${t("drive.homePassed")}`;
+      }
+    }
+
+    setInterval(updateDriveTimers, 30e3);
+
+    // ==========================================================
+    // STATISTIK OG GRAFER
+    // ==========================================================
+    function dayStart(time) {
+      const d = new Date(time);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime();
+    }
+
+    function barChart(values, labels, tips, opts = {}) {
+      const max = Math.max(1e-9, ...values);
+      return `
+        <div class="bars ${opts.dense ? "dense" : ""}">
+          ${values.map((v, i) => `
+            <button type="button" class="bar-col" data-tip="${esc(tips[i])}" aria-label="${esc(tips[i])}">
+              <span class="bar ${v ? "" : "empty"}" style="height:${(v / max) * 100}%"></span>
+            </button>`).join("")}
+        </div>
+        <div class="bar-axis">${labels.map((l) => `<span>${l}</span>`).join("")}</div>`;
+    }
+
+    function chartCard(title, body, caption) {
+      return `
+        <div class="card chart-card">
+          <h3>${title}</h3>
+          ${body}
+          <p class="chart-caption" data-default="${esc(caption)}">${caption}</p>
+        </div>`;
+    }
+
+    function renderStats() {
+      if (!statsEl) return;
+      if (!logEntries.length) {
+        statsEl.innerHTML = `
+          <div class="card pause-empty">
+            <h2>${t("stats.emptyTitle")}</h2>
+            <p class="muted">${t("stats.emptyText")}</p>
+            <button type="button" class="btn-primary" data-open-log>${t("home.logTitle")}</button>
+          </div>`;
+        renderLogList();
+        return;
+      }
+      const now = Date.now();
+      const today = dayStart(now);
+      const within = (days) => logEntries.filter((e) => entryTime(e) >= today - (days - 1) * DAY);
+      const sum = (list, key) => list.reduce((s, e) => s + (Number(e[key]) || 0), 0);
+      const week = within(7);
+      const month = within(30);
+      const avgHigh = month.length ? sum(month, "high") / month.length : 0;
+
+      // Gram pr. dag de sidste 30 dage
+      const days = Array.from({ length: 30 }, (_, i) => today - (29 - i) * DAY);
+      const gramsPerDay = days.map((d) => sum(logEntries.filter((e) => dayStart(entryTime(e)) === d), "grams"));
+      const timesPerDay = days.map((d) => sum(logEntries.filter((e) => dayStart(entryTime(e)) === d), "times"));
+      const dayTips = days.map((d, i) => `${formatDate(d)}: ${formatGrams(gramsPerDay[i])} g · ${t(timesPerDay[i] === 1 ? "ai.times1" : "ai.timesN", { n: timesPerDay[i] })}`);
+      const dayLabels = days.map((d, i) => (i === 0 || i === 14 || i === 29 ? new Date(d).toLocaleDateString(t("locale"), { day: "numeric", month: "short" }) : ""));
+
+      // Hvor skæv pr. gram, uge for uge (falder den, stiger tolerancen)
+      const weeks = Array.from({ length: 8 }, (_, i) => {
+        const end = today + DAY - (7 - i) * 7 * DAY;
+        const list = logEntries.filter((e) => entryTime(e) >= end - 7 * DAY && entryTime(e) < end);
+        const grams = sum(list, "grams");
+        return { end, value: grams ? sum(list, "high") / list.length / grams : null };
+      });
+      const points = weeks.filter((w) => w.value !== null);
+      const maxValue = Math.max(1e-9, ...points.map((p) => p.value));
+      const x = (i) => 16 + (i * (300 - 32)) / 7;
+      const y = (v) => 110 - (v / maxValue) * 90;
+      const path = weeks.map((w, i) => (w.value === null ? null : `${x(i)},${y(w.value)}`)).filter(Boolean).join(" ");
+      const lineChart = `
+        <svg class="line-chart" viewBox="0 0 300 130" role="img" aria-label="${t("stats.highPerGram")}">
+          <line x1="16" y1="110" x2="284" y2="110" class="axis"/>
+          ${points.length > 1 ? `<polyline points="${path}" class="line"/>` : ""}
+          ${weeks.map((w, i) => w.value === null ? "" : `
+            <g data-tip="${esc(t("stats.weekTip", { date: formatDate(w.end - DAY), v: w.value.toLocaleString(t("locale"), { maximumFractionDigits: 1 }) }))}">
+              <circle cx="${x(i)}" cy="${y(w.value)}" r="13" class="hit"/>
+              <circle cx="${x(i)}" cy="${y(w.value)}" r="5" class="dot"/>
+            </g>`).join("")}
+          <text x="16" y="126" class="tick">${t("stats.weeksAgo", { n: 8 })}</text>
+          <text x="284" y="126" class="tick end">${t("stats.thisWeek")}</text>
+        </svg>`;
+
+      // Ugedage
+      const weekdayOrder = [1, 2, 3, 4, 5, 6, 0];
+      const perWeekday = weekdayOrder.map((wd) => sum(month.filter((e) => new Date(entryTime(e)).getDay() === wd), "times"));
+      const weekdayName = (wd, style) => new Date(Date.UTC(1970, 0, 4 + wd)).toLocaleDateString(t("locale"), { weekday: style, timeZone: "UTC" });
+
+      // Hvordan og hvad
+      const breakdown = (key, options, prefix) => {
+        const counts = options.map((o) => ({ o, n: sum(month.filter((e) => e[key] === o), "times") })).filter((c) => c.n);
+        const max = Math.max(1, ...counts.map((c) => c.n));
+        return counts.sort((a, b) => b.n - a.n).map((c) => `
+          <div class="hbar">
+            <span>${t(prefix + c.o)}</span>
+            <span class="hbar-track"><span style="width:${(c.n / max) * 100}%"></span></span>
+            <strong>${c.n}</strong>
+          </div>`).join("");
+      };
+
+      statsEl.innerHTML = `
+        ${driveCardHTML()}
+        <div class="stat-grid">
+          <div class="card"><strong>${formatGrams(sum(week, "grams"))} g</strong><span>${t("stats.week")}</span></div>
+          <div class="card"><strong>${sum(week, "times")}</strong><span>${t("stats.weekTimes")}</span></div>
+          <div class="card"><strong>${HIGH_EMOJI[Math.max(0, Math.round(avgHigh) - 1)]} ${avgHigh.toLocaleString(t("locale"), { maximumFractionDigits: 1 })}</strong><span>${t("stats.avgHigh")}</span></div>
+        </div>
+        ${chartCard(t("stats.gramsPerDay"), barChart(gramsPerDay, dayLabels, dayTips, { dense: true }), t("stats.month", { g: formatGrams(sum(month, "grams")) }))}
+        ${chartCard(t("stats.highPerGram"), lineChart, t("stats.highPerGramHelp"))}
+        ${chartCard(t("stats.weekdays"), barChart(perWeekday, weekdayOrder.map((wd) => weekdayName(wd, "narrow")), weekdayOrder.map((wd, i) => `${weekdayName(wd, "long")}: ${t(perWeekday[i] === 1 ? "ai.times1" : "ai.timesN", { n: perWeekday[i] })}`)), t("stats.weekdaysHelp"))}
+        <div class="card chart-card">
+          <h3>${t("ai.methodLabel")}</h3>
+          ${breakdown("method", METHODS, "ai.method.")}
+          <h3 class="spaced">${t("ai.productLabel")}</h3>
+          ${breakdown("product", PRODUCTS, "ai.product.")}
+          <p class="chart-caption">${t("stats.breakdownHelp")}</p>
+        </div>`;
+      renderLogList();
+    }
+
+    // Tryk eller peg på en søjle/et punkt for at se tallet
+    statsEl.addEventListener("click", (e) => {
+      if (e.target.closest("[data-open-log]")) openLogSheet();
+    });
+
+    ["pointerover", "click"].forEach((type) => {
+      statsEl.addEventListener(type, (e) => {
+        const mark = e.target.closest("[data-tip]");
+        if (!mark) return;
+        const card = mark.closest(".chart-card");
+        card.querySelectorAll(".active-mark").forEach((el) => el.classList.remove("active-mark"));
+        mark.classList.add("active-mark");
+        card.querySelector(".chart-caption").textContent = mark.dataset.tip;
+      });
+    });
+
+    statsEl.addEventListener("pointerout", (e) => {
+      const card = e.target.closest(".chart-card");
+      if (!card || card.contains(e.relatedTarget)) return;
+      card.querySelectorAll(".active-mark").forEach((el) => el.classList.remove("active-mark"));
+      const caption = card.querySelector(".chart-caption");
+      if (caption.dataset.default) caption.textContent = caption.dataset.default;
+    });
+
+    // ---------- Mine registreringer ----------
+    function renderLogList() {
+      if (!logEntries.length) {
+        logList.innerHTML = `<p class="empty-note">${t("ai.noLogs")}</p>`;
+        return;
+      }
+      logList.innerHTML = [...logEntries].sort((a, b) => entryTime(b) - entryTime(a)).slice(0, 40).map((entry) => `
+        <div class="log-row">
+          ${entry.photo ? `<img class="log-photo" src="${esc(entry.photo)}" alt="">` : ""}
+          <div class="log-main">
+            <strong>${formatDate(entryTime(entry))}${entry.time ? ` · ${esc(entry.time)}` : ""}</strong>
+            <small>${t(entry.times === 1 ? "ai.times1" : "ai.timesN", { n: entry.times })} · ${formatGrams(entry.grams)} g · ${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}</small>
+            ${entry.note ? `<small class="log-note">${esc(entry.note)}</small>` : ""}
+          </div>
+          <span class="log-high">${HIGH_EMOJI[(entry.high || 1) - 1]} ${entry.high}/10</span>
+          <button type="button" class="log-delete" data-delete-log="${esc(entry.id)}" aria-label="${t("forum.delete")}">✕</button>
+        </div>`).join("");
+    }
+
+    logList.addEventListener("click", (e) => {
+      const del = e.target.closest("[data-delete-log]");
+      if (!del || !confirm(t("ai.confirmDelete"))) return;
+      logsDoc().collection("entries").doc(del.dataset.deleteLog).delete()
+        .catch(() => showToast(t("friends.failed")));
+    });
+
+    function renderPause() {
+      renderTBreak();
+      renderStats();
+      updateDriveTimers();
+    }
+
+    // ==========================================================
+    // LAV DIN PROFIL (vises lige efter man har oprettet en konto)
+    // ==========================================================
+    const onboarding = document.getElementById("onboarding");
+    const onbForm = document.getElementById("onboarding-form");
+    const onbInput = document.getElementById("onb-avatar-input");
+    let onbAvatar = null;
+
+    function renderOnboarding() {
+      document.getElementById("onb-avatar").innerHTML = avatarHTML(myProfile, onbAvatar);
+      document.getElementById("onb-counter").textContent = `${onbForm.elements.bio.value.length}/160`;
+    }
+
+    // Har man ikke lavet sin profil endnu, vises den i stedet for appen
+    function checkOnboarding() {
+      const needed = Boolean(currentUserKey() && myProfile && !myProfile.onboarded);
+      onboarding.classList.toggle("hidden", !needed);
+      appScreen.classList.toggle("hidden", needed);
+      if (needed) renderOnboarding();
+    }
+
+    onbInput.addEventListener("change", async () => {
+      const file = onbInput.files[0];
+      if (!file) return;
+      try {
+        onbAvatar = await cropSquare(file);
+        renderOnboarding();
+      } catch {
+        showToast(t("img.failed"));
+      }
+    });
+
+    onbForm.elements.bio.addEventListener("input", renderOnboarding);
+
+    onbForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors(onbForm);
+      const bio = onbForm.elements.bio.value.trim();
+      if (!onbAvatar && !bio) return setError(onbForm, t("onb.errEmpty"));
+      setBusy(onbForm, true);
+      try {
+        await db.collection("profiles").doc(currentUserKey()).set({ avatar: onbAvatar, bio, onboarded: true }, { merge: true });
+        onbAvatar = null;
+        onbForm.reset();
+        showToast(t("onb.welcome", { name: myProfile ? myProfile.name : "" }));
+      } catch (error) {
+        console.error(error);
+        setError(onbForm, t("friends.failed"));
+      } finally {
+        setBusy(onbForm, false);
+      }
+    });
 
     // ---------- Genveje på hjemmeskærmen ----------
     function greetingKey() {
@@ -6232,6 +6954,7 @@
       const shortcut = e.target.closest("[data-shortcut]");
       if (!shortcut) return;
       const target = shortcut.dataset.shortcut;
+      if (target === "log") return openLogSheet();
       if (target === "forum" || target === "profile") return showPage(target);
       showPage("handbook");
       viewStack = ["hb-menu"];

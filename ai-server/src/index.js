@@ -39,7 +39,7 @@ The user message is JSON with:
 - today: today's date (YYYY-MM-DD)
 - lang: "da" (Danish) or "en" (English). Write every text field in this language.
 - profile: optional answers about how long they have used cannabis, their goal, and when they last took a break of at least a week
-- entries: logs with date, times (sessions that day), grams, high (how high they got, 1-10), method, product (flower, hash, concentrate, edible, other) and optional thc (%)
+- entries: logs with date, time, times (sessions in that log), grams, high (how high they got, 1-10), method, product (flower, hash, concentrate, edible, other) and optional thc (%)
 
 How to reason:
 - Tolerance builds with frequency and amount. Daily use builds much more tolerance than occasional use, and hash and concentrates count more than flower per gram.
@@ -76,6 +76,7 @@ function cleanEntries(entries) {
   if (!Array.isArray(entries)) return [];
   return entries.slice(0, MAX_ENTRIES).map((e) => ({
     date: String(e.date || "").slice(0, 10),
+    time: String(e.time || "").slice(0, 5),
     times: Number(e.times) || 0,
     grams: Number(e.grams) || 0,
     high: Number(e.high) || 0,
