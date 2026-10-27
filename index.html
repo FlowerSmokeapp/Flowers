@@ -5417,6 +5417,23 @@
     .bench-review small {
       font-size: 12px;
     }
+
+    .last-smoke {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .last-smoke .ic {
+      width: 14px;
+      height: 14px;
+    }
+    .log-feelings {
+      color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -6292,18 +6309,6 @@
           <input type="time" name="time">
         </label>
       </div>
-      <div class="field">
-        <span data-i18n="ai.times">Hvor mange gange røg du?</span>
-        <div class="stepper">
-          <button type="button" data-step="-1" aria-label="−">−</button>
-          <strong id="log-times">1</strong>
-          <button type="button" data-step="1" aria-label="+">+</button>
-        </div>
-      </div>
-      <label class="field">
-        <span data-i18n="ai.grams">Hvor meget i alt? (gram)</span>
-        <input type="text" name="grams" inputmode="decimal" data-i18n-ph="ai.gramsPh" placeholder="Fx 0,5">
-      </label>
       <label class="field">
         <span data-i18n="ai.spent">Hvad kostede det? (kr, valgfrit)</span>
         <input type="text" name="spent" inputmode="decimal" data-i18n-ph="ai.spentPh" placeholder="Fx 100">
@@ -6311,6 +6316,10 @@
       <div class="field">
         <span><span data-i18n="ai.high">Hvor skæv blev du?</span> <b id="log-high-value"></b></span>
         <input type="range" name="high" min="1" max="10" value="5" class="range">
+      </div>
+      <div class="field">
+        <span data-i18n="ai.feelLabel">Hvordan føltes det? (vælg gerne flere)</span>
+        <div class="chips wrap" id="log-feelings"></div>
       </div>
       <div class="field">
         <span data-i18n="ai.methodLabel">Hvordan?</span>
@@ -6652,6 +6661,17 @@
         "ai.high": "Hvor skæv blev du?",
         "ai.methodLabel": "Hvordan?",
         "ai.productLabel": "Hvad?",
+        "ai.feelLabel": "Hvordan føltes det? (vælg gerne flere)",
+        "feel.happy": "Glad",
+        "feel.relaxed": "Afslappet",
+        "feel.giggly": "Fnisende",
+        "feel.creative": "Kreativ",
+        "feel.hungry": "Sulten",
+        "feel.sleepy": "Træt",
+        "feel.paranoid": "Paranoid",
+        "feel.dizzy": "Svimmel",
+        "stats.favFeeling": "Typisk følelse",
+        "profile.lastSmoke": "Sidst røget {ago}",
         "ai.thc": "THC % (hvis du ved det)",
         "ai.thcPh": "Valgfrit",
         "ai.saved": "Registreringen er gemt",
@@ -6748,7 +6768,7 @@
         "rank.level": "Level {n} af 8",
         "rank.next": "{xp} XP · {need} XP til {name}",
         "rank.max": "{xp} XP · Du har nået den højeste rank",
-        "rank.help": "Jo mere du ryger, jo højere rank. Hver registrering giver 10 XP + 5 XP for hver gang + 10 XP pr. gram. Men du mister XP hver dag, og jo højere rank du har, jo mere mister du. Så du skal være mere aktiv for at holde en høj rank.",
+        "rank.help": "Jo mere du ryger, jo højere rank. Hver smoke, du logger, giver 25 XP. Men du mister XP hver dag, og jo højere rank du har, jo mere mister du. Så du skal være mere aktiv for at holde en høj rank.",
         "rank.decay": "Du mister {n} XP om dagen på din rank",
         "rank.day": "dag",
         "db.rules": "Databasen afviste det. Reglerne i Firebase skal opdateres.",
@@ -7249,8 +7269,8 @@
         "stats.more": "↑ {pct}% flere gram end perioden før",
         "stats.less": "↓ {pct}% færre gram end perioden før",
         "stats.same": "Samme mængde som perioden før",
-        "stats.perDay": "Gram pr. dag",
-        "stats.perWeek": "Gram pr. uge",
+        "stats.perDay": "Smokes pr. dag",
+        "stats.perWeek": "Smokes pr. uge",
         "stats.weekOf": "Ugen fra {date}",
         "stats.chartHelp": "Tryk på en søjle for at se tallet.",
         "stats.habits": "Dine vaner",
@@ -7331,6 +7351,17 @@
         "ai.high": "How high did you get?",
         "ai.methodLabel": "How?",
         "ai.productLabel": "What?",
+        "ai.feelLabel": "How did it feel? (pick as many as you like)",
+        "feel.happy": "Happy",
+        "feel.relaxed": "Relaxed",
+        "feel.giggly": "Giggly",
+        "feel.creative": "Creative",
+        "feel.hungry": "Hungry",
+        "feel.sleepy": "Sleepy",
+        "feel.paranoid": "Paranoid",
+        "feel.dizzy": "Dizzy",
+        "stats.favFeeling": "Typical feeling",
+        "profile.lastSmoke": "Last smoked {ago}",
         "ai.thc": "THC % (if you know it)",
         "ai.thcPh": "Optional",
         "ai.saved": "Log saved",
@@ -7427,7 +7458,7 @@
         "rank.level": "Level {n} of 8",
         "rank.next": "{xp} XP · {need} XP to {name}",
         "rank.max": "{xp} XP · You've reached the top rank",
-        "rank.help": "The more you smoke, the higher your rank. Each log gives 10 XP + 5 XP for each time + 10 XP per gram. But you lose XP every day, and the higher your rank, the more you lose. So you need to be more active to keep a high rank.",
+        "rank.help": "The more you smoke, the higher your rank. Each smoke you log gives 25 XP. But you lose XP every day, and the higher your rank, the more you lose. So you need to be more active to keep a high rank.",
         "rank.decay": "You lose {n} XP a day at your rank",
         "rank.day": "day",
         "db.rules": "The database refused it. The rules in Firebase need updating.",
@@ -7927,8 +7958,8 @@
         "stats.more": "↑ {pct}% more grams than the period before",
         "stats.less": "↓ {pct}% fewer grams than the period before",
         "stats.same": "Same amount as the period before",
-        "stats.perDay": "Grams per day",
-        "stats.perWeek": "Grams per week",
+        "stats.perDay": "Smokes per day",
+        "stats.perWeek": "Smokes per week",
         "stats.weekOf": "Week from {date}",
         "stats.chartHelp": "Tap a bar to see the number.",
         "stats.habits": "Your habits",
@@ -9785,6 +9816,7 @@
             <div class="me-info">
               <h2>${esc(p.name)}</h2>
               <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
+              ${p.lastSmokeAt ? `<p class="last-smoke">${icon("clock")} ${t("profile.lastSmoke", { ago: timeAgo(p.lastSmokeAt) })}</p>` : ""}
               <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
             </div>
           </div>
@@ -12665,7 +12697,7 @@
     let logsLoaded = false;   // er registreringerne hentet fra databasen?
     let aiProfile = {};
     let logUnsubs = [];
-    let logTimes = 1;
+    let logFeelings = [];
     let logMethod = "joint";
     let logProduct = "flower";
 
@@ -12673,6 +12705,7 @@
     const DAY = 864e5;
     const METHODS = ["joint", "spliff", "bong", "pipe", "vape", "dab", "edible"];
     const PRODUCTS = ["flower", "hash", "concentrate", "edible", "other"];
+    const FEELINGS = ["happy", "relaxed", "giggly", "creative", "hungry", "sleepy", "paranoid", "dizzy"];
     const HIGH_EMOJI = ["😐", "🙂", "😊", "😌", "😎", "🤩", "😵‍💫", "🥴", "🛸", "🚀"];
 
     const pad2 = (n) => String(n).padStart(2, "0");
@@ -12739,11 +12772,13 @@
     }
 
     function renderLogForm() {
-      document.getElementById("log-times").textContent = logTimes;
       const high = Number(logForm.elements.high.value);
       document.getElementById("log-high-value").textContent = `${high}/10`;
       renderChoice("log-methods", METHODS, logMethod, "ai.method.");
       renderChoice("log-products", PRODUCTS, logProduct, "ai.product.");
+      document.getElementById("log-feelings").innerHTML = FEELINGS
+        .map((f) => `<button type="button" class="chip ${logFeelings.includes(f) ? "active" : ""}" data-feel="${f}">${t("feel." + f)}</button>`)
+        .join("");
       logForm.elements.date.max = todayISO();
     }
 
@@ -12752,7 +12787,7 @@
       clearErrors(logForm);
       logForm.elements.date.value = todayISO();
       logForm.elements.time.value = nowTime();
-      logTimes = 1;
+      logFeelings = [];
       renderLogForm();
       sheetBackdrop.classList.remove("hidden");
       logForm.classList.remove("hidden");
@@ -12772,10 +12807,12 @@
       renderLogForm();
     });
 
-    logForm.addEventListener("click", (e) => {
-      const step = e.target.closest("[data-step]");
-      if (!step) return;
-      logTimes = Math.min(50, Math.max(1, logTimes + Number(step.dataset.step)));
+    // Følelser: tryk for at vælge eller fravælge
+    document.getElementById("log-feelings").addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-feel]");
+      if (!chip) return;
+      const f = chip.dataset.feel;
+      logFeelings = logFeelings.includes(f) ? logFeelings.filter((x) => x !== f) : [...logFeelings, f];
       renderLogForm();
     });
 
@@ -12786,20 +12823,15 @@
     logForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearErrors(logForm);
-      const { date, time, grams, high, thc, spent } = logForm.elements;
+      const { date, time, high, thc, spent } = logForm.elements;
       const spentValue = spent.value.trim() ? Number(String(spent.value).replace(",", ".")) : 0;
       if (spent.value.trim() && !(spentValue >= 0 && spentValue < 100000)) {
         markInvalid(spent);
         return setError(logForm, t("ai.errSpent"));
       }
-      const gramValue = Number(String(grams.value).replace(",", "."));
       if (!date.value) return setError(logForm, t("ai.errDate"));
       const at = new Date(`${date.value}T${time.value || "12:00"}`).getTime();
       if (at > Date.now() + 5 * 60e3) return setError(logForm, t("ai.errFuture"));
-      if (!gramValue || gramValue <= 0 || gramValue > 50) {
-        markInvalid(grams);
-        return setError(logForm, t("ai.errGrams"));
-      }
       const thcValue = thc.value ? Number(String(thc.value).replace(",", ".")) : null;
       if (isOnTBreak(myProfile)) {
         if (!confirm(t("tbm.logConfirm"))) return;
@@ -12812,8 +12844,9 @@
           date: date.value,
           time: time.value || "12:00",
           at,
-          times: logTimes,
-          grams: gramValue,
+          times: 1,
+          grams: null,
+          feelings: logFeelings,
           high: Number(high.value),
           method: logMethod,
           product: logProduct,
@@ -12850,10 +12883,18 @@
     const LOW_SCORE = 20;      // under denne score er tolerancen lav
     const BREAK_STEPS = [0, 2, 7, 14, 21, 28];
 
+    // Typisk mængde pr. smoke, når man ikke har skrevet gram
+    const TYPICAL_GRAMS = { joint: 0.4, spliff: 0.3, bong: 0.2, pipe: 0.2, vape: 0.15, dab: 0.05, edible: 1 };
+
+    function entryGrams(entry) {
+      const grams = Number(entry.grams);
+      return grams > 0 ? grams : TYPICAL_GRAMS[entry.method] ?? 0.3;
+    }
+
     function doseMg(entry) {
       const potency = entry.thc ? entry.thc / 100 : POTENCY[entry.product] ?? POTENCY.flower;
       const absorption = ABSORPTION[entry.method] ?? ABSORPTION.joint;
-      return (Number(entry.grams) || 0) * 1000 * potency * absorption;
+      return entryGrams(entry) * 1000 * potency * absorption;
     }
 
     // Kroppen: THC fordeles efter vægt og gemmes i fedtvæv.
@@ -13305,6 +13346,8 @@
     });
 
     function entryXp(entry) {
+      // Ældre registreringer havde gange og gram; nye giver 25 XP pr. smoke
+      if (!(Number(entry.grams) > 0)) return 25;
       return 10 + 5 * (Number(entry.times) || 1) + Math.round(10 * Math.min(5, Number(entry.grams) || 0));
     }
 
@@ -13389,8 +13432,12 @@
     function syncXp() {
       myXp = computeXp(logEntries);
       renderRank();
-      if (myProfile && (myProfile.xp !== myXp || dayStart(myProfile.xpAt || 0) !== dayStart(Date.now()))) {
-        db.collection("profiles").doc(currentUserKey()).set({ xp: myXp, xpAt: Date.now() }, { merge: true }).catch(() => {});
+      // Hvornår jeg sidst røg, så vennerne kan se det (selve loggen er privat)
+      const lastSmokeAt = logEntries.reduce((max, e) => Math.min(Date.now(), Math.max(max, entryTime(e))), 0);
+      if (myProfile && (myProfile.xp !== myXp || dayStart(myProfile.xpAt || 0) !== dayStart(Date.now())
+        || (logsLoaded && (myProfile.lastSmokeAt || 0) !== lastSmokeAt))) {
+        myProfile.lastSmokeAt = lastSmokeAt;
+        db.collection("profiles").doc(currentUserKey()).set({ xp: myXp, xpAt: Date.now(), lastSmokeAt }, { merge: true }).catch(() => {});
       }
     }
 
@@ -13516,12 +13563,13 @@
       const avgHigh = list.length ? sum(list, "high") / list.length : 0;
       const fmt = (n) => n.toLocaleString(t("locale"), { maximumFractionDigits: 1 });
 
-      // Graf: gram pr. dag (7 og 30 dage) eller pr. uge (alt)
+      // Graf: antal smokes pr. dag (7 og 30 dage) eller pr. uge (alt)
+      const smokes = (l) => l.reduce((n, e) => n + (Number(e.times) || 1), 0);
       let chart;
       if (span <= 31) {
         const days = Array.from({ length: span }, (_, i) => today - (span - 1 - i) * DAY);
-        const values = days.map((d) => sum(list.filter((e) => dayStart(entryTime(e)) === d), "grams"));
-        const tips = days.map((d, i) => `${formatDate(d)}: ${formatGrams(values[i])} g`);
+        const values = days.map((d) => smokes(list.filter((e) => dayStart(entryTime(e)) === d)));
+        const tips = days.map((d, i) => `${formatDate(d)}: ${values[i]}`);
         const labels = days.map((d, i) => (span <= 7 || i === 0 || i === Math.floor(span / 2) || i === span - 1
           ? new Date(d).toLocaleDateString(t("locale"), span <= 7 ? { weekday: "short" } : { day: "numeric", month: "short" })
           : ""));
@@ -13529,8 +13577,8 @@
       } else {
         const count = Math.min(26, Math.ceil(span / 7));
         const weeks = Array.from({ length: count }, (_, i) => today + DAY - (count - i) * 7 * DAY);
-        const values = weeks.map((w) => sum(list.filter((e) => entryTime(e) >= w && entryTime(e) < w + 7 * DAY), "grams"));
-        const tips = weeks.map((w, i) => `${t("stats.weekOf", { date: formatDate(w) })}: ${formatGrams(values[i])} g`);
+        const values = weeks.map((w) => smokes(list.filter((e) => entryTime(e) >= w && entryTime(e) < w + 7 * DAY)));
+        const tips = weeks.map((w, i) => `${t("stats.weekOf", { date: formatDate(w) })}: ${values[i]}`);
         const labels = weeks.map((w, i) => (i === 0 || i === count - 1
           ? new Date(w).toLocaleDateString(t("locale"), { day: "numeric", month: "short" })
           : ""));
@@ -13548,12 +13596,21 @@
         return best === undefined ? null : { key: best, pct: Math.round((counts[best] / sessions) * 100) };
       };
       const hourPart = (h) => (h < 5 ? "night" : h < 12 ? "morning" : h < 18 ? "afternoon" : "evening");
+      // Den følelse, der oftest er valgt (i % af de smokes, hvor man har valgt følelser)
+      const favoriteFeeling = (l) => {
+        const withFeel = l.filter((e) => (e.feelings || []).length);
+        const counts = {};
+        withFeel.forEach((e) => e.feelings.forEach((f) => { counts[f] = (counts[f] || 0) + 1; }));
+        const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+        return best ? { key: best, pct: Math.round((counts[best] / withFeel.length) * 100) } : null;
+      };
       const weekday = (wd) => new Date(Date.UTC(1970, 0, 4 + Number(wd))).toLocaleDateString(t("locale"), { weekday: "long", timeZone: "UTC" });
       const habits = [
         ["flame", t("stats.favMethod"), favorite((e) => e.method), (k) => t("ai.method." + k)],
         ["leaf", t("stats.favProduct"), favorite((e) => e.product), (k) => t("ai.product." + k)],
         ["calendar", t("stats.favDay"), favorite((e) => new Date(entryTime(e)).getDay()), weekday],
         ["clock", t("stats.favTime"), favorite((e) => hourPart(new Date(entryTime(e)).getHours())), (k) => t("stats.time." + k)],
+        ["heart", t("stats.favFeeling"), favoriteFeeling(list), (k) => t("feel." + k)],
       ].filter((h) => h[2]);
 
       statsEl.innerHTML = `
@@ -13622,7 +13679,8 @@
           ${entry.photo ? `<img class="log-photo" src="${esc(entry.photo)}" alt="">` : ""}
           <div class="log-main">
             <strong>${formatDate(entryTime(entry))}${entry.time ? ` · ${esc(entry.time)}` : ""}</strong>
-            <small>${t(entry.times === 1 ? "ai.times1" : "ai.timesN", { n: entry.times })} · ${formatGrams(entry.grams)} g${entry.spent ? ` · ${Math.round(entry.spent)} kr` : ""} · ${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}</small>
+            <small>${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}${entry.spent ? ` · ${Math.round(entry.spent)} kr` : ""}</small>
+            ${(entry.feelings || []).length ? `<small class="log-feelings">${entry.feelings.map((f) => t("feel." + f)).join(" · ")}</small>` : ""}
             ${entry.note ? `<small class="log-note">${esc(entry.note)}</small>` : ""}
           </div>
           <span class="log-high">${entry.high}/10</span>
@@ -14602,9 +14660,9 @@
       { id: "streak_7", icon: "flame", color: C.red, da: ["7 dage i træk", "Log 7 dage i træk"], en: ["7 days in a row", "Log 7 days in a row"], ok: (c) => c.streak >= 7 },
       { id: "streak_14", icon: "comet", color: C.purple, da: ["14 dage i træk", "Log 14 dage i træk"], en: ["14 days in a row", "Log 14 days in a row"], ok: (c) => c.streak >= 14 },
       { id: "streak_30", icon: "comet", color: C.gold, da: ["30 dage i træk", "Log 30 dage i træk"], en: ["30 days in a row", "Log 30 days in a row"], ok: (c) => c.streak >= 30 },
-      { id: "ounce", icon: "scale", color: C.teal, da: ["En hel ounce", "Ryg 28 gram i alt"], en: ["A whole ounce", "Smoke 28 grams in total"], ok: (c) => c.grams >= 28 },
-      { id: "grams_100", icon: "scale", color: C.gold, da: ["Tungvægter", "Ryg 100 gram i alt"], en: ["Heavyweight", "Smoke 100 grams in total"], ok: (c) => c.grams >= 100 },
-      { id: "big_day", icon: "cloud", color: C.blue, da: ["Skybrud", "Ryg 3 gram på én dag"], en: ["Cloudburst", "Smoke 3 grams in one day"], ok: (c) => c.maxDay >= 3 },
+      { id: "feel_all", icon: "heart", color: C.pink, da: ["Følelsesregister", "Vælg alle 8 følelser mindst én gang"], en: ["Full range", "Pick all 8 feelings at least once"], ok: (c) => c.feelingsTried >= 8 },
+      { id: "happy_10", icon: "sun", color: C.gold, da: ["Glad smoker", "Vælg \"Glad\" 10 gange"], en: ["Happy smoker", "Pick \"Happy\" 10 times"], ok: (c) => (c.feelings.happy || 0) >= 10 },
+      { id: "big_day", icon: "cloud", color: C.blue, da: ["Skybrud", "Log 4 smokes på én dag"], en: ["Cloudburst", "Log 4 smokes in one day"], ok: (c) => c.maxDay >= 4 },
       // Metoder og produkter
       { id: "joints_10", icon: "joint", color: C.lime, da: ["Rullet 10 joints", "Log 10 joints eller spliffs"], en: ["Rolled 10 joints", "Log 10 joints or spliffs"], ok: (c) => c.joints >= 10 },
       { id: "joints_50", icon: "joint", color: C.gold, da: ["Rullemester", "Log 50 joints eller spliffs"], en: ["Rolling master", "Log 50 joints or spliffs"], ok: (c) => c.joints >= 50 },
@@ -14671,7 +14729,7 @@
       const perDay = {};
       logEntries.forEach((e) => {
         const d = dayStart(entryTime(e));
-        perDay[d] = (perDay[d] || 0) + (Number(e.grams) || 0);
+        perDay[d] = (perDay[d] || 0) + (Number(e.times) || 1);
       });
       const hours = logEntries.map((e) => new Date(entryTime(e)).getHours());
       const games = { goj: 0, dt: 0, dice: 0, spin: 0, quiz: 0, ...(p.games || {}) };
@@ -14684,7 +14742,11 @@
         edibles: count("method", ["edible"]) + count("product", ["edible"]),
         hash: count("product", ["hash"]),
         methods: new Set(logEntries.map((e) => e.method)).size,
-        grams: logEntries.reduce((s, e) => s + (Number(e.grams) || 0), 0),
+        feelings: logEntries.reduce((acc, e) => {
+          (e.feelings || []).forEach((f) => { acc[f] = (acc[f] || 0) + 1; });
+          return acc;
+        }, {}),
+        feelingsTried: new Set(logEntries.flatMap((e) => e.feelings || [])).size,
         maxDay: Math.max(0, ...Object.values(perDay)),
         maxHigh: Math.max(0, ...logEntries.map((e) => Number(e.high) || 0)),
         night: hours.filter((h) => h < 5).length,
@@ -14827,8 +14889,8 @@
       { id: "newspot", xp: 70, da: "Ryg et nyt sted, du aldrig har røget før", en: "Smoke somewhere you've never smoked before" },
       { id: "logs2", xp: 60, da: "Log 2 smoke seshs i dag", en: "Log 2 smoke seshes today", goal: 2,
         check: () => todayLogs().length },
-      { id: "gram1", xp: 80, da: "Ryg 1 gram i dag", en: "Smoke 1 gram today", goal: 1,
-        check: () => Math.floor(todayLogs().reduce((s, e) => s + (Number(e.grams) || 0), 0) * 10) / 10 },
+      { id: "feel2", xp: 50, da: "Log en smoke og vælg mindst 2 følelser", en: "Log a smoke and pick at least 2 feelings", goal: 1,
+        check: () => todayLogs().filter((e) => (e.feelings || []).length >= 2).length },
       { id: "bong", xp: 60, da: "Tag et bong-hit og log det", en: "Take a bong hit and log it", goal: 1,
         check: () => todayLogs().filter((e) => e.method === "bong").length },
       { id: "roll", xp: 70, da: "Del en roll i Rate the Roll", en: "Share a roll in Rate the Roll", goal: 1,
