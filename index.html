@@ -3444,16 +3444,28 @@
       cursor: pointer;
       transition: background 0.2s, transform 0.2s;
     }
+    /* Felterne rundt om jointen: ens, lige firkanter */
+    .spin2-wheel {
+      margin-top: 28px;
+      background:
+        radial-gradient(circle, transparent 0 63%, var(--border) 63.3% 63.6%, transparent 64%),
+        radial-gradient(circle, var(--card-2) 0 55%, var(--card) 56% 100%);
+    }
     .spin2-tile {
       display: grid;
       place-items: center;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
+      max-width: none;
       padding: 0;
-      border-radius: 50%;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--card-2);
       font-size: 19px;
       line-height: 1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
       cursor: default;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
     }
     .spin2-tile.is-puffs {
       color: var(--accent);
@@ -3461,13 +3473,21 @@
       font-weight: 800;
     }
     .spin2-tile.chosen {
+      border-color: var(--accent);
+      background: var(--primary);
       color: #fff;
+    }
+    #spin2-btn {
+      margin-top: 4px;
+    }
+    .game-add {
+      margin-top: 16px;
     }
     .spin2-players {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin: 12px 0 0;
+      margin: 10px 0 0;
     }
     .spin2-players:empty {
       display: none;
@@ -5426,29 +5446,31 @@
       height: 14px;
     }
     /* Valgene i "Log en smoke": 4 på hver række */
+    /* Valgene i "Log en smoke": 2 lodrette kolonner med 4 i hver */
     #log-feelings,
     #log-methods,
     #log-products {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(4, auto);
+      grid-auto-flow: column;
       gap: 6px;
     }
     #log-feelings .chip,
     #log-methods .chip,
     #log-products .chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       min-width: 0;
-      padding: 9px 4px;
-      font-size: 13px;
-      text-align: center;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      text-align: left;
     }
-    @media (max-width: 360px) {
-      #log-feelings .chip,
-      #log-methods .chip,
-      #log-products .chip {
-        font-size: 11.5px;
-      }
+    .feel-emoji {
+      font-size: 17px;
+      line-height: 1;
     }
     .log-feelings {
       color: var(--accent);
@@ -5813,11 +5835,11 @@
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
             <h1 class="page-title" data-i18n="dice.title">Terningespillet</h1>
             <p class="muted" data-i18n="dice.help">Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.</p>
-            <div class="spin2-players" id="dice-players"></div>
-            <form id="dice-form" class="player-add" novalidate>
+            <form id="dice-form" class="player-add game-add" novalidate>
               <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
               <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
             </form>
+            <div class="spin2-players" id="dice-players"></div>
             <div class="spin-wheel dice-stage">
               <div class="die big-die" id="dice-die" role="img"></div>
             </div>
@@ -5890,11 +5912,11 @@
           <div class="view" data-view="spin2">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
             <h1 class="page-title">Spin the Joint 2</h1>
-            <div class="spin2-players" id="spin2-players"></div>
-            <form id="spin2-form" class="player-add" novalidate>
+            <form id="spin2-form" class="player-add game-add" novalidate>
               <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
               <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
             </form>
+            <div class="spin2-players" id="spin2-players"></div>
             <div class="spin-wheel spin2-wheel" id="spin2-wheel">
               <svg class="spin-joint" id="spin2-joint" viewBox="0 0 40 160" aria-hidden="true">
                 <circle cx="20" cy="24" r="16" fill="url(#ember)"/>
@@ -12762,6 +12784,7 @@
     const METHODS = ["joint", "spliff", "bong", "pipe", "vape", "dab", "edible", "other"];
     const PRODUCTS = ["flower", "hash", "concentrate", "edible", "other"];
     const FEELINGS = ["happy", "relaxed", "giggly", "creative", "hungry", "sleepy", "paranoid", "dizzy"];
+    const FEELING_EMOJI = { happy: "😄", relaxed: "😌", giggly: "🤭", creative: "🎨", hungry: "🍕", sleepy: "😴", paranoid: "😰", dizzy: "😵‍💫" };
     const HIGH_EMOJI = ["😐", "🙂", "😊", "😌", "😎", "🤩", "😵‍💫", "🥴", "🛸", "🚀"];
 
     const pad2 = (n) => String(n).padStart(2, "0");
@@ -12833,7 +12856,7 @@
       renderChoice("log-methods", METHODS, logMethod, "ai.method.");
       renderChoice("log-products", PRODUCTS, logProduct, "ai.product.");
       document.getElementById("log-feelings").innerHTML = FEELINGS
-        .map((f) => `<button type="button" class="chip ${logFeelings.includes(f) ? "active" : ""}" data-feel="${f}">${t("feel." + f)}</button>`)
+        .map((f) => `<button type="button" class="chip ${logFeelings.includes(f) ? "active" : ""}" data-feel="${f}"><span class="feel-emoji">${FEELING_EMOJI[f]}</span>${t("feel." + f)}</button>`)
         .join("");
       logForm.elements.date.max = todayISO();
     }
@@ -13736,7 +13759,7 @@
           <div class="log-main">
             <strong>${formatDate(entryTime(entry))}${entry.time ? ` · ${esc(entry.time)}` : ""}</strong>
             <small>${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}${entry.spent ? ` · ${Math.round(entry.spent)} kr` : ""}</small>
-            ${(entry.feelings || []).length ? `<small class="log-feelings">${entry.feelings.map((f) => t("feel." + f)).join(" · ")}</small>` : ""}
+            ${(entry.feelings || []).length ? `<small class="log-feelings">${entry.feelings.map((f) => `${FEELING_EMOJI[f] || ""} ${t("feel." + f)}`).join(" · ")}</small>` : ""}
             ${entry.note ? `<small class="log-note">${esc(entry.note)}</small>` : ""}
           </div>
           <span class="log-high">${entry.high}/10</span>
