@@ -29,19 +29,19 @@
        ========================================================== */
     :root {
       color-scheme: dark;
-      --bg: #0a0b0a;            /* mat sort */
-      --card: #131513;          /* kort og felter */
-      --card-2: #1a1d1a;        /* hævede flader */
+      --bg: #000000;            /* sort */
+      --card: #0d0e0d;          /* kort og felter */
+      --card-2: #151715;        /* hævede flader */
       --text: #f1f3f1;
       --muted: #8a928b;
-      --border: rgba(255, 255, 255, 0.07);
-      --border-strong: rgba(255, 255, 255, 0.12);
-      --primary: #2f8a4e;       /* mørkegrøn: knapper og flader */
-      --primary-pressed: #26703f;
-      --accent: #6fd08f;        /* lysere grøn: tekst, links og ikoner */
-      --accent-soft: rgba(111, 208, 143, 0.12);
+      --border: rgba(255, 255, 255, 0.06);
+      --border-strong: rgba(255, 255, 255, 0.1);
+      --primary: #1f5e38;       /* mørkegrøn: knapper og flader */
+      --primary-pressed: #194d2e;
+      --accent: #5cb87d;        /* grøn til tekst, links og ikoner */
+      --accent-soft: rgba(92, 184, 125, 0.1);
       --error: #ff6159;
-      --tabbar-bg: rgba(22, 24, 22, 0.78);
+      --tabbar-bg: rgba(10, 11, 10, 0.88);
       --radius: 18px;
 
       /* Plads til notch/Dynamic Island og home-linjen.
@@ -107,7 +107,7 @@
         justify-content: center;
         min-height: 100vh;
         padding: 24px;
-        background: radial-gradient(circle at 30% 20%, #1a2a1f, #070807);
+        background: radial-gradient(circle at 30% 20%, #0b1710, #000);
       }
 
       .phone {
@@ -3506,6 +3506,178 @@
         transition-duration: 0.01s;
       }
     }
+
+    /* ==========================================================
+       RENT LOOK: flade flader, ingen glød, sort og mørkegrøn
+       ========================================================== */
+    .btn-primary,
+    .log-cta {
+      background: var(--primary);
+      box-shadow: none;
+    }
+    .btn-primary:active,
+    .log-cta:active {
+      background: var(--primary-pressed);
+      filter: none;
+    }
+    .log-cta {
+      padding: 18px 20px;
+      border-radius: 20px;
+    }
+    .log-cta-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.22);
+      font-size: 26px;
+    }
+    .log-cta strong {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .danger-btn {
+      background: #a83a3a;
+      box-shadow: none;
+    }
+    .tile,
+    .game-item,
+    .spin-card {
+      background: var(--card);
+    }
+    .tile {
+      border-radius: 20px;
+    }
+    .spin-card {
+      border-color: var(--primary);
+    }
+    .page-title {
+      font-weight: 700;
+      letter-spacing: -0.6px;
+    }
+    .tabbar {
+      border-color: var(--border);
+    }
+    .tile-card {
+      background: rgba(10, 11, 10, 0.96);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    /* ---------- Game of Joints 1: timer, sug-tæller og vinder ---------- */
+    .timer-ring {
+      --p: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) calc(var(--p) * 360deg), var(--card-2) 0);
+    }
+    .timer-ring::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 50%;
+      background: var(--card);
+    }
+    .timer-ring b,
+    .timer-ring small {
+      position: relative;
+    }
+    .timer-ring b {
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-ring small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .timer-ring.ready {
+      background: conic-gradient(#ffd166 360deg, var(--card-2) 0);
+    }
+    .timer-ring.done {
+      background: var(--primary);
+    }
+    .timer-round {
+      min-height: 20px;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .tile-bonus {
+      padding: 6px 12px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .turn-hits {
+      display: block;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .cell.is-boost {
+      background: rgba(77, 195, 255, 0.14);
+    }
+    .cell.is-waterfall {
+      background: rgba(139, 123, 255, 0.14);
+    }
+    .leader-title {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .leaderboard {
+      list-style: none;
+      width: 100%;
+      display: grid;
+      gap: 4px;
+    }
+    .leaderboard li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+    }
+    .leaderboard strong {
+      margin-left: auto;
+      color: var(--accent);
+    }
+    .confetti {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .confetti i {
+      position: absolute;
+      top: -12px;
+      width: 8px;
+      height: 14px;
+      border-radius: 2px;
+      animation: confettiFall 2.4s linear forwards;
+    }
+    @keyframes confettiFall {
+      to { transform: translateY(110vh) rotate(720deg); }
+    }
+    .roll-score.liked {
+      color: #ff6b81;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .confetti {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -3679,7 +3851,28 @@
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="3.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="M20 15.5l-4.5-4.5L6 20"/></svg></span>
                 <strong data-i18n="hub.posts">Opslag</strong>
               </button>
+              <button class="tile" data-go="munchies">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/></svg></span>
+                <strong>Munchies</strong>
+              </button>
             </div>
+          </div>
+
+          <!-- Munchies -->
+          <div class="view" data-view="munchies">
+            <button class="back" data-back data-i18n="back.hub">‹ Smoke Hub</button>
+            <div class="title-row">
+              <h1 class="page-title">Munchies</h1>
+              <button type="button" class="mini-btn primary" id="new-munch" data-i18n="munch.newBtn">＋ Del munchies</button>
+            </div>
+            <p class="private-note" data-i18n="munch.note">Vis hvad du snacker på, og giv de andres munchies et like</p>
+            <div id="munch-grid" class="roll-grid"></div>
+          </div>
+
+          <!-- Et enkelt munchies-billede -->
+          <div class="view" data-view="munchie">
+            <button class="back" data-back data-i18n="back.munchies">‹ Munchies</button>
+            <div id="munch-detail"></div>
           </div>
 
           <!-- Opslag fra mig og mine venner -->
@@ -3968,7 +4161,6 @@
             <span class="log-cta-icon" aria-hidden="true">🌿</span>
             <span>
               <strong data-i18n="home.logCta">Log en smoke</strong>
-              <small data-i18n="home.logSub">Hvor meget, hvordan og hvor skæv du blev</small>
             </span>
           </button>
           <div class="card home-rank-card" id="home-rank"></div>
@@ -4190,6 +4382,7 @@
           <div class="turn-name">
             <small data-i18n="game.turn">Tur</small>
             <strong id="game-player"></strong>
+            <small class="turn-hits" id="game-hits"></small>
           </div>
           <div class="die" id="die" role="img"></div>
           <div class="roll-actions">
@@ -4308,7 +4501,6 @@
         "hb.stats": "Statistik",
         "home.logTitle": "🌿 Log en smoke",
         "home.logCta": "Log en smoke",
-        "home.logSub": "Hvor meget, hvordan og hvor skæv du blev",
         "ai.intro": "Beregneren bruger dine registreringer fra \"Log en smoke\" til at regne din tolerance ud, og hvornår en pause giver mest mening for dig.",
         "ai.time": "Klokken",
         "ai.saveLog": "Gem",
@@ -4490,6 +4682,27 @@
         "game.won": "{name} vandt!",
         "game.wonText": "Første spiller i mål. Godt spillet!",
         "game.playAgain": "Spil igen",
+        "back.munchies": "‹ Munchies",
+        "munch.newBtn": "＋ Del munchies",
+        "munch.newTitle": "Del dine munchies",
+        "munch.note": "Vis hvad du snacker på, og giv de andres munchies et like",
+        "munch.errPhoto": "Tilføj et billede af dine munchies",
+        "munch.posted": "Dine munchies er delt 🍕",
+        "munch.empty": "Ingen munchies endnu. Del de første!",
+        "munch.confirmDelete": "Vil du slette billedet?",
+        "munch.deleted": "Billedet er slettet",
+        "game.seconds": "sek",
+        "game.timerStart": "Start timer",
+        "game.ready": "Klar…",
+        "game.go": "Kør! 🔥",
+        "game.timerDone": "Tiden er gået!",
+        "game.round": "Runde {n} af {total}",
+        "game.hits": "🌿 {n} sug",
+        "game.hitsN": "{n} sug",
+        "game.knocked": "Du ramte {names}! De ryger {n} felter tilbage.",
+        "game.six": "Du slog 6, så du må slå igen bagefter!",
+        "game.boostBtn": "⚡ Ryk 3 felter frem",
+        "game.leaderboard": "Flest sug i spillet",
         "game.startTile": "START",
         "game.goalTile": "MÅL",
         "forum.newTitle": "Nyt opslag",
@@ -4686,7 +4899,6 @@
         "hb.stats": "Stats",
         "home.logTitle": "🌿 Log a smoke",
         "home.logCta": "Log a smoke",
-        "home.logSub": "How much, how and how high you got",
         "ai.intro": "The calculator uses what you've logged with \"Log a smoke\" to work out your tolerance and when a break makes the most sense for you.",
         "ai.time": "Time",
         "ai.saveLog": "Save",
@@ -4868,6 +5080,27 @@
         "game.won": "{name} wins!",
         "game.wonText": "First player to the finish. Well played!",
         "game.playAgain": "Play again",
+        "back.munchies": "‹ Munchies",
+        "munch.newBtn": "＋ Share munchies",
+        "munch.newTitle": "Share your munchies",
+        "munch.note": "Show what you're snacking on and like the others' munchies",
+        "munch.errPhoto": "Add a photo of your munchies",
+        "munch.posted": "Your munchies are live 🍕",
+        "munch.empty": "No munchies yet. Share the first!",
+        "munch.confirmDelete": "Delete this photo?",
+        "munch.deleted": "Photo deleted",
+        "game.seconds": "sec",
+        "game.timerStart": "Start timer",
+        "game.ready": "Ready…",
+        "game.go": "Go! 🔥",
+        "game.timerDone": "Time's up!",
+        "game.round": "Round {n} of {total}",
+        "game.hits": "🌿 {n} puffs",
+        "game.hitsN": "{n} puffs",
+        "game.knocked": "You hit {names}! They go back {n} spaces.",
+        "game.six": "You rolled a 6, so you roll again after this!",
+        "game.boostBtn": "⚡ Move 3 spaces forward",
+        "game.leaderboard": "Most puffs this game",
         "game.startTile": "START",
         "game.goalTile": "FINISH",
         "forum.newTitle": "New post",
@@ -5336,6 +5569,7 @@
       listenToFriends();
       listenToPosts();
       listenToRolls();
+      listenToMunchies();
       listenToChecklist();
       listenToLogs();
 
@@ -5350,6 +5584,7 @@
       stopFriends();
       stopPosts();
       stopRolls();
+      stopMunchies();
       stopChecklist();
       stopLogs();
     }
@@ -5425,6 +5660,7 @@
       }
       if (name === "post") renderPostDetail();
       if (name === "roll") renderRoll();
+      if (name === "munchie") renderMunchie();
       scrollToTop();
     }
 
@@ -6426,11 +6662,11 @@
     function openEntrySheet(mode, post = null) {
       entryMode = mode;
       editingPostId = post ? post.id : null;
-      const titles = { roll: "roll.newTitle", post: post ? "post.editTitle" : "forum.newTitle" };
+      const titles = { roll: "roll.newTitle", munchie: "munch.newTitle", post: post ? "post.editTitle" : "forum.newTitle" };
       document.getElementById("entry-title").textContent = t(titles[mode]);
       document.getElementById("entry-submit").textContent = t(post ? "post.save" : "forum.share");
       // Under Rate the Roll skal man kun dele et billede
-      document.getElementById("entry-text-field").classList.toggle("hidden", mode === "roll");
+      document.getElementById("entry-text-field").classList.toggle("hidden", mode !== "post");
       diaryForm.reset();
       clearErrors(diaryForm);
       hideMentionList(diaryForm);
@@ -6446,6 +6682,7 @@
 
     document.getElementById("new-post").addEventListener("click", () => openEntrySheet("post"));
     document.getElementById("new-roll").addEventListener("click", () => openEntrySheet("roll"));
+    document.getElementById("new-munch").addEventListener("click", () => openEntrySheet("munchie"));
     document.getElementById("diary-cancel").addEventListener("click", closeSheet);
 
 
@@ -6466,8 +6703,10 @@
       e.preventDefault();
       clearErrors(diaryForm);
       const roll = entryMode === "roll";
-      const text = roll ? "" : diaryForm.elements.text.value.trim();
+      const munch = entryMode === "munchie";
+      const text = entryMode === "post" ? diaryForm.elements.text.value.trim() : "";
       if (roll && !pendingDiaryPhoto) return setError(diaryForm, t("roll.errPhoto"));
+      if (munch && !pendingDiaryPhoto) return setError(diaryForm, t("munch.errPhoto"));
       if (!text && !pendingDiaryPhoto) return setError(diaryForm, t("forum.errEmpty"));
 
       setBusy(diaryForm, true);
@@ -6489,11 +6728,13 @@
           });
         } else if (roll) {
           await db.collection("rolls").add({ ...data, ratings: {} });
+        } else if (munch) {
+          await db.collection("munchies").add({ ...data, likes: [] });
         } else {
           await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
         }
         closeSheet();
-        showToast(t(editingPostId ? "post.saved" : roll ? "roll.posted" : "forum.posted"));
+        showToast(t(editingPostId ? "post.saved" : roll ? "roll.posted" : munch ? "munch.posted" : "forum.posted"));
       } catch (error) {
         console.error(error);
         setError(diaryForm, dbErrorText(error));
@@ -6857,6 +7098,112 @@
       }
     });
 
+    // ==========================================================
+    // MUNCHIES: del et billede af dine munchies, og få likes
+    // ==========================================================
+    const munchGrid = document.getElementById("munch-grid");
+    const munchDetail = document.getElementById("munch-detail");
+    let munchies = [];
+    let munchUnsub = null;
+    let openMunchId = null;
+
+    function listenToMunchies() {
+      if (munchUnsub || !db) return;
+      munchUnsub = db.collection("munchies").orderBy("createdAt", "desc").limit(60).onSnapshot(async (snap) => {
+        munchies = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const others = [...new Set(munchies.map((m) => m.author))].filter((u) => u !== currentUserKey());
+        await Promise.all(others.map((u) => getProfile(u).catch(() => null)));
+        renderMunchies();
+        renderMunchie();
+      }, (error) => console.error(error));
+    }
+
+    function stopMunchies() {
+      if (munchUnsub) munchUnsub();
+      munchUnsub = null;
+      munchies = [];
+    }
+
+    function renderMunchies() {
+      if (!munchies.length) {
+        munchGrid.innerHTML = `<p class="empty-note">${t("munch.empty")}</p>`;
+        return;
+      }
+      const me = currentUserKey();
+      munchGrid.innerHTML = munchies.map((m) => {
+        const likes = m.likes || [];
+        return `
+          <button type="button" class="roll-tile" data-munch="${esc(m.id)}">
+            <img src="${esc(m.photo)}" alt="">
+            <span class="roll-score ${likes.includes(me) ? "liked" : ""}">♥ ${likes.length}</span>
+          </button>`;
+      }).join("");
+    }
+
+    munchGrid.addEventListener("click", (e) => {
+      const tile = e.target.closest("[data-munch]");
+      if (!tile) return;
+      openMunchId = tile.dataset.munch;
+      goView("munchie");
+    });
+
+    function renderMunchie() {
+      if (!openMunchId) return;
+      const m = munchies.find((x) => x.id === openMunchId);
+      if (!m) {
+        munchDetail.innerHTML = `<p class="empty-note">${t("post.gone")}</p>`;
+        return;
+      }
+      const me = currentUserKey();
+      const own = m.author === me;
+      const profile = (own ? myProfile : profileCache.get(m.author)) || { name: m.authorName || "?" };
+      const likes = m.likes || [];
+      const liked = likes.includes(me);
+      munchDetail.innerHTML = `
+        <article class="diary-entry">
+          <header class="post-head entry-head">
+            <span class="avatar avatar-sm" data-person="${esc(m.author)}">${avatarHTML(profile)}</span>
+            <span class="post-meta" data-person="${esc(m.author)}">
+              <strong>${esc(profile.name)}</strong>
+              <small>${timeAgo(m.createdAt)}</small>
+            </span>
+            ${own ? `<button type="button" class="link-btn danger small" data-delete-munch>${t("forum.delete")}</button>` : ""}
+          </header>
+          <img class="roll-photo" src="${esc(m.photo)}" alt="" data-zoom>
+          <div class="post-actions">
+            <button type="button" class="${liked ? "on" : ""}" data-like-munch aria-label="${t("post.like")}">
+              <span class="heart">${liked ? "♥" : "♡"}</span> ${likes.length}
+            </button>
+          </div>
+        </article>`;
+    }
+
+    munchDetail.addEventListener("click", (e) => {
+      const zoom = e.target.closest("[data-zoom]");
+      if (zoom) return openLightbox(zoom.src);
+      const person = e.target.closest("[data-person]");
+      if (person) return openProfileOf(person.dataset.person);
+      if (e.target.closest("[data-delete-munch]")) {
+        if (!confirm(t("munch.confirmDelete"))) return;
+        db.collection("munchies").doc(openMunchId).delete()
+          .then(() => { showToast(t("munch.deleted")); backView(); })
+          .catch((error) => showToast(dbErrorText(error)));
+        return;
+      }
+      if (e.target.closest("[data-like-munch]")) {
+        const m = munchies.find((x) => x.id === openMunchId);
+        if (!m) return;
+        const me = currentUserKey();
+        const liked = (m.likes || []).includes(me);
+        m.likes = liked ? m.likes.filter((u) => u !== me) : [...(m.likes || []), me];
+        renderMunchie();
+        renderMunchies();
+        db.collection("munchies").doc(openMunchId)
+          .update({ likes: liked ? FieldValue().arrayRemove(me) : FieldValue().arrayUnion(me) })
+          .catch((error) => showToast(dbErrorText(error)));
+      }
+    });
+
     // ---------- Billede i fuld skærm ----------
     const lightbox = document.getElementById("lightbox");
 
@@ -7045,42 +7392,60 @@
     // Man slår med terningen, rykker frem og laver det, der står på feltet.
     // Den første spiller i mål vinder.
     const TILES = {
-      s1: { icon: "1", da: { name: "1 sug", short: "sug" }, en: { name: "1 puff", short: "puff" } },
-      s2: { icon: "2", da: { name: "2 sug", short: "sug" }, en: { name: "2 puffs", short: "puffs" } },
-      s3: { icon: "3", da: { name: "3 sug", short: "sug" }, en: { name: "3 puffs", short: "puffs" } },
-      s4: { icon: "4", da: { name: "4 sug", short: "sug" }, en: { name: "4 puffs", short: "puffs" } },
-      s5: { icon: "5", da: { name: "5 sug", short: "sug" }, en: { name: "5 puffs", short: "puffs" } },
+      s1: { icon: "1", hits: 1, da: { name: "1 sug", short: "sug" }, en: { name: "1 puff", short: "puff" } },
+      s2: { icon: "2", hits: 2, da: { name: "2 sug", short: "sug" }, en: { name: "2 puffs", short: "puffs" } },
+      s3: { icon: "3", hits: 3, da: { name: "3 sug", short: "sug" }, en: { name: "3 puffs", short: "puffs" } },
+      s4: { icon: "4", hits: 4, da: { name: "4 sug", short: "sug" }, en: { name: "4 puffs", short: "puffs" } },
+      s5: { icon: "5", hits: 5, da: { name: "5 sug", short: "sug" }, en: { name: "5 puffs", short: "puffs" } },
       turtle: {
         icon: "🐢",
+        timer: [5],
+        hits: 1,
         da: { name: "Skildpadde", short: "Skildpadde", desc: "Tag et rigtig langt sug, mindst 5 sekunder." },
         en: { name: "Turtle", short: "Turtle", desc: "Take a really long puff, at least 5 seconds." },
       },
       tornado: {
         icon: "🌪️",
+        hits: 9,
         da: { name: "Tornado", short: "Tornado", desc: "Tag 3×3 sug og drej rundt om dig selv 10 gange. Prøv at holde det inde!" },
         en: { name: "Tornado", short: "Tornado", desc: "Take 3×3 puffs and spin around 10 times. Try to hold it in!" },
       },
-      x510: { icon: "⏱️", da: { name: "5×10 sek", short: "5×10 sek" }, en: { name: "5×10 sec", short: "5×10 sec" } },
-      bobLong: { icon: "🇯🇲", da: { name: "Lang Bob Marley", short: "Lang Bob" }, en: { name: "Long Bob Marley", short: "Long Bob" } },
-      bobShort: { icon: "🇯🇲", da: { name: "Kort Bob Marley", short: "Kort Bob" }, en: { name: "Short Bob Marley", short: "Short Bob" } },
+      x510: {
+        icon: "⏱️",
+        timer: [10],
+        hits: 5,
+        da: { name: "5×10 sek", short: "5×10 sek", desc: "Tag 5 sug på 10 sekunder. Start timeren, når du er klar." },
+        en: { name: "5×10 sec", short: "5×10 sec", desc: "Take 5 puffs in 10 seconds. Start the timer when you're ready." },
+      },
+      bobLong: { icon: "🇯🇲", hits: 1, da: { name: "Lang Bob Marley", short: "Lang Bob" }, en: { name: "Long Bob Marley", short: "Long Bob" } },
+      bobShort: { icon: "🇯🇲", hits: 1, da: { name: "Kort Bob Marley", short: "Kort Bob" }, en: { name: "Short Bob Marley", short: "Short Bob" } },
       wheel: {
         icon: "🎡",
         type: "wheel",
         da: { name: "Lykkehjulet", short: "Lykkehjul", desc: "Drej hjulet og se, hvad der sker!" },
         en: { name: "Wheel of fortune", short: "Wheel", desc: "Spin the wheel and see what happens!" },
       },
-      x3102: { icon: "🔥", da: { name: "3×10×2", short: "3×10×2" }, en: { name: "3×10×2", short: "3×10×2" } },
+      x3102: {
+        icon: "🔥",
+        timer: [10, 10],
+        hits: 6,
+        da: { name: "3×10×2", short: "3×10×2", desc: "Tag 3 sug på 10 sekunder. Det gør du 2 gange lige efter hinanden." },
+        en: { name: "3×10×2", short: "3×10×2", desc: "Take 3 puffs in 10 seconds. Do it twice in a row." },
+      },
       lung: {
+        hits: 1,
         icon: "🫁",
         da: { name: "Lunge", short: "Lunge", desc: "Bong med hånden." },
         en: { name: "Lung", short: "Lung", desc: "Hand bong." },
       },
       diy: {
+        hits: 1,
         icon: "👑",
         da: { name: "DIY konge", short: "DIY konge", desc: "Mellem tænderne med den." },
         en: { name: "DIY king", short: "DIY king", desc: "Between your teeth with it." },
       },
       chimney: {
+        hits: 1,
         icon: "🏭",
         da: { name: "Skorstenen", short: "Skorsten", desc: "Tag et stort sug, og sug så røgen fra jointen bagefter." },
         en: { name: "The chimney", short: "Chimney", desc: "Take a big puff, then inhale the smoke from the joint afterwards." },
@@ -7092,6 +7457,23 @@
         en: { name: "Roll back", short: "Roll back", desc: "Roll the red die and move back that many spaces." },
       },
       pass: { icon: "🤝", da: { name: "Pass til spliff", short: "Pass" }, en: { name: "Pass the spliff", short: "Pass" } },
+      boost: {
+        icon: "⚡",
+        type: "boost",
+        da: { name: "Turbo", short: "Turbo", desc: "Ryk 3 felter frem med det samme." },
+        en: { name: "Turbo", short: "Turbo", desc: "Move 3 spaces forward right away." },
+      },
+      waterfall: {
+        icon: "🌊",
+        type: "waterfall",
+        da: { name: "Vandfald", short: "Vandfald", desc: "Alle tager et sug. Du starter, og så går den rundt." },
+        en: { name: "Waterfall", short: "Waterfall", desc: "Everyone takes a puff. You start, then pass it around." },
+      },
+      joker: {
+        icon: "🃏",
+        da: { name: "Joker", short: "Joker", desc: "Vælg en spiller, der skal tage 3 sug." },
+        en: { name: "Joker", short: "Joker", desc: "Pick a player who has to take 3 puffs." },
+      },
     };
 
     // Lykkehjulet: 8 felter
@@ -7127,6 +7509,7 @@
     let turn = 0;
     let busy = false;          // terningen ruller eller brikken flytter sig
     let wheelRotation = 0;
+    let lastRoll = 0;          // slår man 6, må man slå igen
 
     try {
       players = (JSON.parse(localStorage.getItem(PLAYERS_KEY)) || [])
@@ -7255,6 +7638,7 @@
       if (!p) return;
       document.getElementById("turn-dot").style.setProperty("--c", p.color);
       document.getElementById("game-player").textContent = p.name;
+      document.getElementById("game-hits").textContent = t("game.hits", { n: hits[turn] || 0 });
       rollBtn.textContent = t("game.roll");
     }
 
@@ -7394,6 +7778,104 @@
     renderSpin();
 
 
+    // ---------- Timere til felter som 5×10 og 3×10×2 ----------
+    let timerToken = 0;
+
+    function vibrate(pattern) {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    }
+
+    function timerVisual(seconds) {
+      return `
+        <div class="timer-ring" id="timer-ring" style="--p:1">
+          <b id="timer-num">${seconds}</b>
+          <small>${t("game.seconds")}</small>
+        </div>`;
+    }
+
+    function setTimerRing(progress, text) {
+      const ring = document.getElementById("timer-ring");
+      if (!ring) return;
+      ring.style.setProperty("--p", progress);
+      document.getElementById("timer-num").textContent = text;
+    }
+
+    // Tæl ned; stopper, hvis man trykker videre imens
+    function countdown(seconds, token) {
+      return new Promise((resolve) => {
+        const start = performance.now();
+        const tick = () => {
+          if (token !== timerToken) return resolve(false);
+          const left = Math.max(0, seconds - (performance.now() - start) / 1000);
+          setTimerRing(left / seconds, Math.ceil(left));
+          if (left <= 0) return resolve(true);
+          setTimeout(tick, 50);
+        };
+        tick();
+      });
+    }
+
+    async function runTimers(button) {
+      const rounds = TILES[board[positions[turn]]].timer;
+      const token = ++timerToken;
+      const roundEl = document.getElementById("timer-round");
+      const ring = document.getElementById("timer-ring");
+      button.disabled = true;
+      for (let r = 0; r < rounds.length; r++) {
+        if (rounds.length > 1) roundEl.textContent = t("game.round", { n: r + 1, total: rounds.length });
+        // 3-2-1, så man kan nå at gøre klar
+        ring.classList.add("ready");
+        for (let c = 3; c > 0; c--) {
+          if (token !== timerToken) return;
+          setTimerRing(1, c);
+          button.textContent = t("game.ready");
+          await wait(800);
+        }
+        ring.classList.remove("ready");
+        button.textContent = t("game.go");
+        vibrate(60);
+        if (!(await countdown(rounds[r], token))) return;
+        vibrate([200, 80, 200]);
+      }
+      setTimerRing(0, "✓");
+      ring.classList.add("done");
+      button.textContent = t("game.timerDone");
+    }
+
+    // ---------- Sug-tæller ----------
+    let hits = [];
+
+    function addHits(player, n) {
+      if (!n) return;
+      hits[player] = (hits[player] || 0) + n;
+    }
+
+    // ---------- Ramt! Lander man på en anden, ryger de tilbage ----------
+    const KNOCK_BACK = 3;
+
+    async function knockOthers(player) {
+      const index = positions[player];
+      if (index === 0 || index === board.length - 1) return [];
+      const hit = players.map((_, i) => i).filter((i) => i !== player && positions[i] === index);
+      for (const i of hit) {
+        await wait(200);
+        await moveBy(i, -KNOCK_BACK);
+      }
+      return hit.map((i) => players[i].name);
+    }
+
+    // ---------- Konfetti, når nogen vinder ----------
+    function confetti() {
+      const layer = document.createElement("div");
+      layer.className = "confetti";
+      layer.innerHTML = Array.from({ length: 60 }, () => {
+        const color = PLAYER_COLORS[Math.floor(Math.random() * PLAYER_COLORS.length)];
+        return `<i style="left:${Math.random() * 100}%;background:${color};animation-delay:${Math.random() * 0.8}s;animation-duration:${1.8 + Math.random() * 1.4}s"></i>`;
+      }).join("");
+      gameStage.appendChild(layer);
+      setTimeout(() => layer.remove(), 4500);
+    }
+
     // Flyt brikken ét felt ad gangen
     async function moveBy(player, steps) {
       const last = board.length - 1;
@@ -7444,32 +7926,68 @@
       busy = true;
       rollBtn.disabled = true;
       const value = await rollDie(dieEl);
+      lastRoll = value;
+      vibrate(30);
       await wait(500);
       hideOverlay();
       await moveBy(turn, value);
       await wait(250);
+      const knocked = await knockOthers(turn);
       busy = false;
-      landOn(turn);
+      landOn(turn, knocked);
     });
 
-    function landOn(player) {
+    function landOn(player, knocked = []) {
       const index = positions[player];
       if (index === board.length - 1) return showWinner(player);
-      if (index === 0) return showTile("⏮️", `${whoHTML(player)}<h2>${t("game.backToStart")}</h2>`, true);
+      // Ekstra besked: ramte man nogen, eller slog man 6?
+      const bonus = `
+        ${knocked.length ? `<p class="tile-bonus">💥 ${esc(t("game.knocked", { names: knocked.join(" & "), n: KNOCK_BACK }))}</p>` : ""}
+        ${lastRoll === 6 ? `<p class="tile-bonus">🎲 ${t("game.six")}</p>` : ""}`;
+      if (index === 0) return showTile("⏮️", `${whoHTML(player)}<h2>${t("game.backToStart")}</h2>${bonus}`, true);
 
       const id = board[index];
+      const tile = TILES[id];
       const text = tileText(id);
       const info = `
         ${whoHTML(player)}
         <h2>${esc(text.name)}</h2>
-        ${text.desc ? `<p class="tile-desc">${esc(text.desc)}</p>` : ""}`;
+        ${text.desc ? `<p class="tile-desc">${esc(text.desc)}</p>` : ""}
+        ${bonus}`;
 
-      if (TILES[id].type === "back") return showBackTile(info);
-      if (TILES[id].type === "wheel") return showWheelTile(info);
-      showTile(TILES[id].icon, info, true);
+      addHits(player, tile.hits);
+      if (tile.type === "waterfall") players.forEach((_, i) => addHits(i, 1));
+      if (tile.type === "back") return showBackTile(info);
+      if (tile.type === "wheel") return showWheelTile(info);
+      if (tile.type === "boost") {
+        return showTile(tile.icon, `${info}
+          <button type="button" class="btn-primary" data-tile-action="boost">${t("game.boostBtn")}</button>`, false);
+      }
+      if (tile.timer) {
+        return showTile(timerVisual(tile.timer[0]), `${info}
+          <p class="timer-round" id="timer-round"></p>
+          <div class="tile-buttons">
+            <button type="button" class="btn-plain" data-tile-action="timer">⏱ ${t("game.timerStart")}</button>
+            <button type="button" class="btn-primary" data-tile-action="next">${t("game.continue")}</button>
+          </div>`, false);
+      }
+      showTile(tile.icon, info, true);
+    }
+
+    async function boost(button) {
+      button.disabled = true;
+      hideOverlay();
+      await moveBy(turn, 3);
+      await wait(250);
+      const knocked = await knockOthers(turn);
+      landOn(turn, knocked);
     }
 
     function nextTurn(sameAgain = false) {
+      timerToken++;
+      // Slog man 6, er det ens tur igen
+      if (lastRoll === 6) sameAgain = true;
+      lastRoll = 0;
       if (!sameAgain) turn = (turn + 1) % players.length;
       renderBoard();
       renderTurn();
@@ -7537,15 +8055,28 @@
       if (action === "again") nextTurn(true);
       if (action === "roll-back") rollBack(button);
       if (action === "spin") spinWheel(button);
+      if (action === "timer") runTimers(button);
+      if (action === "boost") boost(button);
       if (action === "play-again") startGame();
       if (action === "end") endGame();
     });
 
     function showWinner(player) {
+      // Hvem har taget flest sug i løbet af spillet?
+      const ranking = players
+        .map((p, i) => ({ p, n: hits[i] || 0 }))
+        .sort((a, b) => b.n - a.n)
+        .map(({ p, n }, i) => `
+          <li><span class="token" style="--c:${p.color}"></span>${esc(p.name)}<strong>${t("game.hitsN", { n })}</strong>${i === 0 && n ? " 👑" : ""}</li>`)
+        .join("");
+      confetti();
+      vibrate([100, 60, 100, 60, 300]);
       showTile("🏆", `
         ${whoHTML(player)}
         <h2>${t("game.won", { name: esc(players[player].name) })}</h2>
         <p class="tile-desc">${t("game.wonText")}</p>
+        <p class="leader-title">${t("game.leaderboard")}</p>
+        <ol class="leaderboard">${ranking}</ol>
         <div class="tile-buttons">
           <button type="button" class="btn-plain" data-tile-action="end">${t("game.end")}</button>
           <button type="button" class="btn-primary" data-tile-action="play-again">${t("game.playAgain")}</button>
@@ -7558,6 +8089,8 @@
       const middle = shuffle([...Object.keys(TILES), ...Object.keys(TILES)]);
       board = ["start", ...middle.slice(0, BOARD_SIZE - 2), "goal"];
       positions = players.map(() => 0);
+      hits = players.map(() => 0);
+      lastRoll = 0;
       turn = 0;
       busy = false;
       showDie(dieEl, 1);
@@ -7569,6 +8102,7 @@
 
     function endGame() {
       busy = false;
+      timerToken++;
       gameStage.classList.add("hidden");
       document.body.classList.remove("game-landscape");
       renderPlayers();
@@ -8067,14 +8601,14 @@
     // med at være aktiv for at holde sin rank.
     const XP_DECAY = 10;
     const RANKS = [
-      { name: "Stoner Snail", icon: "🐌", xp: 0 },
-      { name: "Couch Cadet", icon: "🛋️", xp: 100 },
-      { name: "Munchie Monk", icon: "🍕", xp: 300 },
-      { name: "Blaze Bunny", icon: "🐰", xp: 600 },
-      { name: "Cloud Captain", icon: "☁️", xp: 1000 },
-      { name: "Herbal Hero", icon: "🦸", xp: 1600 },
-      { name: "Ganja Guru", icon: "🧘", xp: 2500 },
-      { name: "Weed Wizard", icon: "🧙", xp: 4000 },
+      { name: "Baby Blazer", icon: "🐣", xp: 0 },
+      { name: "Giggle Goblin", icon: "🤭", xp: 100 },
+      { name: "Sofa Sloth", icon: "🦥", xp: 300 },
+      { name: "Munchie Monster", icon: "🍩", xp: 600 },
+      { name: "Haze Hopper", icon: "🐸", xp: 1000 },
+      { name: "Night Owl", icon: "🦉", xp: 1600 },
+      { name: "Space Cadet", icon: "👽", xp: 2500 },
+      { name: "Dank Dragon", icon: "🐉", xp: 4000 },
     ];
 
     function entryXp(entry) {
