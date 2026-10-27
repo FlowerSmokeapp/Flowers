@@ -5110,6 +5110,11 @@
     .badge-none {
       font-size: 13px;
     }
+
+    .person.unread-chat .person-text small {
+      color: var(--text);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -5769,12 +5774,12 @@
                 <h2 class="section-title"><span data-i18n="friends.requests">Venneanmodninger</span> <span class="count" id="requests-count"></span></h2>
                 <div id="requests-list" class="people"></div>
               </div>
-              <div id="suggest-section" class="hidden">
-                <h2 class="section-title" data-i18n="friends.suggest">Forslag til dig</h2>
-                <div id="suggest-list" class="people"></div>
-              </div>
               <h2 class="section-title" data-i18n="friends.yours">Dine venner</h2>
               <div id="friends-list" class="people"></div>
+              <div id="suggest-section">
+                <h2 class="section-title" data-i18n="friends.suggest">Venneforslag</h2>
+                <div id="suggest-list" class="people"></div>
+              </div>
               <div id="sent-section" class="hidden">
                 <h2 class="section-title" data-i18n="friends.sent">Sendte anmodninger</h2>
                 <div id="sent-list" class="people"></div>
@@ -6817,7 +6822,8 @@
         "tbm.friendOn": "På T-break: dag {n}",
         "tbm.cheerBtn": "Hep",
         "tbm.cheerSent": "Du heppede på {name}",
-        "friends.suggest": "Forslag til dig",
+        "friends.suggest": "Venneforslag",
+        "friends.noSuggest": "Ingen venneforslag lige nu",
         "friends.mutual1": "1 fælles ven",
         "friends.mutualN": "{n} fælles venner",
         "tonight.label": "Aftenens spil",
@@ -7456,7 +7462,8 @@
         "tbm.friendOn": "On a T-break: day {n}",
         "tbm.cheerBtn": "Cheer",
         "tbm.cheerSent": "You cheered on {name}",
-        "friends.suggest": "Suggested for you",
+        "friends.suggest": "Friend suggestions",
+        "friends.noSuggest": "No friend suggestions right now",
         "friends.mutual1": "1 mutual friend",
         "friends.mutualN": "{n} mutual friends",
         "tonight.label": "Tonight's game",
@@ -8765,7 +8772,7 @@
 
       friendProfiles.sort((a, b) => a.name.localeCompare(b.name));
       document.getElementById("friends-list").innerHTML = friendProfiles.length
-        ? friendProfiles.map((p) => personRow(p)).join("")
+        ? friendProfiles.map((p) => friendRow(p)).join("")
         : `<p class="empty-note">${t("friends.none")}</p>`;
 
       document.getElementById("sent-section").classList.toggle("hidden", !requestsOut.length);
@@ -8827,11 +8834,22 @@
 
     function renderSuggestions() {
       const list = suggestions.filter(({ p }) => relationTo(p.id) === "none").slice(0, 5);
-      document.getElementById("suggest-section").classList.toggle("hidden", !list.length);
-      document.getElementById("suggest-list").innerHTML = list.map(({ p, n }) => personRow(
-        { ...p, bio: n ? t(n === 1 ? "friends.mutual1" : "friends.mutualN", { n }) : p.bio },
-        `<button type="button" class="mini-btn primary" data-add-friend="${esc(p.id)}">${t("friends.addShort")}</button>`
-      )).join("");
+      document.getElementById("suggest-list").innerHTML = list.length
+        ? list.map(({ p, n }) => personRow(
+          { ...p, bio: n ? t(n === 1 ? "friends.mutual1" : "friends.mutualN", { n }) : "" },
+          `<button type="button" class="mini-btn primary" data-add-friend="${esc(p.id)}">${t("friends.addShort")}</button>`
+        )).join("")
+        : `<p class="empty-note">${t("friends.noSuggest")}</p>`;
+    }
+
+    // En ven i listen: under navnet står den seneste besked i chatten (ellers intet)
+    function friendRow(p) {
+      const me = currentUserKey();
+      const chat = (typeof chats !== "undefined" ? chats : []).find((c) => c.users.includes(p.id) && c.users.includes(me));
+      let last = "";
+      if (chat && chat.lastText) last = (chat.lastFrom === me ? t("chat.you") + " " : "") + chat.lastText;
+      const row = personRow({ ...p, bio: last });
+      return chat && isUnread(chat) ? row.replace('class="person"', 'class="person unread-chat"') : row;
     }
 
     // ---------- Søg efter folk ----------
@@ -13792,6 +13810,7 @@
         chats = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })).sort((a, b) => (b.lastAt || 0) - (a.lastAt || 0));
         renderChatList();
         renderChatBadge();
+        renderFriends();
         renderFriendsTabBadge();
         queueNotifications();
       }, (error) => console.error(error));
