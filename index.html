@@ -3467,16 +3467,29 @@
       transition: background 0.2s, transform 0.2s;
     }
     .spin2-tile {
-      max-width: 30%;
-      padding: 5px 8px;
-      font-size: 11.5px;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      font-size: 19px;
+      line-height: 1;
       cursor: default;
+    }
+    .spin2-tile.is-puffs {
+      color: var(--accent);
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .spin2-tile.chosen {
+      color: #fff;
     }
     .spin2-players {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin: -6px 0 14px;
+      margin: 12px 0 0;
     }
     .spin2-players:empty {
       display: none;
@@ -3489,9 +3502,6 @@
     }
     .spin-timer .btn-plain {
       width: 100%;
-    }
-    .spin2-shuffle {
-      margin-top: 10px;
     }
     .spin-name.chosen {
       background: var(--primary);
@@ -5891,12 +5901,11 @@
           <div class="view" data-view="spin2">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
             <h1 class="page-title">Spin the Joint 2</h1>
-            <p class="muted" data-i18n="spin2.help">Straffene står rundt om jointen. Snur, og den straf, jointen peger på, skal du klare. Tilføj spillere, hvis I vil skiftes.</p>
+            <div class="spin2-players" id="spin2-players"></div>
             <form id="spin2-form" class="player-add" novalidate>
               <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
               <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
             </form>
-            <div class="spin2-players" id="spin2-players"></div>
             <div class="spin-wheel spin2-wheel" id="spin2-wheel">
               <svg class="spin-joint" id="spin2-joint" viewBox="0 0 40 160" aria-hidden="true">
                 <circle cx="20" cy="24" r="16" fill="url(#ember)"/>
@@ -5908,7 +5917,6 @@
             </div>
             <div class="spin-card hidden" id="spin2-card" aria-live="polite"></div>
             <button type="button" class="btn-primary" id="spin2-btn" data-i18n="spin.spin">Snur jointen</button>
-            <button type="button" class="btn-plain spin2-shuffle" id="spin2-shuffle" data-i18n="spin2.shuffle">Nye straffe</button>
           </div>
 
           <!-- Game of Joints (brætspillet) -->
@@ -6810,8 +6818,6 @@
         "dice.roll": "Slå med terningen",
         "dice.six": "6 sug, og du slår igen!",
         "spin2.tagline": "Jointen vælger straffen",
-        "spin2.help": "Straffene står rundt om jointen. Snur, og den straf, jointen peger på, skal du klare. Tilføj spillere, hvis I vil skiftes.",
-        "spin2.shuffle": "Nye straffe",
         "spin2.you": "Din straf",
         "spin.tagline": "Spin the joints",
         "dt.tagline": "To joints, hver sin vej rundt",
@@ -7501,8 +7507,6 @@
         "dice.roll": "Roll the die",
         "dice.six": "6 hits, and you roll again!",
         "spin2.tagline": "The joint picks the penalty",
-        "spin2.help": "The penalties are around the joint. Spin, and do the penalty the joint points at. Add players if you want to take turns.",
-        "spin2.shuffle": "New penalties",
         "spin2.you": "Your penalty",
         "spin.tagline": "Spin the joints",
         "dt.tagline": "Two joints, each going its own way",
@@ -12218,9 +12222,9 @@
     let spin2Tiles = [];
     let spin2Recorded = false;
 
-    // 8 tilfældige straffe fra Game of Joints
+    // Alle straffene fra Game of Joints i tilfældig rækkefølge
     function shuffleSpin2() {
-      spin2Tiles = [...SPIN_TILES].sort(() => Math.random() - 0.5).slice(0, 8);
+      spin2Tiles = [...SPIN_TILES].sort(() => Math.random() - 0.5);
       spin2Card.classList.add("hidden");
       renderSpin2();
     }
@@ -12231,16 +12235,17 @@
       spin2Tiles.forEach((id, i) => {
         const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
         const el = document.createElement("span");
-        el.className = `spin-name spin2-tile ${i === chosen ? "chosen" : ""}`;
+        // Samme ikoner som på brættet i Game of Joints; tal (antal sug) står i grønt
+        el.className = `spin-name spin2-tile ${/^\d+$/.test(TILES[id].icon) ? "is-puffs" : ""} ${i === chosen ? "chosen" : ""}`;
         el.dataset.index = i;
-        el.style.left = `${50 + 40 * Math.cos(angle)}%`;
-        el.style.top = `${50 + 40 * Math.sin(angle)}%`;
-        // "1 sug" i stedet for bare "sug"
-        el.textContent = /^\d+$/.test(TILES[id].icon) ? tileText(id).name : tileText(id).short || tileText(id).name;
+        el.style.left = `${50 + 42 * Math.cos(angle)}%`;
+        el.style.top = `${50 + 42 * Math.sin(angle)}%`;
+        el.textContent = TILES[id].icon;
+        el.title = tileText(id).name;
         spin2Circle.appendChild(el);
       });
       document.getElementById("spin2-players").innerHTML = spin2Players.map((name, i) => `
-        <button type="button" class="chip ${i === spin2Turn ? "active" : ""}" data-remove="${i}" title="${t("game.remove")}">${esc(name)}</button>`).join("");
+        <button type="button" class="chip" data-remove="${i}" title="${t("game.remove")}">${esc(name)}</button>`).join("");
     }
 
     document.getElementById("spin2-form").addEventListener("submit", (e) => {
@@ -12262,9 +12267,6 @@
       renderSpin2();
     });
 
-    document.getElementById("spin2-shuffle").addEventListener("click", () => {
-      if (!spin2Btn.dataset.spinning) shuffleSpin2();
-    });
 
     spin2Btn.addEventListener("click", () => {
       if (spin2Btn.dataset.spinning) return;
