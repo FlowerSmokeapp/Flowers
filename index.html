@@ -1771,84 +1771,15 @@
       cursor: pointer;
     }
 
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 22px;
-      margin-bottom: 24px;
-      border: 1px solid rgba(111, 208, 143, 0.25);
-      border-radius: 24px;
-      background:
-        radial-gradient(circle at 90% 10%, rgba(111, 208, 143, 0.25), transparent 50%),
-        linear-gradient(150deg, #1d3a26, #0e1610);
-    }
 
-    .hero small {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
 
-    .hero h2 {
-      margin: 6px 0 4px;
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
 
-    .hero p {
-      max-width: 26ch;
-      margin-bottom: 16px;
-      color: rgba(241, 243, 241, 0.75);
-      font-size: 15px;
-      line-height: 1.4;
-    }
 
-    .hero .mini-btn {
-      padding: 10px 16px;
-      font-size: 14px;
-    }
 
-    .quick-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
 
-    .quick {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--card);
-      color: var(--text);
-      font: inherit;
-      font-size: 15px;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
-    }
 
-    .quick:active {
-      background: var(--card-2);
-    }
 
-    .quick .tile-img {
-      flex-shrink: 0;
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-    }
 
-    .quick .tile-img svg {
-      width: 20px;
-      height: 20px;
-    }
 
     /* ==========================================================
        GAME OF JOINTS
@@ -2721,11 +2652,6 @@
       font-size: 14px;
     }
 
-    .home-drive {
-      margin: -4px 4px 18px;
-      color: var(--muted);
-      font-size: 13px;
-    }
 
     .field-row {
       display: grid;
@@ -3052,12 +2978,8 @@
     }
 
     /* ---------- Ranks ---------- */
-    .home-rank {
-      margin-top: 6px;
-      padding: 0;
-      border: 0;
-      background: none;
-      cursor: pointer;
+    .home-rank-card {
+      margin-top: 16px;
     }
     .rank-badge {
       display: inline-flex;
@@ -3535,6 +3457,10 @@
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>
                 <strong>Guides</strong>
               </button>
+              <button class="tile" data-go="logs">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></span>
+                <strong data-i18n="home.logs">Registreringer</strong>
+              </button>
               <button class="tile" data-go="stats">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span>
                 <strong data-i18n="hb.stats">Statistik</strong>
@@ -3610,7 +3536,7 @@
 
           <!-- Mine registreringer (åbnes fra forsiden) -->
           <div class="view" data-view="logs">
-            <button class="back" data-home data-i18n="back.home">‹ Hjem</button>
+            <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title" data-i18n="home.logs">Registreringer</h1>
             <div id="log-list" class="log-list"></div>
           </div>
@@ -3764,7 +3690,6 @@
             <div>
               <p class="greeting" id="home-greeting"></p>
               <h1 class="page-title" id="home-name"></h1>
-              <button type="button" class="home-rank" id="home-rank" data-shortcut="profile"></button>
             </div>
             <span class="avatar avatar-md" id="home-avatar" data-shortcut="profile"></span>
           </header>
@@ -3776,23 +3701,9 @@
               <small data-i18n="home.logSub">Hvor meget, hvordan og hvor skæv du blev</small>
             </span>
           </button>
-          <p class="home-drive hidden" id="home-drive"></p>
-
-          <div class="hero">
-            <small data-i18n="home.heroLabel">Aftenens spil</small>
-            <h2>Game of Joints</h2>
-            <p data-i18n="home.heroText">Saml vennerne, slå med terningen og se, hvor du lander.</p>
-            <button type="button" class="mini-btn primary" data-shortcut="game" data-i18n="home.play">Spil nu</button>
-          </div>
-
-          <h2 class="section-title" data-i18n="home.shortcuts">Genveje</h2>
-          <div class="quick-grid">
-            <button type="button" class="quick" data-shortcut="logs"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></span><span data-i18n="home.logs">Registreringer</span></button>
-            <button type="button" class="quick" data-shortcut="pause"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span><span data-i18n="hb.pause">T-Break beregner</span></button>
-            <button type="button" class="quick" data-shortcut="stats"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span><span data-i18n="hb.stats">Statistik</span></button>
-            <button type="button" class="quick" data-shortcut="map"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span data-i18n="hb.map">Smoke spots</span></button>
-          </div>
+          <div class="card home-rank-card" id="home-rank"></div>
         </section>
+
 
         <section class="page" data-page="friends" id="friends-page">
           <!-- Mine venner + søgning -->
@@ -4158,8 +4069,6 @@
         "drive.usage.regular": "Du ryger flere gange om ugen, så THC kan blive i blodet i mindst en uge.",
         "drive.usage.daily": "Du ryger næsten dagligt, så THC kan blive i blodet i op til flere uger.",
         "drive.warning": "⚠️ Kun et groft estimat, ingen garanti. I Danmark er der nultolerance for THC i blodet, og hvor længe det kan spores, er forskelligt fra person til person. Er du i tvivl, så lad bilen stå.",
-        "drive.homeWait": "Køre-timer: vent mindst {time}",
-        "drive.homePassed": "Køre-timer: den estimerede ventetid er gået",
         "stats.emptyTitle": "Ingen statistik endnu",
         "stats.emptyText": "Når du har logget dine smokes, ser du grafer over hvor meget og hvor ofte, og hvor længe du bør vente, før du kører bil.",
         "stats.week": "Gram de sidste 7 dage",
@@ -4270,11 +4179,10 @@
         "rank.level": "Level {n} af 8",
         "rank.next": "{xp} XP · {need} XP til {name}",
         "rank.max": "{xp} XP · Du har nået den højeste rank 👑",
-        "rank.help": "Du får 10 XP for hver registrering, 5 XP for hver gang du har røget og 15 XP for hver dag, du holder pause. Så du stiger både ved at logge og ved at holde pauser.",
+        "rank.help": "Jo mere du ryger, jo højere rank. Hver registrering giver 10 XP + 5 XP for hver gang + 10 XP pr. gram. Men du mister 10 XP hver dag, så du skal blive ved med at være aktiv for at holde din rank.",
         "db.rules": "Databasen afviste det. Reglerne i Firebase skal opdateres.",
         "ai.times1": "1 gang",
         "ai.timesN": "{n} gange",
-        "home.heroText": "Saml vennerne, slå med terningen og se, hvor du lander.",
         "game.tagline": "Brætspillet for dig og vennerne",
         "game.players": "Spillere",
         "game.addPh": "Navn på spiller",
@@ -4307,9 +4215,6 @@
         "home.afternoon": "God eftermiddag",
         "home.evening": "God aften",
         "home.night": "Godnat",
-        "home.heroLabel": "Aftenens spil",
-        "home.play": "Spil nu",
-        "home.shortcuts": "Genveje",
         "hb.checklist": "Tjekliste",
         "forum.share": "Del",
         "forum.empty": "Ingen opslag endnu. Del noget, eller tilføj venner for at se deres opslag.",
@@ -4514,8 +4419,6 @@
         "drive.usage.regular": "You smoke several times a week, so THC can stay in your blood for at least a week.",
         "drive.usage.daily": "You smoke almost daily, so THC can stay in your blood for several weeks.",
         "drive.warning": "⚠️ Only a rough estimate, no guarantee. Denmark has zero tolerance for THC in the blood, and how long it can be detected varies from person to person. If in doubt, don't drive.",
-        "drive.homeWait": "Driving timer: wait at least {time}",
-        "drive.homePassed": "Driving timer: the estimated waiting time has passed",
         "stats.emptyTitle": "No stats yet",
         "stats.emptyText": "Once you've logged your smokes, you'll see charts of how much and how often, and how long you should wait before driving.",
         "stats.week": "Grams in the last 7 days",
@@ -4626,11 +4529,10 @@
         "rank.level": "Level {n} of 8",
         "rank.next": "{xp} XP · {need} XP to {name}",
         "rank.max": "{xp} XP · You've reached the top rank 👑",
-        "rank.help": "You get 10 XP for each log, 5 XP for each time you smoked and 15 XP for each day you take a break. So you level up both by logging and by taking breaks.",
+        "rank.help": "The more you smoke, the higher your rank. Each log gives 10 XP + 5 XP for each time + 10 XP per gram. But you lose 10 XP every day, so you have to stay active to keep your rank.",
         "db.rules": "The database refused it. The rules in Firebase need updating.",
         "ai.times1": "1 time",
         "ai.timesN": "{n} times",
-        "home.heroText": "Gather your friends, roll the die and see where you land.",
         "game.tagline": "The board game for you and your friends",
         "game.players": "Players",
         "game.addPh": "Player name",
@@ -4663,9 +4565,6 @@
         "home.afternoon": "Good afternoon",
         "home.evening": "Good evening",
         "home.night": "Good night",
-        "home.heroLabel": "Tonight's game",
-        "home.play": "Play now",
-        "home.shortcuts": "Shortcuts",
         "hb.checklist": "Checklist",
         "forum.share": "Post",
         "forum.empty": "No posts yet. Share something, or add friends to see their posts.",
@@ -5235,12 +5134,6 @@
       btn.addEventListener("click", backView);
     });
 
-    handbookPage.querySelectorAll("[data-home]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        resetHandbook();
-        showPage("home");
-      });
-    });
 
     // ==========================================================
     // SMOKE SPOTS: kort over steder (gemt i "benches" i databasen)
@@ -5841,7 +5734,7 @@
         <div class="person" data-uid="${esc(profile.id)}" role="button" tabindex="0">
           <span class="avatar avatar-sm">${avatarHTML(profile)}</span>
           <span class="person-text">
-            <strong>${esc(profile.name)} <span class="mini-rank" title="${RANKS[rankIndex(profile.xp)].name}">${RANKS[rankIndex(profile.xp)].icon}</span></strong>
+            <strong>${esc(profile.name)} <span class="mini-rank" title="${RANKS[rankIndex(shownXp(profile))].name}">${RANKS[rankIndex(shownXp(profile))].icon}</span></strong>
             <small>${esc(profile.bio || "")}</small>
           </span>
           ${extra || '<span class="chevron">›</span>'}
@@ -6008,7 +5901,7 @@
           <div class="avatar avatar-lg">${avatarHTML(p)}</div>
           <h2>${esc(p.name)}</h2>
           <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
-          <p class="person-rank">${rankBadge(p.xp)}</p>
+          <p class="person-rank">${rankBadge(shownXp(p))}</p>
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
           <div class="stats single">
             <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
@@ -6255,7 +6148,7 @@
           <header class="post-head entry-head">
             <span class="avatar avatar-sm" data-person="${esc(post.author)}">${avatarHTML(profile)}</span>
             <span class="post-meta" data-person="${esc(post.author)}">
-              <strong>${esc(profile.name)} ${post.author === me ? "" : `<span class="mini-rank">${RANKS[rankIndex(profile.xp)].icon}</span>`}</strong>
+              <strong>${esc(profile.name)} ${post.author === me ? "" : `<span class="mini-rank">${RANKS[rankIndex(shownXp(profile))].icon}</span>`}</strong>
               <small>${timeAgo(post.createdAt)}</small>
             </span>
             ${own ? `<button type="button" class="link-btn danger small" data-delete-post="${esc(post.id)}">${t("forum.delete")}</button>` : ""}
@@ -7648,8 +7541,10 @@
     // ==========================================================
     // RANKS: 8 niveauer, man stiger i ved at registrere
     // ==========================================================
-    // XP: 10 pr. registrering + 5 pr. gang + 15 pr. pausedag (dage uden
-    // registreringer, så man også stiger ved at holde pause).
+    // XP: hver registrering giver 10 XP + 5 XP pr. gang + 10 XP pr. gram
+    // (højst 5 gram). Hver dag mister man XP_DECAY, så man skal blive ved
+    // med at være aktiv for at holde sin rank.
+    const XP_DECAY = 10;
     const RANKS = [
       { name: "Stoner Snail", icon: "🐌", xp: 0 },
       { name: "Couch Cadet", icon: "🛋️", xp: 100 },
@@ -7661,16 +7556,31 @@
       { name: "Weed Wizard", icon: "🧙", xp: 4000 },
     ];
 
+    function entryXp(entry) {
+      return 10 + 5 * (Number(entry.times) || 1) + Math.round(10 * Math.min(5, Number(entry.grams) || 0));
+    }
+
+    // Gå dag for dag fra første registrering til i dag
     function computeXp(entries) {
       if (!entries.length) return 0;
-      const days = new Set(entries.map((e) => e.date)).size;
-      const sessions = entries.reduce((s, e) => s + (Number(e.times) || 1), 0);
-      const times = entries.map(entryTime);
-      const first = Math.min(...times);
-      const last = Math.max(...times);
-      const span = Math.round((dayStart(last) - dayStart(first)) / DAY) + 1;
-      const breakDays = Math.max(0, span - days) + Math.min(28, Math.floor((Date.now() - last) / DAY));
-      return entries.length * 10 + sessions * 5 + breakDays * 15;
+      const perDay = new Map();
+      entries.forEach((e) => {
+        const day = dayStart(entryTime(e));
+        perDay.set(day, (perDay.get(day) || 0) + entryXp(e));
+      });
+      const today = dayStart(Date.now());
+      let xp = 0;
+      for (let day = Math.min(...perDay.keys()); day <= today; day = dayStart(day + DAY + 2 * HOUR)) {
+        xp = Math.max(0, xp + (perDay.get(day) || 0) - XP_DECAY);
+      }
+      return xp;
+    }
+
+    // En vens XP falder også, siden den sidst blev gemt
+    function shownXp(profile) {
+      if (!profile || !profile.xp) return 0;
+      const days = profile.xpAt ? Math.floor((dayStart(Date.now()) - dayStart(profile.xpAt)) / DAY) : 0;
+      return Math.max(0, profile.xp - days * XP_DECAY);
     }
 
     function rankIndex(xp) {
@@ -7717,13 +7627,13 @@
     function syncXp() {
       myXp = computeXp(logEntries);
       renderRank();
-      if (myProfile && myProfile.xp !== myXp) {
-        db.collection("profiles").doc(currentUserKey()).set({ xp: myXp }, { merge: true }).catch(() => {});
+      if (myProfile && (myProfile.xp !== myXp || dayStart(myProfile.xpAt || 0) !== dayStart(Date.now()))) {
+        db.collection("profiles").doc(currentUserKey()).set({ xp: myXp, xpAt: Date.now() }, { merge: true }).catch(() => {});
       }
     }
 
     function renderRank() {
-      document.getElementById("home-rank").innerHTML = rankBadge(myXp);
+      document.getElementById("home-rank").innerHTML = rankCardHTML(myXp);
       document.getElementById("profile-rank").innerHTML = rankCardHTML(myXp);
     }
 
@@ -7783,15 +7693,6 @@
       document.querySelectorAll("[data-drive-countdown]").forEach((el) => {
         el.textContent = formatDuration(left);
       });
-      const chip = document.getElementById("home-drive");
-      if (!est) {
-        chip.classList.add("hidden");
-      } else {
-        chip.classList.remove("hidden");
-        chip.textContent = left > 0
-          ? `🚗 ${t("drive.homeWait", { time: formatDuration(left) })}`
-          : `🚗 ${t("drive.homePassed")}`;
-      }
     }
 
     setInterval(updateDriveTimers, 30e3);
