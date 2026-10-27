@@ -4114,6 +4114,13 @@
     #changelog-more {
       margin-top: 12px;
     }
+
+    .rank-decay {
+      margin: 12px 0 0;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -5162,7 +5169,9 @@
         "rank.level": "Level {n} af 8",
         "rank.next": "{xp} XP · {need} XP til {name}",
         "rank.max": "{xp} XP · Du har nået den højeste rank 👑",
-        "rank.help": "Jo mere du ryger, jo højere rank. Hver registrering giver 10 XP + 5 XP for hver gang + 10 XP pr. gram. Men du mister 10 XP hver dag, så du skal blive ved med at være aktiv for at holde din rank.",
+        "rank.help": "Jo mere du ryger, jo højere rank. Hver registrering giver 10 XP + 5 XP for hver gang + 10 XP pr. gram. Men du mister XP hver dag, og jo højere rank du har, jo mere mister du. Så du skal være mere aktiv for at holde en høj rank.",
+        "rank.decay": "Du mister {n} XP om dagen på din rank",
+        "rank.day": "dag",
         "db.rules": "Databasen afviste det. Reglerne i Firebase skal opdateres.",
         "ai.times1": "1 gang",
         "ai.timesN": "{n} gange",
@@ -5627,7 +5636,9 @@
         "rank.level": "Level {n} of 8",
         "rank.next": "{xp} XP · {need} XP to {name}",
         "rank.max": "{xp} XP · You've reached the top rank 👑",
-        "rank.help": "The more you smoke, the higher your rank. Each log gives 10 XP + 5 XP for each time + 10 XP per gram. But you lose 10 XP every day, so you have to stay active to keep your rank.",
+        "rank.help": "The more you smoke, the higher your rank. Each log gives 10 XP + 5 XP for each time + 10 XP per gram. But you lose XP every day, and the higher your rank, the more you lose. So you need to be more active to keep a high rank.",
+        "rank.decay": "You lose {n} XP a day at your rank",
+        "rank.day": "day",
         "db.rules": "The database refused it. The rules in Firebase need updating.",
         "ai.times1": "1 time",
         "ai.timesN": "{n} times",
@@ -10103,19 +10114,29 @@
     // RANKS: 8 niveauer, man stiger i ved at registrere
     // ==========================================================
     // XP: hver registrering giver 10 XP + 5 XP pr. gang + 10 XP pr. gram
-    // (højst 5 gram). Hver dag mister man XP_DECAY, så man skal blive ved
-    // med at være aktiv for at holde sin rank.
-    const XP_DECAY = 10;
+    // (højst 5 gram). Hver dag mister man "decay" XP, og jo højere rank,
+    // jo mere mister man. Så man skal være mere aktiv for at holde en høj rank.
     const RANKS = [
-      { name: "Rookie Smoker", icon: "🐣", xp: 0 },
-      { name: "Giggle Goblin", icon: "🤭", xp: 100 },
-      { name: "Couch Potato", icon: "🥔", xp: 300 },
-      { name: "Munchie Monster", icon: "🍩", xp: 600 },
-      { name: "Cloud Chaser", icon: "☁️", xp: 1000 },
-      { name: "Heavy Smoker", icon: "💨", xp: 1600 },
-      { name: "Space Cadet", icon: "👽", xp: 2500 },
-      { name: "Snoop Dogg Smoker", icon: "🐶", xp: 4000 },
+      { name: "Rookie Smoker", icon: "🐣", xp: 0, decay: 2 },
+      { name: "Giggle Goblin", icon: "🤭", xp: 100, decay: 4 },
+      { name: "Couch Potato", icon: "🥔", xp: 300, decay: 6 },
+      { name: "Munchie Monster", icon: "🍩", xp: 600, decay: 10 },
+      { name: "Cloud Chaser", icon: "☁️", xp: 1000, decay: 15 },
+      { name: "Heavy Smoker", icon: "💨", xp: 1600, decay: 20 },
+      { name: "Space Cadet", icon: "👽", xp: 2500, decay: 30 },
+      { name: "Snoop Dogg Smoker", icon: "🐶", xp: 4000, decay: 40 },
     ];
+
+    // Hvor meget XP man mister i dag, ud fra den rank man har
+    function decayFor(xp) {
+      return RANKS[rankIndex(xp)].decay;
+    }
+
+    // XP efter et antal dage uden registreringer
+    function decayDays(xp, days) {
+      for (let i = 0; i < days && xp > 0; i++) xp = Math.max(0, xp - decayFor(xp));
+      return xp;
+    }
 
     // Start-XP, når man opretter sin profil, så man ikke starter fra bunden
     const USAGE_XP = { rare: 0, weekly: 150, often: 400, daily: 1000, heavy: 1700 };
@@ -10151,7 +10172,8 @@
       const firstDay = Math.min(...perDay.keys(), ...(base ? [baseDay] : []));
       let xp = 0;
       for (let day = firstDay; day <= today; day = dayStart(day + DAY + 2 * HOUR)) {
-        xp = Math.max(0, xp + (perDay.get(day) || 0) - XP_DECAY);
+        xp += perDay.get(day) || 0;
+        xp = Math.max(0, xp - decayFor(xp));
         // Start-XP lægges til efter dagens fald, så man starter på den fulde rank
         if (day === baseDay) xp += base;
       }
@@ -10162,7 +10184,7 @@
     function shownXp(profile) {
       if (!profile || !profile.xp) return 0;
       const days = profile.xpAt ? Math.floor((dayStart(Date.now()) - dayStart(profile.xpAt)) / DAY) : 0;
-      return Math.max(0, profile.xp - days * XP_DECAY);
+      return decayDays(profile.xp, days);
     }
 
     function rankIndex(xp) {
@@ -10195,9 +10217,10 @@
           <ol class="rank-ladder">
             ${RANKS.map((r, i) => `
               <li class="${i === index ? "current" : i < index ? "done" : ""}">
-                <span>${r.icon}</span><strong>${r.name}</strong><small>${r.xp} XP</small>
+                <span>${r.icon}</span><strong>${r.name}</strong><small>${r.xp} XP · −${r.decay}/${t("rank.day")}</small>
               </li>`).join("")}
           </ol>
+          <p class="rank-decay">📉 ${t("rank.decay", { n: rank.decay })}</p>
           <p class="muted rank-help">${t("rank.help")}</p>
         </details>`;
     }
