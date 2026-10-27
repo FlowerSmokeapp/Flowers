@@ -12547,7 +12547,7 @@
     let installPrompt = null;
 
     function isInstalled() {
-      return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+      return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true || !!window.Capacitor;
     }
 
     function installDismissed() {
@@ -12581,6 +12581,8 @@
         installPrompt = null;
         return renderInstallCard();
       }
+      // Android uden installationsknap i browseren: hent appen via download-siden
+      if (/android/i.test(navigator.userAgent)) return (location.href = "download/");
       sheetBackdrop.classList.remove("hidden");
       document.getElementById("install-sheet").classList.remove("hidden");
     });

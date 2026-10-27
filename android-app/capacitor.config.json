@@ -1,0 +1,13 @@
+{
+  "appId": "dk.flower.app",
+  "appName": "Flower",
+  "webDir": "www",
+  "server": {
+    "url": "https://danielsh08.github.io/Flowers/",
+    "androidScheme": "https",
+    "allowNavigation": ["danielsh08.github.io"]
+  },
+  "android": {
+    "backgroundColor": "#000000"
+  }
+}

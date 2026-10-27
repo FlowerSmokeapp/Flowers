@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="icon" href="../icon-192.png">
+  <title>Hent Flower</title>
+  <style>
+    :root {
+      --bg: #000;
+      --card: #0d0e0d;
+      --card-2: #151715;
+      --text: #f1f3f1;
+      --muted: #8a928b;
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #1f5e38;
+      --accent: #5cb87d;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      padding: max(32px, env(safe-area-inset-top)) 16px 40px;
+      background: radial-gradient(circle at 50% 0%, #0b1710, var(--bg) 60%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .hero img {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+    h1 {
+      margin-top: 14px;
+      font-size: 34px;
+      letter-spacing: -0.8px;
+    }
+    .hero p {
+      margin-top: 6px;
+      color: var(--muted);
+    }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+    }
+    .tabs button {
+      flex: 1;
+      padding: 10px 0;
+      border: 0;
+      border-radius: 10px;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tabs button.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+    }
+    .hidden {
+      display: none;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 18px;
+      padding: 16px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+    }
+    ol {
+      display: grid;
+      gap: 14px;
+      list-style: none;
+      counter-reset: step;
+    }
+    li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 40px;
+      line-height: 1.45;
+    }
+    li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: -2px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--card-2);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .share {
+      display: inline-block;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: var(--card-2);
+    }
+    .note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .open {
+      display: block;
+      margin-top: 24px;
+      color: var(--accent);
+      text-align: center;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <img src="../apple-touch-icon.png" alt="">
+      <h1>Flower</h1>
+      <p>Smoke log, spil, smoke spots og venner</p>
+    </div>
+
+    <div class="tabs">
+      <button type="button" data-os="ios">🍏 iPhone</button>
+      <button type="button" data-os="android">🤖 Android</button>
+    </div>
+
+    <!-- iPhone: føj til hjemmeskærm -->
+    <section class="card" data-panel="ios">
+      <ol>
+        <li>Åbn <strong>danielsh08.github.io/Flowers</strong> i <strong>Safari</strong></li>
+        <li>Tryk på Del-knappen <span class="share">⬆️</span> nederst på skærmen</li>
+        <li>Rul ned og tryk på <strong>"Føj til hjemmeskærm"</strong></li>
+        <li>Tryk <strong>"Tilføj"</strong> øverst til højre</li>
+      </ol>
+      <a class="btn" style="margin: 20px 0 0" href="../">Åbn Flower i Safari</a>
+      <p class="note">Flower ligger nu på din hjemmeskærm med eget ikon og åbner i fuld skærm som en rigtig app. Den opdaterer sig selv.</p>
+    </section>
+
+    <!-- Android: hent APK -->
+    <section class="card hidden" data-panel="android">
+      <a class="btn" href="https://github.com/danielsh08/Flowers/releases/download/app/Flower.apk">⬇️ Download Flower.apk</a>
+      <ol>
+        <li>Tryk på knappen ovenfor og hent filen</li>
+        <li>Åbn <strong>Flower.apk</strong>, når den er hentet</li>
+        <li>Spørger telefonen, så tillad at installere apps fra denne kilde</li>
+        <li>Tryk <strong>"Installer"</strong>, og åbn Flower</li>
+      </ol>
+      <p class="note">Appen kommer ikke fra Google Play, så telefonen kan advare om det. Det er helt normalt for apps, der hentes via et link. Appen opdaterer sig selv, så du skal kun installere den én gang.</p>
+    </section>
+
+    <a class="open" href="../">Eller brug Flower direkte i browseren ›</a>
+  </main>
+
+  <script>
+    // Vis den rigtige vejledning ud fra telefonen
+    const ua = navigator.userAgent;
+    let os = /android/i.test(ua) ? "android" : "ios";
+
+    function show(name) {
+      os = name;
+      document.querySelectorAll("[data-os]").forEach((b) => b.classList.toggle("active", b.dataset.os === name));
+      document.querySelectorAll("[data-panel]").forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== name));
+    }
+
+    document.querySelectorAll("[data-os]").forEach((b) => b.addEventListener("click", () => show(b.dataset.os)));
+    show(os);
+  </script>
+</body>
+</html>

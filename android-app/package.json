@@ -1,0 +1,10 @@
+{
+  "name": "flower-android",
+  "private": true,
+  "description": "Android-app til Flower. Bygges af GitHub Actions (se .github/workflows/android.yml).",
+  "dependencies": {
+    "@capacitor/android": "7.6.9",
+    "@capacitor/cli": "7.6.9",
+    "@capacitor/core": "7.6.9"
+  }
+}

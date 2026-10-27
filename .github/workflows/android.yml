@@ -1,0 +1,66 @@
+# Bygger Android-appen (Flower.apk) og lægger den ud til download på
+# https://github.com/danielsh08/Flowers/releases/download/app/Flower.apk
+#
+# Appen viser selve hjemmesiden, så den skal kun bygges igen, når noget
+# i android-app/ ændres. Man kan også starte den manuelt under Actions.
+name: Byg Android-app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "android-app/**"
+      - ".github/workflows/android.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Installer Capacitor
+        run: npm ci
+
+      - name: Lav Android-projektet
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Ikon, navn og tilladelser
+        run: |
+          RES=android/app/src/main/res
+          rm -rf $RES/mipmap-anydpi-v26
+          cp -r icons/* $RES/
+          # Placering (smoke spots) og notifikationer
+          sed -i 's#<uses-permission android:name="android.permission.INTERNET" />#<uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />\n    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />#' android/app/src/main/AndroidManifest.xml
+          grep -n "permission" android/app/src/main/AndroidManifest.xml
+
+      - name: Byg APK
+        working-directory: android-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk ../Flower.apk
+
+      - name: Læg den ud til download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view app >/dev/null 2>&1 || gh release create app --title "Flower til Android" --notes "Download Flower.apk og installer den på din Android-telefon."
+          gh release upload app Flower.apk --clobber
