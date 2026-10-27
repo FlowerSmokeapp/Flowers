@@ -9,6 +9,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-title" content="MinApp">
   <meta name="theme-color" content="#0c0d0c">
 
@@ -4121,6 +4122,65 @@
       font-size: 13px;
       font-weight: 600;
     }
+
+    /* ---------- Notifikationer ---------- */
+    .home-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon-btn.bell {
+      position: relative;
+      margin: 0;
+      width: 44px;
+      height: 44px;
+    }
+    .icon-btn.bell .badge {
+      top: -4px;
+      right: -4px;
+      left: auto;
+    }
+    .notif-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .notif-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .notif-row.unread {
+      border-color: var(--primary);
+      background: var(--accent-soft);
+    }
+    .notif-text {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .notif-text small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .notif-help {
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -4635,7 +4695,13 @@
               <p class="greeting" id="home-greeting"></p>
               <h1 class="page-title" id="home-name"></h1>
             </div>
-            <span class="avatar avatar-md" id="home-avatar" data-shortcut="profile"></span>
+            <div class="home-actions">
+              <button type="button" class="icon-btn bell" id="notif-btn" data-i18n-aria="notif.title" aria-label="Notifikationer">
+                <svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+                <span class="badge hidden" id="notif-badge"></span>
+              </button>
+              <span class="avatar avatar-md" id="home-avatar" data-shortcut="profile"></span>
+            </div>
           </header>
 
           <button type="button" class="log-cta" data-shortcut="log">
@@ -4654,6 +4720,12 @@
           </div>
         </section>
 
+
+        <section class="page" data-page="notifs">
+          <button class="back" id="notif-back" data-i18n="back.home">‹ Hjem</button>
+          <h1 class="page-title" data-i18n="notif.title">Notifikationer</h1>
+          <div id="notif-list" class="notif-list"></div>
+        </section>
 
         <section class="page" data-page="friends" id="friends-page">
           <!-- Mine venner + søgning -->
@@ -4721,6 +4793,11 @@
                 <button type="button" data-lang="da">🇩🇰 Dansk</button>
                 <button type="button" data-lang="en">🇬🇧 English</button>
               </div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="notif.title">Notifikationer</h3>
+              <button type="button" class="btn-plain" id="notif-toggle"></button>
+              <p class="muted notif-help" id="notif-help"></p>
             </div>
             <div class="card">
               <h3 data-i18n="settings.theme">Tema</h3>
@@ -5397,6 +5474,20 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
+        "notif.title": "Notifikationer",
+        "notif.empty": "Ingen notifikationer endnu. Her ser du, når nogen lægger noget op i Smoke Hub eller sender dig en venneanmodning.",
+        "notif.request": "{name} har sendt dig en venneanmodning",
+        "notif.post": "{name} har lagt et opslag op",
+        "notif.tagged": "{name} har tagget dig i et opslag",
+        "notif.roll": "{name} har delt en roll. Giv den en rating!",
+        "notif.munch": "{name} har delt sine munchies",
+        "notif.spot": "{name} har tilføjet smoke spottet {spot}",
+        "notif.state.default": "🔔 Slå notifikationer til",
+        "notif.state.granted": "✅ Notifikationer er slået til",
+        "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
+        "notif.state.unsupported": "Ikke understøttet her",
+        "notif.help": "Du får en notifikation på telefonen, når nogen lægger noget op i Smoke Hub, eller du får en venneanmodning, mens appen er åben.",
+        "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
         "cl.loading": "Henter nyheder…",
         "cl.more": "Vis mere",
         "cl.less": "Vis mindre",
@@ -5864,6 +5955,20 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Edit profile",
         "profile.language": "Language",
+        "notif.title": "Notifications",
+        "notif.empty": "No notifications yet. Here you'll see when someone posts in Smoke Hub or sends you a friend request.",
+        "notif.request": "{name} sent you a friend request",
+        "notif.post": "{name} shared a post",
+        "notif.tagged": "{name} tagged you in a post",
+        "notif.roll": "{name} shared a roll. Give it a rating!",
+        "notif.munch": "{name} shared their munchies",
+        "notif.spot": "{name} added the smoke spot {spot}",
+        "notif.state.default": "🔔 Turn on notifications",
+        "notif.state.granted": "✅ Notifications are on",
+        "notif.state.denied": "Notifications are blocked in your phone's settings",
+        "notif.state.unsupported": "Not supported here",
+        "notif.help": "You'll get a notification on your phone when someone posts in Smoke Hub or you get a friend request, while the app is open.",
+        "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
         "cl.loading": "Loading news…",
         "cl.more": "Show more",
         "cl.less": "Show less",
@@ -6856,6 +6961,7 @@
     }
 
     function renderProfile() {
+      queueNotifications();
       const uid = currentUserKey();
       if (!uid || !myProfile) return;
 
@@ -7430,6 +7536,7 @@
       }
       feedEl.innerHTML = posts.map((post) => postHTML(post)).join("");
       renderPostDetail();
+      queueNotifications();
     }
 
     feedEl.addEventListener("click", handlePostClick);
@@ -7798,6 +7905,7 @@
     }
 
     function renderRolls() {
+      queueNotifications();
       if (!rolls.length) {
         rollGrid.innerHTML = `<p class="empty-note">${t("roll.empty")}</p>`;
         return;
@@ -7912,6 +8020,7 @@
     }
 
     function renderMunchies() {
+      queueNotifications();
       if (!munchies.length) {
         munchGrid.innerHTML = `<p class="empty-note">${t("munch.empty")}</p>`;
         return;
@@ -10639,6 +10748,185 @@
     });
 
     loadChangelog();
+
+    // ==========================================================
+    // NOTIFIKATIONER: nyt i Smoke Hub og venneanmodninger
+    // ==========================================================
+    // Listen bygges ud fra det, appen allerede lytter efter. Hvad man har
+    // set, huskes på telefonen. Mens appen er åben, kommer der også en
+    // notifikation på telefonen (hvis man har sagt ja til det).
+    const notifList = document.getElementById("notif-list");
+    const notifBadge = document.getElementById("notif-badge");
+    const APP_START = Date.now();
+    const alerted = new Set();
+    let notifications = [];
+    var notifTimer = null;   // var: kan bruges, før koden her er kørt
+    let swRegistration = null;
+
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      navigator.serviceWorker.register("sw.js").then((reg) => { swRegistration = reg; }).catch(() => {});
+    }
+
+    function seenKey() {
+      return "notifSeen_" + currentUserKey();
+    }
+
+    function getSeen() {
+      try {
+        const value = Number(localStorage.getItem(seenKey()));
+        if (value) return value;
+        // Første gang: start fra nu, så man ikke får alt det gamle
+        localStorage.setItem(seenKey(), String(APP_START));
+      } catch {
+        // Virker også uden at huske
+      }
+      return APP_START;
+    }
+
+    function markSeen() {
+      try {
+        localStorage.setItem(seenKey(), String(Date.now()));
+      } catch {
+        // Virker også uden at huske
+      }
+      renderNotifBadge();
+    }
+
+    function personName(uid, fallback) {
+      return (profileCache.get(uid) || {}).name || fallback || "?";
+    }
+
+    function buildNotifications() {
+      const me = currentUserKey();
+      if (!me) return [];
+      const list = [];
+      requestsIn.forEach((r) => list.push({
+        id: "req-" + r.from, time: r.createdAt || 0, icon: "👋", uid: r.from,
+        text: t("notif.request", { name: personName(r.from) }), open: () => { showPage("friends"); showFriendsList(); },
+      }));
+      posts.filter((p) => p.author !== me).forEach((p) => {
+        const tagged = (p.mentions || []).some((m) => m.uid === me);
+        list.push({
+          id: "post-" + p.id, time: p.createdAt || 0, icon: tagged ? "🏷️" : "📝", uid: p.author,
+          text: t(tagged ? "notif.tagged" : "notif.post", { name: personName(p.author, p.authorName) }),
+          open: () => { openView("hub", "posts"); openPost(p.id); },
+        });
+      });
+      rolls.filter((r) => r.author !== me).forEach((r) => list.push({
+        id: "roll-" + r.id, time: r.createdAt || 0, icon: "🌿", uid: r.author,
+        text: t("notif.roll", { name: personName(r.author, r.authorName) }),
+        open: () => { openView("hub", "rolls"); openRollId = r.id; goView("roll"); },
+      }));
+      munchies.filter((m) => m.author !== me).forEach((m) => list.push({
+        id: "munch-" + m.id, time: m.createdAt || 0, icon: "🍕", uid: m.author,
+        text: t("notif.munch", { name: personName(m.author, m.authorName) }),
+        open: () => { openView("hub", "munchies"); openMunchId = m.id; goView("munchie"); },
+      }));
+      benches.filter((b) => b.addedBy !== me && b.createdAt).forEach((b) => list.push({
+        id: "spot-" + b.id, time: b.createdAt, icon: "📍", uid: b.addedBy,
+        text: t("notif.spot", { name: b.addedByName || "?", spot: b.name || "" }),
+        open: () => { openView("hub", "map"); openBench(b.id); },
+      }));
+      return list.sort((a, b) => b.time - a.time).slice(0, 50);
+    }
+
+    function renderNotifBadge() {
+      const seen = getSeen();
+      const unread = notifications.filter((n) => n.time > seen).length;
+      notifBadge.textContent = unread > 9 ? "9+" : unread;
+      notifBadge.classList.toggle("hidden", !unread);
+    }
+
+    function renderNotifList() {
+      const seen = getSeen();
+      notifList.innerHTML = notifications.length
+        ? notifications.map((n) => {
+          const profile = profileCache.get(n.uid);
+          return `
+            <button type="button" class="notif-row ${n.time > seen ? "unread" : ""}" data-notif="${esc(n.id)}">
+              <span class="avatar avatar-sm">${profile ? avatarHTML(profile) : n.icon}</span>
+              <span class="notif-text">
+                <span>${n.icon} ${esc(n.text)}</span>
+                <small>${timeAgo(n.time)}</small>
+              </span>
+            </button>`;
+        }).join("")
+        : `<p class="empty-note">${t("notif.empty")}</p>`;
+    }
+
+    // Kort pause, så mange opdateringer på én gang kun giver én gennemgang
+    function queueNotifications() {
+      clearTimeout(notifTimer);
+      notifTimer = setTimeout(updateNotifications, 300);
+    }
+
+    function updateNotifications() {
+      if (!currentUserKey()) return;
+      notifications = buildNotifications();
+      renderNotifBadge();
+      if (document.querySelector('[data-page="notifs"]').classList.contains("active")) renderNotifList();
+      // Nye ting, der er kommet, mens appen er åben
+      notifications
+        .filter((n) => n.time > APP_START && n.time > getSeen() && !alerted.has(n.id))
+        .slice(0, 3)
+        .forEach((n) => {
+          alerted.add(n.id);
+          showToast(`${n.icon} ${n.text}`);
+          systemNotify(n);
+        });
+      notifications.forEach((n) => alerted.add(n.id));
+    }
+
+    function systemNotify(n) {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      const options = { body: n.text, icon: "apple-touch-icon.png", tag: n.id };
+      if (swRegistration) swRegistration.showNotification("MinApp", options).catch(() => {});
+      else {
+        try {
+          new Notification("MinApp", options);
+        } catch {
+          // Nogle browsere kræver service worker
+        }
+      }
+    }
+
+    function openNotifications() {
+      notifications = buildNotifications();
+      showPage("notifs");
+      renderNotifList();
+      markSeen();
+    }
+
+    document.getElementById("notif-btn").addEventListener("click", openNotifications);
+    document.getElementById("notif-back").addEventListener("click", () => showPage("home"));
+
+    notifList.addEventListener("click", (e) => {
+      const row = e.target.closest("[data-notif]");
+      const n = row && notifications.find((x) => x.id === row.dataset.notif);
+      if (n) n.open();
+    });
+
+    // ---------- Tilladelse til notifikationer på telefonen ----------
+    const notifToggle = document.getElementById("notif-toggle");
+
+    function renderNotifToggle() {
+      const supported = "Notification" in window;
+      const state = supported ? Notification.permission : "unsupported";
+      notifToggle.textContent = t("notif.state." + state);
+      notifToggle.disabled = state !== "default";
+      document.getElementById("notif-help").textContent = t(state === "unsupported" ? "notif.helpInstall" : "notif.help");
+    }
+
+    notifToggle.addEventListener("click", async () => {
+      try {
+        await Notification.requestPermission();
+      } catch {
+        // Ældre browsere
+      }
+      renderNotifToggle();
+    });
+
+    renderNotifToggle();
 
     // ---------- Genveje på hjemmeskærmen ----------
     function greetingKey() {
