@@ -4928,6 +4928,17 @@
     .dice-result.six {
       color: #ffd166;
     }
+
+    .unread-dot {
+      flex: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--error);
+    }
+    .notif-row:not(.unread) {
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -5550,7 +5561,10 @@
 
         <section class="page" data-page="notifs">
           <button class="back" id="notif-back" data-i18n="back.home">‹ Hjem</button>
-          <h1 class="page-title" data-i18n="notif.title">Notifikationer</h1>
+          <div class="title-row">
+            <h1 class="page-title" data-i18n="notif.title">Notifikationer</h1>
+            <button type="button" class="mini-btn hidden" id="notif-read-all" data-i18n="notif.readAll">Læs alle</button>
+          </div>
           <div id="notif-list" class="notif-list"></div>
         </section>
 
@@ -6394,6 +6408,7 @@
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
         "notif.title": "Notifikationer",
+        "notif.readAll": "Læs alle",
         "notif.empty": "Ingen notifikationer endnu. Her ser du, når nogen lægger noget op i Smoke Hub eller sender dig en venneanmodning.",
         "notif.request": "{name} har sendt dig en venneanmodning",
         "notif.post": "{name} har lagt et opslag op",
@@ -7012,6 +7027,7 @@
         "profile.edit": "Edit profile",
         "profile.language": "Language",
         "notif.title": "Notifications",
+        "notif.readAll": "Read all",
         "notif.empty": "No notifications yet. Here you'll see when someone posts in Smoke Hub or sends you a friend request.",
         "notif.request": "{name} sent you a friend request",
         "notif.post": "{name} shared a post",
@@ -8384,9 +8400,7 @@
       outProfiles = outProfiles.filter((p) => p && !p.missing);
 
       // Antal ubesvarede anmodninger på Venner-ikonet
-      const badge = document.getElementById("friends-badge");
-      badge.textContent = requestsIn.length;
-      badge.classList.toggle("hidden", !requestsIn.length);
+      if (typeof renderFriendsTabBadge === "function") renderFriendsTabBadge();
 
       document.getElementById("requests-section").classList.toggle("hidden", !requestsIn.length);
       document.getElementById("requests-count").textContent = requestsIn.length;
@@ -8938,6 +8952,17 @@
         munchies: count(munchies, "munchies", "author"),
         map: count(benches, "spots", "addedBy"),
       };
+    }
+
+    // Marker som set lidt efter, at man har set det (så det kan nå at blive vist)
+    function markSectionSeenLater(cat) {
+      setTimeout(() => {
+        if (document.querySelector('[data-page="home"]').classList.contains("active")) {
+          markSectionSeen(cat);
+          queueNotifications();
+        }
+      }, 2000);
+      return true;
     }
 
     function renderHubBadges() {
@@ -12408,31 +12433,6 @@
       navigator.serviceWorker.register("sw.js").then((reg) => { swRegistration = reg; }).catch(() => {});
     }
 
-    function seenKey() {
-      return "notifSeen_" + currentUserKey();
-    }
-
-    function getSeen() {
-      try {
-        const value = Number(localStorage.getItem(seenKey()));
-        if (value) return value;
-        // Første gang: start fra nu, så man ikke får alt det gamle
-        localStorage.setItem(seenKey(), String(APP_START));
-      } catch {
-        // Virker også uden at huske
-      }
-      return APP_START;
-    }
-
-    function markSeen() {
-      try {
-        localStorage.setItem(seenKey(), String(Date.now()));
-      } catch {
-        // Virker også uden at huske
-      }
-      renderNotifBadge();
-    }
-
     function personName(uid, fallback) {
       return (profileCache.get(uid) || {}).name || fallback || "?";
     }
@@ -12443,68 +12443,98 @@
       const list = [];
       requestsIn.forEach((r) => list.push({
         id: "req-" + r.from, time: r.createdAt || 0, icon: "👋", uid: r.from,
+        unread: true,
         text: t("notif.request", { name: personName(r.from) }), open: () => { showPage("friends"); showFriendsList(); },
       }));
       posts.filter((p) => p.author !== me).forEach((p) => {
         const tagged = (p.mentions || []).some((m) => m.uid === me);
         list.push({
           id: "post-" + p.id, time: p.createdAt || 0, icon: tagged ? "🏷️" : "📝", uid: p.author,
+          unread: (p.createdAt || 0) > sectionSeen("posts"),
           text: t(tagged ? "notif.tagged" : "notif.post", { name: personName(p.author, p.authorName) }),
           open: () => { openView("hub", "posts"); openPost(p.id); },
         });
       });
       rolls.filter((r) => r.author !== me).forEach((r) => list.push({
         id: "roll-" + r.id, time: r.createdAt || 0, icon: "🌿", uid: r.author,
+        unread: (r.createdAt || 0) > sectionSeen("rolls"),
         text: t("notif.roll", { name: personName(r.author, r.authorName) }),
         open: () => { openView("hub", "rolls"); openRollId = r.id; goView("roll"); },
       }));
       munchies.filter((m) => m.author !== me).forEach((m) => list.push({
         id: "munch-" + m.id, time: m.createdAt || 0, icon: "🍕", uid: m.author,
+        unread: (m.createdAt || 0) > sectionSeen("munchies"),
         text: t("notif.munch", { name: personName(m.author, m.authorName) }),
         open: () => { openView("hub", "munchies"); openMunchId = m.id; goView("munchie"); },
       }));
       (seshes || []).filter((x) => x.host !== me).forEach((x) => list.push({
         id: "sesh-" + x.id, time: x.createdAt || 0, icon: "🔥", uid: x.host,
+        unread: !(x.responses || {})[me],
         text: t("notif.sesh", { name: personName(x.host, x.hostName), time: seshTime(x.time) }),
         open: () => showPage("home"),
       }));
       (chats || []).filter((c) => isUnread(c)).forEach((c) => list.push({
         id: "chat-" + c.id + "-" + c.lastAt, time: c.lastAt, icon: "💬", uid: c.lastFrom,
+        unread: true,
         text: t("notif.chat", { name: personName(c.lastFrom), text: c.lastText || "" }),
         open: () => { showPage("friends"); openChat(c.lastFrom); },
       }));
       (cheers || []).forEach((c) => list.push({
         id: "cheer-" + c.id, time: c.createdAt || 0, icon: "💪", uid: c.from,
+        unread: (c.createdAt || 0) > sectionSeen("cheers"),
         text: t("notif.cheer", { name: personName(c.from, c.fromName) }),
         open: () => showPage("home"),
       }));
       benches.filter((b) => b.addedBy !== me && b.createdAt).forEach((b) => list.push({
         id: "spot-" + b.id, time: b.createdAt, icon: "📍", uid: b.addedBy,
+        unread: b.createdAt > sectionSeen("spots"),
         text: t("notif.spot", { name: b.addedByName || "?", spot: b.name || "" }),
         open: () => { openView("hub", "map"); openBench(b.id); },
       }));
+      // Notifikationer, man selv har trykket på, er læst
+      const read = readNotifIds();
+      list.forEach((n) => { if (read.has(n.id)) n.unread = false; });
       return list.sort((a, b) => b.time - a.time).slice(0, 50);
     }
 
+    function readNotifIds() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem("notifRead_" + currentUserKey())) || []);
+      } catch {
+        return new Set();
+      }
+    }
+
+    function markNotifRead(ids) {
+      const read = readNotifIds();
+      ids.forEach((id) => read.add(id));
+      try {
+        localStorage.setItem("notifRead_" + currentUserKey(), JSON.stringify([...read].slice(-500)));
+      } catch {
+        // Virker også uden at huske
+      }
+    }
+
     function renderNotifBadge() {
-      const seen = getSeen();
-      const unread = notifications.filter((n) => n.time > seen).length;
+      const unread = notifications.filter((n) => n.unread).length;
       notifBadge.textContent = unread > 9 ? "9+" : unread;
       notifBadge.classList.toggle("hidden", !unread);
     }
 
     function renderNotifList() {
-      const seen = getSeen();
+      const unread = notifications.filter((n) => n.unread).length;
+      document.getElementById("notif-read-all").classList.toggle("hidden", !unread);
       notifList.innerHTML = notifications.length
         ? notifications.map((n) => {
           const profile = profileCache.get(n.uid);
           return `
-            <button type="button" class="notif-row ${n.time > seen ? "unread" : ""}" data-notif="${esc(n.id)}">
+            <button type="button" class="notif-row ${n.unread ? "unread" : ""}" data-notif="${esc(n.id)}">
               <span class="avatar avatar-sm">${profile ? avatarHTML(profile) : n.icon}</span>
               <span class="notif-text">
                 <span>${n.icon} ${esc(n.text)}</span>
                 <small>${timeAgo(n.time)}</small>
               </span>
+              ${n.unread ? '<span class="unread-dot"></span>' : ""}
             </button>`;
         }).join("")
         : `<p class="empty-note">${t("notif.empty")}</p>`;
@@ -12524,7 +12554,7 @@
       if (document.querySelector('[data-page="notifs"]').classList.contains("active")) renderNotifList();
       // Nye ting, der er kommet, mens appen er åben
       notifications
-        .filter((n) => n.time > APP_START && n.time > getSeen() && !alerted.has(n.id))
+        .filter((n) => n.time > APP_START && n.unread && !alerted.has(n.id))
         .slice(0, 3)
         .forEach((n) => {
           alerted.add(n.id);
@@ -12551,8 +12581,14 @@
       notifications = buildNotifications();
       showPage("notifs");
       renderNotifList();
-      markSeen();
     }
+
+    document.getElementById("notif-read-all").addEventListener("click", () => {
+      markNotifRead(notifications.filter((n) => n.unread).map((n) => n.id));
+      ["posts", "rolls", "munchies", "spots", "cheers"].forEach(markSectionSeen);
+      updateNotifications();
+      renderNotifList();
+    });
 
     document.getElementById("notif-btn").addEventListener("click", openNotifications);
     document.getElementById("notif-back").addEventListener("click", () => showPage("home"));
@@ -12560,7 +12596,10 @@
     notifList.addEventListener("click", (e) => {
       const row = e.target.closest("[data-notif]");
       const n = row && notifications.find((x) => x.id === row.dataset.notif);
-      if (n) n.open();
+      if (!n) return;
+      markNotifRead([n.id]);
+      n.open();
+      updateNotifications();
     });
 
     // ---------- Tilladelse til notifikationer på telefonen ----------
@@ -12865,7 +12904,7 @@
         <div class="progress"><span style="width:${pct}%"></span></div>
         ${milestone ? `<p class="tbm-milestone">🏁 ${t("tbm.m" + milestone)}</p>` : `<p class="tbm-milestone">💪 ${t("tbm.m0")}</p>`}
         ${saved ? `<p class="tbm-saved">💰 ${t("tbm.saved", { kr: saved })}</p>` : ""}
-        ${myCheers.length ? `
+        ${myCheers.length && markSectionSeenLater("cheers") ? `
           <div class="tbm-cheers">
             ${myCheers.map((c) => `<p>${esc(c.emoji || "💪")} <strong>${esc(personName(c.from, c.fromName))}</strong> ${t("tbm.cheered")}</p>`).join("")}
           </div>` : ""}
@@ -13119,6 +13158,7 @@
         chats = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })).sort((a, b) => (b.lastAt || 0) - (a.lastAt || 0));
         renderChatList();
         renderChatBadge();
+        renderFriendsTabBadge();
         queueNotifications();
       }, (error) => console.error(error));
     }
@@ -13139,6 +13179,13 @@
       const n = chats.filter(isUnread).length;
       const badge = document.getElementById("chat-badge");
       badge.textContent = n;
+      badge.classList.toggle("hidden", !n);
+    }
+
+    function renderFriendsTabBadge() {
+      const n = requestsIn.length + chats.filter(isUnread).length;
+      const badge = document.getElementById("friends-badge");
+      badge.textContent = n > 9 ? "9+" : n;
       badge.classList.toggle("hidden", !n);
     }
 
