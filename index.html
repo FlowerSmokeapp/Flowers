@@ -3353,6 +3353,159 @@
       max-height: 100%;
       object-fit: contain;
     }
+
+    /* ---------- Games of Joints ---------- */
+    .game-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .game-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(160deg, var(--card-2), var(--card));
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .game-item:active {
+      transform: scale(0.98);
+      border-color: var(--accent);
+    }
+    .game-item > span:nth-child(2) {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .game-item strong {
+      font-size: 17px;
+    }
+    .game-item small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .game-item .tile-img {
+      flex: none;
+    }
+    .dice-game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+    }
+    .dice-game .page-title {
+      align-self: stretch;
+      text-align: left;
+    }
+    .dice-game > .muted {
+      align-self: stretch;
+      text-align: left;
+      margin: 0 0 24px;
+    }
+    .die.big-die {
+      width: 150px;
+      height: 150px;
+      padding: 26px;
+      gap: 10px;
+      border-radius: 34px;
+    }
+    .dice-result {
+      min-height: 44px;
+      margin: 22px 0 14px;
+      font-size: 34px;
+      font-weight: 800;
+    }
+    #spin-form {
+      margin: 16px 0;
+    }
+    .spin-wheel {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 1;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--card-2) 0 55%, var(--card) 56% 100%);
+      border: 1px solid var(--border);
+    }
+    .spin-joint {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 40px;
+      height: 160px;
+      margin: -80px 0 0 -20px;
+      transition: transform 3s cubic-bezier(0.15, 0.85, 0.25, 1);
+      filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+    }
+    .spin-name {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      max-width: 34%;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .spin-name.chosen {
+      background: var(--primary);
+      border-color: var(--primary);
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+    .spin-empty {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 14%;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    .spin-card {
+      margin: 0 0 16px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(160deg, rgba(111, 208, 143, 0.18), var(--card));
+      border: 1px solid rgba(111, 208, 143, 0.35);
+      text-align: center;
+      animation: fadeIn 0.25s ease;
+    }
+    .spin-card small {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .spin-card p {
+      margin: 6px 0 0;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .spin-joint {
+        transition-duration: 0.01s;
+      }
+    }
   </style>
 </head>
 <body>
@@ -3483,9 +3636,9 @@
           <div class="view active" data-view="hb-menu">
             <h1 class="page-title" data-i18n="nav.handbook">Håndbog</h1>
             <div class="tile-grid">
-              <button class="tile" data-go="game">
+              <button class="tile" data-go="games">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
-                <strong>Game of Joints</strong>
+                <strong>Games of Joints</strong>
               </button>
               <button class="tile" data-go="guides">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>
@@ -3598,15 +3751,78 @@
             <div id="check-list" class="check-list"></div>
           </div>
 
-          <!-- Game of Joints -->
-          <div class="view" data-view="game">
+          <!-- Games of Joints: vælg et spil -->
+          <div class="view" data-view="games">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
+            <h1 class="page-title">Games of Joints</h1>
+            <div class="game-list">
+              <button class="game-item" data-go="game">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
+                <span><strong>Game of Joints 1</strong><small data-i18n="game.tagline">Brætspillet for dig og vennerne</small></span>
+                <span class="chevron">›</span>
+              </button>
+              <button class="game-item" data-go="dice">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="12" cy="12" r="1.2"/></svg></span>
+                <span><strong data-i18n="dice.title">Terningespillet</strong><small data-i18n="dice.tagline">Slå med terningen. Øjnene er antal sug</small></span>
+                <span class="chevron">›</span>
+              </button>
+              <button class="game-item" data-go="spin">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l5-6"/><path d="M12 7V3M12 21v-4M3 12h4M17 12h4"/></svg></span>
+                <span><strong>Spin the Joint</strong><small data-i18n="spin.tagline">Jointen snurrer og vælger, hvem der skal udfordres</small></span>
+                <span class="chevron">›</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Terningespillet -->
+          <div class="view" data-view="dice">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <div class="dice-game">
+              <h1 class="page-title" data-i18n="dice.title">Terningespillet</h1>
+              <p class="muted" data-i18n="dice.help">Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.</p>
+              <div class="die big-die" id="dice-die" role="img"></div>
+              <p class="dice-result" id="dice-result" aria-live="polite"></p>
+              <button type="button" class="btn-primary" id="dice-roll" data-i18n="game.roll">Slå med terningen</button>
+              <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
+            </div>
+          </div>
+
+          <!-- Spin the Joint -->
+          <div class="view" data-view="spin">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <h1 class="page-title">Spin the Joint</h1>
+            <p class="muted" data-i18n="spin.help">Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.</p>
+            <form id="spin-form" class="player-add" novalidate>
+              <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+              <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+            </form>
+            <div class="spin-wheel" id="spin-wheel">
+              <svg class="spin-joint" id="spin-joint" viewBox="0 0 40 160" aria-hidden="true">
+                <defs>
+                  <radialGradient id="ember"><stop offset="0" stop-color="#ffd166"/><stop offset="0.5" stop-color="#ff7a3d"/><stop offset="1" stop-color="#ff7a3d" stop-opacity="0"/></radialGradient>
+                </defs>
+                <circle cx="20" cy="24" r="16" fill="url(#ember)"/>
+                <path d="M9 28 L31 28 L25 148 L15 148 Z" fill="#f4efe2"/>
+                <path d="M9 28 L31 28 L30.4 40 L9.6 40 Z" fill="#cfc6b0"/>
+                <rect x="15" y="128" width="10" height="20" rx="2" fill="#c9a26b"/>
+                <circle cx="20" cy="26" r="5" fill="#ff5c2b"/>
+              </svg>
+              <p class="spin-empty" id="spin-empty" data-i18n="spin.empty">Tilføj spillere for at starte</p>
+            </div>
+            <div class="spin-card hidden" id="spin-card" aria-live="polite"></div>
+            <button type="button" class="btn-primary" id="spin-btn" data-i18n="spin.spin">Snur jointen</button>
+            <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
+          </div>
+
+          <!-- Game of Joints 1 -->
+          <div class="view" data-view="game">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
 
             <!-- Vælg spillere og farver -->
             <div id="game-setup">
               <div class="game-hero">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
-                <h1>Game of Joints</h1>
+                <h1>Game of Joints 1</h1>
                 <p class="muted" data-i18n="game.tagline">Brætspillet for dig og vennerne</p>
               </div>
               <h2 class="section-title" data-i18n="game.players">Spillere</h2>
@@ -4240,6 +4456,17 @@
         "ai.times1": "1 gang",
         "ai.timesN": "{n} gange",
         "game.tagline": "Brætspillet for dig og vennerne",
+        "back.games": "‹ Games of Joints",
+        "dice.title": "Terningespillet",
+        "dice.tagline": "Slå med terningen. Øjnene er antal sug",
+        "dice.help": "Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.",
+        "dice.result1": "1 sug 🌿",
+        "dice.resultN": "{n} sug 🌿",
+        "spin.tagline": "Jointen snurrer og vælger, hvem der skal udfordres",
+        "spin.help": "Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.",
+        "spin.empty": "Tilføj spillere for at starte",
+        "spin.spin": "Snur jointen",
+        "spin.cards": "Tag 1 sug|Tag 2 sug|Tag 3 sug|Alle tager et sug 🌿|Giv {other} 2 sug|Du og {other} tager et sug på samme tid|Tag et sug og hold det inde i 10 sekunder|Pas! Du slipper denne gang 😎|Fortæl om din sjoveste skæve oplevelse, eller tag 2 sug|Lav din bedste røgring. Lykkes det, giver du 2 sug væk|Tag et sug og fortæl en joke. Griner ingen, tager du et sug til|Find på en regel, der gælder resten af spillet|Spis en snack, før du tager 1 sug 🍕|{other} bestemmer, hvor mange sug du tager (1-3)|Tag et sug med lukkede øjne, og gæt hvem der sidder til venstre for dig|Skildpadde: tag et langt sug på mindst 5 sekunder 🐢",
         "game.players": "Spillere",
         "game.addPh": "Navn på spiller",
         "game.add": "Tilføj",
@@ -4607,6 +4834,17 @@
         "ai.times1": "1 time",
         "ai.timesN": "{n} times",
         "game.tagline": "The board game for you and your friends",
+        "back.games": "‹ Games of Joints",
+        "dice.title": "The Dice Game",
+        "dice.tagline": "Roll the die. The dots are the number of hits",
+        "dice.help": "Roll the die. The number it lands on is the number of hits you take. Then pass it to the next person.",
+        "dice.result1": "1 hit 🌿",
+        "dice.resultN": "{n} hits 🌿",
+        "spin.tagline": "The joint spins and picks who gets the challenge",
+        "spin.help": "Add at least 2 players and spin the joint. Whoever it points at has to do the card. Tap a name to remove that player.",
+        "spin.empty": "Add players to start",
+        "spin.spin": "Spin the joint",
+        "spin.cards": "Take 1 hit|Take 2 hits|Take 3 hits|Everyone takes a hit 🌿|Give {other} 2 hits|You and {other} take a hit at the same time|Take a hit and hold it for 10 seconds|Pass! You're off the hook this time 😎|Tell your funniest stoned story, or take 2 hits|Blow your best smoke ring. If it works, give away 2 hits|Take a hit and tell a joke. If nobody laughs, take another|Make up a rule that lasts the rest of the game|Eat a snack before you take 1 hit 🍕|{other} decides how many hits you take (1-3)|Take a hit with your eyes closed and guess who's on your left|Turtle: take a long hit of at least 5 seconds 🐢",
         "game.players": "Players",
         "game.addPh": "Player name",
         "game.add": "Add",
@@ -7053,6 +7291,108 @@
     }
 
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    // ==========================================================
+    // TERNINGESPILLET: slå med terningen, antal øjne = antal sug
+    // ==========================================================
+    const diceEl = document.getElementById("dice-die");
+    const diceBtn = document.getElementById("dice-roll");
+    const diceResult = document.getElementById("dice-result");
+    showDie(diceEl, 6);
+
+    diceBtn.addEventListener("click", async () => {
+      diceBtn.disabled = true;
+      diceResult.textContent = "";
+      const value = await rollDie(diceEl);
+      diceResult.textContent = t(value === 1 ? "dice.result1" : "dice.resultN", { n: value });
+      diceBtn.disabled = false;
+    });
+
+    // ==========================================================
+    // SPIN THE JOINT: jointen snurrer og peger på en spiller,
+    // som trækker et kort med en udfordring
+    // ==========================================================
+    const spinPlayers = [];
+    const spinForm = document.getElementById("spin-form");
+    const spinCircle = document.getElementById("spin-wheel");
+    const spinJoint = document.getElementById("spin-joint");
+    const spinBtn = document.getElementById("spin-btn");
+    const spinCard = document.getElementById("spin-card");
+    let spinAngle = 0;
+    let lastCard = -1;
+
+    function renderSpin() {
+      const n = spinPlayers.length;
+      spinCircle.querySelectorAll(".spin-name").forEach((el) => el.remove());
+      spinPlayers.forEach((name, i) => {
+        const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+        const el = document.createElement("button");
+        el.type = "button";
+        el.className = "spin-name";
+        el.dataset.index = i;
+        el.style.left = `${50 + 41 * Math.cos(angle)}%`;
+        el.style.top = `${50 + 41 * Math.sin(angle)}%`;
+        el.textContent = name;
+        el.title = t("game.remove");
+        spinCircle.appendChild(el);
+      });
+      document.getElementById("spin-empty").classList.toggle("hidden", n > 0);
+      spinBtn.disabled = n < 2;
+    }
+
+    spinForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = spinForm.elements.player;
+      const name = input.value.trim();
+      if (!name || spinPlayers.length >= 10) return;
+      spinPlayers.push(name);
+      input.value = "";
+      spinCard.classList.add("hidden");
+      renderSpin();
+    });
+
+    // Tryk på et navn for at fjerne spilleren
+    spinCircle.addEventListener("click", (e) => {
+      const el = e.target.closest(".spin-name");
+      if (!el || spinBtn.dataset.spinning) return;
+      spinPlayers.splice(Number(el.dataset.index), 1);
+      spinCard.classList.add("hidden");
+      renderSpin();
+    });
+
+    spinBtn.addEventListener("click", () => {
+      const n = spinPlayers.length;
+      if (n < 2 || spinBtn.dataset.spinning) return;
+      spinBtn.dataset.spinning = "1";
+      spinBtn.disabled = true;
+      spinCard.classList.add("hidden");
+      spinCircle.querySelectorAll(".spin-name").forEach((el) => el.classList.remove("chosen"));
+
+      const winner = Math.floor(Math.random() * n);
+      // Jointens spids peger opad ved 0 grader, ligesom første spiller
+      const target = (winner / n) * 360;
+      const current = ((spinAngle % 360) + 360) % 360;
+      spinAngle += (4 + Math.floor(Math.random() * 3)) * 360 + ((target - current + 360) % 360);
+      spinJoint.style.transform = `rotate(${spinAngle}deg)`;
+
+      setTimeout(() => {
+        const cards = t("spin.cards").split("|");
+        let card;
+        do card = Math.floor(Math.random() * cards.length); while (card === lastCard && cards.length > 1);
+        lastCard = card;
+        const others = spinPlayers.filter((_, i) => i !== winner);
+        const other = others[Math.floor(Math.random() * others.length)];
+        spinCircle.querySelector(`.spin-name[data-index="${winner}"]`).classList.add("chosen");
+        spinCard.innerHTML = `
+          <small>${esc(spinPlayers[winner])}</small>
+          <p>${esc(cards[card].replace("{other}", other))}</p>`;
+        spinCard.classList.remove("hidden");
+        delete spinBtn.dataset.spinning;
+        spinBtn.disabled = false;
+      }, 3200);
+    });
+
+    renderSpin();
+
 
     // Flyt brikken ét felt ad gangen
     async function moveBy(player, steps) {
