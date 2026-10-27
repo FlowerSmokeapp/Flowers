@@ -843,6 +843,18 @@
       line-height: 1.35;
     }
 
+    .nearest-spot {
+      font: inherit;
+      font-size: 14px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+    .nearest-spot small {
+      flex: none;
+      color: var(--muted);
+    }
+
     .place-hint button {
       border: none;
       background: none;
@@ -3709,6 +3721,7 @@
                 <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
               </button>
             </div>
+            <button type="button" id="nearest-spot" class="place-hint nearest-spot glass hidden"></button>
             <div id="map-empty" class="place-hint glass hidden">
               <span data-i18n="map.empty">Ingen smoke spots endnu. Sæt det første på kortet!</span>
             </div>
@@ -4318,6 +4331,7 @@
         "hb.map": "Smoke spots",
         "back.handbook": "‹ Håndbog",
         "back.map": "‹ Kort",
+        "map.nearest": "Nærmeste",
         "nav.hub": "Smoke Hub",
         "hub.posts": "Opslag",
         "back.hub": "‹ Smoke Hub",
@@ -4684,6 +4698,7 @@
         "hb.map": "Smoke spots",
         "back.handbook": "‹ Handbook",
         "back.map": "‹ Map",
+        "map.nearest": "Nearest",
         "nav.hub": "Smoke Hub",
         "hub.posts": "Posts",
         "back.hub": "‹ Smoke Hub",
@@ -5229,7 +5244,6 @@
       benchesRef.onSnapshot(
         (snapshot) => {
           benches = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-          benchesLoaded = true;
           renderMarkers();
           frameMap();
           document.getElementById("map-empty").classList.toggle("hidden", benches.length > 0 || placing);
@@ -5271,6 +5285,8 @@
     const mapView = document.getElementById("map-view");
     const addBenchBtn = document.getElementById("add-bench-btn");
     const placeHint = document.getElementById("place-hint");
+    const nearestBtn = document.getElementById("nearest-spot");
+    let nearestSpot = null;
     let map = null;
     let markerLayer = null;
     let placing = false;
@@ -5303,6 +5319,9 @@
         }).addTo(map);
 
         markerLayer = L.layerGroup().addTo(map);
+        // Spots kan være hentet, før kortet blev lavet (fx lige efter login)
+        renderMarkers();
+        frameMap();
         watchMyLocation();
         map.on("click", onMapClick);
         connectBenches();
@@ -5331,6 +5350,7 @@
 
     function startPlacing() {
       placing = true;
+      nearestBtn.classList.add("hidden");
       document.getElementById("map-empty").classList.add("hidden");
       mapView.classList.add("placing");
       placeHint.classList.remove("hidden");
@@ -5342,6 +5362,7 @@
       mapView.classList.remove("placing");
       placeHint.classList.add("hidden");
       addBenchBtn.classList.remove("hidden");
+      renderNearest();
       document.getElementById("map-empty").classList.toggle("hidden", !benchesRef || benches.length > 0);
     }
 
@@ -5385,27 +5406,41 @@
     // så man altid kan se mindst ét spot. Uden placering vises alle spots.
     let framedOnMe = false;
     let framedOnSpots = false;
-    let benchesLoaded = false;
 
     function frameMap() {
-      if (!map || framedOnMe) return;
-      const spots = benches.map((b) => L.latLng(b.lat, b.lng));
-      if (myLatLng) {
-        if (!spots.length) {
-          map.setView(myLatLng, 15);
-          // Er spots ikke hentet endnu, rammer vi ind igen, når de kommer
-          framedOnMe = benchesLoaded;
-          return;
-        }
+      if (!map) return;
+      if (myLatLng && !framedOnMe) {
+        // Start tæt på mig
         framedOnMe = true;
-        const me = L.latLng(myLatLng);
-        const nearest = spots.reduce((a, b) => (me.distanceTo(a) <= me.distanceTo(b) ? a : b));
-        map.fitBounds(L.latLngBounds([me, nearest]), { padding: [70, 70], maxZoom: 16 });
-      } else if (spots.length && !framedOnSpots) {
+        map.setView(myLatLng, 16);
+      } else if (!myLatLng && benches.length && !framedOnSpots) {
         framedOnSpots = true;
-        map.fitBounds(L.latLngBounds(spots), { padding: [70, 70], maxZoom: 14 });
+        map.fitBounds(L.latLngBounds(benches.map((b) => [b.lat, b.lng])), { padding: [70, 70], maxZoom: 15 });
       }
+      renderNearest();
     }
+
+    // Lille knap med det nærmeste smoke spot, så man altid kan finde et
+
+    function renderNearest() {
+      nearestSpot = null;
+      if (myLatLng && benches.length && window.L) {
+        const me = L.latLng(myLatLng);
+        nearestSpot = benches
+          .map((b) => ({ bench: b, km: me.distanceTo([b.lat, b.lng]) / 1000 }))
+          .sort((a, b) => a.km - b.km)[0];
+      }
+      nearestBtn.classList.toggle("hidden", !nearestSpot || placing);
+      if (!nearestSpot) return;
+      const km = nearestSpot.km < 1
+        ? `${Math.round(nearestSpot.km * 1000)} m`
+        : `${nearestSpot.km.toLocaleString(t("locale"), { maximumFractionDigits: 1 })} km`;
+      nearestBtn.innerHTML = `<span>📍 ${t("map.nearest")}: <strong>${esc(nearestSpot.bench.name || "")}</strong></span><small>${km}</small>`;
+    }
+
+    nearestBtn.addEventListener("click", () => {
+      if (nearestSpot) map.flyTo([nearestSpot.bench.lat, nearestSpot.bench.lng], 17);
+    });
 
     // Følg min placering, mens kortet er åbent første gang
     function watchMyLocation() {
