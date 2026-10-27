@@ -4070,6 +4070,15 @@
       color: var(--muted);
       font-weight: 700;
     }
+
+    .usage-rank {
+      display: block;
+      min-height: 18px;
+      margin-top: 6px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -4187,6 +4196,18 @@
             <span data-i18n="profile.bio">Bio</span>
             <textarea name="bio" maxlength="160" data-i18n-ph="profile.bioPh" placeholder="Fortæl lidt om dig selv…"></textarea>
             <small class="counter" id="onb-counter">0/160</small>
+          </label>
+          <label class="field" id="onb-usage">
+            <span data-i18n="onb.usage">Hvor meget ryger du?</span>
+            <select name="usage">
+              <option value="" data-i18n="ai.choose">Vælg</option>
+              <option value="rare" data-i18n="usage.rare">Sjældent (et par gange om måneden)</option>
+              <option value="weekly" data-i18n="usage.weekly">1-2 gange om ugen</option>
+              <option value="often" data-i18n="usage.often">3-5 gange om ugen</option>
+              <option value="daily" data-i18n="usage.daily">Hver dag</option>
+              <option value="heavy" data-i18n="usage.heavy">Flere gange om dagen</option>
+            </select>
+            <small class="usage-rank" data-usage-rank></small>
           </label>
           <p class="error" aria-live="polite"></p>
           <button type="submit" class="btn-primary" data-i18n="onb.save">Gem og fortsæt</button>
@@ -4807,6 +4828,18 @@
         <textarea name="bio" maxlength="160" data-i18n-ph="profile.bioPh" placeholder="Fortæl lidt om dig selv…"></textarea>
         <small class="counter" id="bio-counter">0/160</small>
       </label>
+      <label class="field" id="edit-usage">
+        <span data-i18n="onb.usage">Hvor meget ryger du?</span>
+        <select name="usage">
+          <option value="" data-i18n="ai.choose">Vælg</option>
+          <option value="rare" data-i18n="usage.rare">Sjældent (et par gange om måneden)</option>
+          <option value="weekly" data-i18n="usage.weekly">1-2 gange om ugen</option>
+          <option value="often" data-i18n="usage.often">3-5 gange om ugen</option>
+          <option value="daily" data-i18n="usage.daily">Hver dag</option>
+          <option value="heavy" data-i18n="usage.heavy">Flere gange om dagen</option>
+        </select>
+        <small class="usage-rank" data-usage-rank></small>
+      </label>
       <p class="error" aria-live="polite"></p>
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="profile-cancel" data-i18n="common.cancel">Annuller</button>
@@ -5313,6 +5346,14 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
+        "onb.usage": "Hvor meget ryger du?",
+        "onb.errUsage": "Vælg hvor meget du ryger",
+        "onb.startRank": "Du starter som {rank}",
+        "usage.rare": "Sjældent (et par gange om måneden)",
+        "usage.weekly": "1-2 gange om ugen",
+        "usage.often": "3-5 gange om ugen",
+        "usage.daily": "Hver dag",
+        "usage.heavy": "Flere gange om dagen",
         "settings.title": "Indstillinger",
         "settings.theme": "Tema",
         "settings.dark": "🌙 Mørk",
@@ -5762,6 +5803,14 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Edit profile",
         "profile.language": "Language",
+        "onb.usage": "How much do you smoke?",
+        "onb.errUsage": "Choose how much you smoke",
+        "onb.startRank": "You start as {rank}",
+        "usage.rare": "Rarely (a few times a month)",
+        "usage.weekly": "1-2 times a week",
+        "usage.often": "3-5 times a week",
+        "usage.daily": "Every day",
+        "usage.heavy": "Several times a day",
         "settings.title": "Settings",
         "settings.theme": "Theme",
         "settings.dark": "🌙 Dark",
@@ -6146,6 +6195,8 @@
             myProfile = doc.exists ? { id: doc.id, ...doc.data() } : null;
             renderProfile();
             checkOnboarding();
+            // Start-XP kan være ændret, så regn rank igen (når registreringerne er hentet)
+            if (myProfile && logsLoaded) syncXp();
           },
           (error) => console.error(error)
         );
@@ -6791,6 +6842,10 @@
       clearErrors(profileForm);
       pendingAvatar = myProfile.avatar || null;
       profileForm.elements.bio.value = myProfile.bio || "";
+      // Hvor meget man ryger kan kun vælges én gang (ellers kunne man nulstille sit XP-fald)
+      document.getElementById("edit-usage").classList.toggle("hidden", !!myProfile.usage);
+      profileForm.elements.usage.value = "";
+      profileForm.querySelector("[data-usage-rank]").textContent = "";
       avatarInput.value = "";
       updateAvatarPreview();
       updateBioCounter();
@@ -6824,10 +6879,10 @@
       clearErrors(profileForm);
       setBusy(profileForm, true);
       try {
-        await db.collection("profiles").doc(currentUserKey()).set(
-          { avatar: pendingAvatar, bio: profileForm.elements.bio.value.trim() },
-          { merge: true }
-        );
+        const update = { avatar: pendingAvatar, bio: profileForm.elements.bio.value.trim() };
+        const usage = profileForm.elements.usage.value;
+        if (usage && !myProfile.usage) Object.assign(update, { usage, baseXp: USAGE_XP[usage], baseAt: Date.now() });
+        await db.collection("profiles").doc(currentUserKey()).set(update, { merge: true });
         closeSheet();
         showToast(t("profile.saved"));
       } catch (error) {
@@ -9523,6 +9578,7 @@
     const statsEl = document.getElementById("stats-content");
     const aiResult = document.getElementById("ai-result");
     let logEntries = [];
+    let logsLoaded = false;   // er registreringerne hentet fra databasen?
     let aiProfile = {};
     let logUnsubs = [];
     let logTimes = 1;
@@ -9566,6 +9622,7 @@
       logUnsubs = [
         logsDoc().collection("entries").orderBy("date", "desc").onSnapshot((snap) => {
           logEntries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          logsLoaded = true;
           syncXp();
           renderStats();
           renderTBreak();
@@ -9583,6 +9640,7 @@
       logUnsubs.forEach((unsub) => unsub());
       logUnsubs = [];
       logEntries = [];
+      logsLoaded = false;
       aiProfile = {};
       myXp = 0;
     }
@@ -10001,22 +10059,43 @@
       { name: "Snoop Dogg Smoker", icon: "🐶", xp: 4000 },
     ];
 
+    // Start-XP, når man opretter sin profil, så man ikke starter fra bunden
+    const USAGE_XP = { rare: 0, weekly: 150, often: 400, daily: 1000, heavy: 1700 };
+
+    function usageRankText(usage) {
+      if (!(usage in USAGE_XP)) return "";
+      const rank = RANKS[rankIndex(USAGE_XP[usage])];
+      return t("onb.startRank", { rank: `${rank.icon} ${rank.name}` });
+    }
+
+    document.querySelectorAll('select[name="usage"]').forEach((select) => {
+      select.addEventListener("change", () => {
+        select.closest(".field").querySelector("[data-usage-rank]").textContent = usageRankText(select.value);
+        clearErrors(select.closest("form"));
+      });
+    });
+
     function entryXp(entry) {
       return 10 + 5 * (Number(entry.times) || 1) + Math.round(10 * Math.min(5, Number(entry.grams) || 0));
     }
 
-    // Gå dag for dag fra første registrering til i dag
+    // Gå dag for dag fra første registrering (eller start-XP) til i dag
     function computeXp(entries) {
-      if (!entries.length) return 0;
+      const base = (myProfile && myProfile.baseXp) || 0;
+      const baseDay = base ? dayStart(myProfile.baseAt || Date.now()) : null;
+      if (!entries.length && !base) return 0;
       const perDay = new Map();
       entries.forEach((e) => {
         const day = dayStart(entryTime(e));
         perDay.set(day, (perDay.get(day) || 0) + entryXp(e));
       });
       const today = dayStart(Date.now());
+      const firstDay = Math.min(...perDay.keys(), ...(base ? [baseDay] : []));
       let xp = 0;
-      for (let day = Math.min(...perDay.keys()); day <= today; day = dayStart(day + DAY + 2 * HOUR)) {
+      for (let day = firstDay; day <= today; day = dayStart(day + DAY + 2 * HOUR)) {
         xp = Math.max(0, xp + (perDay.get(day) || 0) - XP_DECAY);
+        // Start-XP lægges til efter dagens fald, så man starter på den fulde rank
+        if (day === baseDay) xp += base;
       }
       return xp;
     }
@@ -10376,10 +10455,19 @@
       e.preventDefault();
       clearErrors(onbForm);
       const bio = onbForm.elements.bio.value.trim();
+      const usage = onbForm.elements.usage.value;
       if (!onbAvatar && !bio) return setError(onbForm, t("onb.errEmpty"));
+      if (!usage) return setError(onbForm, t("onb.errUsage"));
       setBusy(onbForm, true);
       try {
-        await db.collection("profiles").doc(currentUserKey()).set({ avatar: onbAvatar, bio, onboarded: true }, { merge: true });
+        await db.collection("profiles").doc(currentUserKey()).set({
+          avatar: onbAvatar,
+          bio,
+          onboarded: true,
+          usage,
+          baseXp: USAGE_XP[usage],
+          baseAt: Date.now(),
+        }, { merge: true });
         onbAvatar = null;
         onbForm.reset();
         showToast(t("onb.welcome", { name: myProfile ? myProfile.name : "" }));
