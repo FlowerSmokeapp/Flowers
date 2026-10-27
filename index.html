@@ -5614,6 +5614,18 @@
             <div id="pfriends-list" class="people"></div>
           </div>
 
+          <!-- Det, en person har lagt op -->
+          <div class="view" data-fview="puploads">
+            <button class="back" id="puploads-back"></button>
+            <h1 class="page-title" id="puploads-title"></h1>
+            <div class="seg">
+              <button type="button" class="seg-btn active" data-up-tab="posts">Opslag</button>
+              <button type="button" class="seg-btn" data-up-tab="rolls">Rolls</button>
+              <button type="button" class="seg-btn" data-up-tab="munchies">Munchies</button>
+            </div>
+            <div id="puploads-list" class="feed"></div>
+          </div>
+
           <!-- Mine chats -->
           <div class="view" data-fview="chats">
             <button class="back" id="chats-back" data-i18n="back.friends">‹ Venner</button>
@@ -6495,6 +6507,12 @@
         "del.wrongPassword": "Forkert adgangskode. Kontoen blev ikke slettet",
         "del.failed": "Kunne ikke slette kontoen. Prøv igen",
         "chat.title": "Chat",
+        "up.title": "Opslag",
+        "up.of": "{name}s opslag",
+        "up.posts": "Opslag",
+        "up.rolls": "Rolls",
+        "up.munchies": "Munchies",
+        "up.none": "{name} har ikke lagt noget op her endnu.",
         "chat.write": "Skriv",
         "chat.you": "Dig:",
         "chat.empty": "Ingen samtaler endnu.",
@@ -7114,6 +7132,12 @@
         "del.wrongPassword": "Wrong password. The account was not deleted",
         "del.failed": "Couldn't delete the account. Try again",
         "chat.title": "Chat",
+        "up.title": "Posts",
+        "up.of": "{name}'s posts",
+        "up.posts": "Posts",
+        "up.rolls": "Rolls",
+        "up.munchies": "Munchies",
+        "up.none": "{name} hasn't posted anything here yet.",
         "chat.write": "Message",
         "chat.you": "You:",
         "chat.empty": "No conversations yet.",
@@ -8575,7 +8599,92 @@
       }
       renderPerson();
       loadPersonFriends(uid);
+      loadPersonUploads(uid);
     }
+
+    // ---------- Alt det, en person har lagt op ----------
+    let personUploads = null;
+    let uploadTab = "posts";
+
+    async function loadPersonUploads(uid) {
+      personUploads = null;
+      const get = (name) => db.collection(name).where("author", "==", uid).get()
+        .then((snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.createdAt - a.createdAt))
+        .catch((error) => {
+          console.error(error);
+          return [];
+        });
+      const [p, r, m] = await Promise.all([get("posts"), get("rolls"), get("munchies")]);
+      if (currentPersonId !== uid) return;
+      personUploads = { posts: p, rolls: r, munchies: m };
+      renderPerson();
+      renderPersonUploads();
+    }
+
+    function renderPersonUploads() {
+      const p = profileCache.get(currentPersonId);
+      if (!p) return;
+      document.getElementById("puploads-back").textContent = `‹ ${p.name}`;
+      document.getElementById("puploads-title").textContent = t("up.of", { name: p.name });
+      document.querySelectorAll("[data-up-tab]").forEach((b) => {
+        const n = personUploads ? personUploads[b.dataset.upTab].length : 0;
+        b.classList.toggle("active", b.dataset.upTab === uploadTab);
+        b.textContent = `${t("up." + b.dataset.upTab)} (${n})`;
+      });
+      const box = document.getElementById("puploads-list");
+      if (!personUploads) {
+        box.innerHTML = `<p class="empty-note">${t("lb.loading")}</p>`;
+        return;
+      }
+      const list = personUploads[uploadTab];
+      if (!list.length) {
+        box.innerHTML = `<p class="empty-note">${t("up.none", { name: esc(p.name) })}</p>`;
+        return;
+      }
+      if (uploadTab === "posts") {
+        box.className = "feed";
+        box.innerHTML = list.map((post) => postHTML(post)).join("");
+        return;
+      }
+      box.className = "roll-grid";
+      box.innerHTML = list.map((x) => {
+        const label = uploadTab === "rolls"
+          ? (averageRating(x) ? `★ ${averageRating(x).toFixed(1)}` : t("roll.new"))
+          : `♥ ${(x.likes || []).length}`;
+        return `
+          <button type="button" class="roll-tile" data-up-open="${esc(x.id)}">
+            <img src="${esc(x.photo)}" alt="">
+            <span class="roll-score">${label}</span>
+          </button>`;
+      }).join("");
+    }
+
+    document.querySelectorAll("[data-up-tab]").forEach((b) => b.addEventListener("click", () => {
+      uploadTab = b.dataset.upTab;
+      renderPersonUploads();
+    }));
+
+    document.getElementById("puploads-back").addEventListener("click", () => showFriendsView("person"));
+
+    document.getElementById("puploads-list").addEventListener("click", (e) => {
+      const tile = e.target.closest("[data-up-open]");
+      if (tile) {
+        const id = tile.dataset.upOpen;
+        // Åbn rollen/munchies i Smoke Hub, hvis den er hentet dér, ellers vis billedet stort
+        if (uploadTab === "rolls" && rolls.some((r) => r.id === id)) {
+          openView("hub", "rolls");
+          openRollId = id;
+          return goView("roll");
+        }
+        if (uploadTab === "munchies" && munchies.some((m) => m.id === id)) {
+          openView("hub", "munchies");
+          openMunchId = id;
+          return goView("munchie");
+        }
+        return openLightbox(tile.querySelector("img").src);
+      }
+      if (uploadTab === "posts") handlePostClick(e);
+    });
 
     // Hent hvem personen er venner med
     async function loadPersonFriends(uid) {
@@ -8621,7 +8730,6 @@
       const p = profileCache.get(currentPersonId);
       if (!p) return;
       const relation = relationTo(p.id);
-      const benchCount = benches.filter((b) => b.addedBy === p.id).length;
 
       let actions;
       if (relation === "friend") {
@@ -8661,7 +8769,10 @@
           ${topStrainsHTML(p)}
           ${p.badges && Object.keys(p.badges).length ? `<div class="badge-row person-badges">${BADGES.filter((b) => p.badges[b.id]).map((b) => `<span title="${esc(badgeText(b)[0])}">${b.icon}</span>`).join("")}</div>` : ""}
           <div class="stats">
-            <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
+            <button type="button" class="stat-btn" data-action="uploads">
+              <strong>${personUploads ? personUploads.posts.length + personUploads.rolls.length + personUploads.munchies.length : "…"}</strong>
+              <span>${t("up.title")} ›</span>
+            </button>
             <button type="button" class="stat-btn" data-action="friends" ${Array.isArray(personFriends) ? "" : "disabled"}>
               <strong>${Array.isArray(personFriends) ? personFriends.length : personFriends === false ? "–" : "…"}</strong>
               <span>${t("profile.friends")} ${Array.isArray(personFriends) ? "›" : ""}</span>
@@ -8677,6 +8788,10 @@
         cancel: cancelRequest,
         remove: removeFriend,
         cheer: sendCheer,
+        uploads: () => {
+          renderPersonUploads();
+          showFriendsView("puploads");
+        },
         chat: openChat,
         friends: () => {
           renderPersonFriends();
