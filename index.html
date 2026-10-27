@@ -4064,6 +4064,12 @@
     .cell.is-swap {
       background: rgba(77, 195, 255, 0.14);
     }
+
+    .lb-place {
+      width: 18px;
+      color: var(--muted);
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -4825,7 +4831,7 @@
           <div class="die" id="die" role="img"></div>
           <div class="roll-actions">
             <button type="button" class="btn-primary" id="roll-btn"></button>
-            <button type="button" class="link-btn" data-game-end data-i18n="game.end">Afslut</button>
+            <button type="button" class="link-btn" id="game-finish" data-i18n="game.end">Afslut</button>
           </div>
         </div>
         <!-- Straffen, når man er landet -->
@@ -5121,6 +5127,8 @@
         "game.won": "{name} vandt!",
         "game.wonText": "Første spiller i mål. Godt spillet!",
         "game.playAgain": "Spil igen",
+        "game.keepPlaying": "Spil videre",
+        "game.standings": "Stillingen lige nu",
         "game.swapped": "Du byttede plads med {name}!",
         "game.swapNone": "Du fører allerede, så du bliver stående.",
         "game.deathOk": "✅ Klarede den",
@@ -5147,12 +5155,12 @@
         "game.go": "Kør! 🔥",
         "game.timerDone": "Tiden er gået!",
         "game.round": "Runde {n} af {total}",
-        "game.hits": "🌿 {n} sug",
-        "game.hitsN": "{n} sug",
+        "game.hits": "⭐ {n} point",
+        "game.hitsN": "{n} point",
         "game.knocked": "Du ramte {names}! De ryger {n} felter tilbage.",
         "game.six": "Du slog 6, så du må slå igen bagefter!",
         "game.boostBtn": "⚡ Ryk 3 felter frem",
-        "game.leaderboard": "Flest sug i spillet",
+        "game.leaderboard": "Leaderboard",
         "game.startTile": "START",
         "game.goalTile": "MÅL",
         "forum.newTitle": "Nyt opslag",
@@ -5568,6 +5576,8 @@
         "game.won": "{name} wins!",
         "game.wonText": "First player to the finish. Well played!",
         "game.playAgain": "Play again",
+        "game.keepPlaying": "Keep playing",
+        "game.standings": "Current standings",
         "game.swapped": "You swapped places with {name}!",
         "game.swapNone": "You're already in the lead, so you stay put.",
         "game.deathOk": "✅ Made it",
@@ -5594,12 +5604,12 @@
         "game.go": "Go! 🔥",
         "game.timerDone": "Time's up!",
         "game.round": "Round {n} of {total}",
-        "game.hits": "🌿 {n} puffs",
-        "game.hitsN": "{n} puffs",
+        "game.hits": "⭐ {n} points",
+        "game.hitsN": "{n} points",
         "game.knocked": "You hit {names}! They go back {n} spaces.",
         "game.six": "You rolled a 6, so you roll again after this!",
         "game.boostBtn": "⚡ Move 3 spaces forward",
-        "game.leaderboard": "Most puffs this game",
+        "game.leaderboard": "Leaderboard",
         "game.startTile": "START",
         "game.goalTile": "FINISH",
         "forum.newTitle": "New post",
@@ -8594,10 +8604,30 @@
         da: { name: "1 sug", short: "sug", desc: "Tag 1 normalt sug." },
         en: { name: "1 puff", short: "puff", desc: "Take 1 normal puff." },
       },
-      s2: { icon: "2", hits: 2, da: { name: "2 sug", short: "sug" }, en: { name: "2 puffs", short: "puffs" } },
-      s3: { icon: "3", hits: 3, da: { name: "3 sug", short: "sug" }, en: { name: "3 puffs", short: "puffs" } },
-      s4: { icon: "4", hits: 4, da: { name: "4 sug", short: "sug" }, en: { name: "4 puffs", short: "puffs" } },
-      s5: { icon: "5", hits: 5, da: { name: "5 sug", short: "sug" }, en: { name: "5 puffs", short: "puffs" } },
+      s2: {
+        icon: "2",
+        hits: 2,
+        da: { name: "2 sug", short: "sug", desc: "Tag 2 normale sug." },
+        en: { name: "2 puffs", short: "puffs", desc: "Take 2 normal puffs." },
+      },
+      s3: {
+        icon: "3",
+        hits: 3,
+        da: { name: "3 sug", short: "sug", desc: "Tag 3 normale sug." },
+        en: { name: "3 puffs", short: "puffs", desc: "Take 3 normal puffs." },
+      },
+      s4: {
+        icon: "4",
+        hits: 4,
+        da: { name: "4 sug", short: "sug", desc: "Tag 4 normale sug." },
+        en: { name: "4 puffs", short: "puffs", desc: "Take 4 normal puffs." },
+      },
+      s5: {
+        icon: "5",
+        hits: 5,
+        da: { name: "5 sug", short: "sug", desc: "Tag 5 normale sug." },
+        en: { name: "5 puffs", short: "puffs", desc: "Take 5 normal puffs." },
+      },
       turtle: {
         icon: "🐢",
         timer: [5],
@@ -8607,19 +8637,45 @@
       },
       tornado: {
         icon: "🌪️",
-        hits: 9,
-        da: { name: "Tornado", short: "Tornado", desc: "Tag 3×3 sug og drej rundt om dig selv 10 gange. Prøv at holde det inde!" },
-        en: { name: "Tornado", short: "Tornado", desc: "Take 3×3 puffs and spin around 10 times. Try to hold it in!" },
+        hits: 10,
+        da: { name: "Tornado", short: "Tornado", desc: "Tag 3×3 sug og drej rundt om dig selv 10 gange." },
+        en: { name: "Tornado", short: "Tornado", desc: "Take 3×3 puffs and spin around 10 times." },
       },
       x510: {
         icon: "⏱️",
         timer: [10],
-        hits: 5,
-        da: { name: "5×10 sek", short: "5×10 sek", desc: "Tag 5 sug på 10 sekunder. Start timeren, når du er klar." },
-        en: { name: "5×10 sec", short: "5×10 sec", desc: "Take 5 puffs in 10 seconds. Start the timer when you're ready." },
+        hits: 7,
+        da: { name: "5×10 sek", short: "5×10 sek", desc: "Tag 5 sug og hold det inde i 10 sekunder." },
+        en: { name: "5×10 sec", short: "5×10 sec", desc: "Take 5 puffs and hold it in for 10 seconds." },
       },
-      bobLong: { icon: "🇯🇲", hits: 1, da: { name: "Lang Bob Marley", short: "Lang Bob" }, en: { name: "Long Bob Marley", short: "Long Bob" } },
-      bobShort: { icon: "🇯🇲", hits: 1, da: { name: "Kort Bob Marley", short: "Kort Bob" }, en: { name: "Short Bob Marley", short: "Short Bob" } },
+      bobLong: {
+        icon: "🇯🇲",
+        hits: 10,
+        da: {
+          name: "Lang Bob Marley",
+          short: "Lang Bob",
+          desc: "Tag 1 sug og sig \"Bob\". Tag 2 sug og sig \"Mar\". Tag 3 sug og sig \"ley\". Tag 4 sug, sig \"Bob Marley\" og pust ud.",
+        },
+        en: {
+          name: "Long Bob Marley",
+          short: "Long Bob",
+          desc: "Take 1 puff and say \"Bob\". Take 2 puffs and say \"Mar\". Take 3 puffs and say \"ley\". Take 4 puffs, say \"Bob Marley\" and breathe out.",
+        },
+      },
+      bobShort: {
+        icon: "🇯🇲",
+        hits: 6,
+        da: {
+          name: "Kort Bob Marley",
+          short: "Kort Bob",
+          desc: "Tag 1 sug og sig \"Bob\". Tag 2 sug og sig \"Marley\". Tag 3 sug, sig \"Bob Marley\" og pust ud.",
+        },
+        en: {
+          name: "Short Bob Marley",
+          short: "Short Bob",
+          desc: "Take 1 puff and say \"Bob\". Take 2 puffs and say \"Marley\". Take 3 puffs, say \"Bob Marley\" and breathe out.",
+        },
+      },
       wheel: {
         icon: "🎡",
         type: "wheel",
@@ -8629,27 +8685,28 @@
       x3102: {
         icon: "🔥",
         timer: [10, 10],
-        hits: 6,
-        da: { name: "3×10×2", short: "3×10×2", desc: "Tag 3 sug på 10 sekunder. Det gør du 2 gange lige efter hinanden." },
-        en: { name: "3×10×2", short: "3×10×2", desc: "Take 3 puffs in 10 seconds. Do it twice in a row." },
+        noBreak: true,
+        hits: 10,
+        da: { name: "3×10×2", short: "3×10×2", desc: "Tag 3 sug og hold det inde i 10 sekunder. Tag så 3 sug mere og hold i 10 sekunder mere uden at puste ud." },
+        en: { name: "3×10×2", short: "3×10×2", desc: "Take 3 puffs and hold it in for 10 seconds. Then take 3 more puffs and hold for 10 more seconds without breathing out." },
       },
       lung: {
-        hits: 1,
         icon: "🫁",
-        da: { name: "Lunge", short: "Lunge", desc: "Bong med hånden." },
-        en: { name: "Lung", short: "Lung", desc: "Hand bong." },
+        hits: 2,
+        da: { name: "Lunge", short: "Lunge", desc: "Lav bong med hånden og tag et sug." },
+        en: { name: "Lung", short: "Lung", desc: "Make a bong with your hand and take a puff." },
       },
       diy: {
-        hits: 1,
         icon: "👑",
-        da: { name: "DIY konge", short: "DIY konge", desc: "Mellem tænderne med den." },
-        en: { name: "DIY king", short: "DIY king", desc: "Between your teeth with it." },
+        hits: 2,
+        da: { name: "DIY konge", short: "DIY konge", desc: "Tag jointen mellem tænderne, luk læberne rundt om den og tag et sug." },
+        en: { name: "DIY king", short: "DIY king", desc: "Put the joint between your teeth, close your lips around it and take a puff." },
       },
       chimney: {
-        hits: 1,
         icon: "🏭",
-        da: { name: "Skorstenen", short: "Skorsten", desc: "Tag et stort sug, og sug så røgen fra jointen bagefter." },
-        en: { name: "The chimney", short: "Chimney", desc: "Take a big puff, then inhale the smoke from the joint afterwards." },
+        hits: 2,
+        da: { name: "Skorsten", short: "Skorsten", desc: "Tag 1 sug, og sug så røgen fra jointen bagefter." },
+        en: { name: "Chimney", short: "Chimney", desc: "Take 1 puff, then inhale the smoke from the joint afterwards." },
       },
       back: {
         icon: "⏪",
@@ -8657,7 +8714,7 @@
         da: { name: "Slå tilbage", short: "Slå tilbage", desc: "Slå med den røde terning og ryk det antal felter tilbage." },
         en: { name: "Roll back", short: "Roll back", desc: "Roll the red die and move back that many spaces." },
       },
-      pass: { icon: "🤝", da: { name: "Pass til spliff", short: "Pass" }, en: { name: "Pass the spliff", short: "Pass" } },
+      pass: { icon: "🤝", da: { name: "Pass the spliff", short: "Pass" }, en: { name: "Pass the spliff", short: "Pass" } },
       boost: {
         icon: "⚡",
         type: "boost",
@@ -8677,34 +8734,34 @@
       },
       lung2: {
         icon: "🫁",
-        hits: 2,
-        da: { name: "2× Lunge", short: "2× Lunge", desc: "Bong med hånden. 2 gange." },
-        en: { name: "2× Lung", short: "2× Lung", desc: "Hand bong. Twice." },
+        hits: 4,
+        da: { name: "2× Lunge", short: "2× Lunge", desc: "Lav bong med hånden og tag 2 sug." },
+        en: { name: "2× Lung", short: "2× Lung", desc: "Make a bong with your hand and take 2 puffs." },
       },
       lung3: {
         icon: "🫁",
-        hits: 3,
-        da: { name: "3× Lunge", short: "3× Lunge", desc: "Bong med hånden. 3 gange." },
-        en: { name: "3× Lung", short: "3× Lung", desc: "Hand bong. Three times." },
+        hits: 6,
+        da: { name: "3× Lunge", short: "3× Lunge", desc: "Lav bong med hånden og tag 3 sug." },
+        en: { name: "3× Lung", short: "3× Lung", desc: "Make a bong with your hand and take 3 puffs." },
       },
       diy2: {
         icon: "👑",
-        hits: 2,
-        da: { name: "2× DIY konge", short: "2× DIY", desc: "Mellem tænderne med den. 2 gange." },
-        en: { name: "2× DIY king", short: "2× DIY", desc: "Between your teeth with it. Twice." },
+        hits: 4,
+        da: { name: "2× DIY konge", short: "2× DIY", desc: "Tag jointen mellem tænderne, luk læberne rundt om den og tag 2 sug." },
+        en: { name: "2× DIY king", short: "2× DIY", desc: "Put the joint between your teeth, close your lips around it and take 2 puffs." },
       },
       x412: {
         icon: "⏱️",
         timer: [12],
-        hits: 4,
-        da: { name: "4×12 sek", short: "4×12 sek", desc: "Tag 4 sug på 12 sekunder. Start timeren, når du er klar." },
-        en: { name: "4×12 sec", short: "4×12 sec", desc: "Take 4 puffs in 12 seconds. Start the timer when you're ready." },
+        hits: 7,
+        da: { name: "4×12 sek", short: "4×12 sek", desc: "Tag 4 sug og hold det inde i 12 sekunder." },
+        en: { name: "4×12 sec", short: "4×12 sec", desc: "Take 4 puffs and hold it in for 12 seconds." },
       },
       stinging: {
         icon: "🐝",
         timer: [3],
-        hits: 1,
-        da: { name: "Stinging Roger", short: "Stinging Roger", desc: "Tag et langt sug på 3 sekunder." },
+        hits: 3,
+        da: { name: "Stinging Roger", short: "Stinging Roger", desc: "Tag et 3 sekunders langt sug." },
         en: { name: "Stinging Roger", short: "Stinging Roger", desc: "Take a long puff for 3 seconds." },
       },
       truth: {
@@ -9091,16 +9148,17 @@
     }
 
     async function runTimers(button) {
-      const rounds = TILES[board[positions[turn]]].timer;
+      const tile = TILES[board[positions[turn]]];
+      const rounds = tile.timer;
       const token = ++timerToken;
       const roundEl = document.getElementById("timer-round");
       const ring = document.getElementById("timer-ring");
       button.disabled = true;
       for (let r = 0; r < rounds.length; r++) {
         if (rounds.length > 1) roundEl.textContent = t("game.round", { n: r + 1, total: rounds.length });
-        // 3-2-1, så man kan nå at gøre klar
+        // 3-2-1, så man kan nå at gøre klar (ikke midt i 3×10×2)
         ring.classList.add("ready");
-        for (let c = 3; c > 0; c--) {
+        for (let c = r > 0 && tile.noBreak ? 0 : 3; c > 0; c--) {
           if (token !== timerToken) return;
           setTimerRing(1, c);
           button.textContent = t("game.ready");
@@ -9375,27 +9433,41 @@
       if (action === "spin") spinWheel(button);
       if (action === "timer") runTimers(button);
       if (action === "boost") boost(button);
+      if (action === "next-same") showRollPanel();
       if (action === "death-fail") deathFail();
       if (action === "play-again") startGame();
       if (action === "end") endGame();
     });
 
-    function showWinner(player) {
-      // Hvem har taget flest sug i løbet af spillet?
+    // Stillingen: flest point øverst
+    function leaderboardHTML(winner = null) {
       const ranking = players
-        .map((p, i) => ({ p, n: hits[i] || 0 }))
+        .map((p, i) => ({ p, i, n: hits[i] || 0 }))
         .sort((a, b) => b.n - a.n)
-        .map(({ p, n }, i) => `
-          <li><span class="token" style="--c:${p.color}"></span>${esc(p.name)}<strong>${t("game.hitsN", { n })}</strong>${i === 0 && n ? " 👑" : ""}</li>`)
+        .map(({ p, i, n }, place) => `
+          <li><span class="lb-place">${place + 1}.</span><span class="token" style="--c:${p.color}"></span>${esc(p.name)}${i === winner ? " 🏆" : ""}<strong>${t("game.hitsN", { n })}</strong>${place === 0 && n ? " 👑" : ""}</li>`)
         .join("");
+      return `<p class="leader-title">${t("game.leaderboard")}</p><ol class="leaderboard">${ranking}</ol>`;
+    }
+
+    document.getElementById("game-finish").addEventListener("click", () => {
+      showTile("📊", `
+        <h2>${t("game.standings")}</h2>
+        ${leaderboardHTML()}
+        <div class="tile-buttons">
+          <button type="button" class="btn-plain" data-tile-action="next-same">${t("game.keepPlaying")}</button>
+          <button type="button" class="btn-primary" data-tile-action="end">${t("game.end")}</button>
+        </div>`, false);
+    });
+
+    function showWinner(player) {
       confetti();
       vibrate([100, 60, 100, 60, 300]);
       showTile("🏆", `
         ${whoHTML(player)}
         <h2>${t("game.won", { name: esc(players[player].name) })}</h2>
         <p class="tile-desc">${t("game.wonText")}</p>
-        <p class="leader-title">${t("game.leaderboard")}</p>
-        <ol class="leaderboard">${ranking}</ol>
+        ${leaderboardHTML(player)}
         <div class="tile-buttons">
           <button type="button" class="btn-plain" data-tile-action="end">${t("game.end")}</button>
           <button type="button" class="btn-primary" data-tile-action="play-again">${t("game.playAgain")}</button>
