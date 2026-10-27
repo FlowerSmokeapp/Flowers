@@ -3180,6 +3180,223 @@
     .pause-empty {
       text-align: center;
     }
+
+    /* ---------- Smoke Hub: opslag ---------- */
+    .post-actions {
+      display: flex;
+      gap: 6px;
+      padding: 4px 8px 10px;
+    }
+    .post-actions button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 999px;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .post-actions button:active {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .post-actions button:disabled {
+      cursor: default;
+    }
+    .post-actions .heart {
+      font-size: 18px;
+      line-height: 1;
+    }
+    .post-actions button.on {
+      color: #ff6b81;
+    }
+    .diary-photo,
+    .roll-photo {
+      cursor: zoom-in;
+    }
+    .mention {
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .mention-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: -4px 0 12px;
+    }
+    .mention-list button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px 5px 5px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card-2);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .avatar.avatar-xs {
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+    }
+    .comments {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 150px;
+    }
+    .comment {
+      display: flex;
+      gap: 10px;
+    }
+    .comment-body p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+    .comment-body strong {
+      cursor: pointer;
+    }
+    .comment-body small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .comment-form {
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: calc(96px + env(safe-area-inset-bottom));
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: rgba(20, 22, 20, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .comment-form .mention-list {
+      flex-basis: 100%;
+      margin: 0;
+    }
+    .comment-form input {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+    }
+    .comment-form .btn-primary {
+      width: auto;
+      padding: 0 16px;
+    }
+    .see-logs {
+      margin-top: 18px;
+    }
+
+    /* ---------- Rate the Roll ---------- */
+    .roll-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .roll-grid .empty-note {
+      grid-column: 1 / -1;
+    }
+    .roll-tile {
+      position: relative;
+      aspect-ratio: 1;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+      cursor: pointer;
+    }
+    .roll-tile:active {
+      transform: scale(0.97);
+    }
+    .roll-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .roll-score {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #ffd166;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .roll-photo {
+      display: block;
+      width: 100%;
+      max-height: 480px;
+      object-fit: cover;
+    }
+    .roll-rating {
+      margin-top: 14px;
+    }
+    .roll-avg {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .roll-avg > strong {
+      font-size: 40px;
+      line-height: 1;
+    }
+    .roll-avg span {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .roll-avg .stars {
+      color: #ffd166;
+      font-size: 18px;
+    }
+    .roll-avg small {
+      color: var(--muted);
+    }
+    .roll-rating h3 {
+      margin: 16px 0 8px;
+    }
+    .star-input.big button {
+      font-size: 34px;
+    }
+
+    /* ---------- Billede i fuld skærm ---------- */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.92);
+      cursor: zoom-out;
+      animation: fadeIn 0.15s ease;
+    }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body>
@@ -3305,17 +3522,6 @@
 
       <!-- ================= Appen (efter login) ================= -->
       <div id="app" class="app hidden">
-        <section class="page" data-page="forum">
-          <div class="title-row">
-            <h1 class="page-title" data-i18n="nav.forum">Forum</h1>
-            <button type="button" class="mini-btn primary" id="new-post" data-i18n="diary.new">＋ Nyt opslag</button>
-          </div>
-          <p class="private-note" data-i18n="forum.note">Opslag fra dig og dine venner</p>
-
-          <!-- Opslag fra mig og mine venner -->
-          <div id="feed" class="feed"></div>
-        </section>
-
         <section class="page" data-page="handbook" id="handbook">
           <!-- Håndbog: forside med to knapper -->
           <div class="view active" data-view="hb-menu">
@@ -3328,10 +3534,6 @@
               <button class="tile" data-go="guides">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></span>
                 <strong>Guides</strong>
-              </button>
-              <button class="tile" data-go="map">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
-                <strong data-i18n="hb.map">Smoke spots</strong>
               </button>
               <button class="tile" data-go="stats">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span>
@@ -3346,6 +3548,71 @@
                 <strong data-i18n="hb.pause">T-Break beregner</strong>
               </button>
             </div>
+          </div>
+
+          <!-- Smoke Hub: forside -->
+          <div class="view" data-view="hub-menu">
+            <h1 class="page-title" data-i18n="nav.hub">Smoke Hub</h1>
+            <div class="tile-grid">
+              <button class="tile" data-go="map">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+                <strong data-i18n="hb.map">Smoke spots</strong>
+              </button>
+              <button class="tile" data-go="rolls">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17.5L17.5 4l2.5 2.5L6.5 20z"/><path d="M15 6.5l2.5 2.5"/><path d="M19 13c1 1 1 2.5 0 3.5M21.5 11c2 2 2 5.5 0 7.5"/></svg></span>
+                <strong>Rate the Roll</strong>
+              </button>
+              <button class="tile" data-go="posts">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="3.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="M20 15.5l-4.5-4.5L6 20"/></svg></span>
+                <strong data-i18n="hub.posts">Opslag</strong>
+              </button>
+            </div>
+          </div>
+
+          <!-- Opslag fra mig og mine venner -->
+          <div class="view" data-view="posts">
+            <button class="back" data-back data-i18n="back.hub">‹ Smoke Hub</button>
+            <div class="title-row">
+              <h1 class="page-title" data-i18n="hub.posts">Opslag</h1>
+              <button type="button" class="mini-btn primary" id="new-post" data-i18n="diary.new">＋ Nyt opslag</button>
+            </div>
+            <p class="private-note" data-i18n="forum.note">Opslag fra dig og dine venner</p>
+            <div id="feed" class="feed"></div>
+          </div>
+
+          <!-- Et enkelt opslag med kommentarer -->
+          <div class="view" data-view="post">
+            <button class="back" data-back data-i18n="back.posts">‹ Opslag</button>
+            <div id="post-detail"></div>
+            <form id="comment-form" class="comment-form" novalidate>
+              <div class="mention-list hidden"></div>
+              <input type="text" name="text" maxlength="500" autocomplete="off" data-i18n-ph="post.commentPh" placeholder="Skriv en kommentar… (@ for at tagge)">
+              <button type="submit" class="btn-primary" data-i18n="post.send">Send</button>
+            </form>
+          </div>
+
+          <!-- Rate the Roll -->
+          <div class="view" data-view="rolls">
+            <button class="back" data-back data-i18n="back.hub">‹ Smoke Hub</button>
+            <div class="title-row">
+              <h1 class="page-title">Rate the Roll</h1>
+              <button type="button" class="mini-btn primary" id="new-roll" data-i18n="roll.newBtn">＋ Del din roll</button>
+            </div>
+            <p class="private-note" data-i18n="roll.note">Del et billede af din joint, og lad de andre rate den</p>
+            <div id="roll-grid" class="roll-grid"></div>
+          </div>
+
+          <!-- En enkelt roll -->
+          <div class="view" data-view="roll">
+            <button class="back" data-back data-i18n="back.rolls">‹ Rate the Roll</button>
+            <div id="roll-detail"></div>
+          </div>
+
+          <!-- Mine registreringer (åbnes fra forsiden) -->
+          <div class="view" data-view="logs">
+            <button class="back" data-home data-i18n="back.home">‹ Hjem</button>
+            <h1 class="page-title" data-i18n="home.logs">Registreringer</h1>
+            <div id="log-list" class="log-list"></div>
           </div>
 
           <!-- Guides (tom indtil videre) -->
@@ -3452,8 +3719,7 @@
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title" data-i18n="hb.stats">Statistik</h1>
             <div id="stats-content"></div>
-            <h2 class="section-title" data-i18n="ai.myLogs">Dine registreringer</h2>
-            <div id="log-list" class="log-list"></div>
+            <button type="button" class="btn-plain see-logs" data-go="logs" data-i18n="stats.seeLogs">Se alle registreringer</button>
           </div>
 
           <!-- Smoke spots-kort -->
@@ -3521,10 +3787,10 @@
 
           <h2 class="section-title" data-i18n="home.shortcuts">Genveje</h2>
           <div class="quick-grid">
-            <button type="button" class="quick" data-shortcut="map"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span data-i18n="hb.map">Smoke spots</span></button>
+            <button type="button" class="quick" data-shortcut="logs"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></span><span data-i18n="home.logs">Registreringer</span></button>
             <button type="button" class="quick" data-shortcut="pause"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg></span><span data-i18n="hb.pause">T-Break beregner</span></button>
             <button type="button" class="quick" data-shortcut="stats"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span><span data-i18n="hb.stats">Statistik</span></button>
-            <button type="button" class="quick" data-shortcut="forum"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg></span><span data-i18n="nav.forum">Forum</span></button>
+            <button type="button" class="quick" data-shortcut="map"><span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><span data-i18n="hb.map">Smoke spots</span></button>
           </div>
         </section>
 
@@ -3584,9 +3850,9 @@
 
         <!-- Menu i bunden -->
         <nav class="tabbar">
-          <button class="tabbar-item" data-page="forum">
+          <button class="tabbar-item" data-page="hub">
             <svg viewBox="0 0 24 24"><path d="M4 5h16v10H9l-5 4z"/></svg>
-            <span data-i18n="nav.forum">Forum</span>
+            <span data-i18n="nav.hub">Smoke Hub</span>
           </button>
           <button class="tabbar-item" data-page="handbook">
             <svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>
@@ -3611,6 +3877,8 @@
 
     <!-- Bundark: tilføj et nyt smoke spot -->
     <div id="sheet-backdrop" class="sheet-backdrop hidden"></div>
+    <!-- Billede i fuld skærm -->
+    <div id="lightbox" class="lightbox hidden"><img alt=""></div>
     <form id="bench-form" class="sheet hidden" novalidate>
       <h2 data-i18n="bench.new">Nyt smoke spot</h2>
       <label class="photo-pick" id="photo-pick">
@@ -3696,7 +3964,7 @@
 
     <!-- Bundark: nyt Forum-opslag -->
     <form id="diary-form" class="sheet hidden" novalidate>
-      <h2 id="entry-title">Nyt opslag</h2>
+      <h2 id="entry-title"></h2>
       <label class="photo-pick">
         <span id="diary-photo-text" data-i18n="diary.addPhoto">📷 Tilføj billede</span>
         <img id="diary-photo-preview" class="hidden" alt="">
@@ -3704,16 +3972,13 @@
       </label>
       <label class="field">
         <span data-i18n="diary.text">Tekst</span>
-        <textarea name="text" maxlength="1000" data-i18n-ph="diary.textPh" placeholder="Hvad røg du, hvor og med hvem?"></textarea>
+        <textarea name="text" maxlength="1000" data-i18n-ph="post.textPh" placeholder="Skriv noget… Tag dine venner med @"></textarea>
       </label>
-      <div class="field">
-        <span data-i18n="diary.rating">Rating</span>
-        <div class="star-input" id="diary-stars"></div>
-      </div>
+      <div class="mention-list hidden"></div>
       <p class="error" aria-live="polite"></p>
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="diary-cancel" data-i18n="common.cancel">Annuller</button>
-        <button type="submit" class="btn-primary" id="entry-submit">Del</button>
+        <button type="submit" class="btn-primary" data-i18n="forum.share">Del</button>
       </div>
     </form>
 
@@ -4098,7 +4363,6 @@
         "toast.loggedIn": "Du er logget ind",
         "toast.loggedOut": "Du er logget ud",
         "toast.soon": "Kommer snart",
-        "nav.forum": "Forum",
         "nav.handbook": "Håndbog",
         "nav.home": "Hjem",
         "nav.friends": "Venner",
@@ -4106,6 +4370,37 @@
         "hb.map": "Smoke spots",
         "back.handbook": "‹ Håndbog",
         "back.map": "‹ Kort",
+        "nav.hub": "Smoke Hub",
+        "hub.posts": "Opslag",
+        "back.hub": "‹ Smoke Hub",
+        "back.posts": "‹ Opslag",
+        "back.rolls": "‹ Rate the Roll",
+        "back.home": "‹ Hjem",
+        "home.logs": "Registreringer",
+        "stats.seeLogs": "Se alle registreringer",
+        "post.textPh": "Skriv noget… Tag dine venner med @",
+        "post.like": "Synes godt om",
+        "post.comments": "Kommentarer",
+        "post.commentPh": "Skriv en kommentar… (@ for at tagge)",
+        "post.send": "Send",
+        "post.noComments": "Ingen kommentarer endnu. Skriv den første!",
+        "post.confirmDeleteComment": "Vil du slette kommentaren?",
+        "post.gone": "Det her er blevet slettet.",
+        "roll.newBtn": "＋ Del din roll",
+        "roll.newTitle": "Del din roll",
+        "roll.note": "Del et billede af din joint, og lad de andre rate den",
+        "roll.errPhoto": "Tilføj et billede af din joint",
+        "roll.posted": "Din roll er delt 🌿",
+        "roll.empty": "Ingen rolls endnu. Del den første!",
+        "roll.new": "Ny",
+        "roll.yourRating": "Din rating",
+        "roll.rated": "Tak for din rating",
+        "roll.own": "Det er din egen roll, så det er de andre, der rater den.",
+        "roll.noRatings": "Ingen ratings endnu",
+        "roll.ratings1": "1 rating",
+        "roll.ratingsN": "{n} ratings",
+        "roll.confirmDelete": "Vil du slette din roll?",
+        "roll.deleted": "Din roll er slettet",
         "common.cancel": "Annuller",
         "map.back": "Tilbage",
         "map.locate": "Vis min placering",
@@ -4380,7 +4675,7 @@
         "forum.confirmDelete": "Delete this post?",
         "forum.deleted": "Post deleted",
         "forum.justNow": "just now",
-        "diary.new": "＋ New entry",
+        "diary.new": "＋ New post",
         "diary.addPhoto": "📷 Add a photo",
         "diary.text": "Text",
         "diary.textPh": "What did you smoke, where and with who?",
@@ -4424,7 +4719,6 @@
         "toast.loggedIn": "You're logged in",
         "toast.loggedOut": "You're logged out",
         "toast.soon": "Coming soon",
-        "nav.forum": "Forum",
         "nav.handbook": "Handbook",
         "nav.home": "Home",
         "nav.friends": "Friends",
@@ -4432,6 +4726,37 @@
         "hb.map": "Smoke spots",
         "back.handbook": "‹ Handbook",
         "back.map": "‹ Map",
+        "nav.hub": "Smoke Hub",
+        "hub.posts": "Posts",
+        "back.hub": "‹ Smoke Hub",
+        "back.posts": "‹ Posts",
+        "back.rolls": "‹ Rate the Roll",
+        "back.home": "‹ Home",
+        "home.logs": "Your logs",
+        "stats.seeLogs": "See all logs",
+        "post.textPh": "Write something… Tag your friends with @",
+        "post.like": "Like",
+        "post.comments": "Comments",
+        "post.commentPh": "Write a comment… (@ to tag)",
+        "post.send": "Send",
+        "post.noComments": "No comments yet. Be the first!",
+        "post.confirmDeleteComment": "Delete this comment?",
+        "post.gone": "This has been deleted.",
+        "roll.newBtn": "＋ Share your roll",
+        "roll.newTitle": "Share your roll",
+        "roll.note": "Share a photo of your joint and let the others rate it",
+        "roll.errPhoto": "Add a photo of your joint",
+        "roll.posted": "Your roll is live 🌿",
+        "roll.empty": "No rolls yet. Share the first one!",
+        "roll.new": "New",
+        "roll.yourRating": "Your rating",
+        "roll.rated": "Thanks for rating",
+        "roll.own": "This is your own roll, so the others rate it.",
+        "roll.noRatings": "No ratings yet",
+        "roll.ratings1": "1 rating",
+        "roll.ratingsN": "{n} ratings",
+        "roll.confirmDelete": "Delete your roll?",
+        "roll.deleted": "Your roll was deleted",
         "common.cancel": "Cancel",
         "map.back": "Back",
         "map.locate": "Show my location",
@@ -4794,6 +5119,7 @@
       connectBenches();
       listenToFriends();
       listenToPosts();
+      listenToRolls();
       listenToChecklist();
       listenToLogs();
 
@@ -4807,6 +5133,7 @@
       myProfile = null;
       stopFriends();
       stopPosts();
+      stopRolls();
       stopChecklist();
       stopLogs();
     }
@@ -4824,18 +5151,32 @@
     const pages = document.querySelectorAll(".page");
     const tabbarItems = document.querySelectorAll(".tabbar-item");
 
-    function showPage(name) {
-      const current = document.querySelector(".page.active");
-      // Tryk på Håndbog igen, når man allerede er der = tilbage til forsiden
-      if (name === "handbook" && current && current.dataset.page === "handbook") {
-        resetHandbook();
-      }
-      if (name !== "handbook") cancelPlacing();
-      if (name === "friends" && current && current.dataset.page === "friends") showFriendsList();
+    // Smoke Hub og Håndbog deler undersider; hver har sin egen forside
+    const ROOTS = { hub: "hub-menu", handbook: "hb-menu" };
+    let activeTab = "home";
 
-      pages.forEach((page) => page.classList.toggle("active", page.dataset.page === name));
+    function showPage(name) {
+      const root = ROOTS[name];
+      // Tryk på fanen igen, eller skift mellem Smoke Hub og Håndbog = forsiden
+      if (root && (activeTab === name || viewStack[0] !== root)) {
+        viewStack = [root];
+        showView(root);
+      }
+      if (!root) cancelPlacing();
+      if (name === "friends" && activeTab === "friends") showFriendsList();
+
+      const section = root ? "handbook" : name;
+      pages.forEach((page) => page.classList.toggle("active", page.dataset.page === section));
       tabbarItems.forEach((item) => item.classList.toggle("active", item.dataset.page === name));
+      activeTab = name;
       scrollToTop();
+    }
+
+    // Åbn en underside direkte, fx fra en genvej på forsiden
+    function openView(tab, view) {
+      showPage(tab);
+      viewStack = [ROOTS[tab]];
+      goView(view);
     }
 
     tabbarItems.forEach((item) => {
@@ -4861,7 +5202,13 @@
       handbookPage.classList.toggle("map-mode", name === "map");
       if (name !== "map") cancelPlacing();
       if (name === "map") openMap();
-      if (name === "pause" || name === "stats") renderPause();
+      if (name === "pause" || name === "stats" || name === "logs") renderPause();
+      if (name !== "post") {
+        stopComments();
+        openPostId = null;
+      }
+      if (name === "post") renderPostDetail();
+      if (name === "roll") renderRoll();
       scrollToTop();
     }
 
@@ -4876,8 +5223,8 @@
     }
 
     function resetHandbook() {
-      viewStack = ["hb-menu"];
-      showView("hb-menu");
+      viewStack = [viewStack[0]];
+      showView(viewStack[0]);
     }
 
     handbookPage.querySelectorAll("[data-go]").forEach((btn) => {
@@ -4886,6 +5233,13 @@
 
     handbookPage.querySelectorAll("[data-back]").forEach((btn) => {
       btn.addEventListener("click", backView);
+    });
+
+    handbookPage.querySelectorAll("[data-home]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        resetHandbook();
+        showPage("home");
+      });
     });
 
     // ==========================================================
@@ -5452,6 +5806,7 @@
           friendships = toList(snap);
           renderFriends();
           listenToPosts();
+      listenToRolls();
         }, onError),
         db.collection("friendRequests").where("to", "==", me).onSnapshot((snap) => {
           requestsIn = toList(snap);
@@ -5793,78 +6148,40 @@
         feedEl.innerHTML = `<p class="empty-note">${t("forum.empty")}</p>`;
         return;
       }
-      feedEl.innerHTML = posts.map((post) => {
-        const own = post.author === me;
-        const profile = (own ? myProfile : profileCache.get(post.author)) || { name: post.authorName || "?" };
-        return `
-          <article class="diary-entry">
-            <header class="post-head entry-head">
-              <span class="avatar avatar-sm" data-person="${esc(post.author)}">${avatarHTML(profile)}</span>
-              <span class="post-meta" data-person="${esc(post.author)}">
-                <strong>${esc(profile.name)}</strong>
-                <small>${timeAgo(post.createdAt)}</small>
-              </span>
-              ${own ? `<button type="button" class="link-btn danger small" data-delete-post="${esc(post.id)}">${t("forum.delete")}</button>` : ""}
-            </header>
-            ${post.photo ? `<img class="diary-photo" src="${esc(post.photo)}" alt="">` : ""}
-            ${post.rating || post.text ? `
-              <div class="diary-body">
-                ${post.rating ? `<span class="stars">${starsText(post.rating)}</span>` : ""}
-                ${post.text ? `<p class="diary-text">${esc(post.text)}</p>` : ""}
-              </div>` : ""}
-          </article>`;
-      }).join("");
+      feedEl.innerHTML = posts.map((post) => postHTML(post)).join("");
+      renderPostDetail();
     }
 
-    feedEl.addEventListener("click", (e) => {
-      const del = e.target.closest("[data-delete-post]");
-      if (del) {
-        if (!confirm(t("forum.confirmDelete"))) return;
-        db.collection("posts").doc(del.dataset.deletePost).delete()
-          .then(() => showToast(t("forum.deleted")))
-          .catch(() => showToast(t("friends.failed")));
-        return;
-      }
-      // Tryk på en vens navn eller billede åbner deres profil
-      const person = e.target.closest("[data-person]");
-      if (person && person.dataset.person !== currentUserKey()) {
-        showPage("friends");
-        openPerson(person.dataset.person);
-      }
-    });
+    feedEl.addEventListener("click", handlePostClick);
 
     // ==========================================================
     // FORUM-OPSLAG: skema med billede, tekst og rating
     // ==========================================================
     const diaryForm = document.getElementById("diary-form");
-    const diaryStars = document.getElementById("diary-stars");
     const diaryPhotoInput = document.getElementById("diary-photo-input");
     const diaryPhotoPreview = document.getElementById("diary-photo-preview");
     const diaryPhotoText = document.getElementById("diary-photo-text");
     let pendingDiaryPhoto = null;
-    let diaryRating = 0;
+    let entryMode = "post";   // "post" = opslag, "roll" = Rate the Roll
 
-    function openEntrySheet() {
+    function openEntrySheet(mode) {
+      entryMode = mode;
+      document.getElementById("entry-title").textContent = t(mode === "roll" ? "roll.newTitle" : "forum.newTitle");
       diaryForm.reset();
       clearErrors(diaryForm);
+      hideMentionList(diaryForm);
+      friendships.map(otherUser).forEach((uid) => getProfile(uid).catch(() => null));
       pendingDiaryPhoto = null;
-      diaryRating = 0;
-      diaryStars.innerHTML = starInputHTML(0);
       diaryPhotoPreview.classList.add("hidden");
       diaryPhotoText.classList.remove("hidden");
       sheetBackdrop.classList.remove("hidden");
       diaryForm.classList.remove("hidden");
     }
 
-    document.getElementById("new-post").addEventListener("click", openEntrySheet);
+    document.getElementById("new-post").addEventListener("click", () => openEntrySheet("post"));
+    document.getElementById("new-roll").addEventListener("click", () => openEntrySheet("roll"));
     document.getElementById("diary-cancel").addEventListener("click", closeSheet);
 
-    diaryStars.addEventListener("click", (e) => {
-      const star = e.target.closest("[data-rate]");
-      if (!star) return;
-      diaryRating = Number(star.dataset.rate);
-      diaryStars.innerHTML = starInputHTML(diaryRating);
-    });
 
     diaryPhotoInput.addEventListener("change", async () => {
       const file = diaryPhotoInput.files[0];
@@ -5883,27 +6200,390 @@
       e.preventDefault();
       clearErrors(diaryForm);
       const text = diaryForm.elements.text.value.trim();
+      const roll = entryMode === "roll";
+      if (roll && !pendingDiaryPhoto) return setError(diaryForm, t("roll.errPhoto"));
       if (!text && !pendingDiaryPhoto) return setError(diaryForm, t("forum.errEmpty"));
 
       setBusy(diaryForm, true);
       try {
-        await db.collection("posts").add({
+        const data = {
           text,
           photo: pendingDiaryPhoto,
-          rating: diaryRating,
+          mentions: findMentions(text),
           createdAt: Date.now(),
           author: currentUserKey(),
           authorName: myProfile ? myProfile.name : "?",
-        });
+        };
+        if (roll) await db.collection("rolls").add({ ...data, ratings: {} });
+        else await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
         closeSheet();
-        showToast(t("forum.posted"));
+        showToast(t(roll ? "roll.posted" : "forum.posted"));
       } catch (error) {
         console.error(error);
-        setError(diaryForm, t("friends.failed"));
+        setError(diaryForm, dbErrorText(error));
       } finally {
         setBusy(diaryForm, false);
       }
     });
+
+    // ==========================================================
+    // OPSLAG: likes, kommentarer og @-tags af venner
+    // ==========================================================
+    const FieldValue = () => firebase.firestore.FieldValue;
+    let openPostId = null;
+    let comments = [];
+    let commentUnsub = null;
+
+    // Teksten med @-tags som klikbare navne
+    function richText(text, mentions) {
+      let html = esc(text || "");
+      (mentions || []).forEach((m) => {
+        const tag = esc("@" + m.name);
+        html = html.split(tag).join(`<span class="mention" data-person="${esc(m.uid)}">${tag}</span>`);
+      });
+      return html;
+    }
+
+    function postHTML(post, detail = false) {
+      const me = currentUserKey();
+      const own = post.author === me;
+      const profile = (own ? myProfile : profileCache.get(post.author)) || { name: post.authorName || "?" };
+      const likes = post.likes || [];
+      const liked = likes.includes(me);
+      return `
+        <article class="diary-entry" data-post="${esc(post.id)}">
+          <header class="post-head entry-head">
+            <span class="avatar avatar-sm" data-person="${esc(post.author)}">${avatarHTML(profile)}</span>
+            <span class="post-meta" data-person="${esc(post.author)}">
+              <strong>${esc(profile.name)} ${post.author === me ? "" : `<span class="mini-rank">${RANKS[rankIndex(profile.xp)].icon}</span>`}</strong>
+              <small>${timeAgo(post.createdAt)}</small>
+            </span>
+            ${own ? `<button type="button" class="link-btn danger small" data-delete-post="${esc(post.id)}">${t("forum.delete")}</button>` : ""}
+          </header>
+          ${post.photo ? `<img class="diary-photo" src="${esc(post.photo)}" alt="" data-zoom>` : ""}
+          ${post.rating || post.text ? `
+            <div class="diary-body">
+              ${post.rating ? `<span class="stars">${starsText(post.rating)}</span>` : ""}
+              ${post.text ? `<p class="diary-text">${richText(post.text, post.mentions)}</p>` : ""}
+            </div>` : ""}
+          <div class="post-actions">
+            <button type="button" class="${liked ? "on" : ""}" data-like="${esc(post.id)}" aria-label="${t("post.like")}">
+              <span class="heart">${liked ? "♥" : "♡"}</span> ${likes.length}
+            </button>
+            <button type="button" ${detail ? "disabled" : ""} data-open-post="${esc(post.id)}" aria-label="${t("post.comments")}">
+              💬 ${post.commentCount || 0}
+            </button>
+          </div>
+        </article>`;
+    }
+
+    function toggleLike(id) {
+      const post = posts.find((p) => p.id === id);
+      if (!post) return;
+      const me = currentUserKey();
+      const liked = (post.likes || []).includes(me);
+      // Vis det med det samme, databasen følger efter
+      post.likes = liked ? post.likes.filter((u) => u !== me) : [...(post.likes || []), me];
+      renderFeed();
+      renderPostDetail();
+      db.collection("posts").doc(id)
+        .update({ likes: liked ? FieldValue().arrayRemove(me) : FieldValue().arrayUnion(me) })
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    function deletePost(id) {
+      if (!confirm(t("forum.confirmDelete"))) return;
+      db.collection("posts").doc(id).delete()
+        .then(() => {
+          showToast(t("forum.deleted"));
+          if (openPostId === id) backView();
+        })
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    function openProfileOf(uid) {
+      if (uid === currentUserKey()) return showPage("profile");
+      showPage("friends");
+      openPerson(uid);
+    }
+
+    // Fælles klik i feed og opslag
+    function handlePostClick(e) {
+      const like = e.target.closest("[data-like]");
+      if (like) return toggleLike(like.dataset.like);
+      const del = e.target.closest("[data-delete-post]");
+      if (del) return deletePost(del.dataset.deletePost);
+      const zoom = e.target.closest("[data-zoom]");
+      if (zoom) return openLightbox(zoom.src);
+      const open = e.target.closest("[data-open-post]");
+      if (open && !open.disabled) return openPost(open.dataset.openPost);
+      const person = e.target.closest("[data-person]");
+      if (person) return openProfileOf(person.dataset.person);
+      const delComment = e.target.closest("[data-delete-comment]");
+      if (delComment) return deleteComment(delComment.dataset.deleteComment);
+    }
+
+    // ---------- Et enkelt opslag med kommentarer ----------
+    const postDetail = document.getElementById("post-detail");
+    const commentForm = document.getElementById("comment-form");
+
+    function openPost(id) {
+      openPostId = id;
+      comments = [];
+      goView("post");
+      stopComments();
+      commentUnsub = db.collection("posts").doc(id).collection("comments").orderBy("createdAt")
+        .onSnapshot(async (snap) => {
+          comments = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          const others = [...new Set(comments.map((c) => c.author))].filter((u) => u !== currentUserKey());
+          await Promise.all(others.map((u) => getProfile(u).catch(() => null)));
+          renderPostDetail();
+        }, (error) => console.error(error));
+      renderPostDetail();
+    }
+
+    function stopComments() {
+      if (commentUnsub) commentUnsub();
+      commentUnsub = null;
+    }
+
+    function renderPostDetail() {
+      if (!openPostId) return;
+      const post = posts.find((p) => p.id === openPostId);
+      if (!post) {
+        postDetail.innerHTML = `<p class="empty-note">${t("post.gone")}</p>`;
+        commentForm.classList.add("hidden");
+        return;
+      }
+      commentForm.classList.remove("hidden");
+      const me = currentUserKey();
+      postDetail.innerHTML = `
+        ${postHTML(post, true)}
+        <h2 class="section-title">${t("post.comments")}</h2>
+        <div class="comments">
+          ${comments.length ? comments.map((c) => {
+            const profile = (c.author === me ? myProfile : profileCache.get(c.author)) || { name: c.authorName || "?" };
+            const canDelete = c.author === me || post.author === me;
+            return `
+              <div class="comment">
+                <span class="avatar avatar-sm" data-person="${esc(c.author)}">${avatarHTML(profile)}</span>
+                <div class="comment-body">
+                  <p><strong data-person="${esc(c.author)}">${esc(profile.name)}</strong> ${richText(c.text, c.mentions)}</p>
+                  <small>${timeAgo(c.createdAt)}${canDelete ? ` · <button type="button" class="link-btn danger small" data-delete-comment="${esc(c.id)}">${t("forum.delete")}</button>` : ""}</small>
+                </div>
+              </div>`;
+          }).join("") : `<p class="empty-note">${t("post.noComments")}</p>`}
+        </div>`;
+    }
+
+    postDetail.addEventListener("click", handlePostClick);
+
+    commentForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = commentForm.elements.text;
+      const text = input.value.trim();
+      if (!text || !openPostId) return;
+      const postId = openPostId;
+      input.value = "";
+      hideMentionList(commentForm);
+      try {
+        await db.collection("posts").doc(postId).collection("comments").add({
+          text,
+          mentions: findMentions(text),
+          author: currentUserKey(),
+          authorName: myProfile ? myProfile.name : "?",
+          createdAt: Date.now(),
+        });
+        await db.collection("posts").doc(postId).update({ commentCount: FieldValue().increment(1) });
+      } catch (error) {
+        console.error(error);
+        input.value = text;
+        showToast(dbErrorText(error));
+      }
+    });
+
+    function deleteComment(id) {
+      if (!confirm(t("post.confirmDeleteComment"))) return;
+      const ref = db.collection("posts").doc(openPostId);
+      ref.collection("comments").doc(id).delete()
+        .then(() => ref.update({ commentCount: FieldValue().increment(-1) }))
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    // ---------- @-tags: forslag fra vennelisten ----------
+    function friendProfiles() {
+      return friendships.map(otherUser).map((uid) => profileCache.get(uid)).filter((p) => p && p.name && p.name !== "?");
+    }
+
+    function findMentions(text) {
+      return friendProfiles()
+        .filter((p) => text.includes("@" + p.name))
+        .map((p) => ({ uid: p.id, name: p.name }));
+    }
+
+    function hideMentionList(form) {
+      form.querySelector(".mention-list").classList.add("hidden");
+    }
+
+    // Skriver man "@" og starten af et navn, vises de venner, der passer
+    function setupMentions(form) {
+      const input = form.elements.text;
+      const list = form.querySelector(".mention-list");
+      input.addEventListener("input", () => {
+        const before = input.value.slice(0, input.selectionStart);
+        const match = before.match(/@([^\s@]*)$/);
+        if (!match) return hideMentionList(form);
+        const query = match[1].toLowerCase();
+        const found = friendProfiles().filter((p) => p.name.toLowerCase().startsWith(query)).slice(0, 5);
+        if (!found.length) return hideMentionList(form);
+        list.innerHTML = found.map((p) => `
+          <button type="button" data-mention="${esc(p.name)}">
+            <span class="avatar avatar-xs">${avatarHTML(p)}</span> ${esc(p.name)}
+          </button>`).join("");
+        list.classList.remove("hidden");
+      });
+      list.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-mention]");
+        if (!btn) return;
+        const caret = input.selectionStart;
+        const before = input.value.slice(0, caret).replace(/@([^\s@]*)$/, "@" + btn.dataset.mention + " ");
+        input.value = before + input.value.slice(caret);
+        input.focus();
+        input.setSelectionRange(before.length, before.length);
+        hideMentionList(form);
+      });
+    }
+
+    setupMentions(diaryForm);
+    setupMentions(commentForm);
+
+    // ==========================================================
+    // RATE THE ROLL: del et billede af din joint, og lad andre rate den
+    // ==========================================================
+    const rollGrid = document.getElementById("roll-grid");
+    const rollDetail = document.getElementById("roll-detail");
+    let rolls = [];
+    let rollUnsub = null;
+    let openRollId = null;
+
+    function listenToRolls() {
+      if (rollUnsub || !db) return;
+      rollUnsub = db.collection("rolls").orderBy("createdAt", "desc").limit(60).onSnapshot(async (snap) => {
+        rolls = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const others = [...new Set(rolls.map((r) => r.author))].filter((u) => u !== currentUserKey());
+        await Promise.all(others.map((u) => getProfile(u).catch(() => null)));
+        renderRolls();
+        renderRoll();
+      }, (error) => console.error(error));
+    }
+
+    function stopRolls() {
+      if (rollUnsub) rollUnsub();
+      rollUnsub = null;
+      rolls = [];
+    }
+
+    function ratingCount(n) {
+      return t(n === 1 ? "roll.ratings1" : "roll.ratingsN", { n });
+    }
+
+    function renderRolls() {
+      if (!rolls.length) {
+        rollGrid.innerHTML = `<p class="empty-note">${t("roll.empty")}</p>`;
+        return;
+      }
+      rollGrid.innerHTML = rolls.map((roll) => {
+        const avg = averageRating(roll);
+        return `
+          <button type="button" class="roll-tile" data-roll="${esc(roll.id)}">
+            <img src="${esc(roll.photo)}" alt="">
+            <span class="roll-score">${avg ? `★ ${avg.toFixed(1)}` : t("roll.new")}</span>
+          </button>`;
+      }).join("");
+    }
+
+    rollGrid.addEventListener("click", (e) => {
+      const tile = e.target.closest("[data-roll]");
+      if (!tile) return;
+      openRollId = tile.dataset.roll;
+      goView("roll");
+    });
+
+    function renderRoll() {
+      if (!openRollId) return;
+      const roll = rolls.find((r) => r.id === openRollId);
+      if (!roll) {
+        rollDetail.innerHTML = `<p class="empty-note">${t("post.gone")}</p>`;
+        return;
+      }
+      const me = currentUserKey();
+      const own = roll.author === me;
+      const profile = (own ? myProfile : profileCache.get(roll.author)) || { name: roll.authorName || "?" };
+      const ratings = roll.ratings || {};
+      const count = Object.keys(ratings).length;
+      const avg = averageRating(roll);
+      rollDetail.innerHTML = `
+        <article class="diary-entry">
+          <header class="post-head entry-head">
+            <span class="avatar avatar-sm" data-person="${esc(roll.author)}">${avatarHTML(profile)}</span>
+            <span class="post-meta" data-person="${esc(roll.author)}">
+              <strong>${esc(profile.name)}</strong>
+              <small>${timeAgo(roll.createdAt)}</small>
+            </span>
+            ${own ? `<button type="button" class="link-btn danger small" data-delete-roll>${t("forum.delete")}</button>` : ""}
+          </header>
+          <img class="roll-photo" src="${esc(roll.photo)}" alt="" data-zoom>
+          ${roll.text ? `<div class="diary-body"><p class="diary-text">${richText(roll.text, roll.mentions)}</p></div>` : ""}
+        </article>
+        <div class="card roll-rating">
+          <div class="roll-avg">
+            <strong>${avg ? avg.toFixed(1) : "–"}</strong>
+            <span>
+              <span class="stars">${starsText(avg)}</span>
+              <small>${count ? ratingCount(count) : t("roll.noRatings")}</small>
+            </span>
+          </div>
+          ${own ? `<p class="muted">${t("roll.own")}</p>` : `
+            <h3>${t("roll.yourRating")}</h3>
+            <div class="star-input big" data-rate-roll>${starInputHTML(ratings[me] || 0)}</div>`}
+        </div>`;
+    }
+
+    rollDetail.addEventListener("click", (e) => {
+      const zoom = e.target.closest("[data-zoom]");
+      if (zoom) return openLightbox(zoom.src);
+      const person = e.target.closest("[data-person]");
+      if (person) return openProfileOf(person.dataset.person);
+      if (e.target.closest("[data-delete-roll]")) {
+        if (!confirm(t("roll.confirmDelete"))) return;
+        db.collection("rolls").doc(openRollId).delete()
+          .then(() => { showToast(t("roll.deleted")); backView(); })
+          .catch((error) => showToast(dbErrorText(error)));
+        return;
+      }
+      const star = e.target.closest("[data-rate]");
+      if (star && e.target.closest("[data-rate-roll]")) {
+        const value = Number(star.dataset.rate);
+        const roll = rolls.find((r) => r.id === openRollId);
+        if (roll) roll.ratings = { ...(roll.ratings || {}), [currentUserKey()]: value };
+        renderRoll();
+        renderRolls();
+        db.collection("rolls").doc(openRollId)
+          .update({ [`ratings.${currentUserKey()}`]: value })
+          .then(() => showToast(t("roll.rated")))
+          .catch((error) => showToast(dbErrorText(error)));
+      }
+    });
+
+    // ---------- Billede i fuld skærm ----------
+    const lightbox = document.getElementById("lightbox");
+
+    function openLightbox(src) {
+      lightbox.querySelector("img").src = src;
+      lightbox.classList.remove("hidden");
+    }
+
+    lightbox.addEventListener("click", () => lightbox.classList.add("hidden"));
 
     // ==========================================================
     // TJEKLISTE: sorter, hash, koncentrater og spiselige fra hele verden
@@ -7359,10 +8039,8 @@
       if (!shortcut) return;
       const target = shortcut.dataset.shortcut;
       if (target === "log") return openLogSheet();
-      if (target === "forum" || target === "profile") return showPage(target);
-      showPage("handbook");
-      viewStack = ["hb-menu"];
-      goView(target);
+      if (target === "profile") return showPage(target);
+      openView(["map", "rolls", "posts"].includes(target) ? "hub" : "handbook", target);
     });
 
     // ---------- Start ----------
