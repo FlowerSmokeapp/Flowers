@@ -4418,7 +4418,7 @@
     }
     .home-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 10px;
       margin-bottom: 14px;
     }
@@ -5925,7 +5925,6 @@
             </span>
           </button>
           <div class="home-row">
-            <button type="button" class="home-btn" id="sesh-btn"><span><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21.5 19"/></svg></span><strong data-i18n="sesh.btn">Hvem er klar?</strong></button>
             <button type="button" class="home-btn" id="smoking-btn"></button>
           </div>
           <div class="card tbreak-card hidden" id="tbreak-card"></div>
@@ -7030,7 +7029,7 @@
         "streak.many": "{n} dage i træk",
         "now.start": "Jeg smoker nu",
         "now.on": "Smoker nu",
-        "now.left": "{h}t {m}m tilbage",
+        "now.left": "{m} min tilbage",
         "now.started": "Dine venner kan se, at du smoker",
         "now.stopped": "\"Smoker nu\" er slået fra",
         "sesh.btn": "Hvem er klar?",
@@ -7702,7 +7701,7 @@
         "streak.many": "{n} days in a row",
         "now.start": "I'm smoking now",
         "now.on": "Smoking now",
-        "now.left": "{h}h {m}m left",
+        "now.left": "{m} min left",
         "now.started": "Your friends can see you're smoking",
         "now.stopped": "\"Smoking now\" is off",
         "sesh.btn": "Who's ready?",
@@ -13517,7 +13516,7 @@
         da: [
           "Flower kan hentes som app på iPhone og Android",
           "Chat med dine venner",
-          "Sesh-invitationer: \"Hvem er klar?\" og \"Smoker nu\"",
+          "\"Smoker nu\": vis dine venner, at du er i gang",
           "Badges, ugens udfordring og streak",
           "T-break-tilstand med opmuntring fra venner",
           "Nye spil: Double Trouble, Spin the Joint, Terningespillet og Weed Quiz",
@@ -13528,7 +13527,7 @@
         en: [
           "Flower can be installed as an app on iPhone and Android",
           "Chat with your friends",
-          "Sesh invites: \"Who's ready?\" and \"Smoking now\"",
+          "\"Smoking now\": show your friends you're smoking",
           "Badges, weekly challenge and streak",
           "T-break mode with cheers from friends",
           "New games: Double Trouble, Spin the Joint, the Dice Game and Weed Quiz",
@@ -13977,9 +13976,9 @@
     }
 
     // ==========================================================
-    // "SMOKER NU": vis vennerne, at man er i gang (i 2 timer)
+    // "SMOKER NU": vis vennerne, at man er i gang (i 30 minutter)
     // ==========================================================
-    const SMOKING_TIME = 2 * HOUR;
+    const SMOKING_TIME = 30 * 60e3;
 
     function isSmoking(profile) {
       return !!(profile && profile.smokingUntil && profile.smokingUntil > Date.now());
@@ -13993,10 +13992,8 @@
         btn.innerHTML = `<span>${icon("smoke")}</span><strong>${t("now.start")}</strong>`;
         return;
       }
-      const left = Math.max(0, myProfile.smokingUntil - Date.now());
-      const h = Math.floor(left / HOUR);
-      const m = Math.round((left % HOUR) / 60e3);
-      btn.innerHTML = `<span>${icon("smoke")}</span><strong>${t("now.on")}</strong><small>${t("now.left", { h, m })}</small>`;
+      const m = Math.max(1, Math.ceil((myProfile.smokingUntil - Date.now()) / 60e3));
+      btn.innerHTML = `<span>${icon("smoke")}</span><strong>${t("now.on")}</strong><small>${t("now.left", { m })}</small>`;
     }
 
     document.getElementById("smoking-btn").addEventListener("click", () => {
@@ -14004,9 +14001,12 @@
       const on = isSmoking(myProfile);
       const until = on ? 0 : Date.now() + SMOKING_TIME;
       myProfile.smokingUntil = until;
+      // Tælles til badges
+      if (!on) myProfile.smokingNowCount = (myProfile.smokingNowCount || 0) + 1;
       renderSmokingNow();
       showToast(t(on ? "now.stopped" : "now.started"));
-      db.collection("profiles").doc(currentUserKey()).set({ smokingUntil: until }, { merge: true })
+      syncBadges();
+      db.collection("profiles").doc(currentUserKey()).set({ smokingUntil: until, smokingNowCount: myProfile.smokingNowCount || 0 }, { merge: true })
         .catch((error) => showToast(dbErrorText(error)));
     });
 
@@ -14127,7 +14127,6 @@
       seshForm.classList.remove("hidden");
     }
 
-    document.getElementById("sesh-btn").addEventListener("click", openSeshSheet);
     document.getElementById("sesh-cancel").addEventListener("click", closeSheet);
 
     seshForm.addEventListener("submit", async (e) => {
@@ -14367,8 +14366,8 @@
       { id: "munch_first", icon: "bowl", color: C.orange, da: ["Munchie-fotograf", "Del dine munchies"], en: ["Munchie photographer", "Share your munchies"], ok: (c) => c.munchies >= 1 },
       { id: "spot_first", icon: "pin", color: C.red, da: ["Spot-finder", "Tilføj et smoke spot"], en: ["Spot finder", "Add a smoke spot"], ok: (c) => c.spots >= 1 },
       { id: "spots_5", icon: "pin", color: C.gold, da: ["Opdagelsesrejsende", "Tilføj 5 smoke spots"], en: ["Explorer", "Add 5 smoke spots"], ok: (c) => c.spots >= 5 },
-      { id: "host_sesh", icon: "party", color: C.pink, da: ["Sesh-host", "Inviter til en sesh"], en: ["Sesh host", "Invite friends to a sesh"], ok: (c) => c.hosted >= 1 },
-      { id: "host_5", icon: "party", color: C.gold, da: ["Festens midtpunkt", "Inviter til 5 seshs"], en: ["Life of the party", "Invite friends to 5 seshes"], ok: (c) => c.hosted >= 5 },
+      { id: "live_1", icon: "party", color: C.pink, da: ["Live", "Slå \"Smoker nu\" til"], en: ["Live", "Turn on \"Smoking now\""], ok: (c) => c.live >= 1 },
+      { id: "live_10", icon: "party", color: C.gold, da: ["Festens midtpunkt", "Slå \"Smoker nu\" til 10 gange"], en: ["Life of the party", "Turn on \"Smoking now\" 10 times"], ok: (c) => c.live >= 10 },
       { id: "cheer", icon: "heart", color: C.red, da: ["Heppekor", "Hep på en ven, der holder pause"], en: ["Cheerleader", "Cheer on a friend on a break"], ok: (c) => c.cheered >= 1 },
       // Spil
       { id: "goj_done", icon: "dice", color: C.green, da: ["Brætspiller", "Spil Game of Joints til ende"], en: ["Board gamer", "Finish a game of Game of Joints"], ok: (c) => c.games.goj >= 1 },
@@ -14432,7 +14431,7 @@
         rolls: rolls.filter((r) => r.author === me).length,
         munchies: munchies.filter((m) => m.author === me).length,
         spots: benches.filter((b) => b.addedBy === me).length,
-        hosted: (p.seshesHosted || 0) + seshes.filter((x) => x.host === me).length,
+        live: p.smokingNowCount || 0,
         cheered: p.cheersSent || 0,
         games,
         gamesTotal: Object.values(games).reduce((s, n) => s + (Number(n) || 0), 0),
