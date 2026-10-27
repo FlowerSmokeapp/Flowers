@@ -14273,7 +14273,10 @@
     });
 
     setInterval(() => {
-      if (myProfile) renderSmokingNow();
+      if (!myProfile) return;
+      renderSmokingNow();
+      // Efter midnat dukker en ny udfordring op
+      renderChallenge();
     }, 60e3);
 
     // ==========================================================
@@ -14876,11 +14879,12 @@
       if (!myProfile) return;
       const c = currentChallenge();
       const done = myProfile.challenges && myProfile.challenges[c.key];
+      // Klaret i dag: kortet forsvinder, og en ny udfordring kommer i morgen
+      card.classList.toggle("hidden", !!done);
+      if (done) return;
       const hours = Math.max(1, Math.ceil((todayStart() + DAY - Date.now()) / HOUR));
       let status;
-      if (done) {
-        status = `<small class="muted">${t("ch.done")}</small>`;
-      } else if (c.check) {
+      if (c.check) {
         const progress = Math.min(c.goal, c.check());
         status = `
           <div class="progress"><span style="width:${(progress / c.goal) * 100}%"></span></div>
@@ -14899,7 +14903,6 @@
         </div>
         <strong>${esc(lang === "en" ? c.en : c.da)}</strong>
         ${status}`;
-      card.classList.toggle("done", !!done);
     }
 
     document.getElementById("challenge-card").addEventListener("click", (e) => {
