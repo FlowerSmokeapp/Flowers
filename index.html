@@ -5255,6 +5255,47 @@
       margin: 8px 0 18px;
       line-height: 1.45;
     }
+
+    /* ---------- Bedømmelser af smoke spots ---------- */
+    .bench-review-form textarea {
+      width: 100%;
+      min-height: 70px;
+      margin: 12px 0;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card-2);
+      color: var(--text);
+      font: inherit;
+      resize: vertical;
+    }
+    .bench-review-form .btn-primary {
+      width: 100%;
+    }
+    .bench-reviews h3 small {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .bench-review {
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+    .bench-review:first-of-type {
+      border-top: 0;
+    }
+    .bench-review-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .bench-review p {
+      margin: 4px 0;
+      line-height: 1.4;
+    }
+    .bench-review small {
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -6809,6 +6850,15 @@
         "bench.whyPh": "Udsigt, læ, roligt sted…",
         "bench.yourRating": "Din bedømmelse",
         "bench.giveStars": "Giv stedet stjerner",
+        "bench.giveReview": "Giv din bedømmelse",
+        "bench.yourReview": "Din bedømmelse",
+        "bench.reviewPh": "Hvad synes du om stedet? (valgfrit)",
+        "bench.reviewSave": "Gem bedømmelse",
+        "bench.reviewUpdate": "Opdater bedømmelse",
+        "bench.reviewSaved": "Tak for din bedømmelse",
+        "bench.reviewNeedStars": "Vælg først antal stjerner",
+        "bench.reviews": "Bedømmelser",
+        "bench.noReviews": "Ingen har skrevet en bedømmelse endnu. Bliv den første!",
         "bench.save": "Sæt på kortet",
         "bench.saving": "Gemmer…",
         "bench.errPhoto": "Tilføj et billede af stedet",
@@ -7472,6 +7522,15 @@
         "bench.whyPh": "View, shelter, nice and quiet…",
         "bench.yourRating": "Your rating",
         "bench.giveStars": "Rate this spot",
+        "bench.giveReview": "Give your rating",
+        "bench.yourReview": "Your rating",
+        "bench.reviewPh": "What do you think of the spot? (optional)",
+        "bench.reviewSave": "Save rating",
+        "bench.reviewUpdate": "Update rating",
+        "bench.reviewSaved": "Thanks for your rating",
+        "bench.reviewNeedStars": "Pick a number of stars first",
+        "bench.reviews": "Ratings",
+        "bench.noReviews": "No one has written a rating yet. Be the first!",
         "bench.save": "Put on map",
         "bench.saving": "Saving…",
         "bench.errPhoto": "Add a photo of the spot",
@@ -8554,9 +8613,17 @@
       // Et dokument må højst fylde 1 MB, så meget store billeder gøres mindre
       if (dataUrl.length > 900e3) dataUrl = await shrinkDataUrl(dataUrl, 900, 0.6);
       const thumb = await shrinkDataUrl(dataUrl, 420, 0.6);
-      const ref = await db.collection("images").add({ data: dataUrl, owner: currentUserKey(), createdAt: Date.now() });
-      fullImageCache.set(ref.id, dataUrl);
-      return { thumb, imageId: ref.id, photo: null };
+      try {
+        const ref = await db.collection("images").add({ data: dataUrl, owner: currentUserKey(), createdAt: Date.now() });
+        fullImageCache.set(ref.id, dataUrl);
+        return { thumb, imageId: ref.id, photo: null };
+      } catch (error) {
+        // Kan billedet ikke gemmes for sig (fx manglende regel i Firestore),
+        // gemmes en mindre udgave direkte på opslaget, så upload stadig virker
+        console.warn("images:", error);
+        const photo = dataUrl.length > 600e3 ? await shrinkDataUrl(dataUrl, 900, 0.6) : dataUrl;
+        return { thumb, imageId: null, photo };
+      }
     }
 
     function deleteImage(item) {
@@ -8704,6 +8771,10 @@
       const count = Object.keys(bench.ratings || {}).length;
       const mine = (bench.ratings || {})[email] || 0;
       const date = formatDate(bench.createdAt);
+      const myReview = (bench.reviews || {})[email] || null;
+      // Alle anmeldelser med tekst, nyeste først
+      const reviews = Object.entries(bench.reviews || {}).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
+      benchReviewStars = mine;
 
       el.innerHTML = `
         <img class="bench-photo" src="${esc(photoSrc(bench))}" alt="${t("bench.photoAlt", { name: esc(bench.name) })}">
@@ -8715,9 +8786,23 @@
           <span class="muted">(${count} ${t(count === 1 ? "bench.rating1" : "bench.ratingN")})</span>
         </div>
         ${bench.desc ? `<div class="card"><p>${esc(bench.desc)}</p></div>` : ""}
-        <div class="card">
-          <h3>${t(mine ? "bench.yourRating" : "bench.giveStars")}</h3>
+        <div class="card bench-review-form">
+          <h3>${t(myReview || mine ? "bench.yourReview" : "bench.giveReview")}</h3>
           <div class="star-input" id="bench-stars">${starInputHTML(mine)}</div>
+          <textarea id="bench-review-text" maxlength="300" placeholder="${t("bench.reviewPh")}">${esc(myReview ? myReview.text || "" : "")}</textarea>
+          <button type="button" class="btn-primary" id="bench-review-save">${t(myReview ? "bench.reviewUpdate" : "bench.reviewSave")}</button>
+        </div>
+        <div class="card bench-reviews">
+          <h3>${t("bench.reviews")} <small>${reviews.length}</small></h3>
+          ${reviews.length ? reviews.map(([uid, r]) => `
+            <div class="bench-review">
+              <div class="bench-review-head">
+                <strong>${esc(r.name || "?")}</strong>
+                <span class="stars">${starsText(r.stars || 0)}</span>
+              </div>
+              ${r.text ? `<p>${esc(r.text)}</p>` : ""}
+              <small class="muted">${formatDate(r.at || 0)}</small>
+            </div>`).join("") : `<p class="muted">${t("bench.noReviews")}</p>`}
         </div>
         <div class="bench-actions">
           <button class="btn-plain" id="show-on-map">${t("bench.showOnMap")}</button>
@@ -8728,8 +8813,11 @@
 
       document.getElementById("bench-stars").addEventListener("click", (e) => {
         const star = e.target.closest("[data-rate]");
-        if (star) rateBench(Number(star.dataset.rate));
+        if (!star) return;
+        benchReviewStars = Number(star.dataset.rate);
+        document.getElementById("bench-stars").innerHTML = starInputHTML(benchReviewStars);
       });
+      document.getElementById("bench-review-save").addEventListener("click", saveBenchReview);
 
       document.getElementById("show-on-map").addEventListener("click", () => {
         backView();
@@ -8761,13 +8849,24 @@
       }
     }
 
-    function rateBench(stars) {
-      const email = currentUserKey();
-      // FieldPath bruges, fordi et smoker name kan indeholde punktummer
+    // Anmeldelse: stjerner (tæller med i gennemsnittet) og en kort tekst
+    let benchReviewStars = 0;
+
+    function saveBenchReview() {
+      const uid = currentUserKey();
+      const stars = benchReviewStars;
+      if (!stars) return showToast(t("bench.reviewNeedStars"));
+      const text = document.getElementById("bench-review-text").value.trim();
+      const FP = firebase.firestore.FieldPath;
+      const review = { stars, text, name: myProfile ? myProfile.name : "?", at: Date.now() };
+      // FieldPath bruges, fordi id'et kan indeholde punktummer
       benchesRef.doc(currentBenchId)
-        .update(new firebase.firestore.FieldPath("ratings", email), stars)
-        .then(() => showToast(stars === 1 ? t("bench.rated1") : t("bench.ratedN", { n: stars })))
-        .catch(() => showToast(t("bench.rateFailed")));
+        .update(new FP("ratings", uid), stars, new FP("reviews", uid), review)
+        .then(() => showToast(t("bench.reviewSaved")))
+        .catch((error) => {
+          console.error(error);
+          showToast(t("bench.rateFailed"));
+        });
     }
 
 
