@@ -3104,6 +3104,10 @@
     }
 
     /* ---------- Smoke Hub: opslag ---------- */
+    .post-own {
+      display: flex;
+      gap: 12px;
+    }
     .post-actions {
       display: flex;
       gap: 6px;
@@ -3881,7 +3885,7 @@
         <img id="diary-photo-preview" class="hidden" alt="">
         <input type="file" accept="image/*" id="diary-photo-input">
       </label>
-      <label class="field">
+      <label class="field" id="entry-text-field">
         <span data-i18n="diary.text">Tekst</span>
         <textarea name="text" maxlength="1000" data-i18n-ph="post.textPh" placeholder="Skriv noget… Tag dine venner med @"></textarea>
       </label>
@@ -3889,7 +3893,7 @@
       <p class="error" aria-live="polite"></p>
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="diary-cancel" data-i18n="common.cancel">Annuller</button>
-        <button type="submit" class="btn-primary" data-i18n="forum.share">Del</button>
+        <button type="submit" class="btn-primary" id="entry-submit"></button>
       </div>
     </form>
 
@@ -4285,6 +4289,11 @@
         "stats.seeLogs": "Se alle registreringer",
         "post.textPh": "Skriv noget… Tag dine venner med @",
         "post.like": "Synes godt om",
+        "post.edit": "Rediger",
+        "post.editTitle": "Rediger opslag",
+        "post.save": "Gem",
+        "post.saved": "Opslaget er opdateret",
+        "post.edited": "redigeret",
         "post.comments": "Kommentarer",
         "post.commentPh": "Skriv en kommentar… (@ for at tagge)",
         "post.send": "Send",
@@ -4635,6 +4644,11 @@
         "stats.seeLogs": "See all logs",
         "post.textPh": "Write something… Tag your friends with @",
         "post.like": "Like",
+        "post.edit": "Edit",
+        "post.editTitle": "Edit post",
+        "post.save": "Save",
+        "post.saved": "Post updated",
+        "post.edited": "edited",
         "post.comments": "Comments",
         "post.commentPh": "Write a comment… (@ to tag)",
         "post.send": "Send",
@@ -5165,7 +5179,9 @@
       benchesRef.onSnapshot(
         (snapshot) => {
           benches = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          benchesLoaded = true;
           renderMarkers();
+          frameMap();
           document.getElementById("map-empty").classList.toggle("hidden", benches.length > 0 || placing);
           if (handbookPage.querySelector('[data-view="bench"]').classList.contains("active")) {
             renderBench();
@@ -5306,14 +5322,39 @@
         myLocationMarker.setLatLng(myLatLng);
         return;
       }
-      // Første gang vi kender placeringen: zoom ind tæt på mig
-      map.setView(myLatLng, 15);
+      frameMap();
       myLocationMarker = L.marker(myLatLng, {
         icon: L.divIcon({ className: "me-pin", html: '<span class="me-dot"></span>', iconSize: [22, 22], iconAnchor: [11, 11] }),
         interactive: false,
         keyboard: false,
         zIndexOffset: 1000,
       }).addTo(map);
+    }
+
+    // Første gang kortet åbnes: zoom ind på mig og det nærmeste smoke spot,
+    // så man altid kan se mindst ét spot. Uden placering vises alle spots.
+    let framedOnMe = false;
+    let framedOnSpots = false;
+    let benchesLoaded = false;
+
+    function frameMap() {
+      if (!map || framedOnMe) return;
+      const spots = benches.map((b) => L.latLng(b.lat, b.lng));
+      if (myLatLng) {
+        if (!spots.length) {
+          map.setView(myLatLng, 15);
+          // Er spots ikke hentet endnu, rammer vi ind igen, når de kommer
+          framedOnMe = benchesLoaded;
+          return;
+        }
+        framedOnMe = true;
+        const me = L.latLng(myLatLng);
+        const nearest = spots.reduce((a, b) => (me.distanceTo(a) <= me.distanceTo(b) ? a : b));
+        map.fitBounds(L.latLngBounds([me, nearest]), { padding: [70, 70], maxZoom: 16 });
+      } else if (spots.length && !framedOnSpots) {
+        framedOnSpots = true;
+        map.fitBounds(L.latLngBounds(spots), { padding: [70, 70], maxZoom: 14 });
+      }
     }
 
     // Følg min placering, mens kortet er åbent første gang
@@ -6057,16 +6098,25 @@
     let pendingDiaryPhoto = null;
     let entryMode = "post";   // "post" = opslag, "roll" = Rate the Roll
 
-    function openEntrySheet(mode) {
+    let editingPostId = null;  // sat, når man redigerer et opslag
+
+    function openEntrySheet(mode, post = null) {
       entryMode = mode;
-      document.getElementById("entry-title").textContent = t(mode === "roll" ? "roll.newTitle" : "forum.newTitle");
+      editingPostId = post ? post.id : null;
+      const titles = { roll: "roll.newTitle", post: post ? "post.editTitle" : "forum.newTitle" };
+      document.getElementById("entry-title").textContent = t(titles[mode]);
+      document.getElementById("entry-submit").textContent = t(post ? "post.save" : "forum.share");
+      // Under Rate the Roll skal man kun dele et billede
+      document.getElementById("entry-text-field").classList.toggle("hidden", mode === "roll");
       diaryForm.reset();
       clearErrors(diaryForm);
       hideMentionList(diaryForm);
       friendships.map(otherUser).forEach((uid) => getProfile(uid).catch(() => null));
-      pendingDiaryPhoto = null;
-      diaryPhotoPreview.classList.add("hidden");
-      diaryPhotoText.classList.remove("hidden");
+      pendingDiaryPhoto = post ? post.photo || null : null;
+      diaryForm.elements.text.value = post ? post.text || "" : "";
+      diaryPhotoPreview.src = pendingDiaryPhoto || "";
+      diaryPhotoPreview.classList.toggle("hidden", !pendingDiaryPhoto);
+      diaryPhotoText.classList.toggle("hidden", !!pendingDiaryPhoto);
       sheetBackdrop.classList.remove("hidden");
       diaryForm.classList.remove("hidden");
     }
@@ -6092,8 +6142,8 @@
     diaryForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearErrors(diaryForm);
-      const text = diaryForm.elements.text.value.trim();
       const roll = entryMode === "roll";
+      const text = roll ? "" : diaryForm.elements.text.value.trim();
       if (roll && !pendingDiaryPhoto) return setError(diaryForm, t("roll.errPhoto"));
       if (!text && !pendingDiaryPhoto) return setError(diaryForm, t("forum.errEmpty"));
 
@@ -6107,10 +6157,20 @@
           author: currentUserKey(),
           authorName: myProfile ? myProfile.name : "?",
         };
-        if (roll) await db.collection("rolls").add({ ...data, ratings: {} });
-        else await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
+        if (editingPostId) {
+          await db.collection("posts").doc(editingPostId).update({
+            text: data.text,
+            photo: data.photo,
+            mentions: data.mentions,
+            editedAt: Date.now(),
+          });
+        } else if (roll) {
+          await db.collection("rolls").add({ ...data, ratings: {} });
+        } else {
+          await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
+        }
         closeSheet();
-        showToast(t(roll ? "roll.posted" : "forum.posted"));
+        showToast(t(editingPostId ? "post.saved" : roll ? "roll.posted" : "forum.posted"));
       } catch (error) {
         console.error(error);
         setError(diaryForm, dbErrorText(error));
@@ -6149,9 +6209,13 @@
             <span class="avatar avatar-sm" data-person="${esc(post.author)}">${avatarHTML(profile)}</span>
             <span class="post-meta" data-person="${esc(post.author)}">
               <strong>${esc(profile.name)} ${post.author === me ? "" : `<span class="mini-rank">${RANKS[rankIndex(shownXp(profile))].icon}</span>`}</strong>
-              <small>${timeAgo(post.createdAt)}</small>
+              <small>${timeAgo(post.createdAt)}${post.editedAt ? ` · ${t("post.edited")}` : ""}</small>
             </span>
-            ${own ? `<button type="button" class="link-btn danger small" data-delete-post="${esc(post.id)}">${t("forum.delete")}</button>` : ""}
+            ${own ? `
+              <span class="post-own">
+                <button type="button" class="link-btn small" data-edit-post="${esc(post.id)}">${t("post.edit")}</button>
+                <button type="button" class="link-btn danger small" data-delete-post="${esc(post.id)}">${t("forum.delete")}</button>
+              </span>` : ""}
           </header>
           ${post.photo ? `<img class="diary-photo" src="${esc(post.photo)}" alt="" data-zoom>` : ""}
           ${post.rating || post.text ? `
@@ -6206,6 +6270,8 @@
       if (like) return toggleLike(like.dataset.like);
       const del = e.target.closest("[data-delete-post]");
       if (del) return deletePost(del.dataset.deletePost);
+      const edit = e.target.closest("[data-edit-post]");
+      if (edit) return openEntrySheet("post", posts.find((p) => p.id === edit.dataset.editPost));
       const zoom = e.target.closest("[data-zoom]");
       if (zoom) return openLightbox(zoom.src);
       const open = e.target.closest("[data-open-post]");
