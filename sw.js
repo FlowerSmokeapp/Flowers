@@ -1,6 +1,6 @@
 // Service worker til Flower: gør at appen åbner som en rigtig app (også
 // uden internet) og kan vise notifikationer på telefonen.
-const CACHE = "flower-v1";
+const CACHE = "flower-v2";
 const SHELL = [
   "./",
   "index.html",
@@ -49,6 +49,25 @@ self.addEventListener("fetch", (event) => {
         return res;
       })
       .catch(() => caches.match(req).then((hit) => hit || (req.mode === "navigate" ? caches.match("index.html") : undefined)))
+  );
+});
+
+// Push fra serveren (GitHub Action), også når appen er lukket
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { body: event.data ? event.data.text() : "" };
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title || "Flower", {
+      body: data.body || "",
+      icon: "icon-192.png",
+      badge: "icon-192.png",
+      tag: data.tag || undefined,
+      data: { url: data.url || "./" },
+    })
   );
 });
 

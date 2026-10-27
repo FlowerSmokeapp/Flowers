@@ -5204,6 +5204,33 @@
       margin-bottom: 14px;
       font-size: 13px;
     }
+
+    /* ---------- Spørg om notifikationer ---------- */
+    .push-ask {
+      text-align: center;
+    }
+    .push-ask-icon {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      height: 72px;
+      margin: 8px auto 14px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+    }
+    .push-ask-icon svg {
+      width: 34px;
+      height: 34px;
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .push-ask p {
+      margin: 8px 0 18px;
+      line-height: 1.45;
+    }
   </style>
 </head>
 <body>
@@ -6121,6 +6148,19 @@
       </div>
     </div>
 
+    <!-- Bundark: spørg om notifikationer -->
+    <div id="push-sheet" class="sheet hidden">
+      <div class="push-ask">
+        <div class="push-ask-icon"><svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></div>
+        <h2 data-i18n="push.title">Slå notifikationer til</h2>
+        <p class="muted" id="push-text"></p>
+      </div>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="push-later" data-i18n="push.later">Ikke nu</button>
+        <button type="button" class="btn-primary" id="push-yes" data-i18n="push.yes">Slå til</button>
+      </div>
+    </div>
+
     <!-- Bundark: et badge -->
     <div id="badge-sheet" class="sheet hidden">
       <div id="badge-sheet-body" class="badge-sheet"></div>
@@ -6748,10 +6788,18 @@
         "notif.munch": "{name} har delt sine munchies",
         "notif.spot": "{name} har tilføjet smoke spottet {spot}",
         "notif.state.default": "Slå notifikationer til",
+        "push.title": "Slå notifikationer til",
+        "push.text": "Få besked, når nogen skriver til dig, sender en venneanmodning, inviterer til en sesh eller kommenterer dit opslag. Også når appen er lukket.",
+        "push.denied": "Notifikationer er slået fra for Flower. Gå til telefonens Indstillinger → Notifikationer → Flower, og slå \"Tillad notifikationer\" til.",
+        "push.install": "På iPhone virker notifikationer kun, når Flower er føjet til hjemmeskærmen: tryk på Del-knappen i Safari, vælg \"Føj til hjemmeskærm\", og åbn Flower derfra.",
+        "push.yes": "Slå til",
+        "push.later": "Ikke nu",
+        "push.ok": "Forstået",
+        "push.on": "Notifikationer er slået til",
         "notif.state.granted": "Notifikationer er slået til",
         "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
         "notif.state.unsupported": "Ikke understøttet her",
-        "notif.help": "Du får en notifikation på telefonen, når nogen lægger noget op i Smoke Hub, eller du får en venneanmodning, mens appen er åben.",
+        "notif.help": "Du får en notifikation på telefonen, når nogen skriver til dig, sender en venneanmodning, inviterer til en sesh eller kommenterer dit opslag. Også når appen er lukket (kan tage op til 10-15 minutter).",
         "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
         "cl.more": "Vis mere",
         "cl.title": "Opdateringer",
@@ -7392,10 +7440,18 @@
         "notif.munch": "{name} shared their munchies",
         "notif.spot": "{name} added the smoke spot {spot}",
         "notif.state.default": "Turn on notifications",
+        "push.title": "Turn on notifications",
+        "push.text": "Get notified when someone messages you, sends a friend request, invites you to a sesh or comments on your post. Even when the app is closed.",
+        "push.denied": "Notifications are turned off for Flower. Go to your phone's Settings → Notifications → Flower and turn on \"Allow Notifications\".",
+        "push.install": "On iPhone, notifications only work when Flower is added to your home screen: tap the Share button in Safari, choose \"Add to Home Screen\" and open Flower from there.",
+        "push.yes": "Turn on",
+        "push.later": "Not now",
+        "push.ok": "Got it",
+        "push.on": "Notifications are on",
         "notif.state.granted": "Notifications are on",
         "notif.state.denied": "Notifications are blocked in your phone's settings",
         "notif.state.unsupported": "Not supported here",
-        "notif.help": "You'll get a notification on your phone when someone posts in Smoke Hub or you get a friend request, while the app is open.",
+        "notif.help": "You'll get a notification on your phone when someone messages you, sends a friend request, invites you to a sesh or comments on your post. Even when the app is closed (can take up to 10-15 minutes).",
         "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
         "cl.more": "Show more",
         "cl.title": "Updates",
@@ -7939,6 +7995,7 @@
             myProfile = doc.exists ? { id: doc.id, ...doc.data() } : null;
             renderProfile();
             checkOnboarding();
+            setTimeout(maybeAskPush, 800);
             // Start-XP kan være ændret, så regn rank igen (når registreringerne er hentet)
             if (myProfile && logsLoaded) syncXp();
           },
@@ -9304,7 +9361,8 @@
       if (relationTo(uid) === "incoming") return acceptRequest(uid);
       const me = currentUserKey();
       return friendAction(
-        () => db.collection("friendRequests").doc(`${me}_${uid}`).set({ from: me, to: uid, createdAt: Date.now() }),
+        () => db.collection("friendRequests").doc(`${me}_${uid}`).set({ from: me, to: uid, createdAt: Date.now() })
+          .then(() => queuePush(uid, "request")),
         t("friends.sentToast", { name: nameOf(uid) })
       );
     }
@@ -9314,7 +9372,7 @@
       const batch = db.batch();
       batch.set(db.collection("friendships").doc(friendshipId(me, uid)), { users: [uid, me], createdAt: Date.now() });
       batch.delete(db.collection("friendRequests").doc(`${uid}_${me}`));
-      return friendAction(() => batch.commit(), t("friends.acceptedToast", { name: nameOf(uid) }));
+      return friendAction(() => batch.commit().then(() => queuePush(uid, "accepted")), t("friends.acceptedToast", { name: nameOf(uid) }));
     }
 
     function declineRequest(uid) {
@@ -9508,7 +9566,8 @@
         } else if (munch) {
           await db.collection("munchies").add({ ...data, likes: [] });
         } else {
-          await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
+          const ref = await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
+          data.mentions.forEach((m) => queuePush(m.uid, "mention", text, ref.id));
         }
         closeSheet();
         showToast(t(editingPostId ? "post.saved" : roll ? "roll.posted" : munch ? "munch.posted" : "forum.posted"));
@@ -9778,6 +9837,10 @@
           createdAt: Date.now(),
         });
         await db.collection("posts").doc(postId).update({ commentCount: FieldValue().increment(1) });
+        const post = posts.find((x) => x.id === postId);
+        const tagged = findMentions(text).map((m) => m.uid);
+        if (post && !tagged.includes(post.author)) queuePush(post.author, "comment", text, postId);
+        tagged.forEach((uid) => queuePush(uid, "mention", text, postId));
       } catch (error) {
         console.error(error);
         input.value = text;
@@ -13417,15 +13480,119 @@
     }
 
     notifToggle.addEventListener("click", async () => {
+      await askPushPermission();
+      renderNotifToggle();
+    });
+
+    renderNotifToggle();
+
+    // ---------- Push: notifikationer, når appen er lukket ----------
+    // Telefonen giver et "abonnement", som gemmes i pushSubs/{uid}.
+    // Når man skriver til nogen osv., lægges en besked i pushQueue.
+    // En GitHub Action kigger i køen hvert 5. minut og sender beskederne.
+    const PUSH_PUBLIC_KEY = "BCddMZ1dKlYPo9CdWxrjmrs1QyxwnmJ7gyQPWqDlkO-EOl96MrUSThl7oiB5LY4SiiqNewhoGXZLlECLP6fcLXI";
+    let pushAsked = false;
+
+    function pushSupported() {
+      return "Notification" in window && "serviceWorker" in navigator && "PushManager" in window && !window.Capacitor;
+    }
+
+    function isIOS() {
+      return /iPhone|iPad|iPod/.test(navigator.userAgent);
+    }
+
+    function keyToBytes(key) {
+      const raw = atob((key + "=".repeat((4 - (key.length % 4)) % 4)).replace(/-/g, "+").replace(/_/g, "/"));
+      return Uint8Array.from(raw, (c) => c.charCodeAt(0));
+    }
+
+    // Kort id for en telefon, så hver telefon har sin egen plads
+    function subKey(endpoint) {
+      let h = 0;
+      for (let i = 0; i < endpoint.length; i++) h = (h * 31 + endpoint.charCodeAt(i)) >>> 0;
+      return "s" + h.toString(36);
+    }
+
+    async function enablePush() {
+      const uid = currentUserKey();
+      if (!uid || !pushSupported() || Notification.permission !== "granted") return;
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = (await reg.pushManager.getSubscription())
+          || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyToBytes(PUSH_PUBLIC_KEY) }));
+        const json = sub.toJSON();
+        await db.collection("pushSubs").doc(uid).set({
+          uid,
+          subs: { [subKey(json.endpoint)]: { endpoint: json.endpoint, keys: json.keys, lang: lang || "da", at: Date.now() } },
+        }, { merge: true });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function askPushPermission() {
       try {
         await Notification.requestPermission();
       } catch {
         // Ældre browsere
       }
-      renderNotifToggle();
-    });
+      if (Notification.permission === "granted") {
+        showToast(t("push.on"));
+        enablePush();
+      }
+    }
 
-    renderNotifToggle();
+    // Lægger en notifikation i køen til en anden bruger
+    function queuePush(to, type, text = "", ref = "") {
+      const me = currentUserKey();
+      if (!to || !me || to === me) return;
+      db.collection("pushQueue").add({
+        to,
+        from: me,
+        fromName: myProfile ? myProfile.name : "?",
+        type,
+        text: String(text).slice(0, 120),
+        ref,
+        createdAt: Date.now(),
+      }).catch(() => {});
+    }
+
+    // Første gang appen åbnes (hver gang, indtil de er slået til) spørges man
+    function maybeAskPush() {
+      if (pushAsked || !myProfile || !myProfile.onboarded) return;
+      if (!("Notification" in window) || !pushSupported()) {
+        // iPhone i Safari: forklar at appen skal på hjemmeskærmen
+        if (!isIOS() || isInstalled() || window.Capacitor) return;
+        pushAsked = true;
+        return showPushSheet("install");
+      }
+      if (Notification.permission === "granted") {
+        pushAsked = true;
+        return enablePush();
+      }
+      pushAsked = true;
+      showPushSheet(Notification.permission);
+    }
+
+    function showPushSheet(state) {
+      document.getElementById("push-text").textContent = t(state === "denied" ? "push.denied" : state === "install" ? "push.install" : "push.text");
+      const yes = document.getElementById("push-yes");
+      yes.textContent = t(state === "default" ? "push.yes" : "push.ok");
+      yes.dataset.state = state;
+      document.getElementById("push-later").classList.toggle("hidden", state !== "default");
+      sheetBackdrop.classList.remove("hidden");
+      document.getElementById("push-sheet").classList.remove("hidden");
+    }
+
+    document.getElementById("push-yes").addEventListener("click", async (e) => {
+      const state = e.currentTarget.dataset.state;
+      closeSheet();
+      if (state === "default") {
+        await askPushPermission();
+        renderNotifToggle();
+      }
+    });
+    document.getElementById("push-later").addEventListener("click", closeSheet);
 
     // ==========================================================
     // IKONER: enkle streg-ikoner i tekstfarven i stedet for emojis
@@ -13672,6 +13839,7 @@
           responses: {},
           createdAt: Date.now(),
         });
+        friendships.map(otherUser).forEach((uid) => queuePush(uid, "sesh", place));
         closeSheet();
         showToast(t("sesh.sent"));
       } catch (error) {
@@ -13795,7 +13963,10 @@
         emoji: "💪",
         createdAt: Date.now(),
       })
-        .then(() => showToast(t("tbm.cheerSent", { name: personName(uid) })))
+        .then(() => {
+          queuePush(uid, "cheer");
+          showToast(t("tbm.cheerSent", { name: personName(uid) }));
+        })
         .catch((error) => showToast(dbErrorText(error)));
     }
 
@@ -14332,6 +14503,7 @@
           read: { [me]: now },
         }, { merge: true });
         await db.collection("chats").doc(id).collection("messages").add({ from: me, text, createdAt: now });
+        queuePush(openChatWith, "chat", text, id);
       } catch (error) {
         console.error(error);
         input.value = text;
