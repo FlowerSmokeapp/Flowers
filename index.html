@@ -4054,6 +4054,16 @@
       background: var(--primary);
       border-color: var(--primary);
     }
+
+    .danger-text {
+      color: var(--error);
+    }
+    .cell.is-death {
+      background: rgba(255, 92, 92, 0.22);
+    }
+    .cell.is-swap {
+      background: rgba(77, 195, 255, 0.14);
+    }
   </style>
 </head>
 <body>
@@ -5111,6 +5121,10 @@
         "game.won": "{name} vandt!",
         "game.wonText": "Første spiller i mål. Godt spillet!",
         "game.playAgain": "Spil igen",
+        "game.swapped": "Du byttede plads med {name}!",
+        "game.swapNone": "Du fører allerede, så du bliver stående.",
+        "game.deathOk": "✅ Klarede den",
+        "game.deathFail": "❌ Fejlede",
         "game.peek": "Se brættet",
         "game.peekBack": "Tilbage til spillet",
         "back.munchies": "‹ Munchies",
@@ -5554,6 +5568,10 @@
         "game.won": "{name} wins!",
         "game.wonText": "First player to the finish. Well played!",
         "game.playAgain": "Play again",
+        "game.swapped": "You swapped places with {name}!",
+        "game.swapNone": "You're already in the lead, so you stay put.",
+        "game.deathOk": "✅ Made it",
+        "game.deathFail": "❌ Failed",
         "game.peek": "See the board",
         "game.peekBack": "Back to the game",
         "back.munchies": "‹ Munchies",
@@ -8570,7 +8588,12 @@
     // Man slår med terningen, rykker frem og laver det, der står på feltet.
     // Den første spiller i mål vinder.
     const TILES = {
-      s1: { icon: "1", hits: 1, da: { name: "1 sug", short: "sug" }, en: { name: "1 puff", short: "puff" } },
+      s1: {
+        icon: "1",
+        hits: 1,
+        da: { name: "1 sug", short: "sug", desc: "Tag 1 normalt sug." },
+        en: { name: "1 puff", short: "puff", desc: "Take 1 normal puff." },
+      },
       s2: { icon: "2", hits: 2, da: { name: "2 sug", short: "sug" }, en: { name: "2 puffs", short: "puffs" } },
       s3: { icon: "3", hits: 3, da: { name: "3 sug", short: "sug" }, en: { name: "3 puffs", short: "puffs" } },
       s4: { icon: "4", hits: 4, da: { name: "4 sug", short: "sug" }, en: { name: "4 puffs", short: "puffs" } },
@@ -8652,7 +8675,74 @@
         da: { name: "Joker", short: "Joker", desc: "Vælg en spiller, der skal tage 3 sug." },
         en: { name: "Joker", short: "Joker", desc: "Pick a player who has to take 3 puffs." },
       },
+      lung2: {
+        icon: "🫁",
+        hits: 2,
+        da: { name: "2× Lunge", short: "2× Lunge", desc: "Bong med hånden. 2 gange." },
+        en: { name: "2× Lung", short: "2× Lung", desc: "Hand bong. Twice." },
+      },
+      lung3: {
+        icon: "🫁",
+        hits: 3,
+        da: { name: "3× Lunge", short: "3× Lunge", desc: "Bong med hånden. 3 gange." },
+        en: { name: "3× Lung", short: "3× Lung", desc: "Hand bong. Three times." },
+      },
+      diy2: {
+        icon: "👑",
+        hits: 2,
+        da: { name: "2× DIY konge", short: "2× DIY", desc: "Mellem tænderne med den. 2 gange." },
+        en: { name: "2× DIY king", short: "2× DIY", desc: "Between your teeth with it. Twice." },
+      },
+      x412: {
+        icon: "⏱️",
+        timer: [12],
+        hits: 4,
+        da: { name: "4×12 sek", short: "4×12 sek", desc: "Tag 4 sug på 12 sekunder. Start timeren, når du er klar." },
+        en: { name: "4×12 sec", short: "4×12 sec", desc: "Take 4 puffs in 12 seconds. Start the timer when you're ready." },
+      },
+      stinging: {
+        icon: "🐝",
+        timer: [3],
+        hits: 1,
+        da: { name: "Stinging Roger", short: "Stinging Roger", desc: "Tag et langt sug på 3 sekunder." },
+        en: { name: "Stinging Roger", short: "Stinging Roger", desc: "Take a long puff for 3 seconds." },
+      },
+      truth: {
+        icon: "🗣️",
+        da: { name: "Sandhed eller sug", short: "Sandhed", desc: "De andre stiller dig ét spørgsmål. Svar ærligt, eller tag 3 sug." },
+        en: { name: "Truth or puff", short: "Truth", desc: "The others ask you one question. Answer honestly, or take 3 puffs." },
+      },
+      swap: {
+        icon: "🔄",
+        type: "swap",
+        da: { name: "Byt plads", short: "Byt plads", desc: "Du bytter plads med den spiller, der fører." },
+        en: { name: "Swap places", short: "Swap", desc: "You swap places with the player in the lead." },
+      },
+      death: {
+        icon: "💀",
+        type: "death",
+        timer: [10],
+        hits: 5,
+        da: {
+          name: "Dødsfeltet",
+          short: "Dødsfeltet",
+          desc: "Tag 5 sug i træk, og hold det sidste inde i 10 sekunder. Fejler du, ryger du helt tilbage til START!",
+        },
+        en: {
+          name: "Death tile",
+          short: "Death",
+          desc: "Take 5 puffs in a row and hold the last one for 10 seconds. Fail, and you go all the way back to START!",
+        },
+      },
     };
+
+    // Brættet: første og sidste række ligger fast, de to midterste blandes
+    const BOARD_FIRST = ["s1", "s2", "s3", "s4", "s5", "pass", "back", "bobLong"];
+    const BOARD_MIDDLE = [
+      "lung", "lung2", "lung3", "bobShort", "bobLong", "bobLong", "tornado", "x412", "x412",
+      "x510", "x510", "x3102", "diy", "diy2", "chimney", "wheel", "truth", "swap",
+    ];
+    const BOARD_LAST = ["stinging", "bobLong", "lung2", "stinging", "diy2", "turtle", "x3102", "death"];
 
     // Lykkehjulet: 8 felter
     const WHEEL = [
@@ -9156,6 +9246,27 @@
       if (tile.type === "waterfall") players.forEach((_, i) => addHits(i, 1));
       if (tile.type === "back") return showBackTile(info);
       if (tile.type === "wheel") return showWheelTile(info);
+      if (tile.type === "swap") {
+        // Find den, der er længst fremme (ud over mig selv)
+        const leader = players.map((_, i) => i).filter((i) => i !== player)
+          .sort((a, b) => positions[b] - positions[a])[0];
+        let note = t("game.swapNone");
+        if (leader !== undefined && positions[leader] > positions[player]) {
+          [positions[player], positions[leader]] = [positions[leader], positions[player]];
+          renderBoard();
+          note = t("game.swapped", { name: players[leader].name });
+        }
+        return showTile(tile.icon, `${info}<p class="tile-bonus">🔄 ${esc(note)}</p>`, true);
+      }
+      if (tile.type === "death") {
+        return showTile(timerVisual(tile.timer[0]), `${info}
+          <p class="timer-round" id="timer-round"></p>
+          <button type="button" class="btn-plain" data-tile-action="timer">⏱ ${t("game.timerStart")}</button>
+          <div class="tile-buttons">
+            <button type="button" class="btn-plain danger-text" data-tile-action="death-fail">${t("game.deathFail")}</button>
+            <button type="button" class="btn-primary" data-tile-action="next">${t("game.deathOk")}</button>
+          </div>`, false);
+      }
       if (tile.type === "boost") {
         return showTile(tile.icon, `${info}
           <button type="button" class="btn-primary" data-tile-action="boost">${t("game.boostBtn")}</button>`, false);
@@ -9169,6 +9280,16 @@
           </div>`, false);
       }
       showTile(tile.icon, info, true);
+    }
+
+    // Fejlede man Dødsfeltet, går det helt tilbage til START
+    function deathFail() {
+      timerToken++;
+      hideOverlay();
+      positions[turn] = 0;
+      renderBoard();
+      vibrate([300, 100, 300]);
+      setTimeout(() => landOn(turn), 400);
     }
 
     async function boost(button) {
@@ -9254,6 +9375,7 @@
       if (action === "spin") spinWheel(button);
       if (action === "timer") runTimers(button);
       if (action === "boost") boost(button);
+      if (action === "death-fail") deathFail();
       if (action === "play-again") startGame();
       if (action === "end") endGame();
     });
@@ -9283,8 +9405,7 @@
     // ---------- Start og slut ----------
     // Spillet fylder hele skærmen og spilles med telefonen vandret
     function startGame() {
-      const middle = shuffle([...Object.keys(TILES), ...Object.keys(TILES)]);
-      board = ["start", ...middle.slice(0, BOARD_SIZE - 2), "goal"];
+      board = ["start", ...BOARD_FIRST, ...shuffle(BOARD_MIDDLE), ...BOARD_LAST, "goal"];
       positions = players.map(() => 0);
       hits = players.map(() => 0);
       lastRoll = 0;
