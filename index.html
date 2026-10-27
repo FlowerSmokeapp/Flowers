@@ -4648,6 +4648,108 @@
       font-size: 13px;
       line-height: 1.4;
     }
+
+    /* ---------- Chat ---------- */
+    .chat-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .chat-row.unread {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .chat-row-text {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .chat-row-text small {
+      overflow: hidden;
+      color: var(--muted);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chat-row.unread .chat-row-text small {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .chat-time {
+      flex: none;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .chat-starts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chat-start {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px 6px 6px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .chat-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .chat-head .back {
+      margin: 0 6px 0 0;
+    }
+    .chat-messages {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 160px;
+    }
+    .bubble {
+      align-self: flex-start;
+      max-width: 78%;
+      padding: 9px 13px;
+      border-radius: 18px 18px 18px 6px;
+      background: var(--card-2);
+      font-size: 15px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+    .bubble.mine {
+      align-self: flex-end;
+      border-radius: 18px 18px 6px 18px;
+      background: var(--primary);
+      color: #fff;
+    }
+    .chat-stamp {
+      margin: 10px 0 4px;
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+    }
+    .person-actions .btn-primary + .btn-plain {
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -5244,7 +5346,13 @@
         <section class="page" data-page="friends" id="friends-page">
           <!-- Mine venner + søgning -->
           <div class="view active" data-fview="list">
-            <h1 class="page-title" data-i18n="nav.friends">Venner</h1>
+            <div class="title-row">
+              <h1 class="page-title" data-i18n="nav.friends">Venner</h1>
+              <button type="button" class="icon-btn bell" id="open-chats" data-i18n-aria="chat.title" aria-label="Chat">
+                <svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg>
+                <span class="badge hidden" id="chat-badge"></span>
+              </button>
+            </div>
             <label class="search">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
               <input type="search" id="friend-search" data-i18n-ph="friends.searchPh" placeholder="Søg efter smoker" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
@@ -5279,6 +5387,27 @@
             <button class="back" id="pfriends-back"></button>
             <h1 class="page-title" id="pfriends-title"></h1>
             <div id="pfriends-list" class="people"></div>
+          </div>
+
+          <!-- Mine chats -->
+          <div class="view" data-fview="chats">
+            <button class="back" id="chats-back" data-i18n="back.friends">‹ Venner</button>
+            <h1 class="page-title" data-i18n="chat.title">Chat</h1>
+            <div id="chat-list"></div>
+          </div>
+
+          <!-- En samtale -->
+          <div class="view" data-fview="chat">
+            <div class="chat-head">
+              <button class="back" id="chat-back" data-i18n="back.chats">‹ Chat</button>
+              <span class="avatar avatar-sm" id="chat-avatar"></span>
+              <strong id="chat-name"></strong>
+            </div>
+            <div id="chat-messages" class="chat-messages"></div>
+            <form id="chat-form" class="comment-form" novalidate>
+              <input type="text" name="text" maxlength="1000" autocomplete="off" data-i18n-ph="chat.ph" placeholder="Skriv en besked…">
+              <button type="submit" class="btn-primary" data-i18n="post.send">Send</button>
+            </form>
           </div>
         </section>
 
@@ -6083,6 +6212,15 @@
         "friends.searchPh": "Søg efter smoker",
         "friends.requests": "Venneanmodninger",
         "friends.yours": "Dine venner",
+        "chat.title": "Chat",
+        "chat.write": "Skriv",
+        "chat.you": "Dig:",
+        "chat.empty": "Ingen samtaler endnu.",
+        "chat.startNew": "Skriv til en ven",
+        "chat.first": "Skriv den første besked til {name} 👋",
+        "chat.ph": "Skriv en besked…",
+        "back.chats": "‹ Chat",
+        "notif.chat": "{name}: {text}",
         "money.price": "Pris pr. gram",
         "money.perGram": "kr pr. gram",
         "money.help": "Skriv hvad du typisk giver pr. gram, så kan du se, hvad du bruger, og hvad du sparer under en pause.",
@@ -6655,6 +6793,15 @@
         "friends.searchPh": "Search for a smoker",
         "friends.requests": "Friend requests",
         "friends.yours": "Your friends",
+        "chat.title": "Chat",
+        "chat.write": "Message",
+        "chat.you": "You:",
+        "chat.empty": "No conversations yet.",
+        "chat.startNew": "Message a friend",
+        "chat.first": "Send the first message to {name} 👋",
+        "chat.ph": "Write a message…",
+        "back.chats": "‹ Chat",
+        "notif.chat": "{name}: {text}",
         "money.price": "Price per gram",
         "money.perGram": "kr per gram",
         "money.help": "Enter what you usually pay per gram to see what you spend and how much you save during a break.",
@@ -7111,6 +7258,7 @@
       listenToMunchies();
       listenToSeshes();
       listenToCheers();
+      listenToChats();
       listenToChecklist();
       listenToLogs();
 
@@ -7128,6 +7276,7 @@
       stopMunchies();
       stopSeshes();
       stopCheers();
+      stopChats();
       stopChecklist();
       stopLogs();
     }
@@ -7160,6 +7309,7 @@
       }
       if (!root) cancelPlacing();
       if (name === "friends" && activeTab === "friends") showFriendsList();
+      if (name !== "friends" && typeof closeChat === "function") closeChat();
       // Hent vennernes profiler på ny, så "Smoker nu" er opdateret
       if (name === "friends" && currentUserKey()) {
         Promise.all(friendships.map((f) => getProfile(otherUser(f), true).catch(() => null))).then(() => renderFriends());
@@ -8158,6 +8308,7 @@
       let actions;
       if (relation === "friend") {
         actions = `
+          <button type="button" class="btn-primary" data-action="chat">💬 ${t("chat.write")}</button>
           <button type="button" class="btn-plain" disabled>${t("friends.isFriend")}</button>
           <button type="button" class="link-btn danger" data-action="remove">${t("friends.remove")}</button>`;
       } else if (relation === "incoming") {
@@ -8207,6 +8358,7 @@
         cancel: cancelRequest,
         remove: removeFriend,
         cheer: sendCheer,
+        chat: openChat,
         friends: () => {
           renderPersonFriends();
           showFriendsView("pfriends");
@@ -11975,6 +12127,11 @@
         text: t("notif.sesh", { name: personName(x.host, x.hostName), time: seshTime(x.time) }),
         open: () => showPage("home"),
       }));
+      (chats || []).filter((c) => isUnread(c)).forEach((c) => list.push({
+        id: "chat-" + c.id + "-" + c.lastAt, time: c.lastAt, icon: "💬", uid: c.lastFrom,
+        text: t("notif.chat", { name: personName(c.lastFrom), text: c.lastText || "" }),
+        open: () => { showPage("friends"); openChat(c.lastFrom); },
+      }));
       (cheers || []).forEach((c) => list.push({
         id: "cheer-" + c.id, time: c.createdAt || 0, icon: "💪", uid: c.from,
         text: t("notif.cheer", { name: personName(c.from, c.fromName) }),
@@ -12597,6 +12754,169 @@
         renderChallenge();
       }
     }
+
+    // ==========================================================
+    // CHAT mellem venner
+    // ==========================================================
+    // chats/{id}: { users: [a, b], lastText, lastFrom, lastAt, read: { uid: tid } }
+    // chats/{id}/messages: { from, text, createdAt }
+    var chats = [];           // var: bruges også af notifikationerne
+    let chatsUnsub = null;
+    let chatMsgsUnsub = null;
+    let openChatWith = null;
+    const chatList = document.getElementById("chat-list");
+    const chatMessages = document.getElementById("chat-messages");
+    const chatForm = document.getElementById("chat-form");
+
+    function chatId(a, b) {
+      return [a, b].sort().join("_");
+    }
+
+    function listenToChats() {
+      if (chatsUnsub || !db) return;
+      chatsUnsub = db.collection("chats").where("users", "array-contains", currentUserKey()).onSnapshot((snap) => {
+        chats = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })).sort((a, b) => (b.lastAt || 0) - (a.lastAt || 0));
+        renderChatList();
+        renderChatBadge();
+        queueNotifications();
+      }, (error) => console.error(error));
+    }
+
+    function stopChats() {
+      if (chatsUnsub) chatsUnsub();
+      chatsUnsub = null;
+      closeChat();
+      chats = [];
+    }
+
+    function isUnread(chat) {
+      const me = currentUserKey();
+      return chat.lastFrom && chat.lastFrom !== me && (chat.lastAt || 0) > ((chat.read || {})[me] || 0);
+    }
+
+    function renderChatBadge() {
+      const n = chats.filter(isUnread).length;
+      const badge = document.getElementById("chat-badge");
+      badge.textContent = n;
+      badge.classList.toggle("hidden", !n);
+    }
+
+    function renderChatList() {
+      const me = currentUserKey();
+      const friendIds = friendships.map(otherUser);
+      const withChat = new Set(chats.map((c) => c.users.find((u) => u !== me)));
+      const rows = chats.map((c) => {
+        const other = c.users.find((u) => u !== me);
+        const p = profileCache.get(other) || { id: other, name: "?" };
+        return `
+          <button type="button" class="chat-row ${isUnread(c) ? "unread" : ""}" data-chat="${esc(other)}">
+            <span class="avatar avatar-sm">${avatarHTML(p)}</span>
+            <span class="chat-row-text">
+              <strong>${esc(p.name)}</strong>
+              <small>${c.lastFrom === me ? t("chat.you") + " " : ""}${esc(c.lastText || "")}</small>
+            </span>
+            <small class="chat-time">${c.lastAt ? timeAgo(c.lastAt) : ""}</small>
+          </button>`;
+      }).join("");
+      // Venner, man ikke har skrevet med endnu
+      const start = friendIds.filter((u) => !withChat.has(u)).map((u) => {
+        const p = profileCache.get(u) || { id: u, name: "?" };
+        return `
+          <button type="button" class="chat-start" data-chat="${esc(u)}">
+            <span class="avatar avatar-sm">${avatarHTML(p)}</span>
+            <span>${esc(p.name)}</span>
+          </button>`;
+      }).join("");
+      chatList.innerHTML = `
+        ${rows || `<p class="empty-note">${t("chat.empty")}</p>`}
+        ${start ? `<h2 class="section-title">${t("chat.startNew")}</h2><div class="chat-starts">${start}</div>` : ""}`;
+    }
+
+    function openChat(uid) {
+      openChatWith = uid;
+      const me = currentUserKey();
+      const id = chatId(me, uid);
+      const p = profileCache.get(uid) || { name: "?" };
+      document.getElementById("chat-name").textContent = p.name;
+      document.getElementById("chat-avatar").innerHTML = avatarHTML(p);
+      chatMessages.innerHTML = "";
+      showFriendsView("chat");
+      if (chatMsgsUnsub) chatMsgsUnsub();
+      chatMsgsUnsub = db.collection("chats").doc(id).collection("messages").orderBy("createdAt").limitToLast(100)
+        .onSnapshot((snap) => {
+          const msgs = snap.docs.map((doc) => doc.data());
+          chatMessages.innerHTML = msgs.length
+            ? msgs.map((m, i) => {
+              const showTime = !i || m.createdAt - msgs[i - 1].createdAt > 30 * 60e3;
+              return `
+                ${showTime ? `<p class="chat-stamp">${new Date(m.createdAt).toLocaleString(t("locale"), { weekday: "short", hour: "2-digit", minute: "2-digit" })}</p>` : ""}
+                <div class="bubble ${m.from === me ? "mine" : ""}">${esc(m.text)}</div>`;
+            }).join("")
+            : `<p class="empty-note">${t("chat.first", { name: esc(p.name) })}</p>`;
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          scrollToBottom();
+          markChatRead(id);
+        }, (error) => console.error(error));
+    }
+
+    function scrollToBottom() {
+      const screen = document.getElementById("phone-screen");
+      if (screen) screen.scrollTop = screen.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function markChatRead(id) {
+      const chat = chats.find((c) => c.id === id);
+      if (!chat || !isUnread(chat)) return;
+      db.collection("chats").doc(id).set({ read: { [currentUserKey()]: Date.now() } }, { merge: true }).catch(() => {});
+    }
+
+    function closeChat() {
+      if (chatMsgsUnsub) chatMsgsUnsub();
+      chatMsgsUnsub = null;
+      openChatWith = null;
+    }
+
+    chatList.addEventListener("click", (e) => {
+      const row = e.target.closest("[data-chat]");
+      if (row) openChat(row.dataset.chat);
+    });
+
+    document.getElementById("chat-back").addEventListener("click", () => {
+      closeChat();
+      showFriendsView("chats");
+    });
+    document.getElementById("chats-back").addEventListener("click", showFriendsList);
+    document.getElementById("open-chats").addEventListener("click", () => {
+      friendships.map(otherUser).forEach((u) => getProfile(u).catch(() => null));
+      renderChatList();
+      showFriendsView("chats");
+    });
+
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = chatForm.elements.text;
+      const text = input.value.trim();
+      if (!text || !openChatWith) return;
+      const me = currentUserKey();
+      const id = chatId(me, openChatWith);
+      const now = Date.now();
+      input.value = "";
+      try {
+        await db.collection("chats").doc(id).set({
+          users: [me, openChatWith].sort(),
+          lastText: text.slice(0, 80),
+          lastFrom: me,
+          lastAt: now,
+          read: { [me]: now },
+        }, { merge: true });
+        await db.collection("chats").doc(id).collection("messages").add({ from: me, text, createdAt: now });
+      } catch (error) {
+        console.error(error);
+        input.value = text;
+        showToast(dbErrorText(error));
+      }
+    });
 
     // ---------- Det hele på forsiden ----------
     function renderHomeExtras() {
