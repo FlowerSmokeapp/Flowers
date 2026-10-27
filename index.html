@@ -3495,6 +3495,12 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+    .spin-card .spin-prev {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
     .spin-card p {
       margin: 6px 0 0;
       font-size: 20px;
@@ -4324,7 +4330,7 @@
               </button>
               <button class="game-item" data-go="spin">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l5-6"/><path d="M12 7V3M12 21v-4M3 12h4M17 12h4"/></svg></span>
-                <span><strong>Spin the Joint</strong><small data-i18n="spin.tagline">Jointen snurrer og vælger, hvem der skal udfordres</small></span>
+                <span><strong>Spin the Joint</strong><small data-i18n="spin.tagline">Spin the joints</small></span>
                 <span class="chevron">›</span>
               </button>
             </div>
@@ -5041,11 +5047,12 @@
         "dice.help": "Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.",
         "dice.result1": "1 sug 🌿",
         "dice.resultN": "{n} sug 🌿",
-        "spin.tagline": "Jointen snurrer og vælger, hvem der skal udfordres",
+        "spin.tagline": "Spin the joints",
         "spin.help": "Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.",
         "spin.empty": "Tilføj spillere for at starte",
         "spin.spin": "Snur jointen",
-        "spin.cards": "Tag 1 sug|Tag 2 sug|Tag 3 sug|Giv {other} 2 sug|Du og {other} tager et sug på samme tid|Tag et sug og hold det inde i 10 sekunder|Pass the spliff|Duel: du og {other} tager et langt sug. Den, der holder det inde længst, giver 3 sug væk|Bob Marley: tag 3 sug i træk uden at puste ud imellem|Find på en regel, der gælder resten af spillet|Kaptajn: du bestemmer, hvem der tager de næste 2 sug|{other} bestemmer, hvor mange sug du tager (3-10)|Spejl: gør præcis som {other} i næste runde, ellers tager du 2 sug|Tag 2 sug og hold det inde, mens {other} tæller langsomt til 5|Skildpadde: tag et langt sug på mindst 5 sekunder 🐢",
+        "spin.prev": "Forrige spiller fik",
+        "spin.cards": "Tag 1 sug|Tag 2 sug|Tag 3 sug|Giv {other} 2 sug|Du og {other} tager et sug på samme tid|Tag et sug og hold det inde i 10 sekunder|Pass the spliff|Bob Marley: tag 3 sug i træk uden at puste ud imellem|Find på en regel, der gælder resten af spillet|{other} bestemmer, hvor mange sug du tager (3-10)|Spejl: gør det samme, som den forrige spiller gjorde|Skildpadde: tag et langt sug på mindst 5 sekunder 🐢",
         "game.players": "Spillere",
         "game.addPh": "Navn på spiller",
         "game.add": "Tilføj",
@@ -5481,11 +5488,12 @@
         "dice.help": "Roll the die. The number it lands on is the number of hits you take. Then pass it to the next person.",
         "dice.result1": "1 hit 🌿",
         "dice.resultN": "{n} hits 🌿",
-        "spin.tagline": "The joint spins and picks who gets the challenge",
+        "spin.tagline": "Spin the joints",
         "spin.help": "Add at least 2 players and spin the joint. Whoever it points at has to do the card. Tap a name to remove that player.",
         "spin.empty": "Add players to start",
         "spin.spin": "Spin the joint",
-        "spin.cards": "Take 1 hit|Take 2 hits|Take 3 hits|Give {other} 2 hits|You and {other} take a hit at the same time|Take a hit and hold it for 10 seconds|Pass the spliff|Duel: you and {other} take a long hit. Whoever holds it in longest gives away 3 hits|Bob Marley: take 3 hits in a row without breathing out in between|Make up a rule that lasts the rest of the game|Captain: you decide who takes the next 2 hits|{other} decides how many hits you take (3-10)|Mirror: copy {other} exactly next round, or take 2 hits|Take 2 hits and hold it while {other} slowly counts to 5|Turtle: take a long hit of at least 5 seconds 🐢",
+        "spin.prev": "Previous player got",
+        "spin.cards": "Take 1 hit|Take 2 hits|Take 3 hits|Give {other} 2 hits|You and {other} take a hit at the same time|Take a hit and hold it for 10 seconds|Pass the spliff|Bob Marley: take 3 hits in a row without breathing out in between|Make up a rule that lasts the rest of the game|{other} decides how many hits you take (3-10)|Mirror: do the same as the previous player did|Turtle: take a long hit of at least 5 seconds 🐢",
         "game.players": "Players",
         "game.addPh": "Player name",
         "game.add": "Add",
@@ -8834,6 +8842,7 @@
     const spinCard = document.getElementById("spin-card");
     let spinAngle = 0;
     let lastCard = -1;
+    let lastCardText = "";
 
     function renderSpin() {
       const n = spinPlayers.length;
@@ -8890,16 +8899,22 @@
       spinJoint.style.transform = `rotate(${spinAngle}deg)`;
 
       setTimeout(() => {
-        const cards = t("spin.cards").split("|");
-        let card;
-        do card = Math.floor(Math.random() * cards.length); while (card === lastCard && cards.length > 1);
-        lastCard = card;
         const others = spinPlayers.filter((_, i) => i !== winner);
         const other = others[Math.floor(Math.random() * others.length)];
+        const cards = t("spin.cards", { other }).split("|");
+        let card;
+        // Spejl-kortet giver kun mening, når der har været et kort før
+        const mirror = cards.length - 2;
+        do card = Math.floor(Math.random() * cards.length);
+        while ((card === lastCard || (card === mirror && !lastCardText)) && cards.length > 1);
+        lastCard = card;
         spinCircle.querySelector(`.spin-name[data-index="${winner}"]`).classList.add("chosen");
+        const text = cards[card];
         spinCard.innerHTML = `
           <small>${esc(spinPlayers[winner])}</small>
-          <p>${esc(cards[card].replace("{other}", other))}</p>`;
+          <p>${esc(text)}</p>
+          ${card === mirror ? `<p class="spin-prev">${t("spin.prev")}: ${esc(lastCardText)}</p>` : ""}`;
+        if (card !== mirror) lastCardText = text;
         spinCard.classList.remove("hidden");
         delete spinBtn.dataset.spinning;
         spinBtn.disabled = false;
