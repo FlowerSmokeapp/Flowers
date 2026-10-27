@@ -5603,10 +5603,10 @@
           </div>
           <div class="card home-rank-card" id="home-rank"></div>
 
-          <!-- Changelog: hentes fra GitHub, så den opdaterer sig selv hver dag -->
+          <!-- Opdateringer: de store nyheder i appen -->
           <div class="card changelog">
-            <h3>📝 Changelog</h3>
-            <div id="changelog-list"><p class="muted" data-i18n="cl.loading">Henter nyheder…</p></div>
+            <h3 data-i18n="cl.title">Opdateringer</h3>
+            <div id="changelog-list"></div>
             <button type="button" class="link-btn hidden" id="changelog-more" data-i18n="cl.more">Vis mere</button>
           </div>
         </section>
@@ -6514,14 +6514,11 @@
         "notif.state.unsupported": "Ikke understøttet her",
         "notif.help": "Du får en notifikation på telefonen, når nogen lægger noget op i Smoke Hub, eller du får en venneanmodning, mens appen er åben.",
         "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
-        "cl.loading": "Henter nyheder…",
         "cl.more": "Vis mere",
+        "cl.title": "Opdateringer",
         "cl.less": "Vis mindre",
         "cl.today": "I dag",
         "cl.yesterday": "I går",
-        "cl.changes1": "1 ændring",
-        "cl.changesN": "{n} ændringer",
-        "cl.failed": "Kunne ikke hente changelog lige nu.",
         "onb.usage": "Hvor meget ryger du?",
         "onb.errUsage": "Vælg hvor meget du ryger",
         "onb.startRank": "Du starter som {rank}",
@@ -7149,14 +7146,11 @@
         "notif.state.unsupported": "Not supported here",
         "notif.help": "You'll get a notification on your phone when someone posts in Smoke Hub or you get a friend request, while the app is open.",
         "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
-        "cl.loading": "Loading news…",
         "cl.more": "Show more",
+        "cl.title": "Updates",
         "cl.less": "Show less",
         "cl.today": "Today",
         "cl.yesterday": "Yesterday",
-        "cl.changes1": "1 change",
-        "cl.changesN": "{n} changes",
-        "cl.failed": "Couldn't load the changelog right now.",
         "onb.usage": "How much do you smoke?",
         "onb.errUsage": "Choose how much you smoke",
         "onb.startRank": "You start as {rank}",
@@ -7465,6 +7459,7 @@
       lang = newLang;
       localStorage.setItem(LANG_KEY, newLang);
       applyLanguage();
+      renderChangelog();
     }
 
     // Sprogvalg-skærmen vises første gang, og når man trykker på sprog-knappen
@@ -12684,28 +12679,59 @@
     renderInstallCard();
 
     // ==========================================================
-    // CHANGELOG: hvad der er lavet på appen, dag for dag
+    // OPDATERINGER: kun de store nyheder, nyeste først
     // ==========================================================
-    // Hver gang appen opdateres, gemmes ændringen på GitHub med en kort
-    // besked. Dem henter vi her og grupperer pr. dag.
-    const CHANGELOG_URL = "https://api.github.com/repos/danielsh08/Flowers/commits?per_page=100";
-    const CHANGELOG_KEY = "changelog";
+    // Tilføj en ny dag øverst, når der kommer noget stort.
+    const UPDATES = [
+      {
+        date: "2026-10-27",
+        da: [
+          "Flower kan hentes som app på iPhone og Android",
+          "Chat med dine venner",
+          "Sesh-invitationer: \"Hvem er klar?\" og \"Smoker nu\"",
+          "Badges, ugens udfordring og streak",
+          "T-break-tilstand med opmuntring fra venner",
+          "Nye spil: Double Trouble, Spin the Joint, Terningespillet og Weed Quiz",
+          "Smoke Hub med opslag, Rate the Roll, Munchies og leaderboard",
+          "Guides og fakta om cannabis",
+          "Notifikationer, venneforslag og lyst tema",
+        ],
+        en: [
+          "Flower can be installed as an app on iPhone and Android",
+          "Chat with your friends",
+          "Sesh invites: \"Who's ready?\" and \"Smoking now\"",
+          "Badges, weekly challenge and streak",
+          "T-break mode with cheers from friends",
+          "New games: Double Trouble, Spin the Joint, the Dice Game and Weed Quiz",
+          "Smoke Hub with posts, Rate the Roll, Munchies and leaderboard",
+          "Guides and facts about cannabis",
+          "Notifications, friend suggestions and light theme",
+        ],
+      },
+      {
+        date: "2026-10-26",
+        da: [
+          "Første version af Flower",
+          "Log en smoke, statistik, køre-timer og T-Break beregner",
+          "Ranks med XP",
+          "Smoke spots på kortet",
+          "Venner, profiler og opslag",
+          "Game of Joints og tjekliste over sorter",
+        ],
+        en: [
+          "First version of Flower",
+          "Log a smoke, stats, driving timer and T-Break calculator",
+          "Ranks with XP",
+          "Smoke spots on the map",
+          "Friends, profiles and posts",
+          "Game of Joints and strain checklist",
+        ],
+      },
+    ];
     const changelogList = document.getElementById("changelog-list");
     const changelogMore = document.getElementById("changelog-more");
-    let changelogDays = [];
     let changelogAll = false;
-
-    function groupChangelog(commits) {
-      const days = new Map();
-      commits.forEach((c) => {
-        const title = c.message.split("\n")[0].trim();
-        if (!title) return;
-        const day = dayStart(new Date(c.date).getTime());
-        if (!days.has(day)) days.set(day, []);
-        days.get(day).push(title);
-      });
-      return [...days.entries()].sort((a, b) => b[0] - a[0]).map(([day, items]) => ({ day, items }));
-    }
+    const changelogDays = UPDATES.map((u) => ({ day: dayStart(new Date(u.date + "T12:00").getTime()), update: u }));
 
     function dayLabel(day) {
       const today = dayStart(Date.now());
@@ -12717,43 +12743,16 @@
     function renderChangelog() {
       if (!changelogDays.length) return;
       const shown = changelogAll ? changelogDays.slice(0, 14) : changelogDays.slice(0, 1);
-      changelogList.innerHTML = shown.map(({ day, items }) => `
+      changelogList.innerHTML = shown.map(({ day, update }) => {
+        const items = update[lang === "en" ? "en" : "da"];
+        return `
         <div class="cl-day">
-          <p class="cl-date">${dayLabel(day)} <small>${t(items.length === 1 ? "cl.changes1" : "cl.changesN", { n: items.length })}</small></p>
+          <p class="cl-date">${dayLabel(day)} <small>${new Date(day).toLocaleDateString(t("locale"), { day: "numeric", month: "short" })}</small></p>
           <ul>${(changelogAll ? items : items.slice(0, 5)).map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
-        </div>`).join("");
-      changelogMore.classList.toggle("hidden", changelogDays.length < 2 && changelogDays[0].items.length <= 5);
+        </div>`;
+      }).join("");
+      changelogMore.classList.toggle("hidden", changelogDays.length < 2 && changelogDays[0].update.da.length <= 5);
       changelogMore.textContent = t(changelogAll ? "cl.less" : "cl.more");
-    }
-
-    async function loadChangelog() {
-      // Brug den gemte version, mens vi henter en ny (max hver 15. minut)
-      let cached = null;
-      try {
-        cached = JSON.parse(localStorage.getItem(CHANGELOG_KEY));
-      } catch {
-        cached = null;
-      }
-      if (cached && cached.commits) {
-        changelogDays = groupChangelog(cached.commits);
-        renderChangelog();
-        if (Date.now() - cached.at < 15 * 60e3) return;
-      }
-      try {
-        const response = await fetch(CHANGELOG_URL);
-        if (!response.ok) throw new Error(response.status);
-        const commits = (await response.json()).map((c) => ({ message: c.commit.message, date: c.commit.author.date }));
-        changelogDays = groupChangelog(commits);
-        renderChangelog();
-        try {
-          localStorage.setItem(CHANGELOG_KEY, JSON.stringify({ at: Date.now(), commits }));
-        } catch {
-          // Virker også uden at gemme
-        }
-      } catch (error) {
-        console.error(error);
-        if (!changelogDays.length) changelogList.innerHTML = `<p class="muted">${t("cl.failed")}</p>`;
-      }
     }
 
     changelogMore.addEventListener("click", () => {
@@ -12761,7 +12760,7 @@
       renderChangelog();
     });
 
-    loadChangelog();
+    renderChangelog();
 
     // ==========================================================
     // NOTIFIKATIONER: nyt i Smoke Hub og venneanmodninger
