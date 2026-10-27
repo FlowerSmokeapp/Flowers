@@ -10,10 +10,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-title" content="MinApp">
-  <meta name="theme-color" content="#0c0d0c">
+  <meta name="apple-mobile-web-app-title" content="Flower">
+  <meta name="application-name" content="Flower">
+  <meta name="theme-color" content="#000000">
 
-  <title>MinApp</title>
+  <title>Flower</title>
 
   <!-- Leaflet: gratis kortbibliotek til Smoke spots-kortet (kræver internet) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -4939,6 +4940,48 @@
     .notif-row:not(.unread) {
       opacity: 0.7;
     }
+
+    /* ---------- Installer som app ---------- */
+    .install-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-color: var(--primary);
+    }
+    .install-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+    }
+    .install-text {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .install-text small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .install-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .install-steps {
+      display: grid;
+      gap: 10px;
+      margin: 6px 0 14px 20px;
+      font-size: 16px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -5548,6 +5591,16 @@
             <h3>🔥 <span data-i18n="sesh.title">Seshs</span></h3>
             <div id="sesh-list"></div>
           </div>
+          <!-- Installer som app (vises kun i browseren) -->
+          <div class="card install-card hidden" id="install-card">
+            <img src="apple-touch-icon.png" alt="" class="install-icon">
+            <div class="install-text">
+              <strong data-i18n="inst.title">Hent Flower som app</strong>
+              <small data-i18n="inst.sub">Fuld skærm, eget ikon og notifikationer</small>
+            </div>
+            <button type="button" class="mini-btn primary" id="install-btn" data-i18n="inst.btn">Installer</button>
+            <button type="button" class="install-close" id="install-close" aria-label="Luk">✕</button>
+          </div>
           <div class="card home-rank-card" id="home-rank"></div>
 
           <!-- Changelog: hentes fra GitHub, så den opdaterer sig selv hver dag -->
@@ -5821,6 +5874,21 @@
         <button type="submit" class="btn-primary" id="entry-submit"></button>
       </div>
     </form>
+
+    <!-- Bundark: sådan installerer man på iPhone -->
+    <div id="install-sheet" class="sheet hidden">
+      <h2 data-i18n="inst.title">Hent Flower som app</h2>
+      <ol class="install-steps">
+        <li data-i18n="inst.s1">Åbn siden i Safari</li>
+        <li data-i18n="inst.s2">Tryk på Del-knappen (firkanten med pilen op) nederst</li>
+        <li data-i18n="inst.s3">Rul ned og tryk på "Føj til hjemmeskærm"</li>
+        <li data-i18n="inst.s4">Tryk "Tilføj" øverst til højre</li>
+      </ol>
+      <p class="muted" data-i18n="inst.after">Nu ligger Flower på din hjemmeskærm med eget ikon og åbner i fuld skærm som en rigtig app.</p>
+      <div class="sheet-actions">
+        <button type="button" class="btn-primary" id="install-ok" data-i18n="inst.ok">Forstået</button>
+      </div>
+    </div>
 
     <!-- Bundark: anmeld en sort -->
     <form id="review-form" class="sheet hidden" novalidate>
@@ -6419,6 +6487,16 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
+        "inst.title": "Hent Flower som app",
+        "inst.sub": "Fuld skærm, eget ikon og notifikationer",
+        "inst.btn": "Installer",
+        "inst.s1": "Åbn siden i Safari",
+        "inst.s2": "Tryk på Del-knappen (firkanten med pilen op) nederst",
+        "inst.s3": "Rul ned og tryk på \"Føj til hjemmeskærm\"",
+        "inst.s4": "Tryk \"Tilføj\" øverst til højre",
+        "inst.after": "Nu ligger Flower på din hjemmeskærm med eget ikon og åbner i fuld skærm som en rigtig app.",
+        "inst.ok": "Forstået",
+        "inst.done": "Flower er installeret 🌿",
         "notif.title": "Notifikationer",
         "notif.readAll": "Læs alle",
         "notif.empty": "Ingen notifikationer endnu. Her ser du, når nogen lægger noget op i Smoke Hub eller sender dig en venneanmodning.",
@@ -7044,6 +7122,16 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Edit profile",
         "profile.language": "Language",
+        "inst.title": "Get Flower as an app",
+        "inst.sub": "Full screen, its own icon and notifications",
+        "inst.btn": "Install",
+        "inst.s1": "Open the page in Safari",
+        "inst.s2": "Tap the Share button (the square with the arrow) at the bottom",
+        "inst.s3": "Scroll down and tap \"Add to Home Screen\"",
+        "inst.s4": "Tap \"Add\" in the top right",
+        "inst.after": "Flower is now on your home screen with its own icon and opens full screen like a real app.",
+        "inst.ok": "Got it",
+        "inst.done": "Flower is installed 🌿",
         "notif.title": "Notifications",
         "notif.readAll": "Read all",
         "notif.empty": "No notifications yet. Here you'll see when someone posts in Smoke Hub or sends you a friend request.",
@@ -12451,6 +12539,66 @@
     });
 
     // ==========================================================
+    // INSTALLER SOM APP
+    // ==========================================================
+    // Kører appen allerede fra hjemmeskærmen, vises intet. På Android kan
+    // browseren installere den direkte; på iPhone vises en vejledning.
+    const installCard = document.getElementById("install-card");
+    let installPrompt = null;
+
+    function isInstalled() {
+      return window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    }
+
+    function installDismissed() {
+      try {
+        return Number(localStorage.getItem("installClosed")) > Date.now() - 7 * DAY;
+      } catch {
+        return false;
+      }
+    }
+
+    function renderInstallCard() {
+      installCard.classList.toggle("hidden", isInstalled() || installDismissed());
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      installPrompt = e;
+      renderInstallCard();
+    });
+
+    window.addEventListener("appinstalled", () => {
+      installPrompt = null;
+      renderInstallCard();
+      showToast(t("inst.done"));
+    });
+
+    document.getElementById("install-btn").addEventListener("click", async () => {
+      if (installPrompt) {
+        installPrompt.prompt();
+        await installPrompt.userChoice.catch(() => null);
+        installPrompt = null;
+        return renderInstallCard();
+      }
+      sheetBackdrop.classList.remove("hidden");
+      document.getElementById("install-sheet").classList.remove("hidden");
+    });
+
+    document.getElementById("install-ok").addEventListener("click", closeSheet);
+
+    document.getElementById("install-close").addEventListener("click", () => {
+      try {
+        localStorage.setItem("installClosed", String(Date.now()));
+      } catch {
+        // ok
+      }
+      renderInstallCard();
+    });
+
+    renderInstallCard();
+
+    // ==========================================================
     // CHANGELOG: hvad der er lavet på appen, dag for dag
     // ==========================================================
     // Hver gang appen opdateres, gemmes ændringen på GitHub med en kort
@@ -12682,10 +12830,10 @@
     function systemNotify(n) {
       if (!("Notification" in window) || Notification.permission !== "granted") return;
       const options = { body: n.text, icon: "apple-touch-icon.png", tag: n.id };
-      if (swRegistration) swRegistration.showNotification("MinApp", options).catch(() => {});
+      if (swRegistration) swRegistration.showNotification("Flower", options).catch(() => {});
       else {
         try {
-          new Notification("MinApp", options);
+          new Notification("Flower", options);
         } catch {
           // Nogle browsere kræver service worker
         }

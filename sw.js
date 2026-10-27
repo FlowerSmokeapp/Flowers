@@ -1,7 +1,56 @@
-// Service worker: gør det muligt at vise notifikationer på telefonen,
-// når appen er føjet til hjemmeskærmen.
-self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
+// Service worker til Flower: gør at appen åbner som en rigtig app (også
+// uden internet) og kan vise notifikationer på telefonen.
+const CACHE = "flower-v1";
+const SHELL = [
+  "./",
+  "index.html",
+  "manifest.json",
+  "apple-touch-icon.png",
+  "icon-192.png",
+  "icon-512.png",
+  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+  "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+];
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((cache) => Promise.all(SHELL.map((url) => cache.add(url).catch(() => {}))))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+
+// Selve appen: prøv nettet først (så opdateringer kommer med det samme),
+// og brug den gemte kopi, når der ikke er internet.
+// Kortbilleder, databasen og GitHub gemmes ikke her.
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  const isApp = url.origin === self.location.origin;
+  const isLib = url.hostname === "unpkg.com" || (url.hostname === "www.gstatic.com" && url.pathname.startsWith("/firebasejs/"));
+  if (!isApp && !isLib) return;
+
+  event.respondWith(
+    fetch(req)
+      .then((res) => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, copy)).catch(() => {});
+        }
+        return res;
+      })
+      .catch(() => caches.match(req).then((hit) => hit || (req.mode === "navigate" ? caches.match("index.html") : undefined)))
+  );
+});
 
 // Tryk på en notifikation åbner appen (eller hopper tilbage til den)
 self.addEventListener("notificationclick", (event) => {
