@@ -2869,6 +2869,51 @@
       text-anchor: end;
     }
 
+    .line-chart .tick.mid,
+    .line-chart .value {
+      text-anchor: middle;
+    }
+
+    .forecast-chart {
+      margin: 4px 0 18px;
+    }
+    .forecast-chart .grid {
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+    .forecast-chart .low-line {
+      stroke: #6fd08f;
+      stroke-width: 1;
+      stroke-dasharray: 4 4;
+    }
+    .forecast-chart .low-text {
+      fill: #6fd08f;
+    }
+    .forecast-chart .line {
+      stroke: var(--level, var(--accent));
+    }
+    .forecast-chart .area {
+      fill: var(--level, var(--accent));
+      opacity: 0.12;
+    }
+    .forecast-chart .dot {
+      fill: var(--level, var(--accent));
+    }
+    .forecast-chart .value {
+      fill: var(--text);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .body-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .body-fields .field + .field {
+      margin-top: 0;
+    }
+
     .hbar {
       display: grid;
       grid-template-columns: 90px 1fr 28px;
@@ -3072,33 +3117,6 @@
     }
 
     /* ---------- T-Break prognose ---------- */
-    .forecast {
-      display: grid;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .forecast-row {
-      display: grid;
-      grid-template-columns: 64px 1fr 28px;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-    }
-    .forecast-row strong {
-      text-align: right;
-    }
-    .forecast-bar {
-      height: 8px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      overflow: hidden;
-    }
-    .forecast-bar span {
-      display: block;
-      height: 100%;
-      border-radius: 999px;
-      background: var(--level, var(--accent));
-    }
     .pause-empty {
       text-align: center;
     }
@@ -3607,6 +3625,25 @@
             <!-- Om dig -->
             <details class="card about-me">
               <summary data-i18n="ai.aboutMe">Om dig (gør beregningen bedre)</summary>
+              <div class="body-fields">
+                <label class="field">
+                  <span data-i18n="ai.q.weight">Vægt (kg)</span>
+                  <input type="number" inputmode="numeric" min="30" max="250" data-profile-field="weight" placeholder="75">
+                </label>
+                <label class="field">
+                  <span data-i18n="ai.q.height">Højde (cm)</span>
+                  <input type="number" inputmode="numeric" min="120" max="230" data-profile-field="height" placeholder="178">
+                </label>
+              </div>
+              <label class="field">
+                <span data-i18n="ai.q.sex">Køn</span>
+                <select data-profile-field="sex">
+                  <option value="" data-i18n="ai.choose">Vælg</option>
+                  <option value="male" data-i18n="ai.a.male">Mand</option>
+                  <option value="female" data-i18n="ai.a.female">Kvinde</option>
+                  <option value="other" data-i18n="ai.a.other">Andet</option>
+                </select>
+              </label>
               <label class="field">
                 <span data-i18n="ai.q.since">Hvor længe har du røget?</span>
                 <select data-profile-field="since">
@@ -3861,15 +3898,6 @@
         <span data-i18n="ai.thc">THC % (hvis du ved det)</span>
         <input type="text" name="thc" inputmode="decimal" data-i18n-ph="ai.thcPh" placeholder="Valgfrit">
       </label>
-      <label class="field">
-        <span data-i18n="ai.note">Note (valgfrit)</span>
-        <textarea name="note" maxlength="300" data-i18n-ph="ai.notePh" placeholder="Hvad røg du, hvor og med hvem?"></textarea>
-      </label>
-      <label class="photo-pick small-pick">
-        <span id="log-photo-text" data-i18n="ai.photo">📷 Tilføj billede (valgfrit)</span>
-        <img id="log-photo-preview" class="hidden" alt="">
-        <input type="file" accept="image/*" id="log-photo-input">
-      </label>
       <p class="error" aria-live="polite"></p>
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="log-cancel" data-i18n="common.cancel">Annuller</button>
@@ -4054,9 +4082,6 @@
         "home.logSub": "Hvor meget, hvordan og hvor skæv du blev",
         "ai.intro": "Beregneren bruger dine registreringer fra \"Log en smoke\" til at regne din tolerance ud, og hvornår en pause giver mest mening for dig.",
         "ai.time": "Klokken",
-        "ai.note": "Note (valgfrit)",
-        "ai.notePh": "Hvad røg du, hvor og med hvem?",
-        "ai.photo": "📷 Tilføj billede (valgfrit)",
         "ai.saveLog": "Gem",
         "ai.errFuture": "Tidspunktet kan ikke ligge i fremtiden",
         "ai.confirmDelete": "Vil du slette denne registrering?",
@@ -4175,6 +4200,20 @@
         "tb.tip.friend": "Fortæl en ven om pausen, så I kan holde hinanden oppe.",
         "tb.tip.gear": "Læg grej og rester væk, så de ikke frister.",
         "tb.tip.doctor": "Er det svært at holde pause, så snak med din læge. Det er helt normalt at få hjælp.",
+        "ai.q.weight": "Vægt (kg)",
+        "ai.q.height": "Højde (cm)",
+        "ai.q.sex": "Køn",
+        "ai.a.male": "Mand",
+        "ai.a.female": "Kvinde",
+        "ai.a.other": "Andet",
+        "ai.errBody": "Tjek vægt og højde",
+        "tb.bodyAvg": "Ud fra din vægt, højde og køn falder din tolerance i et normalt tempo.",
+        "tb.bodySlow": "Ud fra din vægt, højde og køn bliver THC ca. {pct}% længere i din krop end gennemsnittet, så pausen skal være lidt længere.",
+        "tb.bodyFast": "Ud fra din vægt, højde og køn forsvinder THC ca. {pct}% hurtigere fra din krop end gennemsnittet.",
+        "tb.bodyMissing": "Skriv din vægt, højde og dit køn under \"Om dig\", så bliver beregningen mere præcis.",
+        "tb.lowLine": "Lav tolerance",
+        "tb.today": "I dag",
+        "tb.dayN": "{n} d",
         "tb.forecast": "Din tolerance, hvis du holder pause fra nu",
         "tb.after": "{n} dage",
         "tb.left": "Dage tilbage",
@@ -4409,9 +4448,6 @@
         "home.logSub": "How much, how and how high you got",
         "ai.intro": "The calculator uses what you've logged with \"Log a smoke\" to work out your tolerance and when a break makes the most sense for you.",
         "ai.time": "Time",
-        "ai.note": "Note (optional)",
-        "ai.notePh": "What did you smoke, where and with who?",
-        "ai.photo": "📷 Add a photo (optional)",
         "ai.saveLog": "Save",
         "ai.errFuture": "The time can't be in the future",
         "ai.confirmDelete": "Delete this log?",
@@ -4530,6 +4566,20 @@
         "tb.tip.friend": "Tell a friend about your break so you can keep each other going.",
         "tb.tip.gear": "Put your gear and leftovers away so they don't tempt you.",
         "tb.tip.doctor": "If taking a break is hard, talk to your doctor. Getting help is completely normal.",
+        "ai.q.weight": "Weight (kg)",
+        "ai.q.height": "Height (cm)",
+        "ai.q.sex": "Sex",
+        "ai.a.male": "Male",
+        "ai.a.female": "Female",
+        "ai.a.other": "Other",
+        "ai.errBody": "Check your weight and height",
+        "tb.bodyAvg": "Based on your weight, height and sex, your tolerance drops at a normal pace.",
+        "tb.bodySlow": "Based on your weight, height and sex, THC stays in your body about {pct}% longer than average, so your break should be a bit longer.",
+        "tb.bodyFast": "Based on your weight, height and sex, THC leaves your body about {pct}% faster than average.",
+        "tb.bodyMissing": "Add your weight, height and sex under \"About you\" to make the result more accurate.",
+        "tb.lowLine": "Low tolerance",
+        "tb.today": "Today",
+        "tb.dayN": "{n} d",
         "tb.forecast": "Your tolerance if you take a break from now",
         "tb.after": "{n} days",
         "tb.left": "Days left",
@@ -7173,16 +7223,12 @@
     const logList = document.getElementById("log-list");
     const statsEl = document.getElementById("stats-content");
     const aiResult = document.getElementById("ai-result");
-    const logPhotoInput = document.getElementById("log-photo-input");
-    const logPhotoPreview = document.getElementById("log-photo-preview");
-    const logPhotoText = document.getElementById("log-photo-text");
     let logEntries = [];
     let aiProfile = {};
     let logUnsubs = [];
     let logTimes = 1;
     let logMethod = "joint";
     let logProduct = "flower";
-    let pendingLogPhoto = null;
 
     const HOUR = 36e5;
     const DAY = 864e5;
@@ -7264,9 +7310,6 @@
       logForm.elements.date.value = todayISO();
       logForm.elements.time.value = nowTime();
       logTimes = 1;
-      pendingLogPhoto = null;
-      logPhotoPreview.classList.add("hidden");
-      logPhotoText.classList.remove("hidden");
       renderLogForm();
       sheetBackdrop.classList.remove("hidden");
       logForm.classList.remove("hidden");
@@ -7296,23 +7339,11 @@
     logForm.elements.high.addEventListener("input", renderLogForm);
     document.getElementById("log-cancel").addEventListener("click", closeSheet);
 
-    logPhotoInput.addEventListener("change", async () => {
-      const file = logPhotoInput.files[0];
-      if (!file) return;
-      try {
-        pendingLogPhoto = await resizeImage(file);
-        logPhotoPreview.src = pendingLogPhoto;
-        logPhotoPreview.classList.remove("hidden");
-        logPhotoText.classList.add("hidden");
-      } catch {
-        showToast(t("img.failed"));
-      }
-    });
 
     logForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearErrors(logForm);
-      const { date, time, grams, high, thc, note } = logForm.elements;
+      const { date, time, grams, high, thc } = logForm.elements;
       const gramValue = Number(String(grams.value).replace(",", "."));
       if (!date.value) return setError(logForm, t("ai.errDate"));
       const at = new Date(`${date.value}T${time.value || "12:00"}`).getTime();
@@ -7335,8 +7366,6 @@
           method: logMethod,
           product: logProduct,
           thc: thcValue && thcValue > 0 && thcValue <= 100 ? thcValue : null,
-          note: note.value.trim(),
-          photo: pendingLogPhoto,
           createdAt: Date.now(),
         });
         closeSheet();
@@ -7374,11 +7403,35 @@
       return (Number(entry.grams) || 0) * 1000 * potency * absorption;
     }
 
-    function toleranceLoad(entries, time) {
+    // Kroppen: THC fordeles efter vægt og gemmes i fedtvæv.
+    // Lav vægt = samme mængde virker stærkere. Mere fedt (anslået ud fra
+    // BMI og køn) = THC bliver længere i kroppen, så tolerancen falder langsommere.
+    function bodyFactors() {
+      const weight = Number(aiProfile.weight);
+      const height = Number(aiProfile.height);
+      const sex = aiProfile.sex;
+      const result = { dose: 1, slow: 1, bmi: null, fat: null };
+      if (weight >= 30 && weight <= 250) result.dose = Math.min(1.6, Math.max(0.6, 75 / weight));
+      if (weight >= 30 && height >= 120 && height <= 230) {
+        const bmi = weight / (height / 100) ** 2;
+        // Deurenbergs formel med en alder på 25 år
+        const male = sex === "male" ? 1 : sex === "female" ? 0 : 0.5;
+        const fat = Math.min(50, Math.max(5, 1.2 * bmi + 0.23 * 25 - 10.8 * male - 5.4));
+        result.bmi = bmi;
+        result.fat = fat;
+        result.slow = Math.min(1.35, Math.max(0.8, 1 + (fat - 20) / 60));
+      } else if (sex === "female") {
+        result.slow = 1.08;
+      }
+      return result;
+    }
+
+    function toleranceLoad(entries, time, body = bodyFactors()) {
+      const slowDays = SLOW_DAYS * body.slow;
       return entries.reduce((sum, e) => {
         const age = (time - entryTime(e)) / DAY;
         if (age < 0) return sum;
-        return sum + doseMg(e) * (0.4 * Math.exp(-age / FAST_DAYS) + 0.6 * Math.exp(-age / SLOW_DAYS));
+        return sum + doseMg(e) * body.dose * (0.4 * Math.exp(-age / FAST_DAYS) + 0.6 * Math.exp(-age / slowDays));
       }, 0);
     }
 
@@ -7426,8 +7479,9 @@
       if (aiProfile.lastBreak === "never") adjust += 4;
       if (aiProfile.lastBreak === "last_month") adjust -= 4;
       // Justeringen fylder mindre, jo lavere tolerancen er, så den kan nå ned på 0
+      const body = bodyFactors();
       const scoreAt = (days) => {
-        const base = loadToScore(toleranceLoad(entries, now + days * DAY));
+        const base = loadToScore(toleranceLoad(entries, now + days * DAY, body));
         return Math.round(Math.max(0, Math.min(100, base + adjust * Math.min(1, base / 40))));
       };
       const score = scoreAt(0);
@@ -7492,6 +7546,12 @@
       if (strongShare > 0.4) reasons.push(t("tb.potent"));
       if (trend < -0.1) reasons.push(t("tb.trendDown"));
       else if (trend > 0.1) reasons.push(t("tb.trendUp"));
+      if (body.fat !== null) {
+        const pct = Math.round((body.slow - 1) * 100);
+        reasons.push(Math.abs(pct) < 5 ? t("tb.bodyAvg") : t(pct > 0 ? "tb.bodySlow" : "tb.bodyFast", { pct: Math.abs(pct) }));
+      } else if (!aiProfile.weight) {
+        reasons.push(t("tb.bodyMissing"));
+      }
       reasons.push(daysToLow ? t("tb.recovery", { n: daysToLow }) : t("tb.recoveryNone"));
 
       let pattern = t("tb.pattern", {
@@ -7522,7 +7582,7 @@
         explanation: reasons.join(" "),
         pattern,
         tips: tips.slice(0, 4),
-        forecast: [2, 7, 14, 28].map((d) => ({ days: d, score: scoreAt(d) })),
+        forecast: Array.from({ length: 29 }, (_, d) => scoreAt(d)),
         onBreak,
       };
     }
@@ -7535,12 +7595,39 @@
 
     document.querySelectorAll("[data-profile-field]").forEach((select) => {
       select.addEventListener("change", () => {
+        if (select.type === "number" && select.value && !select.checkValidity()) {
+          return showToast(t("ai.errBody"));
+        }
         aiProfile[select.dataset.profileField] = select.value;
         renderTBreak();
         logsDoc().set({ profile: { [select.dataset.profileField]: select.value } }, { merge: true })
           .catch((error) => showToast(dbErrorText(error)));
       });
     });
+
+    // Linjegraf: tolerancen dag for dag de næste 28 dage uden at ryge
+    function forecastChart(scores) {
+      const W = 300, H = 190, L = 30, R = 12, T = 22, B = 26;
+      const x = (d) => L + (d * (W - L - R)) / 28;
+      const y = (v) => T + ((100 - v) * (H - T - B)) / 100;
+      const line = scores.map((v, d) => `${x(d).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+      const area = `${x(0)},${y(0)} ${line} ${x(28)},${y(0)}`;
+      const marks = [0, 7, 14, 21, 28];
+      return `
+        <svg class="line-chart forecast-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${t("tb.forecast")}">
+          ${[0, 50, 100].map((v) => `
+            <line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" class="grid"/>
+            <text x="${L - 6}" y="${y(v) + 3}" class="tick end">${v}</text>`).join("")}
+          <line x1="${L}" x2="${W - R}" y1="${y(LOW_SCORE)}" y2="${y(LOW_SCORE)}" class="low-line"/>
+          <text x="${W - R}" y="${y(LOW_SCORE) - 4}" class="tick end low-text">${t("tb.lowLine")}</text>
+          <polygon points="${area}" class="area"/>
+          <polyline points="${line}" class="line"/>
+          ${marks.map((d) => `
+            <circle cx="${x(d)}" cy="${y(scores[d])}" r="4" class="dot"/>
+            <text x="${x(d)}" y="${y(scores[d]) - 8}" class="value">${scores[d]}</text>
+            <text x="${x(d)}" y="${H - 8}" class="tick mid">${d === 0 ? t("tb.today") : t("tb.dayN", { n: d })}</text>`).join("")}
+        </svg>`;
+    }
 
     const LEVEL_COLORS = { low: "#6fd08f", moderate: "#ffd166", high: "#ffb347", very_high: "#ff6159" };
 
@@ -7581,14 +7668,7 @@
           <p class="ai-text">${esc(a.explanation)}</p>
           <p class="ai-pattern">📊 ${esc(a.pattern)}</p>
           <h3>${t("tb.forecast")}</h3>
-          <div class="forecast">
-            ${a.forecast.map((f) => `
-              <div class="forecast-row">
-                <span>${t("tb.after", { n: f.days })}</span>
-                <span class="forecast-bar"><span style="width:${f.score}%"></span></span>
-                <strong>${f.score}</strong>
-              </div>`).join("")}
-          </div>
+          ${forecastChart(a.forecast)}
           <h3>${t("ai.tips")}</h3>
           <ul class="ai-tips">${a.tips.map((tip) => `<li>${esc(tip)}</li>`).join("")}</ul>
           <p class="muted ai-when">${t("tb.updated")}</p>
