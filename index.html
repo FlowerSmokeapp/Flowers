@@ -3481,6 +3481,15 @@
     .spin2-players:empty {
       display: none;
     }
+    .spin-timer {
+      margin-top: 14px;
+    }
+    .spin-timer .timer-ring {
+      margin: 0 auto 8px;
+    }
+    .spin-timer .btn-plain {
+      width: 100%;
+    }
     .spin2-shuffle {
       margin-top: 10px;
     }
@@ -11714,7 +11723,29 @@
       renderSpin();
     });
 
+    // Timer på straffe som 4×12 og 3×10×2 (samme som på brættet)
+    function spinTimerHTML(id) {
+      const tile = TILES[id];
+      if (!tile.timer) return "";
+      return `
+        <div class="spin-timer" data-timer-tile="${id}">
+          ${timerVisual(tile.timer[0])}
+          <p class="timer-round" id="timer-round"></p>
+          <button type="button" class="btn-plain" data-spin-timer>⏱ ${t("game.timerStart")}</button>
+        </div>`;
+    }
+
+    [spinCard, document.getElementById("spin2-card")].forEach((card) => {
+      card.addEventListener("click", (e) => {
+        const button = e.target.closest("[data-spin-timer]");
+        if (!button) return;
+        const box = button.closest("[data-timer-tile]");
+        runTimers(button, TILES[box.dataset.timerTile], box);
+      });
+    });
+
     spinBtn.addEventListener("click", () => {
+      timerToken++;
       const n = spinPlayers.length;
       if (n < 2 || spinBtn.dataset.spinning) return;
       spinBtn.dataset.spinning = "1";
@@ -11740,7 +11771,8 @@
         spinCard.innerHTML = `
           <small>${esc(spinPlayers[winner])}</small>
           <p>${TILES[card].icon.length < 3 && !/\d/.test(TILES[card].icon) ? TILES[card].icon + " " : ""}${esc(text.name)}</p>
-          ${text.desc ? `<p class="spin-prev">${esc(text.desc)}</p>` : ""}`;
+          ${text.desc ? `<p class="spin-prev">${esc(text.desc)}</p>` : ""}
+          ${spinTimerHTML(card)}`;
         spinCard.classList.remove("hidden");
         if (!spinRecorded) {
           spinRecorded = true;
@@ -11817,6 +11849,7 @@
 
     spin2Btn.addEventListener("click", () => {
       if (spin2Btn.dataset.spinning) return;
+      timerToken++;
       spin2Btn.dataset.spinning = "1";
       spin2Btn.disabled = true;
       spin2Card.classList.add("hidden");
@@ -11836,7 +11869,8 @@
         spin2Card.innerHTML = `
           <small>${player ? esc(player) : t("spin2.you")}</small>
           <p>${esc(text.name)}</p>
-          ${text.desc ? `<p class="spin-prev">${esc(text.desc)}</p>` : ""}`;
+          ${text.desc ? `<p class="spin-prev">${esc(text.desc)}</p>` : ""}
+          ${spinTimerHTML(spin2Tiles[pick])}`;
         spin2Card.classList.remove("hidden");
         // Næste spillers tur
         if (spin2Players.length) spin2Turn = (spin2Turn + 1) % spin2Players.length;
@@ -11855,6 +11889,7 @@
 
     // ---------- Timere til felter som 5×10 og 3×10×2 ----------
     let timerToken = 0;
+    let timerRoot = document;   // hvor timeren står (brættet eller et Spin-kort)
 
     function vibrate(pattern) {
       if (navigator.vibrate) navigator.vibrate(pattern);
@@ -11869,10 +11904,10 @@
     }
 
     function setTimerRing(progress, text) {
-      const ring = document.getElementById("timer-ring");
+      const ring = timerRoot.querySelector("#timer-ring");
       if (!ring) return;
       ring.style.setProperty("--p", progress);
-      document.getElementById("timer-num").textContent = text;
+      timerRoot.querySelector("#timer-num").textContent = text;
     }
 
     // Tæl ned; stopper, hvis man trykker videre imens
@@ -11890,12 +11925,12 @@
       });
     }
 
-    async function runTimers(button) {
-      const tile = TILES[board[positions[turn]]];
+    async function runTimers(button, tile = TILES[board[positions[turn]]], root = document) {
       const rounds = tile.timer;
       const token = ++timerToken;
-      const roundEl = document.getElementById("timer-round");
-      const ring = document.getElementById("timer-ring");
+      timerRoot = root;
+      const roundEl = root.querySelector("#timer-round");
+      const ring = root.querySelector("#timer-ring");
       button.disabled = true;
       for (let r = 0; r < rounds.length; r++) {
         if (rounds.length > 1) roundEl.textContent = t("game.round", { n: r + 1, total: rounds.length });
@@ -12174,7 +12209,7 @@
       if (action === "again") nextTurn(true);
       if (action === "roll-back") rollBack(button);
       if (action === "spin") spinWheel(button);
-      if (action === "timer") runTimers(button);
+      if (action === "timer") runTimers(button, undefined, tileCard);
       if (action === "boost") boost(button);
       if (action === "next-same") showRollPanel();
       if (action === "death-fail") deathFail();
