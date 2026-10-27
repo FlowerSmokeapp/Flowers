@@ -4584,9 +4584,7 @@
       background: var(--accent-soft);
       text-align: center;
     }
-    .badge-item span {
-      font-size: 26px;
-    }
+
     .badge-item strong {
       font-size: 12px;
       line-height: 1.2;
@@ -4598,10 +4596,6 @@
     }
     .badge-item.locked {
       background: var(--card-2);
-      opacity: 0.45;
-    }
-    .badge-item.locked span {
-      filter: grayscale(1);
     }
     .challenge-card {
       display: flex;
@@ -5016,21 +5010,9 @@
       height: 20px;
     }
     /* Emojis, der er tilbage (ranks, badges og guides), vises uden farve */
-    .rank-icon,
-    .mini-rank,
-    .rank-badge,
-    .rank-ladder li > span,
-    .badge-row span,
-    .badge-item span,
     .guide-icon {
       filter: grayscale(1) brightness(1.15);
     }
-    :root[data-theme="light"] .rank-icon,
-    :root[data-theme="light"] .mini-rank,
-    :root[data-theme="light"] .rank-badge,
-    :root[data-theme="light"] .rank-ladder li > span,
-    :root[data-theme="light"] .badge-row span,
-    :root[data-theme="light"] .badge-item span,
     :root[data-theme="light"] .guide-icon {
       filter: grayscale(1) contrast(1.1);
     }
@@ -5114,6 +5096,91 @@
     .person.unread-chat .person-text small {
       color: var(--text);
       font-weight: 700;
+    }
+
+    /* ---------- Badges og ranks med farvede ikoner ---------- */
+    .bdg {
+      flex: none;
+      display: inline-grid;
+      place-items: center;
+      vertical-align: middle;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--bc) 65%, #fff), var(--bc) 65%);
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+    }
+    .bdg svg {
+      width: 58%;
+      height: 58%;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .bdg.locked {
+      background: var(--card);
+      box-shadow: inset 0 0 0 1.5px var(--border);
+    }
+    .bdg.locked svg {
+      stroke: var(--muted);
+      opacity: 0.55;
+    }
+    .rank-card .bdg[style*="56px"] {
+      border-radius: 18px;
+    }
+    .mini-rank,
+    .leader-rank {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      vertical-align: middle;
+    }
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-item {
+      border: 0;
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+    .badge-item.locked strong {
+      color: var(--muted);
+    }
+    .badge-chip {
+      display: inline-flex;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+    .badge-row {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge-sheet {
+      text-align: center;
+    }
+    .badge-big {
+      margin: 6px 0 10px;
+    }
+    .badge-how {
+      margin-top: 12px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge-desc {
+      margin: 4px 0 8px;
+      font-size: 17px;
+    }
+    .badge-when {
+      margin-bottom: 14px;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -6032,6 +6099,14 @@
       </div>
     </div>
 
+    <!-- Bundark: et badge -->
+    <div id="badge-sheet" class="sheet hidden">
+      <div id="badge-sheet-body" class="badge-sheet"></div>
+      <div class="sheet-actions">
+        <button type="button" class="btn-primary" id="badge-close" data-i18n="inst.ok">Forstået</button>
+      </div>
+    </div>
+
     <!-- Bundark: anmeld en sort -->
     <form id="review-form" class="sheet hidden" novalidate>
       <h2 id="review-title"></h2>
@@ -6752,6 +6827,10 @@
         "money.err": "Skriv en pris i kroner, fx 80",
         "badge.title": "Badges",
         "badge.none": "Ingen endnu. Brug appen for at låse op!",
+        "badge.how": "Sådan fik du det",
+        "badge.howLocked": "Sådan får du det",
+        "badge.youGot": "Du fik det {date}",
+        "badge.theyGot": "{name} fik det {date}",
         "badge.new": "Nyt badge: {name}",
         "ch.title": "Dagens udfordring",
         "ch.progress": "{n}/{goal} · {hours} timer tilbage",
@@ -7392,6 +7471,10 @@
         "money.err": "Enter a price in kroner, e.g. 80",
         "badge.title": "Badges",
         "badge.none": "None yet. Use the app to unlock them!",
+        "badge.how": "How you got it",
+        "badge.howLocked": "How to get it",
+        "badge.youGot": "You got it on {date}",
+        "badge.theyGot": "{name} got it on {date}",
         "badge.new": "New badge: {name}",
         "ch.title": "Daily challenge",
         "ch.progress": "{n}/{goal} · {hours} hours left",
@@ -8259,6 +8342,7 @@
 
     sheetBackdrop.addEventListener("click", closeSheet);
     document.getElementById("sheet-cancel").addEventListener("click", closeSheet);
+    document.getElementById("badge-close").addEventListener("click", closeSheet);
 
     formStars.addEventListener("click", (e) => {
       const star = e.target.closest("[data-rate]");
@@ -8718,7 +8802,7 @@
         <div class="person" data-uid="${esc(profile.id)}" role="button" tabindex="0">
           <span class="avatar avatar-sm">${avatarHTML(profile)}</span>
           <span class="person-text">
-            <strong>${esc(profile.name)} <span class="mini-rank" title="${RANKS[rankIndex(shownXp(profile))].name}">${RANKS[rankIndex(shownXp(profile))].icon}</span></strong>
+            <strong>${esc(profile.name)} <span class="mini-rank">${rankIcon(RANKS[rankIndex(shownXp(profile))], 18)}</span></strong>
             <small>${isSmoking(profile) ? `<span class="now-pill">${t("now.on")}</span> ` : ""}${esc(profile.bio || "")}</small>
           </span>
           ${extra || '<span class="chevron">›</span>'}
@@ -9141,7 +9225,7 @@
             </div>` : ""}
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
           ${topStrainsHTML(p)}
-          ${p.badges && Object.keys(p.badges).length ? `<div class="badge-row person-badges">${BADGES.filter((b) => p.badges[b.id]).map((b) => `<span title="${esc(badgeText(b)[0])}">${b.icon}</span>`).join("")}</div>` : ""}
+          ${p.badges && Object.keys(p.badges).length ? `<div class="badge-row person-badges">${badgeRowHTML(p.badges, p.id)}</div>` : ""}
           <div class="stats">
             <button type="button" class="stat-btn" data-action="uploads">
               <strong>${personUploads ? personUploads.posts.length + personUploads.rolls.length + personUploads.munchies.length : "…"}</strong>
@@ -9520,7 +9604,7 @@
           <header class="post-head entry-head">
             <span class="avatar avatar-sm" data-person="${esc(post.author)}">${avatarHTML(profile)}</span>
             <span class="post-meta" data-person="${esc(post.author)}">
-              <strong>${esc(profile.name)} ${post.author === me ? "" : `<span class="mini-rank">${RANKS[rankIndex(shownXp(profile))].icon}</span>`}</strong>
+              <strong>${esc(profile.name)} ${post.author === me ? "" : `<span class="mini-rank">${rankIcon(RANKS[rankIndex(shownXp(profile))], 18)}</span>`}</strong>
               <small>${timeAgo(post.createdAt)}${post.editedAt ? ` · ${t("post.edited")}` : ""}</small>
             </span>
             ${own ? `
@@ -10007,7 +10091,7 @@
             <span class="avatar avatar-sm">${avatarHTML(p)}</span>
             <span class="leader-name">
               <strong>${esc(p.name || "?")}${p.id === me ? ` <small>(${t("lb.you")})</small>` : ""}</strong>
-              <small>${rank.icon} ${rank.name}</small>
+              <small class="leader-rank">${rankIcon(rank, 16)} ${rank.name}</small>
             </span>
             <span class="leader-xp">${xp} XP</span>
           </button>`;
@@ -12358,15 +12442,20 @@
     // (højst 5 gram). Hver dag mister man "decay" XP, og jo højere rank,
     // jo mere mister man. Så man skal være mere aktiv for at holde en høj rank.
     const RANKS = [
-      { name: "Puff Puppy", icon: "🐶", xp: 0, decay: 2 },
-      { name: "Hazy Hippie", icon: "🌼", xp: 100, decay: 4 },
-      { name: "Blunt Bandit", icon: "🦝", xp: 300, decay: 6 },
-      { name: "Munchie Monster", icon: "🍩", xp: 600, decay: 10 },
-      { name: "Smoking Samurai", icon: "🥷", xp: 1000, decay: 15 },
-      { name: "Stoned Shaman", icon: "🔮", xp: 1600, decay: 20 },
-      { name: "Weed Wizard", icon: "🧙", xp: 2500, decay: 30 },
-      { name: "Ganja God", icon: "👑", xp: 4000, decay: 40 },
+      { name: "Puff Puppy", icon: "paw", color: "#8bc34a", xp: 0, decay: 2 },
+      { name: "Hazy Hippie", icon: "flower", color: "#e0609f", xp: 100, decay: 4 },
+      { name: "Blunt Bandit", icon: "mask", color: "#6b7a70", xp: 300, decay: 6 },
+      { name: "Munchie Monster", icon: "donut", color: "#ff8a3d", xp: 600, decay: 10 },
+      { name: "Smoking Samurai", icon: "sword", color: "#e5534b", xp: 1000, decay: 15 },
+      { name: "Stoned Shaman", icon: "orb", color: "#25a59a", xp: 1600, decay: 20 },
+      { name: "Weed Wizard", icon: "hat", color: "#8b6cf0", xp: 2500, decay: 30 },
+      { name: "Ganja God", icon: "crown", color: "#d9a520", xp: 4000, decay: 40 },
     ];
+
+    // Rankens ikon: farvet cirkel med hvidt ikon (samme stil som badges)
+    function rankIcon(rank, size = 20) {
+      return `<span class="bdg rank-bdg" style="--bc:${rank.color};width:${size}px;height:${size}px" title="${rank.name}"><svg viewBox="0 0 24 24" aria-hidden="true">${BADGE_ICONS[rank.icon] || ""}</svg></span>`;
+    }
 
     // Hvor meget XP man mister i dag, ud fra den rank man har
     function decayFor(xp) {
@@ -12385,7 +12474,7 @@
     function usageRankText(usage) {
       if (!(usage in USAGE_XP)) return "";
       const rank = RANKS[rankIndex(USAGE_XP[usage])];
-      return t("onb.startRank", { rank: `${rank.icon} ${rank.name}` });
+      return t("onb.startRank", { rank: rank.name });
     }
 
     document.querySelectorAll('select[name="usage"]').forEach((select) => {
@@ -12442,7 +12531,7 @@
 
     function rankBadge(xp) {
       const rank = RANKS[rankIndex(xp)];
-      return `<span class="rank-badge">${rank.icon} ${rank.name}</span>`;
+      return `<span class="rank-badge">${rankIcon(rank, 18)} ${rank.name}</span>`;
     }
 
     function rankCardHTML(xp) {
@@ -12453,7 +12542,7 @@
       return `
         <details class="rank-card">
           <summary>
-            <span class="rank-icon">${rank.icon}</span>
+            ${rankIcon(rank, 56)}
             <span class="rank-info">
               <small>${t("rank.level", { n: index + 1 })}</small>
               <strong>${rank.name}</strong>
@@ -12464,7 +12553,7 @@
           <ol class="rank-ladder">
             ${RANKS.map((r, i) => `
               <li class="${i === index ? "current" : i < index ? "done" : ""}">
-                <span>${r.icon}</span><strong>${r.name}</strong><small>${r.xp} XP · −${r.decay}/${t("rank.day")}</small>
+                ${rankIcon(r, 26)}<strong>${r.name}</strong><small>${r.xp} XP · −${r.decay}/${t("rank.day")}</small>
               </li>`).join("")}
           </ol>
           <p class="rank-decay">${icon("down")} ${t("rank.decay", { n: rank.decay })}</p>
@@ -13554,6 +13643,10 @@
 
     // Opmuntring fra en ven (knappen sidder på vennens profil)
     function sendCheer(uid) {
+      if (myProfile) {
+        myProfile.cheersSent = (myProfile.cheersSent || 0) + 1;
+        db.collection("profiles").doc(currentUserKey()).set({ cheersSent: myProfile.cheersSent }, { merge: true }).catch(() => {});
+      }
       db.collection("cheers").add({
         to: uid,
         from: currentUserKey(),
@@ -13568,53 +13661,163 @@
     // ==========================================================
     // BADGES: små trofæer, man låser op ved at bruge appen
     // ==========================================================
-    // Badges regnes ud fra det, appen allerede ved, og gemmes på profilen,
-    // så venner også kan se dem.
+    // Badges regnes ud fra det, appen allerede ved, og gemmes på profilen
+    // (med tidspunktet de blev låst op), så venner også kan se dem.
+    // Hvert badge har et ikon og en farve.
+    const BADGE_ICONS = {
+      sprout: '<path d="M12 20v-8"/><path d="M12 12C12 8 9 6 5 6c0 4 3 6 7 6z"/><path d="M12 10c0-3 2-5 6-5 0 3-2 5-6 5z"/>',
+      book: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>',
+      flame: '<path d="M12 21c-4 0-7-3-7-7 0-4 3-6 4-10 1 3 3 4 4 6 1-1 1-3 1-4 2 2 5 5 5 8 0 4-3 7-7 7z"/>',
+      comet: '<circle cx="15" cy="9" r="4"/><path d="M12 12L3 21M10 9L4 15M15 14l-6 6"/>',
+      joint: '<path d="M4 17.5L17.5 4l2.5 2.5L6.5 20z"/><path d="M15 6.5l2.5 2.5"/><path d="M19 13c1 1 1 2.5 0 3.5"/>',
+      bong: '<path d="M10 3h4M11 3v8l-4 6a3 3 0 0 0 2.5 4.5h5A3 3 0 0 0 17 17l-4-6V3"/><path d="M14 13l4-3 1.5 1.5"/>',
+      scale: '<path d="M12 4v16M6 20h12M5 8h14"/><path d="M5 8l-3 6h6zM19 8l-3 6h6z"/>',
+      pause: '<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
+      users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21.5 19"/>',
+      camera: '<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M8 7l2-3h4l2 3"/><circle cx="12" cy="13.5" r="3.5"/>',
+      bowl: '<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/>',
+      pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+      party: '<path d="M4 20l4-12 8 8z"/><path d="M14 4v2M19 5l-1.5 1.5M20 10h-2M12 8l1-1"/>',
+      dice: '<rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="15" cy="9" r="1.2"/><circle cx="9" cy="15" r="1.2"/>',
+      boom: '<path d="M12 3l2 5 5-2-2 5 4 2-5 2 1 5-5-3-4 4-1-5-5-1 4-3-3-4 5 1z"/>',
+      brain: '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a3 3 0 0 0-3-1z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/>',
+      check: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>',
+      trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M8.5 20h7M10 17h4"/>',
+      crown: '<path d="M4 18h16L19 8l-4 4-3-6-3 6-4-4z"/><path d="M5 21h14"/>',
+      moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>',
+      cookie: '<path d="M20 12a8 8 0 1 1-8-8 3 3 0 0 0 4 4 3 3 0 0 0 4 4z"/><circle cx="9" cy="10" r="1"/><circle cx="14" cy="15" r="1"/><circle cx="9" cy="15" r="1"/>',
+      drop: '<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',
+      cloud: '<path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.5 1.5A3.5 3.5 0 0 0 7 18z"/>',
+      star: '<path d="M12 4l2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8z"/>',
+      chat: '<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/>',
+      calendar: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+      rocket: '<path d="M12 3c4 2 6 6 5 11l-3 3h-4l-3-3c-1-5 1-9 5-11z"/><circle cx="12" cy="10" r="1.8"/><path d="M8 17l-2 4 4-2M16 17l2 4-4-2"/>',
+      heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+      leaf: '<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19l8-8"/>',
+      // Ranks
+      paw: '<ellipse cx="12" cy="16" rx="4.5" ry="3.8"/><circle cx="6" cy="10.5" r="1.8"/><circle cx="9.5" cy="6.5" r="1.8"/><circle cx="14.5" cy="6.5" r="1.8"/><circle cx="18" cy="10.5" r="1.8"/>',
+      flower: '<circle cx="12" cy="12" r="2.5"/><path d="M12 9.5C10 6 10 3.5 12 3.5s2 2.5 0 6M14.5 12c3.5-2 6-2 6 0s-2.5 2-6 0M12 14.5c2 3.5 2 6 0 6s-2-2.5 0-6M9.5 12c-3.5 2-6 2-6 0s2.5-2 6 0"/>',
+      mask: '<path d="M3 10c0-2 2-3 4-3h10c2 0 4 1 4 3v1c0 3-2 5-4.5 5-2 0-3-2-4.5-2s-2.5 2-4.5 2C5 16 3 14 3 11z"/><circle cx="8" cy="11" r="1.6"/><circle cx="16" cy="11" r="1.6"/>',
+      donut: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/><path d="M7 8l1 1M16 7l-.5 1.2M17 15l-1.2-.4M8 16l.8-1"/>',
+      sword: '<path d="M19 3l-10 10M19 3h-3M19 3v3"/><path d="M6.5 10.5l7 7M5 19l3.5-3.5"/>',
+      orb: '<circle cx="12" cy="10.5" r="6.5"/><path d="M7 21h10l-1.5-4h-7z"/><path d="M9.5 8.5a3 3 0 0 1 3-2"/>',
+      hat: '<path d="M3 19h18"/><path d="M6 19l5-15 3 5-2 1 5 9"/><path d="M10 13l1.5-.5M9 16.5h6"/>',
+    };
+
+    const C = { green: "#3fa66a", lime: "#8bc34a", orange: "#ff8a3d", red: "#e5534b", blue: "#3b8fd9", purple: "#8b6cf0", pink: "#e0609f", gold: "#d9a520", teal: "#25a59a", gray: "#6b7a70" };
+
     const BADGES = [
-      { id: "first_log", icon: "🌱", da: ["Første smoke", "Log din første smoke"], en: ["First smoke", "Log your first smoke"], ok: (c) => c.logs >= 1 },
-      { id: "logs_50", icon: "📒", da: ["50 smoke seshs", "Log 50 smoke seshs"], en: ["50 smoke seshes", "Log 50 smoke seshes"], ok: (c) => c.logs >= 50 },
-      { id: "streak_7", icon: "🔥", da: ["7 dage i træk", "Log 7 dage i træk"], en: ["7 days in a row", "Log 7 days in a row"], ok: (c) => c.streak >= 7 },
-      { id: "streak_30", icon: "☄️", da: ["30 dage i træk", "Log 30 dage i træk"], en: ["30 days in a row", "Log 30 days in a row"], ok: (c) => c.streak >= 30 },
-      { id: "joints_10", icon: "🫴", da: ["Rullet 10 joints", "Log 10 joints eller spliffs"], en: ["Rolled 10 joints", "Log 10 joints or spliffs"], ok: (c) => c.joints >= 10 },
-      { id: "bong_10", icon: "💧", da: ["Bong-boss", "Log 10 bong-hits"], en: ["Bong boss", "Log 10 bong hits"], ok: (c) => c.bongs >= 10 },
-      { id: "ounce", icon: "⚖️", da: ["En hel ounce", "Ryg 28 gram i alt"], en: ["A whole ounce", "Smoke 28 grams in total"], ok: (c) => c.grams >= 28 },
-      { id: "first_tbreak", icon: "⏸️", da: ["Første T-break", "Gennemfør en T-break"], en: ["First T-break", "Complete a T-break"], ok: (c) => c.tbreaks >= 1 },
-      { id: "friends_5", icon: "🤝", da: ["5 venner", "Få 5 venner i appen"], en: ["5 friends", "Get 5 friends in the app"], ok: (c) => c.friends >= 5 },
-      { id: "roll_first", icon: "🌀", da: ["Roll-kunstner", "Del en roll i Rate the Roll"], en: ["Roll artist", "Share a roll in Rate the Roll"], ok: (c) => c.rolls >= 1 },
-      { id: "munch_first", icon: "🍕", da: ["Munchie-fotograf", "Del dine munchies"], en: ["Munchie photographer", "Share your munchies"], ok: (c) => c.munchies >= 1 },
-      { id: "spot_first", icon: "📍", da: ["Spot-finder", "Tilføj et smoke spot"], en: ["Spot finder", "Add a smoke spot"], ok: (c) => c.spots >= 1 },
-      { id: "host_sesh", icon: "🎉", da: ["Sesh-host", "Inviter til en sesh"], en: ["Sesh host", "Invite friends to a sesh"], ok: (c) => c.hosted >= 1 },
-      { id: "goj_done", icon: "🎲", da: ["Brætspiller", "Spil Game of Joints til ende"], en: ["Board gamer", "Finish a game of Game of Joints"], ok: (c) => c.games.goj >= 1 },
-      { id: "dt_done", icon: "💥", da: ["Double Trouble", "Spil et spil Double Trouble"], en: ["Double Trouble", "Play a game of Double Trouble"], ok: (c) => c.games.dt >= 1 },
-      { id: "quiz_master", icon: "🧠", da: ["Quiz-mester", "Få 5 rigtige i en quiz"], en: ["Quiz master", "Get 5 right in one quiz"], ok: (c) => c.quizBest >= 5 },
-      { id: "checklist_25", icon: "✅", da: ["Smagt 25 sorter", "Kryds 25 sorter af i tjeklisten"], en: ["Tasted 25 strains", "Tick off 25 strains in the checklist"], ok: (c) => c.strains >= 25 },
-      { id: "challenge", icon: "🏆", da: ["Dagens helt", "Klar en daglig udfordring"], en: ["Hero of the day", "Complete a daily challenge"], ok: (c) => c.challenges >= 1 },
-      { id: "rank_top", icon: "👑", da: ["Ganja God", "Nå den højeste rank"], en: ["Ganja God", "Reach the top rank"], ok: (c) => c.rank >= 7 },
+      // Smoke seshs
+      { id: "first_log", icon: "sprout", color: C.green, da: ["Første smoke", "Log din første smoke"], en: ["First smoke", "Log your first smoke"], ok: (c) => c.logs >= 1 },
+      { id: "logs_10", icon: "book", color: C.green, da: ["Stamgæst", "Log 10 smoke seshs"], en: ["Regular", "Log 10 smoke seshes"], ok: (c) => c.logs >= 10 },
+      { id: "logs_50", icon: "book", color: C.teal, da: ["50 smoke seshs", "Log 50 smoke seshs"], en: ["50 smoke seshes", "Log 50 smoke seshes"], ok: (c) => c.logs >= 50 },
+      { id: "logs_100", icon: "book", color: C.gold, da: ["100 club", "Log 100 smoke seshs"], en: ["100 club", "Log 100 smoke seshes"], ok: (c) => c.logs >= 100 },
+      { id: "streak_3", icon: "flame", color: C.orange, da: ["På en rulle", "Log 3 dage i træk"], en: ["On a roll", "Log 3 days in a row"], ok: (c) => c.streak >= 3 },
+      { id: "streak_7", icon: "flame", color: C.red, da: ["7 dage i træk", "Log 7 dage i træk"], en: ["7 days in a row", "Log 7 days in a row"], ok: (c) => c.streak >= 7 },
+      { id: "streak_14", icon: "comet", color: C.purple, da: ["14 dage i træk", "Log 14 dage i træk"], en: ["14 days in a row", "Log 14 days in a row"], ok: (c) => c.streak >= 14 },
+      { id: "streak_30", icon: "comet", color: C.gold, da: ["30 dage i træk", "Log 30 dage i træk"], en: ["30 days in a row", "Log 30 days in a row"], ok: (c) => c.streak >= 30 },
+      { id: "ounce", icon: "scale", color: C.teal, da: ["En hel ounce", "Ryg 28 gram i alt"], en: ["A whole ounce", "Smoke 28 grams in total"], ok: (c) => c.grams >= 28 },
+      { id: "grams_100", icon: "scale", color: C.gold, da: ["Tungvægter", "Ryg 100 gram i alt"], en: ["Heavyweight", "Smoke 100 grams in total"], ok: (c) => c.grams >= 100 },
+      { id: "big_day", icon: "cloud", color: C.blue, da: ["Skybrud", "Ryg 3 gram på én dag"], en: ["Cloudburst", "Smoke 3 grams in one day"], ok: (c) => c.maxDay >= 3 },
+      // Metoder og produkter
+      { id: "joints_10", icon: "joint", color: C.lime, da: ["Rullet 10 joints", "Log 10 joints eller spliffs"], en: ["Rolled 10 joints", "Log 10 joints or spliffs"], ok: (c) => c.joints >= 10 },
+      { id: "joints_50", icon: "joint", color: C.gold, da: ["Rullemester", "Log 50 joints eller spliffs"], en: ["Rolling master", "Log 50 joints or spliffs"], ok: (c) => c.joints >= 50 },
+      { id: "bong_10", icon: "bong", color: C.blue, da: ["Bong-boss", "Log 10 bong-hits"], en: ["Bong boss", "Log 10 bong hits"], ok: (c) => c.bongs >= 10 },
+      { id: "methods_all", icon: "star", color: C.purple, da: ["Alt-mulig-mand", "Prøv 5 forskellige metoder"], en: ["Jack of all trades", "Try 5 different methods"], ok: (c) => c.methods >= 5 },
+      { id: "hash_5", icon: "drop", color: C.orange, da: ["Hash-hunter", "Log hash 5 gange"], en: ["Hash hunter", "Log hash 5 times"], ok: (c) => c.hash >= 5 },
+      { id: "dab_first", icon: "drop", color: C.pink, da: ["Første dab", "Log en dab"], en: ["First dab", "Log a dab"], ok: (c) => c.dabs >= 1 },
+      { id: "edible_first", icon: "cookie", color: C.gold, da: ["Bagemester", "Log en edible"], en: ["Baker", "Log an edible"], ok: (c) => c.edibles >= 1 },
+      { id: "night_owl", icon: "moon", color: C.purple, da: ["Natteravn", "Log en smoke mellem kl. 00 og 05"], en: ["Night owl", "Log a smoke between midnight and 5 am"], ok: (c) => c.night >= 1 },
+      { id: "wake_bake", icon: "sun", color: C.gold, da: ["Wake and bake", "Log en smoke før kl. 9 om morgenen"], en: ["Wake and bake", "Log a smoke before 9 am"], ok: (c) => c.morning >= 1 },
+      { id: "high_10", icon: "rocket", color: C.red, da: ["Til månen", "Giv en smoke 10 i skævhed"], en: ["To the moon", "Rate a smoke 10 for how high you got"], ok: (c) => c.maxHigh >= 10 },
+      // Pause
+      { id: "first_tbreak", icon: "pause", color: C.teal, da: ["Første T-break", "Gennemfør en T-break"], en: ["First T-break", "Complete a T-break"], ok: (c) => c.tbreaks >= 1 },
+      { id: "tbreaks_3", icon: "pause", color: C.gold, da: ["Selvkontrol", "Gennemfør 3 T-breaks"], en: ["Self control", "Complete 3 T-breaks"], ok: (c) => c.tbreaks >= 3 },
+      // Venner og Smoke Hub
+      { id: "friends_1", icon: "users", color: C.green, da: ["Første ven", "Få din første ven"], en: ["First friend", "Get your first friend"], ok: (c) => c.friends >= 1 },
+      { id: "friends_5", icon: "users", color: C.blue, da: ["5 venner", "Få 5 venner i appen"], en: ["5 friends", "Get 5 friends in the app"], ok: (c) => c.friends >= 5 },
+      { id: "friends_15", icon: "users", color: C.gold, da: ["Populær", "Få 15 venner i appen"], en: ["Popular", "Get 15 friends in the app"], ok: (c) => c.friends >= 15 },
+      { id: "chatter", icon: "chat", color: C.blue, da: ["Snakkesalig", "Skriv med 3 forskellige venner"], en: ["Chatterbox", "Chat with 3 different friends"], ok: (c) => c.chats >= 3 },
+      { id: "first_post", icon: "camera", color: C.pink, da: ["Første opslag", "Læg et opslag op"], en: ["First post", "Share a post"], ok: (c) => c.posts >= 1 },
+      { id: "posts_10", icon: "camera", color: C.gold, da: ["Influencer", "Læg 10 opslag op"], en: ["Influencer", "Share 10 posts"], ok: (c) => c.posts >= 10 },
+      { id: "roll_first", icon: "joint", color: C.green, da: ["Roll-kunstner", "Del en roll i Rate the Roll"], en: ["Roll artist", "Share a roll in Rate the Roll"], ok: (c) => c.rolls >= 1 },
+      { id: "rolls_5", icon: "joint", color: C.purple, da: ["Roll-legende", "Del 5 rolls i Rate the Roll"], en: ["Roll legend", "Share 5 rolls in Rate the Roll"], ok: (c) => c.rolls >= 5 },
+      { id: "munch_first", icon: "bowl", color: C.orange, da: ["Munchie-fotograf", "Del dine munchies"], en: ["Munchie photographer", "Share your munchies"], ok: (c) => c.munchies >= 1 },
+      { id: "spot_first", icon: "pin", color: C.red, da: ["Spot-finder", "Tilføj et smoke spot"], en: ["Spot finder", "Add a smoke spot"], ok: (c) => c.spots >= 1 },
+      { id: "spots_5", icon: "pin", color: C.gold, da: ["Opdagelsesrejsende", "Tilføj 5 smoke spots"], en: ["Explorer", "Add 5 smoke spots"], ok: (c) => c.spots >= 5 },
+      { id: "host_sesh", icon: "party", color: C.pink, da: ["Sesh-host", "Inviter til en sesh"], en: ["Sesh host", "Invite friends to a sesh"], ok: (c) => c.hosted >= 1 },
+      { id: "host_5", icon: "party", color: C.gold, da: ["Festens midtpunkt", "Inviter til 5 seshs"], en: ["Life of the party", "Invite friends to 5 seshes"], ok: (c) => c.hosted >= 5 },
+      { id: "cheer", icon: "heart", color: C.red, da: ["Heppekor", "Hep på en ven, der holder pause"], en: ["Cheerleader", "Cheer on a friend on a break"], ok: (c) => c.cheered >= 1 },
+      // Spil
+      { id: "goj_done", icon: "dice", color: C.green, da: ["Brætspiller", "Spil Game of Joints til ende"], en: ["Board gamer", "Finish a game of Game of Joints"], ok: (c) => c.games.goj >= 1 },
+      { id: "dt_done", icon: "boom", color: C.orange, da: ["Double Trouble", "Spil et spil Double Trouble"], en: ["Double Trouble", "Play a game of Double Trouble"], ok: (c) => c.games.dt >= 1 },
+      { id: "games_10", icon: "dice", color: C.gold, da: ["Game master", "Spil 10 spil i Games of Joints"], en: ["Game master", "Play 10 games in Games of Joints"], ok: (c) => c.gamesTotal >= 10 },
+      { id: "quiz_master", icon: "brain", color: C.purple, da: ["Quiz-mester", "Få 5 rigtige i en quiz"], en: ["Quiz master", "Get 5 right in one quiz"], ok: (c) => c.quizBest >= 5 },
+      { id: "quiz_genius", icon: "brain", color: C.gold, da: ["Professor", "Få 10 ud af 10 i en quiz"], en: ["Professor", "Get 10 out of 10 in a quiz"], ok: (c) => c.quizBest >= 10 },
+      // Tjekliste
+      { id: "checklist_25", icon: "check", color: C.lime, da: ["Smagt 25 sorter", "Kryds 25 sorter af i tjeklisten"], en: ["Tasted 25 strains", "Tick off 25 strains in the checklist"], ok: (c) => c.strains >= 25 },
+      { id: "checklist_100", icon: "check", color: C.gold, da: ["Sommelier", "Kryds 100 sorter af i tjeklisten"], en: ["Sommelier", "Tick off 100 strains in the checklist"], ok: (c) => c.strains >= 100 },
+      { id: "critic", icon: "star", color: C.gold, da: ["Kritiker", "Anmeld 5 sorter"], en: ["Critic", "Review 5 strains"], ok: (c) => c.reviews >= 5 },
+      // Udfordringer og rank
+      { id: "challenge", icon: "trophy", color: C.orange, da: ["Dagens helt", "Klar en daglig udfordring"], en: ["Hero of the day", "Complete a daily challenge"], ok: (c) => c.challenges >= 1 },
+      { id: "challenges_7", icon: "calendar", color: C.gold, da: ["Udfordrings-junkie", "Klar 7 daglige udfordringer"], en: ["Challenge junkie", "Complete 7 daily challenges"], ok: (c) => c.challenges >= 7 },
+      { id: "rank_4", icon: "leaf", color: C.teal, da: ["Munchie Monster", "Nå rank 4"], en: ["Munchie Monster", "Reach rank 4"], ok: (c) => c.rank >= 3 },
+      { id: "rank_6", icon: "star", color: C.purple, da: ["Stoned Shaman", "Nå rank 6"], en: ["Stoned Shaman", "Reach rank 6"], ok: (c) => c.rank >= 5 },
+      { id: "rank_top", icon: "crown", color: C.gold, da: ["Ganja God", "Nå den højeste rank"], en: ["Ganja God", "Reach the top rank"], ok: (c) => c.rank >= 7 },
     ];
 
     function badgeText(badge) {
       return badge[lang === "en" ? "en" : "da"];
     }
 
+    // Selve badget: farvet cirkel med et hvidt ikon (gråt, hvis det er låst)
+    function badgeIcon(badge, locked = false, size = 44) {
+      return `
+        <span class="bdg ${locked ? "locked" : ""}" style="--bc:${badge.color};width:${size}px;height:${size}px">
+          <svg viewBox="0 0 24 24" aria-hidden="true">${BADGE_ICONS[badge.icon] || ""}</svg>
+        </span>`;
+    }
+
     function badgeContext() {
       const me = currentUserKey();
       const p = myProfile || {};
       const count = (key, values) => logEntries.filter((e) => values.includes(e[key])).length;
+      const perDay = {};
+      logEntries.forEach((e) => {
+        const d = dayStart(entryTime(e));
+        perDay[d] = (perDay[d] || 0) + (Number(e.grams) || 0);
+      });
+      const hours = logEntries.map((e) => new Date(entryTime(e)).getHours());
+      const games = { goj: 0, dt: 0, dice: 0, spin: 0, quiz: 0, ...(p.games || {}) };
       return {
         logs: logEntries.length,
         streak: Math.max(bestStreak(), currentStreak()),
         joints: count("method", ["joint", "spliff"]),
         bongs: count("method", ["bong"]),
+        dabs: count("method", ["dab"]),
+        edibles: count("method", ["edible"]) + count("product", ["edible"]),
+        hash: count("product", ["hash"]),
+        methods: new Set(logEntries.map((e) => e.method)).size,
         grams: logEntries.reduce((s, e) => s + (Number(e.grams) || 0), 0),
+        maxDay: Math.max(0, ...Object.values(perDay)),
+        maxHigh: Math.max(0, ...logEntries.map((e) => Number(e.high) || 0)),
+        night: hours.filter((h) => h < 5).length,
+        morning: hours.filter((h) => h >= 5 && h < 9).length,
         tbreaks: p.tbreaksDone || 0,
         friends: friendships.length,
+        chats: (typeof chats !== "undefined" ? chats : []).length,
+        posts: posts.filter((x) => x.author === me).length,
         rolls: rolls.filter((r) => r.author === me).length,
         munchies: munchies.filter((m) => m.author === me).length,
         spots: benches.filter((b) => b.addedBy === me).length,
         hosted: (p.seshesHosted || 0) + seshes.filter((x) => x.host === me).length,
-        games: { goj: 0, dt: 0, ...(p.games || {}) },
+        cheered: p.cheersSent || 0,
+        games,
+        gamesTotal: Object.values(games).reduce((s, n) => s + (Number(n) || 0), 0),
         quizBest: p.quizBest || 0,
         strains: Object.keys(checked || {}).length,
+        reviews: Object.keys(p.strainReviews || {}).length,
         challenges: Object.keys(p.challenges || {}).length,
         rank: rankIndex(myXp),
       };
@@ -13630,24 +13833,28 @@
       const update = {};
       fresh.forEach((b) => { update[b.id] = Date.now(); });
       myProfile.badges = { ...have, ...update };
-      showToast(t("badge.new", { name: `${fresh[0].icon} ${badgeText(fresh[0])[0]}` }));
+      showToast(t("badge.new", { name: badgeText(fresh[0])[0] }));
       db.collection("profiles").doc(currentUserKey()).set({ badges: update }, { merge: true }).catch(() => {});
       renderBadges();
     }
 
-    function badgesHTML(earned, showLocked) {
+    function badgesHTML(earned) {
+      // Låste badges står sidst
+      const sorted = [...BADGES].sort((a, b) => (earned[b.id] ? 1 : 0) - (earned[a.id] ? 1 : 0));
       return `
         <div class="badge-grid">
-          ${BADGES.filter((b) => showLocked || earned[b.id]).map((b) => {
-            const [name, desc] = badgeText(b);
-            return `
-              <div class="badge-item ${earned[b.id] ? "" : "locked"}" title="${esc(desc)}">
-                <span>${b.icon}</span>
-                <strong>${esc(name)}</strong>
-                ${showLocked ? `<small>${esc(desc)}</small>` : ""}
-              </div>`;
-          }).join("")}
+          ${sorted.map((b) => `
+            <button type="button" class="badge-item ${earned[b.id] ? "" : "locked"}" data-badge="${b.id}">
+              ${badgeIcon(b, !earned[b.id])}
+              <strong>${esc(badgeText(b)[0])}</strong>
+            </button>`).join("")}
         </div>`;
+    }
+
+    function badgeRowHTML(earned, owner) {
+      return BADGES.filter((b) => earned[b.id])
+        .map((b) => `<button type="button" class="badge-chip" data-badge="${b.id}" data-owner="${esc(owner)}">${badgeIcon(b, false, 32)}</button>`)
+        .join("");
     }
 
     function renderBadges() {
@@ -13657,11 +13864,39 @@
         <details class="badges-card">
           <summary>
             <h3>${icon("medal")} ${t("badge.title")} <small>${n}/${BADGES.length}</small></h3>
-            <div class="badge-row">${BADGES.filter((b) => earned[b.id]).map((b) => `<span>${b.icon}</span>`).join("") || `<small class="muted badge-none">${t("badge.none")}</small>`}</div>
+            <div class="badge-row">${badgeRowHTML(earned, currentUserKey()) || `<small class="muted badge-none">${t("badge.none")}</small>`}</div>
           </summary>
-          ${badgesHTML(earned, true)}
+          ${badgesHTML(earned)}
         </details>`;
     }
+
+    // ---------- Tryk på et badge: se hvordan det blev skaffet ----------
+    function openBadge(id, ownerId) {
+      const badge = BADGES.find((b) => b.id === id);
+      if (!badge) return;
+      const me = currentUserKey();
+      const owner = ownerId && ownerId !== me ? profileCache.get(ownerId) : myProfile;
+      const earnedAt = ((owner && owner.badges) || {})[id];
+      const [name, desc] = badgeText(badge);
+      const when = earnedAt && earnedAt > 1 ? formatDate(earnedAt) : "";
+      document.getElementById("badge-sheet-body").innerHTML = `
+        <div class="badge-big">${badgeIcon(badge, !earnedAt, 84)}</div>
+        <h2>${esc(name)}</h2>
+        <p class="badge-how">${earnedAt ? t("badge.how") : t("badge.howLocked")}</p>
+        <p class="badge-desc">${esc(desc)}</p>
+        ${earnedAt ? `<p class="muted badge-when">${ownerId && ownerId !== me
+          ? t("badge.theyGot", { name: esc(owner.name || ""), date: when })
+          : t("badge.youGot", { date: when })}</p>` : ""}`;
+      sheetBackdrop.classList.remove("hidden");
+      document.getElementById("badge-sheet").classList.remove("hidden");
+    }
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-badge]");
+      if (!btn) return;
+      e.preventDefault();
+      openBadge(btn.dataset.badge, btn.dataset.owner);
+    });
 
     // Tæl spil, man har spillet (til badges og ugens udfordring)
     function recordGame(key) {
