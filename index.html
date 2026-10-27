@@ -4924,6 +4924,10 @@
       display: block;
       margin: 18px auto 0;
     }
+
+    .dice-result.six {
+      color: #ffd166;
+    }
   </style>
 </head>
 <body>
@@ -5282,8 +5286,7 @@
               <p class="muted" data-i18n="dice.help">Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.</p>
               <div class="die big-die" id="dice-die" role="img"></div>
               <p class="dice-result" id="dice-result" aria-live="polite"></p>
-              <button type="button" class="btn-primary" id="dice-roll" data-i18n="game.roll">Slå med terningen</button>
-              <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
+              <button type="button" class="btn-primary" id="dice-roll" data-i18n="dice.roll">Slå med terningen</button>
             </div>
           </div>
 
@@ -5346,7 +5349,6 @@
             </div>
             <div class="spin-card hidden" id="spin-card" aria-live="polite"></div>
             <button type="button" class="btn-primary" id="spin-btn" data-i18n="spin.spin">Snur jointen</button>
-            <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
           </div>
 
           <!-- Game of Joints (brætspillet) -->
@@ -6161,8 +6163,10 @@
         "dice.title": "Terningespillet",
         "dice.tagline": "Slå med terningen. Øjnene er antal sug",
         "dice.help": "Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.",
-        "dice.result1": "1 sug 🌿",
-        "dice.resultN": "{n} sug 🌿",
+        "dice.result1": "1 sug",
+        "dice.resultN": "{n} sug",
+        "dice.roll": "Slå med terningen",
+        "dice.six": "6 sug, og du slår igen!",
         "spin.tagline": "Spin the joints",
         "dt.tagline": "To joints, hver sin vej rundt",
         "dt.help": "Tænd 2 joints. 🔥 går den ene vej rundt og 💚 den anden. Hver gang I sender videre, får begge, der holder en joint, et kort. Lander begge joints hos den samme, er det DOUBLE TROUBLE!",
@@ -6174,11 +6178,12 @@
         "dt.switch": "Vend om! Jointsene skifter retning",
         "dt.both": "har begge joints!",
         "dt.newGame": "Nyt spil",
+        "dt.chaos.jump": "💥 Dobbelt-hop! Begge joints hopper til den samme",
+        "dt.chaos.swap": "🔀 Byt! De to, der holder jointsene, bytter",
+        "dt.chaos.skip": "⏩ Spring over! Begge joints springer en spiller over",
         "spin.help": "Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.",
         "spin.empty": "Tilføj spillere for at starte",
         "spin.spin": "Snur jointen",
-        "spin.prev": "Forrige spiller fik",
-        "spin.cards": "Tag 1 sug|Tag 2 sug|Tag 3 sug|Giv {other} 2 sug|Du og {other} tager et sug på samme tid|Tag et sug og hold det inde i 10 sekunder|Pass the spliff|Bob Marley: tag 3 sug i træk uden at puste ud imellem|Find på en regel, der gælder resten af spillet|{other} bestemmer, hvor mange sug du tager (3-10)|Spejl: gør det samme, som den forrige spiller gjorde|Skildpadde: tag et langt sug på mindst 5 sekunder 🐢",
         "game.players": "Spillere",
         "game.addPh": "Navn på spiller",
         "game.add": "Tilføj",
@@ -6776,8 +6781,10 @@
         "dice.title": "The Dice Game",
         "dice.tagline": "Roll the die. The dots are the number of hits",
         "dice.help": "Roll the die. The number it lands on is the number of hits you take. Then pass it to the next person.",
-        "dice.result1": "1 hit 🌿",
-        "dice.resultN": "{n} hits 🌿",
+        "dice.result1": "1 hit",
+        "dice.resultN": "{n} hits",
+        "dice.roll": "Roll the die",
+        "dice.six": "6 hits, and you roll again!",
         "spin.tagline": "Spin the joints",
         "dt.tagline": "Two joints, each going its own way",
         "dt.help": "Light 2 joints. 🔥 goes one way around and 💚 the other. Every time you pass, both people holding a joint get a card. If both joints land on the same person, it's DOUBLE TROUBLE!",
@@ -6789,11 +6796,12 @@
         "dt.switch": "Switch! The joints change direction",
         "dt.both": "has both joints!",
         "dt.newGame": "New game",
+        "dt.chaos.jump": "💥 Double jump! Both joints jump to the same person",
+        "dt.chaos.swap": "🔀 Swap! The two joint holders swap",
+        "dt.chaos.skip": "⏩ Skip! Both joints skip a player",
         "spin.help": "Add at least 2 players and spin the joint. Whoever it points at has to do the card. Tap a name to remove that player.",
         "spin.empty": "Add players to start",
         "spin.spin": "Spin the joint",
-        "spin.prev": "Previous player got",
-        "spin.cards": "Take 1 hit|Take 2 hits|Take 3 hits|Give {other} 2 hits|You and {other} take a hit at the same time|Take a hit and hold it for 10 seconds|Pass the spliff|Bob Marley: take 3 hits in a row without breathing out in between|Make up a rule that lasts the rest of the game|{other} decides how many hits you take (3-10)|Mirror: do the same as the previous player did|Turtle: take a long hit of at least 5 seconds 🐢",
         "game.players": "Players",
         "game.addPh": "Player name",
         "game.add": "Add",
@@ -10618,7 +10626,35 @@
       { n: 8, da: "Tag 2 sug fra hver joint", en: "Take 2 hits from each joint" },
       { n: 7, da: "Hold begge joints og tag skiftevis 3 sug, uden at puste ud", en: "Hold both joints and take 3 hits, switching between them, without breathing out" },
       { n: 6, da: "Double Bob: 1 sug fra den ene og sig \"Bob\", 1 sug fra den anden og sig \"Marley\"", en: "Double Bob: 1 hit from one and say \"Bob\", 1 hit from the other and say \"Marley\"" },
+      { n: 10, da: "Dobbelt-tornado: begge joints i munden, 3 sug, og drej rundt 5 gange", en: "Double tornado: both joints in your mouth, 3 hits, and spin around 5 times" },
+      { n: 8, da: "Hvalen: et langt sug fra begge joints på én gang, og hold det inde i 10 sekunder", en: "The whale: one long hit from both joints at once, and hold it for 10 seconds" },
+      { n: 9, da: "Dobbelt-skorsten: sug fra begge joints, og sug så røgen fra dem begge bagefter", en: "Double chimney: hit both joints, then inhale the smoke from both afterwards" },
+      { n: 7, da: "Behold begge joints en runde mere, og tag 1 sug fra hver hver gang", en: "Keep both joints for another round and take 1 hit from each every time" },
     ];
+
+    // Vilde hændelser, der kan ske, når der sendes videre
+    function dtChaos(n) {
+      const roll = Math.random();
+      if (roll < 0.12) {
+        // Dobbelt-hop: begge joints lander hos den samme tilfældige spiller
+        const target = Math.floor(Math.random() * n);
+        dtA = target;
+        dtB = target;
+        return "jump";
+      }
+      if (roll < 0.2) {
+        // De to, der holder jointsene, bytter
+        [dtA, dtB] = [dtB, dtA];
+        return "swap";
+      }
+      if (roll < 0.28) {
+        // Begge joints springer en spiller over
+        dtA = (dtA + dtDir + n) % n;
+        dtB = (dtB - dtDir + n) % n;
+        return "skip";
+      }
+      return "";
+    }
 
     const dtForm = document.getElementById("dt-form");
     const dtCircle = document.getElementById("dt-circle");
@@ -10718,18 +10754,21 @@
         // så de to joints altid kan mødes hos den samme
         dtStarted = true;
         dtA = 0;
-        dtB = n % 2 ? n - 1 : n - 2;
+        // Lidt tættere på hinanden, så de mødes oftere
+        dtB = Math.max(2, Math.floor(n / 4) * 2);
         dtDir = 1;
         dtPasses = 0;
       } else {
         dtPasses++;
         // Af og til skifter jointsene retning
-        if (dtPasses > 2 && Math.random() < 0.15) {
+        if (dtPasses > 1 && Math.random() < 0.15) {
           dtDir = -dtDir;
           event = `<p class="dt-event">🔄 ${t("dt.switch")}</p>`;
         }
         dtA = (dtA + dtDir + n) % n;
         dtB = (dtB - dtDir + n) % n;
+        const chaos = dtChaos(n);
+        if (chaos) event += `<p class="dt-event">${t("dt.chaos." + chaos)}</p>`;
       }
       dtDraw();
       if (event) dtCard.insertAdjacentHTML("afterbegin", event);
@@ -10786,7 +10825,9 @@
       diceBtn.disabled = true;
       diceResult.textContent = "";
       const value = await rollDie(diceEl);
-      diceResult.textContent = t(value === 1 ? "dice.result1" : "dice.resultN", { n: value });
+      // Slår man en sekser, slår man igen
+      diceResult.textContent = value === 6 ? t("dice.six") : t(value === 1 ? "dice.result1" : "dice.resultN", { n: value });
+      diceResult.classList.toggle("six", value === 6);
       if (!diceRecorded) {
         diceRecorded = true;
         recordGame("dice");
@@ -10805,8 +10846,10 @@
     const spinBtn = document.getElementById("spin-btn");
     const spinCard = document.getElementById("spin-card");
     let spinAngle = 0;
-    let lastCard = -1;
-    let lastCardText = "";
+    let lastCard = null;
+    // Felterne fra Game of Joints (uden dem, der handler om at rykke på brættet)
+    const SPIN_TILES = ["s1", "s2", "s3", "s4", "s5", "pass", "bobLong", "bobShort", "lung", "lung2", "lung3",
+      "tornado", "x412", "x510", "x3102", "diy", "diy2", "chimney", "stinging", "turtle"];
     let spinRecorded = false;
 
     function renderSpin() {
@@ -10864,22 +10907,17 @@
       spinJoint.style.transform = `rotate(${spinAngle}deg)`;
 
       setTimeout(() => {
-        const others = spinPlayers.filter((_, i) => i !== winner);
-        const other = others[Math.floor(Math.random() * others.length)];
-        const cards = t("spin.cards", { other }).split("|");
+        // Samme kort som felterne i Game of Joints
         let card;
-        // Spejl-kortet giver kun mening, når der har været et kort før
-        const mirror = cards.length - 2;
-        do card = Math.floor(Math.random() * cards.length);
-        while ((card === lastCard || (card === mirror && !lastCardText)) && cards.length > 1);
+        do card = SPIN_TILES[Math.floor(Math.random() * SPIN_TILES.length)];
+        while (card === lastCard && SPIN_TILES.length > 1);
         lastCard = card;
         spinCircle.querySelector(`.spin-name[data-index="${winner}"]`).classList.add("chosen");
-        const text = cards[card];
+        const text = tileText(card);
         spinCard.innerHTML = `
           <small>${esc(spinPlayers[winner])}</small>
-          <p>${esc(text)}</p>
-          ${card === mirror ? `<p class="spin-prev">${t("spin.prev")}: ${esc(lastCardText)}</p>` : ""}`;
-        if (card !== mirror) lastCardText = text;
+          <p>${TILES[card].icon.length < 3 && !/\d/.test(TILES[card].icon) ? TILES[card].icon + " " : ""}${esc(text.name)}</p>
+          ${text.desc ? `<p class="spin-prev">${esc(text.desc)}</p>` : ""}`;
         spinCard.classList.remove("hidden");
         if (!spinRecorded) {
           spinRecorded = true;
@@ -11788,14 +11826,14 @@
     // (højst 5 gram). Hver dag mister man "decay" XP, og jo højere rank,
     // jo mere mister man. Så man skal være mere aktiv for at holde en høj rank.
     const RANKS = [
-      { name: "Rookie Smoker", icon: "🐣", xp: 0, decay: 2 },
+      { name: "Baby Blazer", icon: "🐣", xp: 0, decay: 2 },
       { name: "Giggle Goblin", icon: "🤭", xp: 100, decay: 4 },
-      { name: "Couch Potato", icon: "🥔", xp: 300, decay: 6 },
+      { name: "Couch Cruiser", icon: "🛋️", xp: 300, decay: 6 },
       { name: "Munchie Monster", icon: "🍩", xp: 600, decay: 10 },
-      { name: "Cloud Chaser", icon: "☁️", xp: 1000, decay: 15 },
-      { name: "Heavy Smoker", icon: "💨", xp: 1600, decay: 20 },
-      { name: "Space Cadet", icon: "👽", xp: 2500, decay: 30 },
-      { name: "Snoop Dogg Smoker", icon: "🐶", xp: 4000, decay: 40 },
+      { name: "Smoking Samurai", icon: "🥷", xp: 1000, decay: 15 },
+      { name: "Stoned Shaman", icon: "🔮", xp: 1600, decay: 20 },
+      { name: "Weed Wizard", icon: "🧙", xp: 2500, decay: 30 },
+      { name: "Ganja God", icon: "👑", xp: 4000, decay: 40 },
     ];
 
     // Hvor meget XP man mister i dag, ud fra den rank man har
@@ -12902,7 +12940,7 @@
       { id: "quiz_master", icon: "🧠", da: ["Quiz-mester", "Få 5 rigtige i en quiz"], en: ["Quiz master", "Get 5 right in one quiz"], ok: (c) => c.quizBest >= 5 },
       { id: "checklist_25", icon: "✅", da: ["Smagt 25 sorter", "Kryds 25 sorter af i tjeklisten"], en: ["Tasted 25 strains", "Tick off 25 strains in the checklist"], ok: (c) => c.strains >= 25 },
       { id: "challenge", icon: "🏆", da: ["Ugens helt", "Klar en ugentlig udfordring"], en: ["Hero of the week", "Complete a weekly challenge"], ok: (c) => c.challenges >= 1 },
-      { id: "rank_top", icon: "🐶", da: ["Snoop Dogg Smoker", "Nå den højeste rank"], en: ["Snoop Dogg Smoker", "Reach the top rank"], ok: (c) => c.rank >= 7 },
+      { id: "rank_top", icon: "👑", da: ["Ganja God", "Nå den højeste rank"], en: ["Ganja God", "Reach the top rank"], ok: (c) => c.rank >= 7 },
     ];
 
     function badgeText(badge) {
