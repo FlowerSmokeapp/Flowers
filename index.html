@@ -3569,7 +3569,7 @@
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
     }
 
-    /* ---------- Game of Joints 1: timer, sug-tæller og vinder ---------- */
+    /* ---------- Game of Joints: timer, sug-tæller og vinder ---------- */
     .timer-ring {
       --p: 1;
       position: relative;
@@ -4282,6 +4282,104 @@
       border-color: var(--accent);
       background: var(--accent-soft);
     }
+
+    /* ---------- Double Trouble ---------- */
+    .dt-circle .spin-name {
+      cursor: default;
+    }
+    .spin-name.has-a {
+      border-color: #ff8a3d;
+      background: rgba(255, 138, 61, 0.2);
+    }
+    .spin-name.has-b {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .spin-name.has-a.has-b {
+      background: linear-gradient(90deg, rgba(255, 138, 61, 0.35), rgba(92, 184, 125, 0.35));
+      transform: translate(-50%, -50%) scale(1.15);
+    }
+    .dt-dir {
+      position: absolute;
+      left: 18%;
+      right: 18%;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    .dt-card {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+      animation: fadeIn 0.25s ease;
+    }
+    .dt-turn {
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    .dt-turn.a {
+      border-color: #ff8a3d;
+    }
+    .dt-turn.b {
+      border-color: var(--accent);
+    }
+    .dt-turn small {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .dt-turn p {
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .dt-boom {
+      padding: 20px;
+      border-radius: 20px;
+      border: 2px solid #ff8a3d;
+      background: linear-gradient(150deg, rgba(255, 138, 61, 0.22), rgba(92, 184, 125, 0.18));
+      text-align: center;
+      animation: popIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .dt-boom strong {
+      display: block;
+      font-size: 26px;
+      font-weight: 800;
+    }
+    .dt-boom small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .dt-boom p {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .dt-event {
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(255, 209, 102, 0.15);
+      color: #ffd166;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .dt-end {
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--card);
+    }
+    .dt-finish {
+      display: block;
+      margin: 10px auto 0;
+    }
   </style>
 </head>
 <body>
@@ -4605,7 +4703,7 @@
             <div class="game-list">
               <button class="game-item" data-go="game">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
-                <span><strong>Game of Joints 1</strong><small data-i18n="game.tagline">Brætspillet for dig og vennerne</small></span>
+                <span><strong>Game of Joints</strong><small data-i18n="game.tagline">Brætspillet for dig og vennerne</small></span>
                 <span class="chevron">›</span>
               </button>
               <button class="game-item" data-go="dice">
@@ -4616,6 +4714,11 @@
               <button class="game-item" data-go="spin">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l5-6"/><path d="M12 7V3M12 21v-4M3 12h4M17 12h4"/></svg></span>
                 <span><strong>Spin the Joint</strong><small data-i18n="spin.tagline">Spin the joints</small></span>
+                <span class="chevron">›</span>
+              </button>
+              <button class="game-item" data-go="double">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 15L14 4l2 2L5 17z"/><path d="M8 20L19 9l2 2-11 11z"/><path d="M15 2.5c.8.8.8 2 0 2.8M20 7.5c.8.8.8 2 0 2.8"/></svg></span>
+                <span><strong>Double Trouble</strong><small data-i18n="dt.tagline">To joints, hver sin vej rundt</small></span>
                 <span class="chevron">›</span>
               </button>
             </div>
@@ -4632,6 +4735,25 @@
               <button type="button" class="btn-primary" id="dice-roll" data-i18n="game.roll">Slå med terningen</button>
               <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
             </div>
+          </div>
+
+          <!-- Double Trouble -->
+          <div class="view" data-view="double">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <h1 class="page-title">Double Trouble</h1>
+            <p class="muted" data-i18n="dt.help">Tænd 2 joints. 🔥 går den ene vej rundt og 💚 den anden. Hver gang I sender videre, får begge, der holder en joint, et kort. Lander begge joints hos den samme, er det DOUBLE TROUBLE!</p>
+            <form id="dt-form" class="player-add" novalidate>
+              <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+              <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+            </form>
+            <div class="spin-wheel dt-circle" id="dt-circle">
+              <p class="dt-dir" id="dt-dir"></p>
+              <p class="spin-empty" id="dt-empty" data-i18n="dt.empty">Tilføj mindst 3 spillere</p>
+            </div>
+            <div class="dt-card hidden" id="dt-card" aria-live="polite"></div>
+            <button type="button" class="btn-primary" id="dt-pass"></button>
+            <button type="button" class="link-btn dt-finish hidden" id="dt-finish" data-i18n="game.end">Afslut</button>
+            <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
           </div>
 
           <!-- Spin the Joint -->
@@ -4661,7 +4783,7 @@
             <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
           </div>
 
-          <!-- Game of Joints 1 -->
+          <!-- Game of Joints (brætspillet) -->
           <div class="view" data-view="game">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
 
@@ -4669,7 +4791,7 @@
             <div id="game-setup">
               <div class="game-hero">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
-                <h1>Game of Joints 1</h1>
+                <h1>Game of Joints</h1>
                 <p class="muted" data-i18n="game.tagline">Brætspillet for dig og vennerne</p>
               </div>
               <h2 class="section-title" data-i18n="game.players">Spillere</h2>
@@ -5378,6 +5500,16 @@
         "dice.result1": "1 sug 🌿",
         "dice.resultN": "{n} sug 🌿",
         "spin.tagline": "Spin the joints",
+        "dt.tagline": "To joints, hver sin vej rundt",
+        "dt.help": "Tænd 2 joints. 🔥 går den ene vej rundt og 💚 den anden. Hver gang I sender videre, får begge, der holder en joint, et kort. Lander begge joints hos den samme, er det DOUBLE TROUBLE!",
+        "dt.empty": "Tilføj mindst 3 spillere",
+        "dt.start": "Tænd begge joints 🔥💚",
+        "dt.pass": "Send videre ➜",
+        "dt.dirA": "🔥 går med uret · 💚 går mod uret",
+        "dt.dirB": "🔥 går mod uret · 💚 går med uret",
+        "dt.switch": "Vend om! Jointsene skifter retning",
+        "dt.both": "har begge joints!",
+        "dt.newGame": "Nyt spil",
         "spin.help": "Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.",
         "spin.empty": "Tilføj spillere for at starte",
         "spin.spin": "Snur jointen",
@@ -5865,6 +5997,16 @@
         "dice.result1": "1 hit 🌿",
         "dice.resultN": "{n} hits 🌿",
         "spin.tagline": "Spin the joints",
+        "dt.tagline": "Two joints, each going its own way",
+        "dt.help": "Light 2 joints. 🔥 goes one way around and 💚 the other. Every time you pass, both people holding a joint get a card. If both joints land on the same person, it's DOUBLE TROUBLE!",
+        "dt.empty": "Add at least 3 players",
+        "dt.start": "Light both joints 🔥💚",
+        "dt.pass": "Pass it on ➜",
+        "dt.dirA": "🔥 goes clockwise · 💚 goes counter-clockwise",
+        "dt.dirB": "🔥 goes counter-clockwise · 💚 goes clockwise",
+        "dt.switch": "Switch! The joints change direction",
+        "dt.both": "has both joints!",
+        "dt.newGame": "New game",
         "spin.help": "Add at least 2 players and spin the joint. Whoever it points at has to do the card. Tap a name to remove that player.",
         "spin.empty": "Add players to start",
         "spin.spin": "Spin the joint",
@@ -9497,7 +9639,8 @@
     // ---------- Aftenens spil ----------
     // Samme spil for alle hele dagen, og aldrig det samme to dage i træk
     const TONIGHT_GAMES = [
-      { view: "game", name: "Game of Joints 1", text: "game.tagline" },
+      { view: "game", name: "Game of Joints", text: "game.tagline" },
+      { view: "double", name: "Double Trouble", text: "dt.tagline" },
       { view: "dice", name: "dice.title", text: "dice.tagline" },
       { view: "spin", name: "Spin the Joint", text: "spin.tagline" },
     ];
@@ -9527,6 +9670,181 @@
       document.getElementById("tonight-name").textContent = game.name.includes(".") ? t(game.name) : game.name;
       document.getElementById("tonight-text").textContent = t(game.text);
     }
+
+    // ==========================================================
+    // DOUBLE TROUBLE: to joints går hver sin vej rundt i cirklen
+    // ==========================================================
+    // 🔥 Joint A går til højre, 💚 Joint B går til venstre. Hver gang der
+    // sendes videre, trækker begge holdere et kort. Ender begge joints hos
+    // samme spiller, er det DOUBLE TROUBLE! Af og til skifter de retning.
+    const DT_SINGLE = [
+      { n: 1, da: "Tag 1 sug", en: "Take 1 hit" },
+      { n: 2, da: "Tag 2 sug", en: "Take 2 hits" },
+      { n: 3, da: "Tag 3 sug", en: "Take 3 hits" },
+      { n: 2, da: "Tag 1 sug og hold det inde i 5 sekunder", en: "Take 1 hit and hold it for 5 seconds" },
+      { n: 1, da: "Speed: tag 1 sug og send den videre på 3 sekunder", en: "Speed: take 1 hit and pass it on within 3 seconds" },
+      { n: 3, da: "Skildpadde: et langt sug på mindst 3 sekunder", en: "Turtle: one long hit of at least 3 seconds" },
+      { n: 3, da: "Tag 2 sug uden at puste ud imellem", en: "Take 2 hits without breathing out in between" },
+      { n: 0, da: "Pas! Send den bare videre", en: "Pass! Just send it on" },
+    ];
+    const DT_DOUBLE = [
+      { n: 6, da: "Tag et sug fra begge joints på samme tid", en: "Take a hit from both joints at the same time" },
+      { n: 8, da: "Tag 2 sug fra hver joint", en: "Take 2 hits from each joint" },
+      { n: 7, da: "Hold begge joints og tag skiftevis 3 sug, uden at puste ud", en: "Hold both joints and take 3 hits, switching between them, without breathing out" },
+      { n: 6, da: "Double Bob: 1 sug fra den ene og sig \"Bob\", 1 sug fra den anden og sig \"Marley\"", en: "Double Bob: 1 hit from one and say \"Bob\", 1 hit from the other and say \"Marley\"" },
+    ];
+
+    const dtForm = document.getElementById("dt-form");
+    const dtCircle = document.getElementById("dt-circle");
+    const dtCard = document.getElementById("dt-card");
+    const dtPass = document.getElementById("dt-pass");
+    let dtPlayers = [];      // [{ name, points }]
+    let dtA = 0;             // hvem har joint A
+    let dtB = 0;             // hvem har joint B
+    let dtDir = 1;           // 1 = A til højre og B til venstre, -1 = omvendt
+    let dtStarted = false;
+    let dtPasses = 0;
+
+    function dtText(card) {
+      return lang === "en" ? card.en : card.da;
+    }
+
+    function dtPick(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function renderDoubleCircle() {
+      const n = dtPlayers.length;
+      dtCircle.querySelectorAll(".spin-name").forEach((el) => el.remove());
+      dtPlayers.forEach((p, i) => {
+        const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
+        const el = document.createElement("button");
+        el.type = "button";
+        el.className = "spin-name";
+        if (dtStarted && i === dtA) el.classList.add("has-a");
+        if (dtStarted && i === dtB) el.classList.add("has-b");
+        el.dataset.index = i;
+        el.style.left = `${50 + 41 * Math.cos(angle)}%`;
+        el.style.top = `${50 + 41 * Math.sin(angle)}%`;
+        el.textContent = `${dtStarted && i === dtA ? "🔥 " : ""}${dtStarted && i === dtB ? "💚 " : ""}${p.name}`;
+        dtCircle.appendChild(el);
+      });
+      document.getElementById("dt-empty").classList.toggle("hidden", n > 0);
+      document.getElementById("dt-dir").textContent = dtStarted ? t(dtDir === 1 ? "dt.dirA" : "dt.dirB") : "";
+      dtPass.disabled = n < 3;
+      dtPass.textContent = t(dtStarted ? "dt.pass" : "dt.start");
+      document.getElementById("dt-finish").classList.toggle("hidden", !dtStarted);
+    }
+
+    dtForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = dtForm.elements.player;
+      const name = input.value.trim();
+      if (!name || dtPlayers.length >= 10 || dtStarted) return;
+      dtPlayers.push({ name, points: 0 });
+      input.value = "";
+      renderDoubleCircle();
+    });
+
+    // Tryk på et navn for at fjerne spilleren (før spillet går i gang)
+    dtCircle.addEventListener("click", (e) => {
+      const el = e.target.closest(".spin-name");
+      if (!el || dtStarted) return;
+      dtPlayers.splice(Number(el.dataset.index), 1);
+      renderDoubleCircle();
+    });
+
+    function dtCardHTML(player, joint, card) {
+      return `
+        <div class="dt-turn ${joint}">
+          <small>${joint === "a" ? "🔥" : "💚"} ${esc(dtPlayers[player].name)}</small>
+          <p>${esc(dtText(card))}</p>
+        </div>`;
+    }
+
+    function dtDraw() {
+      if (dtA === dtB) {
+        // Begge joints hos samme spiller
+        const card = dtPick(DT_DOUBLE);
+        dtPlayers[dtA].points += card.n;
+        vibrate([80, 60, 80, 60, 200]);
+        dtCard.innerHTML = `
+          <div class="dt-boom">
+            <strong>💥 DOUBLE TROUBLE!</strong>
+            <small>${esc(dtPlayers[dtA].name)} ${t("dt.both")}</small>
+            <p>${esc(dtText(card))}</p>
+          </div>`;
+        return;
+      }
+      const a = dtPick(DT_SINGLE);
+      const b = dtPick(DT_SINGLE);
+      dtPlayers[dtA].points += a.n;
+      dtPlayers[dtB].points += b.n;
+      dtCard.innerHTML = dtCardHTML(dtA, "a", a) + dtCardHTML(dtB, "b", b);
+    }
+
+    dtPass.addEventListener("click", () => {
+      const n = dtPlayers.length;
+      if (n < 3) return;
+      let event = "";
+      if (!dtStarted) {
+        // Joint B starter så langt væk som muligt, men med lige afstand,
+        // så de to joints altid kan mødes hos den samme
+        dtStarted = true;
+        dtA = 0;
+        dtB = n % 2 ? n - 1 : n - 2;
+        dtDir = 1;
+        dtPasses = 0;
+      } else {
+        dtPasses++;
+        // Af og til skifter jointsene retning
+        if (dtPasses > 2 && Math.random() < 0.15) {
+          dtDir = -dtDir;
+          event = `<p class="dt-event">🔄 ${t("dt.switch")}</p>`;
+        }
+        dtA = (dtA + dtDir + n) % n;
+        dtB = (dtB - dtDir + n) % n;
+      }
+      dtDraw();
+      if (event) dtCard.insertAdjacentHTML("afterbegin", event);
+      dtCard.classList.remove("hidden");
+      renderDoubleCircle();
+    });
+
+    function dtLeaderboard() {
+      return dtPlayers
+        .map((p) => p)
+        .sort((a, b) => b.points - a.points)
+        .map((p, i) => `<li><span class="lb-place">${i + 1}.</span>${esc(p.name)}<strong>${t("game.hitsN", { n: p.points })}</strong>${i === 0 && p.points ? " 👑" : ""}</li>`)
+        .join("");
+    }
+
+    document.getElementById("dt-finish").addEventListener("click", () => {
+      dtCard.innerHTML = `
+        <div class="dt-end">
+          <p class="leader-title">${t("game.leaderboard")}</p>
+          <ol class="leaderboard">${dtLeaderboard()}</ol>
+          <div class="tile-buttons">
+            <button type="button" class="btn-plain" data-dt="continue">${t("game.keepPlaying")}</button>
+            <button type="button" class="btn-primary" data-dt="reset">${t("dt.newGame")}</button>
+          </div>
+        </div>`;
+      dtCard.classList.remove("hidden");
+    });
+
+    dtCard.addEventListener("click", (e) => {
+      const action = e.target.closest("[data-dt]");
+      if (!action) return;
+      if (action.dataset.dt === "continue") dtCard.classList.add("hidden");
+      if (action.dataset.dt === "reset") {
+        dtStarted = false;
+        dtPlayers.forEach((p) => { p.points = 0; });
+        dtCard.classList.add("hidden");
+        renderDoubleCircle();
+      }
+    });
+
+    renderDoubleCircle();
 
     // ==========================================================
     // TERNINGESPILLET: slå med terningen, antal øjne = antal sug
