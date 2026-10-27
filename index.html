@@ -4750,6 +4750,180 @@
     .person-actions .btn-primary + .btn-plain {
       margin-top: 8px;
     }
+
+    /* ---------- Strain-anmeldelser ---------- */
+    .review-btn {
+      flex: none;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 209, 102, 0.15);
+      color: #ffd166;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .top-strains {
+      margin: 0 0 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      text-align: left;
+    }
+    .profile-card .top-strains {
+      margin: 12px 0 0;
+      background: var(--card-2);
+    }
+    .top-strain {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .top-strain > span:nth-child(2) {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .top-strain small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .top-strain .stars {
+      color: #ffd166;
+      font-size: 13px;
+    }
+
+    /* ---------- Weed Quiz ---------- */
+    #quiz-setup .muted {
+      margin-bottom: 14px;
+    }
+    #quiz-players {
+      margin: 10px 0 16px;
+    }
+    .quiz-box {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: var(--card);
+    }
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .quiz-top strong {
+      color: var(--accent);
+    }
+    .quiz-q {
+      margin: 12px 0 16px;
+      font-size: 22px;
+      line-height: 1.25;
+    }
+    .quiz-answers {
+      display: grid;
+      gap: 8px;
+    }
+    .quiz-a {
+      padding: 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 14px;
+      background: var(--card-2);
+      color: var(--text);
+      font: inherit;
+      font-size: 16px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .quiz-a.right {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .quiz-a.wrong {
+      border-color: var(--error);
+      background: rgba(255, 97, 89, 0.12);
+      color: var(--error);
+    }
+    .quiz-result {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .quiz-hits {
+      margin: 12px 0 16px;
+      font-size: 13px;
+    }
+
+    /* ---------- Byg dit eget bræt ---------- */
+    #board-mode {
+      margin-bottom: 10px;
+    }
+    .build-help {
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .build-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .build-list {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .build-tile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+    }
+    .build-icon {
+      width: 28px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .build-name {
+      flex: 1;
+      font-size: 14px;
+    }
+    .build-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .build-step button {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border-strong);
+      border-radius: 50%;
+      background: var(--card-2);
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .build-step button:disabled {
+      opacity: 0.35;
+    }
+    .build-step strong {
+      min-width: 18px;
+      text-align: center;
+    }
+    .delete-account {
+      display: block;
+      margin: 18px auto 0;
+    }
   </style>
 </head>
 <body>
@@ -5054,6 +5228,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
               <input type="search" id="check-search" data-i18n-ph="check.searchPh" placeholder="Søg i tjeklisten" autocomplete="off" autocapitalize="off" spellcheck="false">
             </label>
+            <div id="my-top-strains"></div>
             <div class="chips" id="check-chips"></div>
             <div id="check-list" class="check-list"></div>
           </div>
@@ -5086,6 +5261,11 @@
                 <span><strong>Spin the Joint</strong><small data-i18n="spin.tagline">Spin the joints</small></span>
                 <span class="chevron">›</span>
               </button>
+              <button class="game-item" data-go="quiz">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17h.01"/></svg></span>
+                <span><strong>Weed Quiz</strong><small data-i18n="quiz.tagline">Svar rigtigt, og du får et sug</small></span>
+                <span class="chevron">›</span>
+              </button>
               <button class="game-item" data-go="double">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 15L14 4l2 2L5 17z"/><path d="M8 20L19 9l2 2-11 11z"/><path d="M15 2.5c.8.8.8 2 0 2.8M20 7.5c.8.8.8 2 0 2.8"/></svg></span>
                 <span><strong>Double Trouble</strong><small data-i18n="dt.tagline">To joints, hver sin vej rundt</small></span>
@@ -5105,6 +5285,22 @@
               <button type="button" class="btn-primary" id="dice-roll" data-i18n="game.roll">Slå med terningen</button>
               <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
             </div>
+          </div>
+
+          <!-- Weed Quiz -->
+          <div class="view" data-view="quiz">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <h1 class="page-title">Weed Quiz</h1>
+            <div id="quiz-setup">
+              <p class="muted" data-i18n="quiz.help">10 spørgsmål om cannabis. Svarer du rigtigt, får du lov at tage et sug. Tilføj spillere, så går spørgsmålene på skift.</p>
+              <form id="quiz-form" class="player-add" novalidate>
+                <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+                <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+              </form>
+              <div class="player-list" id="quiz-players"></div>
+              <button type="button" class="btn-primary" id="quiz-start"></button>
+            </div>
+            <div class="quiz-box hidden" id="quiz-box"></div>
           </div>
 
           <!-- Double Trouble -->
@@ -5174,6 +5370,19 @@
                 <p class="error" aria-live="polite"></p>
               </form>
               <div id="player-list" class="player-list"></div>
+              <h2 class="section-title" data-i18n="build.title">Bræt</h2>
+              <div class="seg" id="board-mode">
+                <button type="button" class="seg-btn active" data-board-mode="classic" data-i18n="build.classic">Klassisk</button>
+                <button type="button" class="seg-btn" data-board-mode="custom" data-i18n="build.custom">Byg dit eget</button>
+              </div>
+              <div id="board-builder" class="hidden">
+                <p class="muted build-help"><span id="custom-count"></span> · <span data-i18n="build.help">Vælg hvor mange af hvert felt. Er der for få, gentages de.</span></p>
+                <div class="build-actions">
+                  <button type="button" class="mini-btn" id="custom-fill" data-i18n="build.fill">🎲 Fyld resten tilfældigt</button>
+                  <button type="button" class="mini-btn" id="custom-clear" data-i18n="build.clear">Ryd</button>
+                </div>
+                <div class="build-list" id="custom-tiles"></div>
+              </div>
               <p class="error" id="game-error" aria-live="polite"></p>
               <button type="button" class="btn-primary" id="game-start" data-i18n="game.start">Start spillet</button>
               <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
@@ -5455,6 +5664,7 @@
               </div>
             </div>
             <button id="logout" class="btn-secondary" data-i18n="profile.logout">Log ud</button>
+            <button type="button" class="link-btn danger delete-account" id="delete-account" data-i18n="del.btn">Slet min konto</button>
           </div>
         </section>
 
@@ -5581,6 +5791,24 @@
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="diary-cancel" data-i18n="common.cancel">Annuller</button>
         <button type="submit" class="btn-primary" id="entry-submit"></button>
+      </div>
+    </form>
+
+    <!-- Bundark: anmeld en sort -->
+    <form id="review-form" class="sheet hidden" novalidate>
+      <h2 id="review-title"></h2>
+      <div class="field">
+        <span data-i18n="rev.stars">Din rating</span>
+        <div class="star-input big" id="review-stars"></div>
+      </div>
+      <label class="field">
+        <span data-i18n="rev.note">Kort note (valgfri)</span>
+        <input type="text" name="note" maxlength="80" data-i18n-ph="rev.notePh" placeholder="Fx citrus, giver god energi">
+      </label>
+      <p class="error" aria-live="polite"></p>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="review-cancel" data-i18n="common.cancel">Annuller</button>
+        <button type="submit" class="btn-primary" data-i18n="profile.save">Gem</button>
       </div>
     </form>
 
@@ -6212,6 +6440,40 @@
         "friends.searchPh": "Søg efter smoker",
         "friends.requests": "Venneanmodninger",
         "friends.yours": "Dine venner",
+        "rev.rate": "☆ Anmeld",
+        "rev.stars": "Din rating",
+        "rev.note": "Kort note (valgfri)",
+        "rev.notePh": "Fx citrus, giver god energi",
+        "rev.errStars": "Giv sorten mindst én stjerne",
+        "rev.saved": "Din anmeldelse er gemt 🌿",
+        "rev.top3": "Top 3 sorter",
+        "quiz.tagline": "Svar rigtigt, og du får et sug",
+        "quiz.help": "10 spørgsmål om cannabis. Svarer du rigtigt, får du lov at tage et sug. Tilføj spillere, så går spørgsmålene på skift.",
+        "quiz.start": "Start quizzen",
+        "quiz.solo": "Spil alene",
+        "quiz.question": "Spørgsmål {n} af {total}",
+        "quiz.right": "Rigtigt! Tag et sug 🌿",
+        "quiz.wrong": "Forkert! Ingen sug til dig denne gang",
+        "quiz.finish": "Se resultatet",
+        "quiz.done": "Quizzen er slut!",
+        "quiz.score": "{n}/{total} rigtige",
+        "quiz.hits": "Antal rigtige = antal sug, man har fået lov at tage.",
+        "build.title": "Bræt",
+        "build.classic": "Klassisk",
+        "build.custom": "Byg dit eget",
+        "build.count": "{n}/{total} felter valgt",
+        "build.help": "Vælg hvor mange af hvert felt. Er der for få, gentages de.",
+        "build.fill": "🎲 Fyld resten tilfældigt",
+        "build.clear": "Ryd",
+        "del.btn": "Slet min konto",
+        "del.confirm1": "Vil du slette din konto? Din profil, dine smoke seshs, opslag, rolls, munchies, smoke spots og venner bliver slettet for altid.",
+        "del.confirm2": "Skriv dit smoker name ({name}) for at bekræfte",
+        "del.password": "Skriv din adgangskode",
+        "del.cancelled": "Kontoen blev ikke slettet",
+        "del.working": "Sletter din konto…",
+        "del.done": "Din konto er slettet. Farvel 👋",
+        "del.wrongPassword": "Forkert adgangskode. Kontoen blev ikke slettet",
+        "del.failed": "Kunne ikke slette kontoen. Prøv igen",
         "chat.title": "Chat",
         "chat.write": "Skriv",
         "chat.you": "Dig:",
@@ -6793,6 +7055,40 @@
         "friends.searchPh": "Search for a smoker",
         "friends.requests": "Friend requests",
         "friends.yours": "Your friends",
+        "rev.rate": "☆ Rate",
+        "rev.stars": "Your rating",
+        "rev.note": "Short note (optional)",
+        "rev.notePh": "E.g. citrus, good energy",
+        "rev.errStars": "Give the strain at least one star",
+        "rev.saved": "Your review is saved 🌿",
+        "rev.top3": "Top 3 strains",
+        "quiz.tagline": "Answer right and you get a hit",
+        "quiz.help": "10 questions about cannabis. Answer right and you get to take a hit. Add players and the questions go in turns.",
+        "quiz.start": "Start the quiz",
+        "quiz.solo": "Play alone",
+        "quiz.question": "Question {n} of {total}",
+        "quiz.right": "Correct! Take a hit 🌿",
+        "quiz.wrong": "Wrong! No hit for you this time",
+        "quiz.finish": "See the result",
+        "quiz.done": "The quiz is over!",
+        "quiz.score": "{n}/{total} correct",
+        "quiz.hits": "Number correct = number of hits you got to take.",
+        "build.title": "Board",
+        "build.classic": "Classic",
+        "build.custom": "Build your own",
+        "build.count": "{n}/{total} tiles chosen",
+        "build.help": "Choose how many of each tile. If there are too few, they repeat.",
+        "build.fill": "🎲 Fill the rest randomly",
+        "build.clear": "Clear",
+        "del.btn": "Delete my account",
+        "del.confirm1": "Delete your account? Your profile, smoke seshes, posts, rolls, munchies, smoke spots and friends will be deleted forever.",
+        "del.confirm2": "Type your smoker name ({name}) to confirm",
+        "del.password": "Enter your password",
+        "del.cancelled": "The account was not deleted",
+        "del.working": "Deleting your account…",
+        "del.done": "Your account is deleted. Bye 👋",
+        "del.wrongPassword": "Wrong password. The account was not deleted",
+        "del.failed": "Couldn't delete the account. Try again",
         "chat.title": "Chat",
         "chat.write": "Message",
         "chat.you": "You:",
@@ -8340,6 +8636,7 @@
               ${relation === "friend" ? `<button type="button" class="mini-btn primary" data-action="cheer">💪 ${t("tbm.cheerBtn")}</button>` : ""}
             </div>` : ""}
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
+          ${topStrainsHTML(p)}
           ${p.badges && Object.keys(p.badges).length ? `<div class="badge-row person-badges">${BADGES.filter((b) => p.badges[b.id]).map((b) => `<span title="${esc(badgeText(b)[0])}">${b.icon}</span>`).join("")}</div>` : ""}
           <div class="stats">
             <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
@@ -9801,6 +10098,8 @@
     }
 
     function renderChecklist() {
+      const top = document.getElementById("my-top-strains");
+      if (top) top.innerHTML = typeof topStrainsHTML === "function" ? topStrainsHTML(myProfile) : "";
       const query = checkSearch.value.trim().toLowerCase();
       const done = STRAINS.filter(([name]) => checked[strainId(name)]).length;
       document.getElementById("check-count").textContent = done;
@@ -9820,6 +10119,7 @@
                 <span class="check-box">${on ? "✓" : ""}</span>
                 <span class="check-name">${esc(name)}${flag ? ` <span class="flag-sm">${flag}</span>` : ""}</span>
                 <span class="type-tag ${type}">${t("type." + type)}</span>
+                ${on ? `<span class="review-btn" data-review="${id}">${reviewsOf(myProfile)[id] ? `★ ${reviewsOf(myProfile)[id].stars}` : t("rev.rate")}</span>` : ""}
               </button>`;
           }).join("")
         : `<p class="empty-note">${t("check.none")}</p>`;
@@ -9837,6 +10137,8 @@
 
     // Sæt eller fjern flueben (vises med det samme, gemmes bagefter)
     checkList.addEventListener("click", (e) => {
+      const review = e.target.closest("[data-review]");
+      if (review) return openReview(review.dataset.review);
       const row = e.target.closest("[data-strain]");
       if (!row) return;
       const id = row.dataset.strain;
@@ -10264,6 +10566,7 @@
     const TONIGHT_GAMES = [
       { view: "game", name: "Game of Joints", text: "game.tagline" },
       { view: "double", name: "Double Trouble", text: "dt.tagline" },
+      { view: "quiz", name: "Weed Quiz", text: "quiz.tagline" },
       { view: "dice", name: "dice.title", text: "dice.tagline" },
       { view: "spin", name: "Spin the Joint", text: "spin.tagline" },
     ];
@@ -10958,7 +11261,7 @@
     // ---------- Start og slut ----------
     // Spillet fylder hele skærmen og spilles med telefonen vandret
     function startGame() {
-      board = ["start", ...BOARD_FIRST, ...shuffle(BOARD_MIDDLE), ...BOARD_LAST, "goal"];
+      board = buildBoard();
       positions = players.map(() => 0);
       hits = players.map(() => 0);
       lastRoll = 0;
@@ -12915,6 +13218,363 @@
         console.error(error);
         input.value = text;
         showToast(dbErrorText(error));
+      }
+    });
+
+    // ==========================================================
+    // STRAIN-ANMELDELSER: stjerner og note på de sorter, man har prøvet
+    // ==========================================================
+    // Gemmes på profilen (strainReviews), så venner kan se ens top 3.
+    const reviewForm = document.getElementById("review-form");
+    let reviewId = null;
+    let reviewStars = 0;
+
+    function strainName(id) {
+      const found = STRAINS.find(([name]) => strainId(name) === id);
+      return found ? found[0] : id;
+    }
+
+    function reviewsOf(profile) {
+      return (profile && profile.strainReviews) || {};
+    }
+
+    function topStrains(profile, n = 3) {
+      return Object.entries(reviewsOf(profile))
+        .filter(([, r]) => r && r.stars)
+        .sort((a, b) => b[1].stars - a[1].stars || (b[1].at || 0) - (a[1].at || 0))
+        .slice(0, n);
+    }
+
+    function topStrainsHTML(profile) {
+      const top = topStrains(profile);
+      if (!top.length) return "";
+      return `
+        <div class="top-strains">
+          <p class="leader-title">🌿 ${t("rev.top3")}</p>
+          ${top.map(([id, r], i) => `
+            <div class="top-strain">
+              <span>${["🥇", "🥈", "🥉"][i]}</span>
+              <span><strong>${esc(strainName(id))}</strong>${r.note ? `<small>${esc(r.note)}</small>` : ""}</span>
+              <span class="stars">${starsText(r.stars)}</span>
+            </div>`).join("")}
+        </div>`;
+    }
+
+    function openReview(id) {
+      reviewId = id;
+      const r = reviewsOf(myProfile)[id] || {};
+      reviewStars = r.stars || 0;
+      document.getElementById("review-title").textContent = strainName(id);
+      document.getElementById("review-stars").innerHTML = starInputHTML(reviewStars);
+      reviewForm.elements.note.value = r.note || "";
+      clearErrors(reviewForm);
+      sheetBackdrop.classList.remove("hidden");
+      reviewForm.classList.remove("hidden");
+    }
+
+    document.getElementById("review-stars").addEventListener("click", (e) => {
+      const star = e.target.closest("[data-rate]");
+      if (!star) return;
+      reviewStars = Number(star.dataset.rate);
+      document.getElementById("review-stars").innerHTML = starInputHTML(reviewStars);
+    });
+
+    document.getElementById("review-cancel").addEventListener("click", closeSheet);
+
+    reviewForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!reviewStars) return setError(reviewForm, t("rev.errStars"));
+      const review = { stars: reviewStars, note: reviewForm.elements.note.value.trim(), at: Date.now() };
+      myProfile.strainReviews = { ...reviewsOf(myProfile), [reviewId]: review };
+      closeSheet();
+      renderChecklist();
+      showToast(t("rev.saved"));
+      db.collection("profiles").doc(currentUserKey()).set({ strainReviews: { [reviewId]: review } }, { merge: true })
+        .catch((error) => showToast(dbErrorText(error)));
+    });
+
+    // ==========================================================
+    // QUIZ: cannabis-fakta. Rigtigt svar = du tager et sug
+    // ==========================================================
+    const QUIZ = [
+      { da: ["Hvilket stof i cannabis gør dig skæv?", "THC", "CBD", "Terpener", "Myrcen"], en: ["Which compound in cannabis gets you high?", "THC", "CBD", "Terpenes", "Myrcene"] },
+      { da: ["Hvad står CBD for?", "Cannabidiol", "Cannabis-dopamin", "Centralt bud-derivat", "Cannabinol-B"], en: ["What does CBD stand for?", "Cannabidiol", "Cannabis dopamine", "Central bud derivative", "Cannabinol-B"] },
+      { da: ["Hvor længe kan det tage, før man mærker en edible?", "30 min til 2 timer", "1-2 minutter", "5 timer", "Med det samme"], en: ["How long can it take to feel an edible?", "30 min to 2 hours", "1-2 minutes", "5 hours", "Instantly"] },
+      { da: ["Hvad er hash lavet af?", "Presset harpiks fra planten", "Tørrede blade", "Rødder", "Frø"], en: ["What is hash made of?", "Pressed resin from the plant", "Dried leaves", "Roots", "Seeds"] },
+      { da: ["Hvad kaldes duftstofferne, der giver cannabis smag?", "Terpener", "Flavonoider", "Enzymer", "Proteiner"], en: ["What are the aroma compounds that give cannabis its taste called?", "Terpenes", "Flavonoids", "Enzymes", "Proteins"] },
+      { da: ["Hvilken terpen dufter af citron?", "Limonen", "Myrcen", "Pinen", "Linalool"], en: ["Which terpene smells like lemon?", "Limonene", "Myrcene", "Pinene", "Linalool"] },
+      { da: ["Hvilken terpen dufter af fyrretræ?", "Pinen", "Limonen", "Caryophyllen", "Humulen"], en: ["Which terpene smells like pine?", "Pinene", "Limonene", "Caryophyllene", "Humulene"] },
+      { da: ["Hvad er 'couch lock'?", "En tung, afslappet kropsrus", "En slags bong", "En sort fra Holland", "At man ikke kan sove"], en: ["What is 'couch lock'?", "A heavy, relaxed body high", "A type of bong", "A Dutch strain", "Not being able to sleep"] },
+      { da: ["Hvad betyder 4/20?", "Cannabisens uofficielle festdag (20. april)", "4 gram til 20 kr", "En THC-procent", "En lov fra 1920"], en: ["What does 4/20 mean?", "Cannabis' unofficial holiday (April 20)", "4 grams for 20 bucks", "A THC percentage", "A law from 1920"] },
+      { da: ["Hvilken plante er cannabis i familie med?", "Humle", "Tomat", "Mynte", "Kaffe"], en: ["Which plant is cannabis related to?", "Hops", "Tomato", "Mint", "Coffee"] },
+      { da: ["Hvad kaldes de små krystaller på blomsterne?", "Trikomer", "Pistiller", "Stomata", "Kalyx"], en: ["What are the tiny crystals on the buds called?", "Trichomes", "Pistils", "Stomata", "Calyx"] },
+      { da: ["Hvor mange dage tager det cirka at nulstille tolerancen helt?", "3-4 uger", "1 dag", "1 år", "6 timer"], en: ["Roughly how long does it take to fully reset tolerance?", "3-4 weeks", "1 day", "1 year", "6 hours"] },
+      { da: ["Hvad hedder den legendariske sort fra Sydafrika?", "Durban Poison", "Acapulco Gold", "Malana Cream", "Panama Red"], en: ["What's the legendary strain from South Africa called?", "Durban Poison", "Acapulco Gold", "Malana Cream", "Panama Red"] },
+      { da: ["Hvad er en 'dab'?", "Et koncentrat, der fordampes på varm overflade", "En dansebevægelse med joint", "En lille joint", "En bong uden vand"], en: ["What is a 'dab'?", "A concentrate vaporised on a hot surface", "A dance move with a joint", "A tiny joint", "A bong without water"] },
+      { da: ["Hvad hjælper nogle, hvis de er blevet for skæve?", "At lugte til sort peber", "At ryge mere", "Energidrik", "At løbe en tur"], en: ["What helps some people if they get too high?", "Smelling black pepper", "Smoking more", "Energy drinks", "Going for a run"] },
+      { da: ["Hvilken del af planten ryger man normalt?", "Blomsten (budden)", "Stænglen", "Roden", "Bladene"], en: ["Which part of the plant is usually smoked?", "The flower (bud)", "The stem", "The root", "The leaves"] },
+      { da: ["Hvad kaldes det, når en joint brænder skævt i den ene side?", "Canoeing", "Ghosting", "Tunneling", "Coning"], en: ["What's it called when a joint burns unevenly down one side?", "Canoeing", "Ghosting", "Tunneling", "Coning"] },
+      { da: ["Hvilken cannabinoid omdanner leveren THC til fra edibles?", "11-hydroxy-THC", "CBN", "CBG", "THCV"], en: ["What does the liver turn THC from edibles into?", "11-hydroxy-THC", "CBN", "CBG", "THCV"] },
+      { da: ["Hvad er en spliff?", "En joint med tobak i", "En joint uden papir", "En stor bong", "En vape"], en: ["What is a spliff?", "A joint with tobacco in it", "A joint without paper", "A big bong", "A vape"] },
+      { da: ["Hvad bruger man en grinder til?", "At finhakke weed", "At tænde jointen", "At rense bongen", "At veje"], en: ["What is a grinder used for?", "Breaking up weed", "Lighting the joint", "Cleaning the bong", "Weighing"] },
+    ];
+    const QUIZ_ROUND = 10;
+    const quizPlayersBox = document.getElementById("quiz-players");
+    const quizBox = document.getElementById("quiz-box");
+    let quizPlayers = [];
+    let quizState = null;
+
+    function renderQuizPlayers() {
+      quizPlayersBox.innerHTML = quizPlayers.map((p, i) => `
+        <span class="player-chip">${esc(p.name)}<button type="button" data-quiz-remove="${i}" aria-label="${t("game.remove")}">✕</button></span>`).join("");
+      document.getElementById("quiz-start").textContent = t(quizPlayers.length ? "quiz.start" : "quiz.solo");
+    }
+
+    document.getElementById("quiz-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = e.target.elements.player;
+      const name = input.value.trim();
+      if (!name || quizPlayers.length >= 8) return;
+      quizPlayers.push({ name, score: 0 });
+      input.value = "";
+      renderQuizPlayers();
+    });
+
+    quizPlayersBox.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-quiz-remove]");
+      if (!btn) return;
+      quizPlayers.splice(Number(btn.dataset.quizRemove), 1);
+      renderQuizPlayers();
+    });
+
+    document.getElementById("quiz-start").addEventListener("click", () => {
+      if (!quizPlayers.length) quizPlayers = [{ name: myProfile ? myProfile.name : t("lb.you"), score: 0 }];
+      quizPlayers.forEach((p) => { p.score = 0; });
+      quizState = { questions: shuffle(QUIZ).slice(0, QUIZ_ROUND), index: 0, answered: false };
+      document.getElementById("quiz-setup").classList.add("hidden");
+      renderQuizQuestion();
+    });
+
+    function quizPlayer() {
+      return quizPlayers[quizState.index % quizPlayers.length];
+    }
+
+    function renderQuizQuestion() {
+      const q = quizState.questions[quizState.index];
+      const [question, ...answers] = q[lang === "en" ? "en" : "da"];
+      // Svarene blandes; det første i listen er det rigtige
+      quizState.order = shuffle(answers.map((a, i) => ({ a, right: i === 0 })));
+      quizState.answered = false;
+      quizBox.innerHTML = `
+        <div class="quiz-top">
+          <span>${t("quiz.question", { n: quizState.index + 1, total: quizState.questions.length })}</span>
+          <strong>${esc(quizPlayer().name)}</strong>
+        </div>
+        <h2 class="quiz-q">${esc(question)}</h2>
+        <div class="quiz-answers">
+          ${quizState.order.map((o, i) => `<button type="button" class="quiz-a" data-answer="${i}">${esc(o.a)}</button>`).join("")}
+        </div>
+        <p class="quiz-result" id="quiz-result"></p>`;
+      quizBox.classList.remove("hidden");
+    }
+
+    quizBox.addEventListener("click", (e) => {
+      const answer = e.target.closest("[data-answer]");
+      if (answer && !quizState.answered) {
+        quizState.answered = true;
+        const pick = quizState.order[Number(answer.dataset.answer)];
+        quizBox.querySelectorAll("[data-answer]").forEach((btn, i) => {
+          btn.disabled = true;
+          if (quizState.order[i].right) btn.classList.add("right");
+        });
+        if (pick.right) {
+          quizPlayer().score++;
+          vibrate(60);
+        } else {
+          answer.classList.add("wrong");
+        }
+        const last = quizState.index === quizState.questions.length - 1;
+        document.getElementById("quiz-result").innerHTML = `
+          ${pick.right ? `✅ ${t("quiz.right")}` : `❌ ${t("quiz.wrong")}`}
+          <button type="button" class="btn-primary" data-quiz-next>${t(last ? "quiz.finish" : "game.continue")}</button>`;
+        return;
+      }
+      if (e.target.closest("[data-quiz-next]")) {
+        quizState.index++;
+        if (quizState.index < quizState.questions.length) return renderQuizQuestion();
+        finishQuiz();
+      }
+      if (e.target.closest("[data-quiz-again]")) {
+        quizBox.classList.add("hidden");
+        document.getElementById("quiz-setup").classList.remove("hidden");
+      }
+    });
+
+    function finishQuiz() {
+      const best = Math.max(...quizPlayers.map((p) => p.score));
+      if (myProfile && best > (myProfile.quizBest || 0)) {
+        myProfile.quizBest = best;
+        db.collection("profiles").doc(currentUserKey()).set({ quizBest: best }, { merge: true }).catch(() => {});
+      }
+      recordGame("quiz");
+      confettiIn(quizBox);
+      quizBox.innerHTML = `
+        <h2 class="quiz-q">🧠 ${t("quiz.done")}</h2>
+        <ol class="leaderboard">
+          ${quizPlayers.slice().sort((a, b) => b.score - a.score).map((p, i) => `
+            <li><span class="lb-place">${i + 1}.</span>${esc(p.name)}<strong>${t("quiz.score", { n: p.score, total: quizState.questions.length })}</strong>${i === 0 && p.score ? " 👑" : ""}</li>`).join("")}
+        </ol>
+        <p class="muted quiz-hits">${t("quiz.hits")}</p>
+        <button type="button" class="btn-primary" data-quiz-again>${t("game.playAgain")}</button>`;
+    }
+
+    function confettiIn(parent) {
+      const layer = document.createElement("div");
+      layer.className = "confetti";
+      layer.innerHTML = Array.from({ length: 40 }, () =>
+        `<i style="left:${Math.random() * 100}%;background:${PLAYER_COLORS[Math.floor(Math.random() * PLAYER_COLORS.length)]};animation-delay:${Math.random() * 0.6}s"></i>`).join("");
+      parent.style.position = "relative";
+      parent.appendChild(layer);
+      setTimeout(() => layer.remove(), 3500);
+    }
+
+    renderQuizPlayers();
+
+    // ==========================================================
+    // BYG DIT EGET BRÆT til Game of Joints
+    // ==========================================================
+    const CUSTOM_KEY = "customBoard";
+    const BOARD_TILE_IDS = ["s1", "s2", "s3", "s4", "s5", "lung", "lung2", "lung3", "diy", "diy2", "chimney", "bobShort", "bobLong",
+      "tornado", "x412", "x510", "x3102", "turtle", "stinging", "pass", "back", "joker", "boost", "waterfall", "death"];
+    let boardMode = "classic";
+    let customTiles = [];
+
+    try {
+      customTiles = (JSON.parse(localStorage.getItem(CUSTOM_KEY)) || []).filter((id) => TILES[id]);
+    } catch {
+      customTiles = [];
+    }
+
+    function saveCustom() {
+      try {
+        localStorage.setItem(CUSTOM_KEY, JSON.stringify(customTiles));
+      } catch {
+        // Virker også uden at huske brættet
+      }
+    }
+
+    function renderBoardBuilder() {
+      document.querySelectorAll("[data-board-mode]").forEach((b) => b.classList.toggle("active", b.dataset.boardMode === boardMode));
+      const builder = document.getElementById("board-builder");
+      builder.classList.toggle("hidden", boardMode !== "custom");
+      if (boardMode !== "custom") return;
+      const counts = {};
+      customTiles.forEach((id) => { counts[id] = (counts[id] || 0) + 1; });
+      document.getElementById("custom-count").textContent = t("build.count", { n: customTiles.length, total: BOARD_SIZE - 2 });
+      document.getElementById("custom-tiles").innerHTML = BOARD_TILE_IDS.map((id) => `
+        <div class="build-tile">
+          <span class="build-icon">${TILES[id].icon}</span>
+          <span class="build-name">${esc(tileText(id).name)}</span>
+          <span class="build-step">
+            <button type="button" data-build="${id}" data-d="-1" ${counts[id] ? "" : "disabled"}>−</button>
+            <strong>${counts[id] || 0}</strong>
+            <button type="button" data-build="${id}" data-d="1" ${customTiles.length >= BOARD_SIZE - 2 ? "disabled" : ""}>＋</button>
+          </span>
+        </div>`).join("");
+    }
+
+    document.getElementById("board-mode").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-board-mode]");
+      if (!btn) return;
+      boardMode = btn.dataset.boardMode;
+      renderBoardBuilder();
+    });
+
+    document.getElementById("custom-tiles").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-build]");
+      if (!btn) return;
+      const id = btn.dataset.build;
+      if (btn.dataset.d === "1") customTiles.push(id);
+      else customTiles.splice(customTiles.lastIndexOf(id), 1);
+      saveCustom();
+      renderBoardBuilder();
+    });
+
+    document.getElementById("custom-fill").addEventListener("click", () => {
+      // Fyld resten med tilfældige felter
+      while (customTiles.length < BOARD_SIZE - 2) customTiles.push(BOARD_TILE_IDS[Math.floor(Math.random() * BOARD_TILE_IDS.length)]);
+      saveCustom();
+      renderBoardBuilder();
+    });
+
+    document.getElementById("custom-clear").addEventListener("click", () => {
+      customTiles = [];
+      saveCustom();
+      renderBoardBuilder();
+    });
+
+    function buildBoard() {
+      if (boardMode === "custom" && customTiles.length) {
+        // Er der for få felter, gentages de, til brættet er fyldt
+        const tiles = [];
+        while (tiles.length < BOARD_SIZE - 2) tiles.push(...shuffle(customTiles));
+        return ["start", ...tiles.slice(0, BOARD_SIZE - 2), "goal"];
+      }
+      return ["start", ...BOARD_FIRST, ...shuffle(BOARD_MIDDLE), ...BOARD_LAST, "goal"];
+    }
+
+    renderBoardBuilder();
+
+    // ==========================================================
+    // SLET KONTO
+    // ==========================================================
+    document.getElementById("delete-account").addEventListener("click", async () => {
+      if (!confirm(t("del.confirm1"))) return;
+      const typed = prompt(t("del.confirm2", { name: myProfile ? myProfile.name : "" }));
+      if (!myProfile || !typed || typed.trim().toLowerCase() !== myProfile.name.toLowerCase()) {
+        return showToast(t("del.cancelled"));
+      }
+      const password = prompt(t("del.password"));
+      if (!password) return showToast(t("del.cancelled"));
+      const user = fbAuth.currentUser;
+      const me = currentUserKey();
+      try {
+        // Log ind igen (Firebase kræver det for at slette en konto)
+        await user.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(user.email, password));
+        showToast(t("del.working"));
+        const removeAll = async (query) => {
+          const snap = await query.get();
+          await Promise.all(snap.docs.map((doc) => doc.ref.delete().catch(() => {})));
+        };
+        await Promise.all([
+          removeAll(db.collection("posts").where("author", "==", me)),
+          removeAll(db.collection("rolls").where("author", "==", me)),
+          removeAll(db.collection("munchies").where("author", "==", me)),
+          removeAll(db.collection("benches").where("addedBy", "==", me)),
+          removeAll(db.collection("seshes").where("host", "==", me)),
+          removeAll(db.collection("friendships").where("users", "array-contains", me)),
+          removeAll(db.collection("friendRequests").where("from", "==", me)),
+          removeAll(db.collection("friendRequests").where("to", "==", me)),
+          removeAll(logsDoc().collection("entries")),
+        ]);
+        await Promise.all([
+          logsDoc().delete().catch(() => {}),
+          checklistRef().delete().catch(() => {}),
+          db.collection("profiles").doc(me).delete(),
+        ]);
+        stopListening();
+        await user.delete();
+        try {
+          localStorage.clear();
+        } catch {
+          // ok
+        }
+        showToast(t("del.done"));
+      } catch (error) {
+        console.error(error);
+        showToast(error && ["auth/wrong-password", "auth/invalid-credential"].includes(error.code)
+          ? t("del.wrongPassword")
+          : t("del.failed"));
       }
     });
 
