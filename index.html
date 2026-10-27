@@ -4380,6 +4380,168 @@
       display: block;
       margin: 10px auto 0;
     }
+
+    /* ---------- Forsiden: streak, knapper, seshs og T-break ---------- */
+    .home-streak {
+      margin-top: 6px;
+      color: #ffb347;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .home-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .home-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .home-btn span {
+      font-size: 22px;
+    }
+    .home-btn strong {
+      font-size: 15px;
+    }
+    .home-btn small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .home-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .home-btn:active {
+      transform: scale(0.97);
+    }
+    .sheet-sub {
+      margin: -6px 0 14px;
+      font-size: 14px;
+    }
+    .sesh-card h3 {
+      margin-bottom: 10px;
+    }
+    .sesh + .sesh {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .sesh-head strong {
+      display: block;
+    }
+    .sesh-head small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+    }
+    .sesh-head p {
+      margin-top: 6px;
+      font-size: 14px;
+    }
+    .sesh-count {
+      margin: 8px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .sesh-answer {
+      display: flex;
+      gap: 8px;
+    }
+    .sesh-answer button {
+      flex: 1;
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card-2);
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .sesh-answer button.on {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+    .tbreak-card {
+      border-color: var(--primary);
+    }
+    .tbm-count {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 8px 0 10px;
+    }
+    .tbm-count strong {
+      font-size: 52px;
+      line-height: 1;
+    }
+    .tbm-count span {
+      font-weight: 700;
+    }
+    .tbm-count small {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .tbm-milestone,
+    .tbm-saved {
+      margin-top: 12px;
+      font-size: 15px;
+    }
+    .tbm-cheers {
+      display: grid;
+      gap: 4px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .tbreak-card .btn-plain {
+      margin-top: 14px;
+    }
+    .tbm-start {
+      margin: 6px 0 16px;
+    }
+    .tbm-active {
+      margin: 6px 0 16px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .now-pill {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: rgba(255, 179, 71, 0.15);
+      color: #ffb347;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .now-pill.big {
+      margin-top: 6px;
+      font-size: 13px;
+    }
+    .person-tbreak {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -4929,6 +5091,7 @@
             <div>
               <p class="greeting" id="home-greeting"></p>
               <h1 class="page-title" id="home-name"></h1>
+              <p class="home-streak hidden" id="home-streak"></p>
             </div>
             <div class="home-actions">
               <button type="button" class="icon-btn bell" id="notif-btn" data-i18n-aria="notif.title" aria-label="Notifikationer">
@@ -4945,6 +5108,15 @@
               <strong data-i18n="home.logCta">Log en smoke</strong>
             </span>
           </button>
+          <div class="home-row">
+            <button type="button" class="home-btn" id="sesh-btn"><span>🔥</span><strong data-i18n="sesh.btn">Hvem er klar?</strong></button>
+            <button type="button" class="home-btn" id="smoking-btn"></button>
+          </div>
+          <div class="card tbreak-card hidden" id="tbreak-card"></div>
+          <div class="card sesh-card hidden" id="sesh-card">
+            <h3>🔥 <span data-i18n="sesh.title">Seshs</span></h3>
+            <div id="sesh-list"></div>
+          </div>
           <div class="card home-rank-card" id="home-rank"></div>
 
           <!-- Changelog: hentes fra GitHub, så den opdaterer sig selv hver dag -->
@@ -5172,6 +5344,33 @@
       <div class="sheet-actions">
         <button type="button" class="btn-plain" id="diary-cancel" data-i18n="common.cancel">Annuller</button>
         <button type="submit" class="btn-primary" id="entry-submit"></button>
+      </div>
+    </form>
+
+    <!-- Bundark: sesh-invitation -->
+    <form id="sesh-form" class="sheet hidden" novalidate>
+      <h2 data-i18n="sesh.btn">Hvem er klar?</h2>
+      <p class="muted sheet-sub" data-i18n="sesh.sub">Alle dine venner får en invitation og kan svare 👍 eller 👎</p>
+      <label class="field">
+        <span data-i18n="sesh.when">Hvornår?</span>
+        <input type="datetime-local" name="time">
+      </label>
+      <label class="field">
+        <span data-i18n="sesh.where">Hvor?</span>
+        <select name="spot"></select>
+      </label>
+      <label class="field">
+        <span data-i18n="sesh.other">Eller skriv et sted</span>
+        <input type="text" name="place" maxlength="60" data-i18n-ph="sesh.otherPh" placeholder="Fx hos mig">
+      </label>
+      <label class="field">
+        <span data-i18n="sesh.note">Besked (valgfri)</span>
+        <input type="text" name="note" maxlength="120" data-i18n-ph="sesh.notePh" placeholder="Fx jeg har snacks med">
+      </label>
+      <p class="error" aria-live="polite"></p>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="sesh-cancel" data-i18n="common.cancel">Annuller</button>
+        <button type="submit" class="btn-primary" data-i18n="sesh.send">Send invitation</button>
       </div>
     </form>
 
@@ -5776,6 +5975,66 @@
         "friends.searchPh": "Søg efter smoker",
         "friends.requests": "Venneanmodninger",
         "friends.yours": "Dine venner",
+        "streak.one": "🔥 1 dag i træk",
+        "streak.many": "🔥 {n} dage i træk",
+        "now.start": "Jeg smoker nu",
+        "now.on": "Smoker nu",
+        "now.left": "{h}t {m}m tilbage",
+        "now.started": "Dine venner kan se, at du smoker 💨",
+        "now.stopped": "\"Smoker nu\" er slået fra",
+        "sesh.btn": "Hvem er klar?",
+        "sesh.title": "Seshs",
+        "sesh.sub": "Alle dine venner får en invitation og kan svare 👍 eller 👎",
+        "sesh.when": "Hvornår?",
+        "sesh.where": "Hvor?",
+        "sesh.anyPlace": "Vælg et smoke spot (valgfrit)",
+        "sesh.other": "Eller skriv et sted",
+        "sesh.otherPh": "Fx hos mig",
+        "sesh.note": "Besked (valgfri)",
+        "sesh.notePh": "Fx jeg har snacks med",
+        "sesh.send": "Send invitation",
+        "sesh.sent": "Invitationen er sendt til dine venner 🔥",
+        "sesh.noFriends": "Tilføj venner først, så du har nogen at invitere",
+        "sesh.errTime": "Vælg et tidspunkt, der ikke er gået",
+        "sesh.today": "i dag kl. {time}",
+        "sesh.tomorrow": "i morgen kl. {time}",
+        "sesh.yours": "Din sesh",
+        "sesh.from": "{name} inviterer",
+        "sesh.yes": "Jeg er klar",
+        "sesh.no": "Kan ikke",
+        "sesh.cancel": "Aflys",
+        "sesh.confirmCancel": "Vil du aflyse seshen?",
+        "notif.sesh": "{name} inviterer til sesh {time}",
+        "notif.cheer": "{name} sendte dig opmuntring til din pause 💪",
+        "tbm.label": "T-break",
+        "tbm.day1": "dag på pause",
+        "tbm.days": "dage på pause",
+        "tbm.left": "{n} dage tilbage af {goal}",
+        "tbm.done": "Målet på {goal} dage er nået! 🎉",
+        "tbm.m0": "Første dag. Du kan godt!",
+        "tbm.m1": "Dag 1: Det sværeste er at starte. Godt gået!",
+        "tbm.m2": "Dag 2: Tolerancen er allerede begyndt at falde.",
+        "tbm.m3": "Dag 3: Søvnen begynder at blive bedre.",
+        "tbm.m5": "Dag 5: Trangen bliver mindre for hver dag.",
+        "tbm.m7": "En hel uge! Drømmene kommer måske tilbage.",
+        "tbm.m10": "Dag 10: Mere energi og klarere hoved.",
+        "tbm.m14": "To uger! Halvvejs mod en fuld nulstilling.",
+        "tbm.m21": "Tre uger: Receptorerne er næsten tilbage.",
+        "tbm.m28": "28 dage: Fuld nulstilling! 🎉",
+        "tbm.saved": "Du har sparet ca. {kr} kr.",
+        "tbm.cheered": "heppede på dig",
+        "tbm.stop": "Stop pausen",
+        "tbm.finish": "Afslut pausen 🎉",
+        "tbm.started": "Din pause på {n} dage er startet. Held og lykke!",
+        "tbm.stopped": "Pausen er stoppet efter {n} dage",
+        "tbm.finished": "Pausen er gennemført! {n} dage 🎉",
+        "tbm.confirmStop": "Du har ikke nået dit mål endnu. Vil du stoppe pausen?",
+        "tbm.logConfirm": "Du er på T-break. Logger du en smoke, stopper pausen. Vil du fortsætte?",
+        "tbm.startBtn": "Start en pause på {n} dage",
+        "tbm.activeHere": "Du er på pause: dag {n}. Følg den på forsiden.",
+        "tbm.friendOn": "På T-break: dag {n}",
+        "tbm.cheerBtn": "Hep",
+        "tbm.cheerSent": "Du heppede på {name} 💪",
         "friends.suggest": "Forslag til dig",
         "friends.mutual1": "1 fælles ven",
         "friends.mutualN": "{n} fælles venner",
@@ -6273,6 +6532,66 @@
         "friends.searchPh": "Search for a smoker",
         "friends.requests": "Friend requests",
         "friends.yours": "Your friends",
+        "streak.one": "🔥 1 day in a row",
+        "streak.many": "🔥 {n} days in a row",
+        "now.start": "I'm smoking now",
+        "now.on": "Smoking now",
+        "now.left": "{h}h {m}m left",
+        "now.started": "Your friends can see you're smoking 💨",
+        "now.stopped": "\"Smoking now\" is off",
+        "sesh.btn": "Who's ready?",
+        "sesh.title": "Seshes",
+        "sesh.sub": "All your friends get an invite and can answer 👍 or 👎",
+        "sesh.when": "When?",
+        "sesh.where": "Where?",
+        "sesh.anyPlace": "Choose a smoke spot (optional)",
+        "sesh.other": "Or type a place",
+        "sesh.otherPh": "E.g. my place",
+        "sesh.note": "Message (optional)",
+        "sesh.notePh": "E.g. I'm bringing snacks",
+        "sesh.send": "Send invite",
+        "sesh.sent": "Your invite was sent to your friends 🔥",
+        "sesh.noFriends": "Add friends first so you have someone to invite",
+        "sesh.errTime": "Choose a time that hasn't passed",
+        "sesh.today": "today at {time}",
+        "sesh.tomorrow": "tomorrow at {time}",
+        "sesh.yours": "Your sesh",
+        "sesh.from": "{name} invites you",
+        "sesh.yes": "I'm in",
+        "sesh.no": "Can't",
+        "sesh.cancel": "Cancel",
+        "sesh.confirmCancel": "Cancel the sesh?",
+        "notif.sesh": "{name} invites you to a sesh {time}",
+        "notif.cheer": "{name} cheered you on for your break 💪",
+        "tbm.label": "T-break",
+        "tbm.day1": "day on break",
+        "tbm.days": "days on break",
+        "tbm.left": "{n} of {goal} days left",
+        "tbm.done": "You reached your goal of {goal} days! 🎉",
+        "tbm.m0": "Day one. You've got this!",
+        "tbm.m1": "Day 1: Starting is the hardest part. Well done!",
+        "tbm.m2": "Day 2: Your tolerance has already started dropping.",
+        "tbm.m3": "Day 3: Your sleep starts getting better.",
+        "tbm.m5": "Day 5: The cravings get weaker every day.",
+        "tbm.m7": "A whole week! Your dreams might come back.",
+        "tbm.m10": "Day 10: More energy and a clearer head.",
+        "tbm.m14": "Two weeks! Halfway to a full reset.",
+        "tbm.m21": "Three weeks: Your receptors are almost back.",
+        "tbm.m28": "28 days: Full reset! 🎉",
+        "tbm.saved": "You've saved about {kr} kr.",
+        "tbm.cheered": "cheered you on",
+        "tbm.stop": "Stop the break",
+        "tbm.finish": "Finish the break 🎉",
+        "tbm.started": "Your {n} day break has started. Good luck!",
+        "tbm.stopped": "Break stopped after {n} days",
+        "tbm.finished": "Break completed! {n} days 🎉",
+        "tbm.confirmStop": "You haven't reached your goal yet. Stop the break?",
+        "tbm.logConfirm": "You're on a T-break. Logging a smoke will stop it. Continue?",
+        "tbm.startBtn": "Start a {n} day break",
+        "tbm.activeHere": "You're on a break: day {n}. Follow it on the home screen.",
+        "tbm.friendOn": "On a T-break: day {n}",
+        "tbm.cheerBtn": "Cheer",
+        "tbm.cheerSent": "You cheered on {name} 💪",
         "friends.suggest": "Suggested for you",
         "friends.mutual1": "1 mutual friend",
         "friends.mutualN": "{n} mutual friends",
@@ -6652,6 +6971,8 @@
       listenToPosts();
       listenToRolls();
       listenToMunchies();
+      listenToSeshes();
+      listenToCheers();
       listenToChecklist();
       listenToLogs();
 
@@ -6667,6 +6988,8 @@
       stopPosts();
       stopRolls();
       stopMunchies();
+      stopSeshes();
+      stopCheers();
       stopChecklist();
       stopLogs();
     }
@@ -6699,6 +7022,10 @@
       }
       if (!root) cancelPlacing();
       if (name === "friends" && activeTab === "friends") showFriendsList();
+      // Hent vennernes profiler på ny, så "Smoker nu" er opdateret
+      if (name === "friends" && currentUserKey()) {
+        Promise.all(friendships.map((f) => getProfile(otherUser(f), true).catch(() => null))).then(() => renderFriends());
+      }
 
       const section = root ? "handbook" : name;
       pages.forEach((page) => page.classList.toggle("active", page.dataset.page === section));
@@ -7050,10 +7377,7 @@
 
     function closeSheet() {
       sheetBackdrop.classList.add("hidden");
-      benchForm.classList.add("hidden");
-      profileForm.classList.add("hidden");
-      diaryForm.classList.add("hidden");
-      logForm.classList.add("hidden");
+      document.querySelectorAll(".sheet").forEach((sheet) => sheet.classList.add("hidden"));
     }
 
     sheetBackdrop.addEventListener("click", closeSheet);
@@ -7236,6 +7560,7 @@
 
     function renderProfile() {
       queueNotifications();
+      renderHomeExtras();
       const uid = currentUserKey();
       if (!uid || !myProfile) return;
 
@@ -7428,7 +7753,7 @@
           <span class="avatar avatar-sm">${avatarHTML(profile)}</span>
           <span class="person-text">
             <strong>${esc(profile.name)} <span class="mini-rank" title="${RANKS[rankIndex(shownXp(profile))].name}">${RANKS[rankIndex(shownXp(profile))].icon}</span></strong>
-            <small>${esc(profile.bio || "")}</small>
+            <small>${isSmoking(profile) ? `<span class="now-pill">💨 ${t("now.on")}</span> ` : ""}${esc(profile.bio || "")}</small>
           </span>
           ${extra || '<span class="chevron">›</span>'}
         </div>`;
@@ -7719,6 +8044,12 @@
           <h2>${esc(p.name)}</h2>
           <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
           <p class="person-rank">${rankBadge(shownXp(p))}</p>
+          ${isSmoking(p) ? `<p class="now-pill big">💨 ${t("now.on")}</p>` : ""}
+          ${isOnTBreak(p) ? `
+            <div class="person-tbreak">
+              <p>⏸️ ${t("tbm.friendOn", { n: tbreakDays(p.tbreak) })}</p>
+              ${relation === "friend" ? `<button type="button" class="mini-btn primary" data-action="cheer">💪 ${t("tbm.cheerBtn")}</button>` : ""}
+            </div>` : ""}
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
           <div class="stats">
             <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
@@ -7736,6 +8067,7 @@
         decline: declineRequest,
         cancel: cancelRequest,
         remove: removeFriend,
+        cheer: sendCheer,
         friends: () => {
           renderPersonFriends();
           showFriendsView("pfriends");
@@ -10415,6 +10747,7 @@
           logEntries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
           logsLoaded = true;
           syncXp();
+          renderStreak();
           renderStats();
           renderTBreak();
           updateDriveTimers();
@@ -10501,6 +10834,10 @@
         return setError(logForm, t("ai.errGrams"));
       }
       const thcValue = thc.value ? Number(String(thc.value).replace(",", ".")) : null;
+      if (isOnTBreak(myProfile)) {
+        if (!confirm(t("tbm.logConfirm"))) return;
+        endTBreak(true);
+      }
 
       setBusy(logForm, true);
       try {
@@ -10817,6 +11154,9 @@
           <p class="ai-pattern">📊 ${esc(a.pattern)}</p>
           <h3>${t("tb.forecast")}</h3>
           ${forecastChart(a.forecast)}
+          ${isOnTBreak(myProfile)
+            ? `<p class="tbm-active">⏸️ ${t("tbm.activeHere", { n: tbreakDays(myProfile.tbreak) })}</p>`
+            : `<button type="button" class="btn-primary tbm-start" data-start-tbreak="${Math.max(2, a.break_days || 7)}">⏸️ ${t("tbm.startBtn", { n: Math.max(2, a.break_days || 7) })}</button>`}
           <h3>${t("ai.tips")}</h3>
           <ul class="ai-tips">${a.tips.map((tip) => `<li>${esc(tip)}</li>`).join("")}</ul>
           <p class="muted ai-when">${t("tb.updated")}</p>
@@ -10825,6 +11165,8 @@
 
     aiResult.addEventListener("click", (e) => {
       if (e.target.closest("[data-open-log]")) openLogSheet();
+      const start = e.target.closest("[data-start-tbreak]");
+      if (start) startTBreak(Number(start.dataset.startTbreak));
     });
 
     // Forklar en afvisning fra databasen på en forståelig måde
@@ -11435,6 +11777,16 @@
         text: t("notif.munch", { name: personName(m.author, m.authorName) }),
         open: () => { openView("hub", "munchies"); openMunchId = m.id; goView("munchie"); },
       }));
+      (seshes || []).filter((x) => x.host !== me).forEach((x) => list.push({
+        id: "sesh-" + x.id, time: x.createdAt || 0, icon: "🔥", uid: x.host,
+        text: t("notif.sesh", { name: personName(x.host, x.hostName), time: seshTime(x.time) }),
+        open: () => showPage("home"),
+      }));
+      (cheers || []).forEach((c) => list.push({
+        id: "cheer-" + c.id, time: c.createdAt || 0, icon: "💪", uid: c.from,
+        text: t("notif.cheer", { name: personName(c.from, c.fromName) }),
+        open: () => showPage("home"),
+      }));
       benches.filter((b) => b.addedBy !== me && b.createdAt).forEach((b) => list.push({
         id: "spot-" + b.id, time: b.createdAt, icon: "📍", uid: b.addedBy,
         text: t("notif.spot", { name: b.addedByName || "?", spot: b.name || "" }),
@@ -11541,6 +11893,344 @@
     });
 
     renderNotifToggle();
+
+    // ==========================================================
+    // STREAK: hvor mange dage i træk man har logget
+    // ==========================================================
+    function currentStreak() {
+      const days = new Set(logEntries.map((e) => dayStart(entryTime(e))));
+      let day = dayStart(Date.now());
+      // Har man ikke logget i dag endnu, tæller streaken fra i går
+      if (!days.has(day)) day = dayStart(day - DAY + 2 * HOUR);
+      let streak = 0;
+      while (days.has(day)) {
+        streak++;
+        day = dayStart(day - DAY + 2 * HOUR);
+      }
+      return streak;
+    }
+
+    function bestStreak() {
+      const days = [...new Set(logEntries.map((e) => dayStart(entryTime(e))))].sort((a, b) => a - b);
+      let best = 0;
+      let run = 0;
+      days.forEach((d, i) => {
+        run = i && Math.round((d - days[i - 1]) / DAY) === 1 ? run + 1 : 1;
+        best = Math.max(best, run);
+      });
+      return best;
+    }
+
+    function renderStreak() {
+      const streak = currentStreak();
+      const el = document.getElementById("home-streak");
+      el.classList.toggle("hidden", !streak);
+      el.textContent = t(streak === 1 ? "streak.one" : "streak.many", { n: streak });
+    }
+
+    // ==========================================================
+    // "SMOKER NU": vis vennerne, at man er i gang (i 2 timer)
+    // ==========================================================
+    const SMOKING_TIME = 2 * HOUR;
+
+    function isSmoking(profile) {
+      return !!(profile && profile.smokingUntil && profile.smokingUntil > Date.now());
+    }
+
+    function renderSmokingNow() {
+      const btn = document.getElementById("smoking-btn");
+      const on = isSmoking(myProfile);
+      btn.classList.toggle("active", on);
+      if (!on) {
+        btn.innerHTML = `<span>💨</span><strong>${t("now.start")}</strong>`;
+        return;
+      }
+      const left = Math.max(0, myProfile.smokingUntil - Date.now());
+      const h = Math.floor(left / HOUR);
+      const m = Math.round((left % HOUR) / 60e3);
+      btn.innerHTML = `<span>💨</span><strong>${t("now.on")}</strong><small>${t("now.left", { h, m })}</small>`;
+    }
+
+    document.getElementById("smoking-btn").addEventListener("click", () => {
+      if (!myProfile) return;
+      const on = isSmoking(myProfile);
+      const until = on ? 0 : Date.now() + SMOKING_TIME;
+      myProfile.smokingUntil = until;
+      renderSmokingNow();
+      showToast(t(on ? "now.stopped" : "now.started"));
+      db.collection("profiles").doc(currentUserKey()).set({ smokingUntil: until }, { merge: true })
+        .catch((error) => showToast(dbErrorText(error)));
+    });
+
+    setInterval(() => {
+      if (myProfile) renderSmokingNow();
+    }, 60e3);
+
+    // ==========================================================
+    // SESH-INVITATIONER: "Hvem er klar?"
+    // ==========================================================
+    var seshes = [];          // var: bruges også af notifikationerne
+    let seshUnsubs = [];
+    const seshChunks = { invited: [], mine: [] };
+    const seshForm = document.getElementById("sesh-form");
+
+    function listenToSeshes() {
+      if (seshUnsubs.length || !db) return;
+      const me = currentUserKey();
+      const merge = () => {
+        const all = new Map();
+        [...seshChunks.invited, ...seshChunks.mine].forEach((x) => all.set(x.id, x));
+        // Vis kun seshs, der ikke er mere end 3 timer gamle
+        seshes = [...all.values()].filter((x) => x.time > Date.now() - 3 * HOUR).sort((a, b) => a.time - b.time);
+        renderSeshes();
+        queueNotifications();
+      };
+      const toList = (snap) => snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      seshUnsubs = [
+        db.collection("seshes").where("invited", "array-contains", me).onSnapshot((snap) => {
+          seshChunks.invited = toList(snap);
+          merge();
+        }, (error) => console.error(error)),
+        db.collection("seshes").where("host", "==", me).onSnapshot((snap) => {
+          seshChunks.mine = toList(snap);
+          merge();
+        }, (error) => console.error(error)),
+      ];
+    }
+
+    function stopSeshes() {
+      seshUnsubs.forEach((unsub) => unsub());
+      seshUnsubs = [];
+      seshChunks.invited = [];
+      seshChunks.mine = [];
+      seshes = [];
+    }
+
+    function seshTime(time) {
+      const date = new Date(time);
+      const clock = date.toLocaleTimeString(t("locale"), { hour: "2-digit", minute: "2-digit" });
+      const day = dayStart(time);
+      const today = dayStart(Date.now());
+      if (day === today) return t("sesh.today", { time: clock });
+      if (day === dayStart(today + DAY + 2 * HOUR)) return t("sesh.tomorrow", { time: clock });
+      return `${date.toLocaleDateString(t("locale"), { weekday: "long", day: "numeric", month: "short" })} ${clock}`;
+    }
+
+    function renderSeshes() {
+      const me = currentUserKey();
+      const box = document.getElementById("sesh-list");
+      document.getElementById("sesh-card").classList.toggle("hidden", !seshes.length);
+      box.innerHTML = seshes.map((x) => {
+        const responses = x.responses || {};
+        const yes = Object.keys(responses).filter((u) => responses[u] === "yes");
+        const no = Object.keys(responses).filter((u) => responses[u] === "no");
+        const mine = responses[me];
+        const host = x.host === me;
+        const names = yes.map((u) => (u === me ? t("lb.you") : personName(u))).join(", ");
+        return `
+          <div class="sesh">
+            <div class="sesh-head">
+              <strong>${host ? t("sesh.yours") : t("sesh.from", { name: esc(personName(x.host, x.hostName)) })}</strong>
+              <small>🕒 ${esc(seshTime(x.time))}${x.place ? ` · 📍 ${esc(x.place)}` : ""}</small>
+              ${x.note ? `<p>${esc(x.note)}</p>` : ""}
+            </div>
+            <p class="sesh-count">👍 ${yes.length} · 👎 ${no.length}${names ? ` · ${esc(names)}` : ""}</p>
+            ${host
+              ? `<button type="button" class="link-btn danger small" data-sesh-cancel="${esc(x.id)}">${t("sesh.cancel")}</button>`
+              : `<div class="sesh-answer">
+                  <button type="button" class="${mine === "yes" ? "on" : ""}" data-sesh="${esc(x.id)}" data-answer="yes">👍 ${t("sesh.yes")}</button>
+                  <button type="button" class="${mine === "no" ? "on" : ""}" data-sesh="${esc(x.id)}" data-answer="no">👎 ${t("sesh.no")}</button>
+                </div>`}
+          </div>`;
+      }).join("");
+    }
+
+    document.getElementById("sesh-list").addEventListener("click", (e) => {
+      const answer = e.target.closest("[data-answer]");
+      if (answer) {
+        db.collection("seshes").doc(answer.dataset.sesh)
+          .update({ [`responses.${currentUserKey()}`]: answer.dataset.answer })
+          .catch((error) => showToast(dbErrorText(error)));
+        return;
+      }
+      const cancel = e.target.closest("[data-sesh-cancel]");
+      if (cancel && confirm(t("sesh.confirmCancel"))) {
+        db.collection("seshes").doc(cancel.dataset.seshCancel).delete()
+          .catch((error) => showToast(dbErrorText(error)));
+      }
+    });
+
+    function localInputValue(time) {
+      const d = new Date(time);
+      return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    }
+
+    function openSeshSheet() {
+      if (!friendships.length) return showToast(t("sesh.noFriends"));
+      seshForm.reset();
+      clearErrors(seshForm);
+      // Om en halv time, rundet til nærmeste kvarter
+      const soon = Math.ceil((Date.now() + 30 * 60e3) / (15 * 60e3)) * 15 * 60e3;
+      seshForm.elements.time.value = localInputValue(soon);
+      seshForm.elements.spot.innerHTML = `<option value="">${t("sesh.anyPlace")}</option>` + benches
+        .slice().sort((a, b) => (a.name || "").localeCompare(b.name || ""))
+        .map((b) => `<option value="${esc(b.name || "")}">📍 ${esc(b.name || "")}</option>`).join("");
+      sheetBackdrop.classList.remove("hidden");
+      seshForm.classList.remove("hidden");
+    }
+
+    document.getElementById("sesh-btn").addEventListener("click", openSeshSheet);
+    document.getElementById("sesh-cancel").addEventListener("click", closeSheet);
+
+    seshForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearErrors(seshForm);
+      const time = new Date(seshForm.elements.time.value).getTime();
+      if (!time || time < Date.now() - 10 * 60e3) return setError(seshForm, t("sesh.errTime"));
+      const place = seshForm.elements.place.value.trim() || seshForm.elements.spot.value;
+      setBusy(seshForm, true);
+      try {
+        await db.collection("seshes").add({
+          host: currentUserKey(),
+          hostName: myProfile ? myProfile.name : "?",
+          invited: friendships.map(otherUser),
+          time,
+          place,
+          note: seshForm.elements.note.value.trim(),
+          responses: {},
+          createdAt: Date.now(),
+        });
+        closeSheet();
+        showToast(t("sesh.sent"));
+      } catch (error) {
+        console.error(error);
+        setError(seshForm, dbErrorText(error));
+      } finally {
+        setBusy(seshForm, false);
+      }
+    });
+
+    // ==========================================================
+    // T-BREAK-TILSTAND: nedtælling, milepæle og opmuntring fra venner
+    // ==========================================================
+    var cheers = [];          // var: bruges også af notifikationerne
+    let cheersUnsub = null;
+    const TB_MILESTONES = [1, 2, 3, 5, 7, 10, 14, 21, 28];
+
+    function listenToCheers() {
+      if (cheersUnsub || !db) return;
+      cheersUnsub = db.collection("cheers").where("to", "==", currentUserKey()).onSnapshot((snap) => {
+        cheers = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })).sort((a, b) => b.createdAt - a.createdAt);
+        renderTBreakMode();
+        queueNotifications();
+      }, (error) => console.error(error));
+    }
+
+    function stopCheers() {
+      if (cheersUnsub) cheersUnsub();
+      cheersUnsub = null;
+      cheers = [];
+    }
+
+    function tbreakDays(tb) {
+      return Math.floor((dayStart(Date.now()) - dayStart(tb.start)) / DAY);
+    }
+
+    function isOnTBreak(profile) {
+      return !!(profile && profile.tbreak && profile.tbreak.start);
+    }
+
+    // Hvad man plejer at bruge pr. dag (30 dage før pausen)
+    function dailySpend(before = Date.now()) {
+      const price = Number(aiProfile.price) || 0;
+      if (!price) return 0;
+      const list = logEntries.filter((e) => entryTime(e) < before && entryTime(e) >= before - 30 * DAY);
+      return (list.reduce((s, e) => s + (Number(e.grams) || 0), 0) * price) / 30;
+    }
+
+    function renderTBreakMode() {
+      const card = document.getElementById("tbreak-card");
+      if (!isOnTBreak(myProfile)) {
+        card.classList.add("hidden");
+        return;
+      }
+      const tb = myProfile.tbreak;
+      const days = tbreakDays(tb);
+      const goal = tb.goal || 7;
+      const left = Math.max(0, goal - days);
+      const pct = Math.min(100, (days / goal) * 100);
+      const milestone = [...TB_MILESTONES].reverse().find((m) => days >= m);
+      const saved = Math.round(dailySpend(tb.start) * days);
+      const myCheers = cheers.filter((c) => c.createdAt >= tb.start).slice(0, 5);
+      card.classList.remove("hidden");
+      card.innerHTML = `
+        <small class="eyebrow">⏸️ ${t("tbm.label")}</small>
+        <div class="tbm-count">
+          <strong>${days}</strong>
+          <span>${t(days === 1 ? "tbm.day1" : "tbm.days")}<br><small>${left ? t("tbm.left", { n: left, goal }) : t("tbm.done", { goal })}</small></span>
+        </div>
+        <div class="progress"><span style="width:${pct}%"></span></div>
+        ${milestone ? `<p class="tbm-milestone">🏁 ${t("tbm.m" + milestone)}</p>` : `<p class="tbm-milestone">💪 ${t("tbm.m0")}</p>`}
+        ${saved ? `<p class="tbm-saved">💰 ${t("tbm.saved", { kr: saved })}</p>` : ""}
+        ${myCheers.length ? `
+          <div class="tbm-cheers">
+            ${myCheers.map((c) => `<p>${esc(c.emoji || "💪")} <strong>${esc(personName(c.from, c.fromName))}</strong> ${t("tbm.cheered")}</p>`).join("")}
+          </div>` : ""}
+        <button type="button" class="btn-plain" id="tbreak-end">${t(left ? "tbm.stop" : "tbm.finish")}</button>`;
+      document.getElementById("tbreak-end").addEventListener("click", endTBreak);
+    }
+
+    function startTBreak(goal) {
+      if (!myProfile) return;
+      const tbreak = { start: Date.now(), goal };
+      myProfile.tbreak = tbreak;
+      renderTBreakMode();
+      showToast(t("tbm.started", { n: goal }));
+      showPage("home");
+      db.collection("profiles").doc(currentUserKey()).set({ tbreak }, { merge: true })
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    function endTBreak(force = false) {
+      if (!isOnTBreak(myProfile)) return;
+      const tb = myProfile.tbreak;
+      const days = tbreakDays(tb);
+      const reached = days >= (tb.goal || 7);
+      // force = true, når pausen stoppes, fordi man logger en smoke
+      if (!reached && force !== true && !confirm(t("tbm.confirmStop"))) return;
+      const update = {
+        tbreak: null,
+        lastTbreak: { start: tb.start, end: Date.now(), days, goal: tb.goal || 7, reached },
+      };
+      if (reached) update.tbreaksDone = (myProfile.tbreaksDone || 0) + 1;
+      Object.assign(myProfile, update);
+      renderTBreakMode();
+      showToast(t(reached ? "tbm.finished" : "tbm.stopped", { n: days }));
+      db.collection("profiles").doc(currentUserKey()).set(update, { merge: true })
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    // Opmuntring fra en ven (knappen sidder på vennens profil)
+    function sendCheer(uid) {
+      db.collection("cheers").add({
+        to: uid,
+        from: currentUserKey(),
+        fromName: myProfile ? myProfile.name : "?",
+        emoji: "💪",
+        createdAt: Date.now(),
+      })
+        .then(() => showToast(t("tbm.cheerSent", { name: personName(uid) })))
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    // ---------- Det hele på forsiden ----------
+    function renderHomeExtras() {
+      if (!currentUserKey()) return;
+      renderStreak();
+      renderSmokingNow();
+      renderTBreakMode();
+      renderSeshes();
+    }
 
     // ---------- Genveje på hjemmeskærmen ----------
     function greetingKey() {
