@@ -5431,6 +5431,31 @@
       width: 14px;
       height: 14px;
     }
+    /* Valgene i "Log en smoke": 4 på hver række */
+    #log-feelings,
+    #log-methods,
+    #log-products {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    #log-feelings .chip,
+    #log-methods .chip,
+    #log-products .chip {
+      min-width: 0;
+      padding: 9px 4px;
+      font-size: 13px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 360px) {
+      #log-feelings .chip,
+      #log-methods .chip,
+      #log-products .chip {
+        font-size: 11.5px;
+      }
+    }
     .log-feelings {
       color: var(--accent);
     }
@@ -6684,6 +6709,7 @@
         "ai.method.vape": "Vape",
         "ai.method.dab": "Dab",
         "ai.method.edible": "Spiseligt",
+        "ai.method.other": "Andet",
         "ai.product.flower": "Skunk",
         "ai.product.hash": "Hash",
         "ai.product.concentrate": "Koncentrat",
@@ -7374,6 +7400,7 @@
         "ai.method.vape": "Vape",
         "ai.method.dab": "Dab",
         "ai.method.edible": "Edible",
+        "ai.method.other": "Other",
         "ai.product.flower": "Flower",
         "ai.product.hash": "Hash",
         "ai.product.concentrate": "Concentrate",
@@ -12703,7 +12730,7 @@
 
     const HOUR = 36e5;
     const DAY = 864e5;
-    const METHODS = ["joint", "spliff", "bong", "pipe", "vape", "dab", "edible"];
+    const METHODS = ["joint", "spliff", "bong", "pipe", "vape", "dab", "edible", "other"];
     const PRODUCTS = ["flower", "hash", "concentrate", "edible", "other"];
     const FEELINGS = ["happy", "relaxed", "giggly", "creative", "hungry", "sleepy", "paranoid", "dizzy"];
     const HIGH_EMOJI = ["😐", "🙂", "😊", "😌", "😎", "🤩", "😵‍💫", "🥴", "🛸", "🚀"];
