@@ -3506,6 +3506,77 @@
       margin-top: 16px;
     }
     /* Spillerne: én lige række med fast plads, så brættet ikke flytter sig */
+    .spin-level {
+      margin: 14px 0 6px;
+    }
+    .spin-level-help {
+      min-height: 20px;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+    .spin-pass-btn,
+    .spin-end {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .spin-passed {
+      margin-top: 10px;
+      color: #ffd166;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .spin-owed {
+      display: inline-grid;
+      place-items: center;
+      min-width: 18px;
+      height: 18px;
+      margin-left: 2px;
+      padding: 0 4px;
+      border-radius: 9px;
+      background: #ffd166;
+      color: #000;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .spin-owed-list {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0 14px;
+      text-align: left;
+    }
+    .spin-owed-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--card-2);
+    }
+    .spin-owed-row > div {
+      display: grid;
+      flex: 1;
+      gap: 2px;
+      min-width: 0;
+    }
+    .spin-owed-row strong {
+      color: var(--accent);
+      font-size: 13px;
+    }
+    .spin-owed-row span {
+      font-weight: 700;
+    }
+    .spin-card .spin-owed-row small {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+    .spin-card .spin-owed-list + .btn-primary,
+    .spin-card .spin-prev + .btn-primary {
+      width: 100%;
+      margin-top: 12px;
+    }
     .spin2-players {
       display: flex;
       gap: 6px;
@@ -5928,6 +5999,12 @@
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
             <h1 class="page-title">Spin the Joint 1</h1>
             <p class="muted" data-i18n="spin.help">Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.</p>
+            <div class="seg spin-level" id="spin-level">
+              <button type="button" class="seg-btn" data-level="easy" data-i18n="spin.easy">Nem</button>
+              <button type="button" class="seg-btn active" data-level="hard" data-i18n="spin.hard">Svær</button>
+              <button type="button" class="seg-btn" data-level="impossible" data-i18n="spin.impossible">Umulig</button>
+            </div>
+            <p class="muted spin-level-help" id="spin-level-help"></p>
             <form id="spin-form" class="player-add" novalidate>
               <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
               <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
@@ -5938,6 +6015,7 @@
             </div>
             <div class="spin-card hidden" id="spin-card" aria-live="polite"></div>
             <button type="button" class="btn-primary" id="spin-btn" data-i18n="spin.spin">Snur jointen</button>
+            <button type="button" class="btn-plain spin-end hidden" id="spin-end" data-i18n="spin.end">Slut spillet</button>
           </div>
 
           <!-- Spin the Joint 2: jointen lander på en straf -->
@@ -6877,6 +6955,19 @@
         "spin.help": "Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.",
         "spin.empty": "Tilføj spillere for at starte",
         "spin.spin": "Snur jointen",
+        "spin.easy": "Nem",
+        "spin.hard": "Svær",
+        "spin.impossible": "Umulig",
+        "spin.levelHelp.easy": "Uden de hårdeste straffe (10 point eller mere).",
+        "spin.levelHelp.hard": "Alle straffe fra Game of Joints.",
+        "spin.levelHelp.impossible": "Uden de almindelige 1-5 sug, og med ekstra hårde lunge-straffe.",
+        "spin.pass": "Pass: tag den til sidst",
+        "spin.passed": "Gemt til sidst",
+        "spin.end": "Slut spillet",
+        "spin.endTitle": "Udskudte straffe",
+        "spin.noneOwed": "Ingen har udskudt en straf. Godt gået!",
+        "spin.owedDone": "Klaret",
+        "spin.newGame": "Nyt spil",
         "game.players": "Spillere",
         "game.addPh": "Navn på spiller",
         "game.add": "Tilføj",
@@ -7572,6 +7663,19 @@
         "spin.help": "Add at least 2 players and spin the joint. Whoever it points at has to do the card. Tap a name to remove that player.",
         "spin.empty": "Add players to start",
         "spin.spin": "Spin the joint",
+        "spin.easy": "Easy",
+        "spin.hard": "Hard",
+        "spin.impossible": "Impossible",
+        "spin.levelHelp.easy": "Without the hardest penalties (10 points or more).",
+        "spin.levelHelp.hard": "All penalties from Game of Joints.",
+        "spin.levelHelp.impossible": "Without the regular 1-5 puffs, and with extra hard lung penalties.",
+        "spin.pass": "Pass: do it at the end",
+        "spin.passed": "Saved for the end",
+        "spin.end": "End game",
+        "spin.endTitle": "Postponed penalties",
+        "spin.noneOwed": "Nobody postponed a penalty. Well done!",
+        "spin.owedDone": "Done",
+        "spin.newGame": "New game",
         "game.players": "Players",
         "game.addPh": "Player name",
         "game.add": "Add",
@@ -11590,6 +11694,61 @@
         en: { name: "Roll back", short: "Roll back", desc: "Roll the red die and move back that many spaces." },
       },
       pass: { icon: "🤝", da: { name: "Pass the spliff", short: "Pass" }, en: { name: "Pass the spliff", short: "Pass" } },
+      // Kun i Spin the Joint 1 på "Umulig"
+      lungTornado: {
+        icon: "🌪️",
+        hits: 13,
+        da: { name: "Lunge-tornado", short: "Lunge-tornado", desc: "Lav bong med hånden, tag 3 sug, og drej så rundt om dig selv 10 gange." },
+        en: { name: "Lung tornado", short: "Lung tornado", desc: "Make a bong with your hand, take 3 puffs, then spin around 10 times." },
+      },
+      lung412: {
+        icon: "⏱️",
+        timer: [12],
+        puffs: 4,
+        hits: 12,
+        da: { name: "Lunge 4×12", short: "Lunge 4×12", desc: "Lav bong med hånden, tag 4 sug, og hold det inde i 12 sekunder." },
+        en: { name: "Lung 4×12", short: "Lung 4×12", desc: "Make a bong with your hand, take 4 puffs and hold it in for 12 seconds." },
+      },
+      lung3102: {
+        icon: "🔥",
+        timer: [10, 10],
+        puffs: 3,
+        noBreak: true,
+        hits: 16,
+        da: { name: "Lunge 3×10×2", short: "Lunge 3×10×2", desc: "Lav bong med hånden, tag 3 sug og hold i 10 sekunder. Tag så 3 sug mere med lunge og hold 10 sekunder mere uden at puste ud." },
+        en: { name: "Lung 3×10×2", short: "Lung 3×10×2", desc: "Make a bong with your hand, take 3 puffs and hold for 10 seconds. Then 3 more lung puffs and hold 10 more seconds without breathing out." },
+      },
+      lungBob: {
+        icon: "🇯🇲",
+        hits: 14,
+        da: { name: "Lunge-Bob Marley", short: "Lunge-Bob", desc: "Lav bong med hånden. Tag 1 sug og sig \"Bob\", 2 sug og sig \"Mar\", 3 sug og sig \"ley\", og 4 sug og sig \"Bob Marley\"." },
+        en: { name: "Lung Bob Marley", short: "Lung Bob", desc: "Make a bong with your hand. Take 1 puff and say \"Bob\", 2 puffs and say \"Mar\", 3 puffs and say \"ley\", and 4 puffs and say \"Bob Marley\"." },
+      },
+      lung5: {
+        icon: "🫁",
+        hits: 12,
+        da: { name: "5× Lunge i træk", short: "5× Lunge", desc: "Lav bong med hånden og tag 5 sug i træk uden at puste ud ind imellem." },
+        en: { name: "5× Lung in a row", short: "5× Lung", desc: "Make a bong with your hand and take 5 puffs in a row without breathing out in between." },
+      },
+      lungKing: {
+        icon: "👑",
+        hits: 12,
+        da: { name: "Lunge-konge", short: "Lunge-konge", desc: "Tag 2 sug som DIY konge og derefter 2 sug med lunge, uden at puste ud ind imellem." },
+        en: { name: "Lung king", short: "Lung king", desc: "Take 2 puffs as DIY king and then 2 lung puffs, without breathing out in between." },
+      },
+      lungChimney: {
+        icon: "🏭",
+        hits: 10,
+        da: { name: "Lunge-skorsten", short: "Lunge-skorsten", desc: "Lav bong med hånden, tag 2 sug, og sug så røgen fra jointen bagefter." },
+        en: { name: "Lung chimney", short: "Lung chimney", desc: "Make a bong with your hand, take 2 puffs, then suck in the smoke from the joint afterwards." },
+      },
+      lungTurtle: {
+        icon: "🐢",
+        timer: [8],
+        hits: 10,
+        da: { name: "Lunge-skildpadde", short: "Lunge-skildpadde", desc: "Lav bong med hånden og tag ét langt sug på mindst 8 sekunder." },
+        en: { name: "Lung turtle", short: "Lung turtle", desc: "Make a bong with your hand and take one long puff of at least 8 seconds." },
+      },
       boost: {
         icon: "⚡",
         type: "boost",
@@ -12194,6 +12353,32 @@
       "tornado", "x412", "x510", "x3102", "diy", "diy2", "chimney", "turtle"];
     let spinRecorded = false;
 
+    // Sværhedsgrad: Nem = uden straffe på 10 point eller mere,
+    // Svær = alle, Umulig = uden 1-5 sug og med ekstra lunge-straffe
+    const SPIN_IMPOSSIBLE = ["lungTornado", "lung412", "lung3102", "lungBob", "lung5", "lungKing", "lungChimney", "lungTurtle"];
+    let spinLevel = "hard";
+    let spinPassed = [];      // udskudte straffe: { player, card }
+    let spinCurrent = null;   // kortet, der vises nu
+
+    function spinDeck() {
+      if (spinLevel === "easy") return SPIN_TILES.filter((id) => (TILES[id].hits || 0) < 10);
+      if (spinLevel === "impossible") return [...SPIN_TILES.filter((id) => !/^s\d$/.test(id)), ...SPIN_IMPOSSIBLE];
+      return SPIN_TILES;
+    }
+
+    function renderSpinLevel() {
+      document.querySelectorAll("#spin-level [data-level]").forEach((b) => b.classList.toggle("active", b.dataset.level === spinLevel));
+      document.getElementById("spin-level-help").textContent = t("spin.levelHelp." + spinLevel);
+    }
+
+    document.getElementById("spin-level").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-level]");
+      if (!btn || spinBtn.dataset.spinning) return;
+      spinLevel = btn.dataset.level;
+      lastCard = null;
+      renderSpinLevel();
+    });
+
     function renderSpin() {
       const n = spinPlayers.length;
       spinCircle.querySelectorAll(".spin-name").forEach((el) => el.remove());
@@ -12205,13 +12390,74 @@
         el.dataset.index = i;
         el.style.left = `${50 + 41 * Math.cos(angle)}%`;
         el.style.top = `${50 + 41 * Math.sin(angle)}%`;
-        el.textContent = name;
+        // Antal udskudte straffe står ved navnet
+        const owed = spinPassed.filter((x) => x.player === name).length;
+        el.innerHTML = `${esc(name)}${owed ? ` <span class="spin-owed">${owed}</span>` : ""}`;
         el.title = t("game.remove");
         spinCircle.appendChild(el);
       });
       document.getElementById("spin-empty").classList.toggle("hidden", n > 0);
+      document.getElementById("spin-end").classList.toggle("hidden", n < 2);
       spinBtn.disabled = n < 2;
     }
+
+    function spinCardHTML(player, card) {
+      const text = tileText(card);
+      return `
+        <small>${esc(player)}</small>
+        <p>${TILES[card].icon.length < 3 && !/\d/.test(TILES[card].icon) ? TILES[card].icon + " " : ""}${esc(text.name)}</p>
+        ${text.desc ? `<p class="spin-prev">${esc(text.desc)}</p>` : ""}`;
+    }
+
+    // Pass: straffen gemmes til spillet er slut
+    spinCard.addEventListener("click", (e) => {
+      if (e.target.closest("[data-spin-pass]") && spinCurrent) {
+        timerToken++;
+        spinPassed.push(spinCurrent);
+        spinCard.innerHTML = `
+          ${spinCardHTML(spinCurrent.player, spinCurrent.card)}
+          <p class="spin-passed">${t("spin.passed")}</p>`;
+        spinCurrent = null;
+        renderSpin();
+      }
+      if (e.target.closest("[data-spin-new]")) {
+        spinPassed = [];
+        spinCard.classList.add("hidden");
+        renderSpin();
+      }
+      const done = e.target.closest("[data-owed-done]");
+      if (done) {
+        spinPassed.splice(Number(done.dataset.owedDone), 1);
+        showSpinEnd();
+        renderSpin();
+      }
+    });
+
+    // Slut spillet: vis de straffe, der er gemt til sidst
+    function showSpinEnd() {
+      timerToken++;
+      spinCurrent = null;
+      spinCard.innerHTML = `
+        <small>${t("spin.endTitle")}</small>
+        ${spinPassed.length ? `
+          <div class="spin-owed-list">
+            ${spinPassed.map((x, i) => `
+              <div class="spin-owed-row">
+                <div>
+                  <strong>${esc(x.player)}</strong>
+                  <span>${esc(tileText(x.card).name)}</span>
+                  ${tileText(x.card).desc ? `<small>${esc(tileText(x.card).desc)}</small>` : ""}
+                </div>
+                <button type="button" class="mini-btn" data-owed-done="${i}">${t("spin.owedDone")}</button>
+              </div>`).join("")}
+          </div>` : `<p class="spin-prev">${t("spin.noneOwed")}</p>`}
+        <button type="button" class="btn-primary" data-spin-new>${t("spin.newGame")}</button>`;
+      spinCard.classList.remove("hidden");
+    }
+
+    document.getElementById("spin-end").addEventListener("click", () => {
+      if (!spinBtn.dataset.spinning) showSpinEnd();
+    });
 
     spinForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -12271,18 +12517,18 @@
       spinJoint.style.transform = `rotate(${spinAngle}deg)`;
 
       setTimeout(() => {
-        // Samme kort som felterne i Game of Joints
+        // Kortene fra Game of Joints, efter den valgte sværhedsgrad
+        const deck = spinDeck();
         let card;
-        do card = SPIN_TILES[Math.floor(Math.random() * SPIN_TILES.length)];
-        while (card === lastCard && SPIN_TILES.length > 1);
+        do card = deck[Math.floor(Math.random() * deck.length)];
+        while (card === lastCard && deck.length > 1);
         lastCard = card;
         spinCircle.querySelector(`.spin-name[data-index="${winner}"]`).classList.add("chosen");
-        const text = tileText(card);
+        spinCurrent = { player: spinPlayers[winner], card };
         spinCard.innerHTML = `
-          <small>${esc(spinPlayers[winner])}</small>
-          <p>${TILES[card].icon.length < 3 && !/\d/.test(TILES[card].icon) ? TILES[card].icon + " " : ""}${esc(text.name)}</p>
-          ${text.desc ? `<p class="spin-prev">${esc(text.desc)}</p>` : ""}
-          ${spinTimerHTML(card)}`;
+          ${spinCardHTML(spinPlayers[winner], card)}
+          ${spinTimerHTML(card)}
+          <button type="button" class="btn-plain spin-pass-btn" data-spin-pass>${t("spin.pass")}</button>`;
         spinCard.classList.remove("hidden");
         if (!spinRecorded) {
           spinRecorded = true;
@@ -12293,6 +12539,7 @@
       }, 3200);
     });
 
+    renderSpinLevel();
     renderSpin();
 
     // ==========================================================
