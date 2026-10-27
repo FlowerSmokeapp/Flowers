@@ -5257,20 +5257,141 @@
     }
 
     /* ---------- Bedømmelser af smoke spots ---------- */
-    .bench-review-form textarea {
+    .bench-review-label {
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .bench-cat-inputs {
+      display: grid;
+      gap: 6px;
+      margin: 14px 0;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .bench-cat-input {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+    }
+    .mini-stars button {
+      padding: 2px 3px;
+      border: 0;
+      background: none;
+      color: var(--border-strong, #444);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .mini-stars button.on {
+      color: #ffc93c;
+    }
+    .bench-review-add {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       width: 100%;
-      min-height: 70px;
-      margin: 12px 0;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--card-2);
-      color: var(--text);
-      font: inherit;
-      resize: vertical;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .bench-review-preview {
+      position: relative;
+      margin-bottom: 10px;
+    }
+    .bench-review-preview img {
+      display: block;
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+    .bench-review-preview .mini-btn {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
     }
     .bench-review-form .btn-primary {
       width: 100%;
+    }
+    .bench-cats {
+      display: grid;
+      gap: 6px;
+      margin: 4px 0 16px;
+    }
+    .bench-cat {
+      display: grid;
+      grid-template-columns: 64px 1fr 32px;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .bench-cat > span:first-child {
+      color: var(--muted);
+    }
+    .bench-cat-bar {
+      height: 6px;
+      border-radius: 99px;
+      background: var(--card-2);
+      overflow: hidden;
+    }
+    .bench-cat-bar span {
+      display: block;
+      height: 100%;
+      border-radius: 99px;
+      background: #ffc93c;
+    }
+    .bench-cat strong {
+      text-align: right;
+    }
+    .bench-gallery-wrap {
+      margin-bottom: 14px;
+    }
+    .bench-gallery-wrap h3 small {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .bench-gallery {
+      display: flex;
+      gap: 8px;
+      margin: 8px -16px 0;
+      padding: 0 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .bench-gallery img {
+      flex: none;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 14px;
+      scroll-snap-align: start;
+      cursor: zoom-in;
+    }
+    .bench-review {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .bench-review-main {
+      flex: 1;
+      min-width: 0;
+    }
+    .bench-review-photo {
+      flex: none;
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: zoom-in;
+    }
+    .bench-review-cats {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .bench-review-cats b {
+      color: var(--text);
     }
     .bench-reviews h3 small {
       color: var(--muted);
@@ -6851,7 +6972,14 @@
         "bench.giveStars": "Giv stedet stjerner",
         "bench.giveReview": "Giv din bedømmelse",
         "bench.yourReview": "Din bedømmelse",
-        "bench.reviewPh": "Hvad synes du om stedet? (valgfrit)",
+        "bench.overall": "Samlet",
+        "bench.cat.view": "Udsigt",
+        "bench.cat.quiet": "Ro",
+        "bench.cat.shelter": "Læ",
+        "bench.cat.cozy": "Hygge",
+        "bench.photoAdd": "Tilføj billede (valgfrit)",
+        "bench.photoRemove": "Fjern billede",
+        "bench.photos": "Billeder",
         "bench.reviewSave": "Gem bedømmelse",
         "bench.reviewUpdate": "Opdater bedømmelse",
         "bench.reviewSaved": "Tak for din bedømmelse",
@@ -7523,7 +7651,14 @@
         "bench.giveStars": "Rate this spot",
         "bench.giveReview": "Give your rating",
         "bench.yourReview": "Your rating",
-        "bench.reviewPh": "What do you think of the spot? (optional)",
+        "bench.overall": "Overall",
+        "bench.cat.view": "View",
+        "bench.cat.quiet": "Quiet",
+        "bench.cat.shelter": "Shelter",
+        "bench.cat.cozy": "Cozy",
+        "bench.photoAdd": "Add photo (optional)",
+        "bench.photoRemove": "Remove photo",
+        "bench.photos": "Photos",
         "bench.reviewSave": "Save rating",
         "bench.reviewUpdate": "Update rating",
         "bench.reviewSaved": "Thanks for your rating",
@@ -8753,6 +8888,7 @@
 
     function openBench(id) {
       currentBenchId = id;
+      benchDraftFor = null;
       renderBench();
       goView("bench");
     }
@@ -8771,9 +8907,28 @@
       const mine = (bench.ratings || {})[email] || 0;
       const date = formatDate(bench.createdAt);
       const myReview = (bench.reviews || {})[email] || null;
-      // Alle anmeldelser med tekst, nyeste først
+      // Alle bedømmelser, nyeste først
       const reviews = Object.entries(bench.reviews || {}).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
-      benchReviewStars = mine;
+      // Kladden til min bedømmelse hentes kun, når man åbner et nyt spot
+      if (benchDraftFor !== bench.id) {
+        benchDraftFor = bench.id;
+        benchDraft = {
+          stars: mine,
+          cats: { ...((myReview && myReview.cats) || {}) },
+          photo: myReview ? myReview.thumb || null : null,
+          photoChanged: false,
+        };
+      }
+      // Gennemsnit pr. kategori
+      const catAvg = BENCH_CATS.map((key) => {
+        const values = reviews.map(([, r]) => (r.cats || {})[key]).filter(Boolean);
+        return [key, values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0];
+      }).filter(([, v]) => v);
+      // Alle billeder: stedets eget og dem fra bedømmelserne
+      const gallery = [
+        photoSrc(bench) ? { src: photoSrc(bench), full: bench.imageId } : null,
+        ...reviews.filter(([, r]) => r.thumb).map(([, r]) => ({ src: r.thumb, full: r.imageId })),
+      ].filter(Boolean);
 
       el.innerHTML = `
         <img class="bench-photo" src="${esc(photoSrc(bench))}" alt="${t("bench.photoAlt", { name: esc(bench.name) })}">
@@ -8784,23 +8939,37 @@
           <strong>${avg ? avg.toFixed(1) : "-"}</strong>
           <span class="muted">(${count} ${t(count === 1 ? "bench.rating1" : "bench.ratingN")})</span>
         </div>
+        ${catAvg.length ? `
+          <div class="bench-cats">
+            ${catAvg.map(([key, v]) => `
+              <div class="bench-cat">
+                <span>${t("bench.cat." + key)}</span>
+                <span class="bench-cat-bar"><span style="width:${(v / 5) * 100}%"></span></span>
+                <strong>${v.toFixed(1)}</strong>
+              </div>`).join("")}
+          </div>` : ""}
         ${bench.desc ? `<div class="card"><p>${esc(bench.desc)}</p></div>` : ""}
-        <div class="card bench-review-form">
-          <h3>${t(myReview || mine ? "bench.yourReview" : "bench.giveReview")}</h3>
-          <div class="star-input" id="bench-stars">${starInputHTML(mine)}</div>
-          <textarea id="bench-review-text" maxlength="300" placeholder="${t("bench.reviewPh")}">${esc(myReview ? myReview.text || "" : "")}</textarea>
-          <button type="button" class="btn-primary" id="bench-review-save">${t(myReview ? "bench.reviewUpdate" : "bench.reviewSave")}</button>
-        </div>
+        ${gallery.length > 1 ? `
+          <div class="bench-gallery-wrap">
+            <h3>${t("bench.photos")} <small>${gallery.length}</small></h3>
+            <div class="bench-gallery">
+              ${gallery.map((g) => `<img src="${esc(g.src)}" alt="" loading="lazy" data-zoom ${g.full ? `data-full="${esc(g.full)}"` : ""}>`).join("")}
+            </div>
+          </div>` : ""}
+        <div class="card bench-review-form" id="bench-review-form">${benchReviewFormHTML(!!myReview)}</div>
         <div class="card bench-reviews">
           <h3>${t("bench.reviews")} <small>${reviews.length}</small></h3>
-          ${reviews.length ? reviews.map(([uid, r]) => `
+          ${reviews.length ? reviews.map(([, r]) => `
             <div class="bench-review">
-              <div class="bench-review-head">
-                <strong>${esc(r.name || "?")}</strong>
-                <span class="stars">${starsText(r.stars || 0)}</span>
+              ${r.thumb ? `<img class="bench-review-photo" src="${esc(r.thumb)}" alt="" data-zoom ${r.imageId ? `data-full="${esc(r.imageId)}"` : ""}>` : ""}
+              <div class="bench-review-main">
+                <div class="bench-review-head">
+                  <strong>${esc(r.name || "?")}</strong>
+                  <span class="stars">${starsText(r.stars || 0)}</span>
+                </div>
+                ${r.cats && Object.keys(r.cats).length ? `<p class="bench-review-cats">${BENCH_CATS.filter((k) => r.cats[k]).map((k) => `${t("bench.cat." + k)} <b>${r.cats[k]}</b>`).join(" · ")}</p>` : ""}
+                <small class="muted">${formatDate(r.at || 0)}</small>
               </div>
-              ${r.text ? `<p>${esc(r.text)}</p>` : ""}
-              <small class="muted">${formatDate(r.at || 0)}</small>
             </div>`).join("") : `<p class="muted">${t("bench.noReviews")}</p>`}
         </div>
         <div class="bench-actions">
@@ -8810,13 +8979,6 @@
             <button class="btn-secondary" id="delete-bench">${t("bench.delete")}</button>` : ""}
         </div>`;
 
-      document.getElementById("bench-stars").addEventListener("click", (e) => {
-        const star = e.target.closest("[data-rate]");
-        if (!star) return;
-        benchReviewStars = Number(star.dataset.rate);
-        document.getElementById("bench-stars").innerHTML = starInputHTML(benchReviewStars);
-      });
-      document.getElementById("bench-review-save").addEventListener("click", saveBenchReview);
 
       document.getElementById("show-on-map").addEventListener("click", () => {
         backView();
@@ -8848,24 +9010,124 @@
       }
     }
 
-    // Anmeldelse: stjerner (tæller med i gennemsnittet) og en kort tekst
-    let benchReviewStars = 0;
+    // ---------- Bedømmelse: samlet antal stjerner, stjerner pr. kategori og et billede ----------
+    const BENCH_CATS = ["view", "quiet", "shelter", "cozy"];
+    let benchDraft = null;      // min bedømmelse, mens jeg udfylder den
+    let benchDraftFor = null;   // hvilket spot kladden hører til
 
-    function saveBenchReview() {
+    function miniStarsHTML(value, cat) {
+      return [1, 2, 3, 4, 5]
+        .map((n) => `<button type="button" data-cat-rate="${cat}" data-n="${n}" class="${n <= value ? "on" : ""}" aria-label="${t("stars", { n })}">★</button>`)
+        .join("");
+    }
+
+    function benchReviewFormHTML(hasReview) {
+      const d = benchDraft;
+      return `
+        <h3>${t(hasReview ? "bench.yourReview" : "bench.giveReview")}</h3>
+        <p class="bench-review-label">${t("bench.overall")}</p>
+        <div class="star-input" id="bench-stars">${starInputHTML(d.stars)}</div>
+        <div class="bench-cat-inputs">
+          ${BENCH_CATS.map((key) => `
+            <div class="bench-cat-input">
+              <span>${t("bench.cat." + key)}</span>
+              <span class="mini-stars">${miniStarsHTML(d.cats[key] || 0, key)}</span>
+            </div>`).join("")}
+        </div>
+        ${d.photo ? `
+          <div class="bench-review-preview">
+            <img src="${esc(d.photo)}" alt="">
+            <button type="button" class="mini-btn" data-review-photo-remove>${t("bench.photoRemove")}</button>
+          </div>` : `
+          <label class="btn-plain bench-review-add">
+            ${icon("image")} ${t("bench.photoAdd")}
+            <input type="file" accept="image/*" data-review-photo hidden>
+          </label>`}
+        <button type="button" class="btn-primary" data-review-save>${t(hasReview ? "bench.reviewUpdate" : "bench.reviewSave")}</button>`;
+    }
+
+    function refreshReviewForm() {
+      const bench = getBenches().find((b) => b.id === currentBenchId);
+      const box = document.getElementById("bench-review-form");
+      if (bench && box) box.innerHTML = benchReviewFormHTML(!!((bench.reviews || {})[currentUserKey()]));
+    }
+
+    const benchDetailEl = document.getElementById("bench-detail");
+
+    benchDetailEl.addEventListener("click", (e) => {
+      const zoom = e.target.closest("[data-zoom]");
+      if (zoom) return openLightbox(zoom.src, zoom.dataset.full);
+      if (!benchDraft) return;
+      const star = e.target.closest("#bench-stars [data-rate]");
+      if (star) {
+        benchDraft.stars = Number(star.dataset.rate);
+        return refreshReviewForm();
+      }
+      const cat = e.target.closest("[data-cat-rate]");
+      if (cat) {
+        const n = Number(cat.dataset.n);
+        // Tryk på samme stjerne igen for at fjerne den
+        benchDraft.cats[cat.dataset.catRate] = benchDraft.cats[cat.dataset.catRate] === n ? 0 : n;
+        return refreshReviewForm();
+      }
+      if (e.target.closest("[data-review-photo-remove]")) {
+        benchDraft.photo = null;
+        benchDraft.photoChanged = true;
+        return refreshReviewForm();
+      }
+      if (e.target.closest("[data-review-save]")) saveBenchReview(e.target.closest("[data-review-save]"));
+    });
+
+    benchDetailEl.addEventListener("change", async (e) => {
+      const input = e.target.closest("[data-review-photo]");
+      if (!input || !input.files[0] || !benchDraft) return;
+      try {
+        benchDraft.photo = await resizeImage(input.files[0]);
+        benchDraft.photoChanged = true;
+        refreshReviewForm();
+      } catch {
+        showToast(t("img.failed"));
+      }
+    });
+
+    async function saveBenchReview(button) {
       const uid = currentUserKey();
-      const stars = benchReviewStars;
-      if (!stars) return showToast(t("bench.reviewNeedStars"));
-      const text = document.getElementById("bench-review-text").value.trim();
-      const FP = firebase.firestore.FieldPath;
-      const review = { stars, text, name: myProfile ? myProfile.name : "?", at: Date.now() };
-      // FieldPath bruges, fordi id'et kan indeholde punktummer
-      benchesRef.doc(currentBenchId)
-        .update(new FP("ratings", uid), stars, new FP("reviews", uid), review)
-        .then(() => showToast(t("bench.reviewSaved")))
-        .catch((error) => {
-          console.error(error);
-          showToast(t("bench.rateFailed"));
-        });
+      const d = benchDraft;
+      if (!d || !d.stars) return showToast(t("bench.reviewNeedStars"));
+      const bench = getBenches().find((b) => b.id === currentBenchId);
+      const old = ((bench && bench.reviews) || {})[uid] || {};
+      button.disabled = true;
+      try {
+        const cats = {};
+        BENCH_CATS.forEach((k) => { if (d.cats[k]) cats[k] = d.cats[k]; });
+        const review = { stars: d.stars, cats, name: myProfile ? myProfile.name : "?", at: Date.now(), thumb: old.thumb || null, imageId: old.imageId || null };
+        if (d.photoChanged) {
+          deleteImage(old);
+          review.thumb = null;
+          review.imageId = null;
+          if (d.photo) {
+            // Kun et lille billede på spottet; det store gemmes for sig, hvis det kan
+            review.thumb = await shrinkDataUrl(d.photo, 420, 0.6);
+            try {
+              const ref = await db.collection("images").add({ data: d.photo, owner: uid, createdAt: Date.now() });
+              fullImageCache.set(ref.id, d.photo);
+              review.imageId = ref.id;
+            } catch (error) {
+              console.warn("images:", error);
+            }
+          }
+        }
+        const FP = firebase.firestore.FieldPath;
+        // FieldPath bruges, fordi id'et kan indeholde punktummer
+        await benchesRef.doc(currentBenchId).update(new FP("ratings", uid), d.stars, new FP("reviews", uid), review);
+        benchDraftFor = null;
+        showToast(t("bench.reviewSaved"));
+      } catch (error) {
+        console.error(error);
+        showToast(t("bench.rateFailed"));
+      } finally {
+        button.disabled = false;
+      }
     }
 
 
