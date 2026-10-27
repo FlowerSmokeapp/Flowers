@@ -5125,8 +5125,30 @@
       stroke: var(--muted);
       opacity: 0.55;
     }
-    .rank-card .bdg[style*="56px"] {
-      border-radius: 18px;
+    .rank-emb {
+      flex: none;
+      display: inline-block;
+      vertical-align: middle;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+    }
+    .rank-ladder li .rank-emb {
+      filter: none;
+    }
+    .person-stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .person-stats button:disabled {
+      opacity: 1;
+      cursor: default;
+    }
+    .me-card .now-pill.big {
+      margin-top: 14px;
+    }
+    .me-card .person-tbreak {
+      margin-top: 12px;
+    }
+    .person-strains .top-strains {
+      margin: 0;
     }
     .mini-rank,
     .leader-rank {
@@ -9056,7 +9078,9 @@
       const mine = p.id === currentUserKey();
       document.getElementById("puploads-back").textContent = mine ? t("back.profile") : `‹ ${p.name}`;
       document.getElementById("puploads-title").textContent = mine ? t("up.mine") : t("up.of", { name: p.name });
+      if (!mine && uploadTab === "spots") uploadTab = "posts";
       document.querySelectorAll("[data-up-tab]").forEach((b) => {
+        b.classList.toggle("hidden", !mine && b.dataset.upTab === "spots");
         const n = personUploads ? personUploads[b.dataset.upTab].length : 0;
         b.classList.toggle("active", b.dataset.upTab === uploadTab);
         b.textContent = `${t("up." + b.dataset.upTab)} (${n})`;
@@ -9211,33 +9235,35 @@
       }
 
       const el = document.getElementById("person-detail");
+      const up = personUploads;
+      const friendsN = Array.isArray(personFriends) ? personFriends.length : personFriends === false ? "–" : "…";
       el.innerHTML = `
-        <div class="card profile-card">
-          <div class="avatar avatar-lg">${avatarHTML(p)}</div>
-          <h2>${esc(p.name)}</h2>
-          <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
-          <p class="person-rank">${rankBadge(shownXp(p))}</p>
+        <div class="card profile-card me-card">
+          <div class="me-head">
+            <div class="avatar avatar-md2">${avatarHTML(p)}</div>
+            <div class="me-info">
+              <h2>${esc(p.name)}</h2>
+              <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
+              <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
+            </div>
+          </div>
           ${isSmoking(p) ? `<p class="now-pill big">${t("now.on")}</p>` : ""}
           ${isOnTBreak(p) ? `
             <div class="person-tbreak">
               <p>${icon("pause")} ${t("tbm.friendOn", { n: tbreakDays(p.tbreak) })}</p>
               ${relation === "friend" ? `<button type="button" class="mini-btn primary" data-action="cheer">${icon("heart")} ${t("tbm.cheerBtn")}</button>` : ""}
             </div>` : ""}
-          <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
-          ${topStrainsHTML(p)}
-          ${p.badges && Object.keys(p.badges).length ? `<div class="badge-row person-badges">${badgeRowHTML(p.badges, p.id)}</div>` : ""}
-          <div class="stats">
-            <button type="button" class="stat-btn" data-action="uploads">
-              <strong>${personUploads ? personUploads.posts.length + personUploads.rolls.length + personUploads.munchies.length : "…"}</strong>
-              <span>${t("up.title")} ›</span>
-            </button>
-            <button type="button" class="stat-btn" data-action="friends" ${Array.isArray(personFriends) ? "" : "disabled"}>
-              <strong>${Array.isArray(personFriends) ? personFriends.length : personFriends === false ? "–" : "…"}</strong>
-              <span>${t("profile.friends")} ${Array.isArray(personFriends) ? "›" : ""}</span>
-            </button>
+          <div class="me-stats person-stats">
+            <button type="button" data-action="friends" ${Array.isArray(personFriends) ? "" : "disabled"}><strong>${friendsN}</strong><span>${t("profile.friends")}</span></button>
+            <button type="button" data-action="tab" data-tab="posts"><strong>${up ? up.posts.length : "…"}</strong><span>${t("up.posts")}</span></button>
+            <button type="button" data-action="tab" data-tab="rolls"><strong>${up ? up.rolls.length : "…"}</strong><span>Rolls</span></button>
+            <button type="button" data-action="tab" data-tab="munchies"><strong>${up ? up.munchies.length : "…"}</strong><span>Munchies</span></button>
           </div>
           <div class="person-actions">${actions}</div>
-        </div>`;
+        </div>
+        <div class="card">${rankCardHTML(shownXp(p), false)}</div>
+        <div class="card">${badgesCardHTML(p.badges || {}, p.id)}</div>
+        ${topStrainsHTML(p) ? `<div class="card person-strains">${topStrainsHTML(p)}</div>` : ""}`;
 
       const handlers = {
         add: sendRequest,
@@ -9246,7 +9272,8 @@
         cancel: cancelRequest,
         remove: removeFriend,
         cheer: sendCheer,
-        uploads: () => {
+        tab: (id, btn) => {
+          uploadTab = btn.dataset.tab;
           renderPersonUploads();
           showFriendsView("puploads");
         },
@@ -9257,7 +9284,7 @@
         },
       };
       el.querySelectorAll("[data-action]").forEach((btn) => {
-        btn.addEventListener("click", () => handlers[btn.dataset.action](p.id));
+        btn.addEventListener("click", () => handlers[btn.dataset.action](p.id, btn));
       });
     }
 
@@ -12452,9 +12479,122 @@
       { name: "Ganja God", icon: "crown", color: "#d9a520", xp: 4000, decay: 40 },
     ];
 
-    // Rankens ikon: farvet cirkel med hvidt ikon (samme stil som badges)
+    // ---------- Rank-emblemer ----------
+    // Hver rank har sit eget emblem. Formen bliver flottere, jo højere man
+    // kommer: cirkel, sekskant, skjold og til sidst en stjerne-krans.
+    const RANK_ART = [
+      // Puff Puppy: hundehoved
+      { c: ["#b6e27a", "#4f8f22"], shape: "circle", art: (D) => `
+        <ellipse cx="14.5" cy="23" rx="3.8" ry="7.2" transform="rotate(18 14.5 23)" fill="#fff" opacity=".8"/>
+        <ellipse cx="33.5" cy="23" rx="3.8" ry="7.2" transform="rotate(-18 33.5 23)" fill="#fff" opacity=".8"/>
+        <circle cx="24" cy="25" r="9.5" fill="#fff"/>
+        <ellipse cx="24" cy="29" rx="4.6" ry="3.4" fill="${D}" opacity=".14"/>
+        <circle cx="20.3" cy="23.3" r="1.5" fill="${D}"/><circle cx="27.7" cy="23.3" r="1.5" fill="${D}"/>
+        <ellipse cx="24" cy="27.4" rx="2" ry="1.4" fill="${D}"/>
+        <path d="M22.8 30.4h2.4v1.6a1.2 1.2 0 0 1-2.4 0z" fill="#ff6b8a"/>` },
+      // Hazy Hippie: blomst
+      { c: ["#ffa3cf", "#c2347a"], shape: "circle", art: () => `
+        ${[0, 60, 120, 180, 240, 300].map((a) => `<ellipse cx="24" cy="15" rx="4.3" ry="7" fill="#fff" transform="rotate(${a} 24 24)"/>`).join("")}
+        <circle cx="24" cy="24" r="5" fill="#ffd23f"/>
+        <circle cx="22.5" cy="22.6" r="1" fill="#fff" opacity=".7"/>` },
+      // Blunt Bandit: hat og maske
+      { c: ["#9fb3a8", "#33413a"], shape: "hex", art: (D) => `
+        <path d="M16 18c0-6.5 3-9 8-9s8 2.5 8 9z" fill="#fff"/>
+        <path d="M16.3 15.5h15.4v2.3H16.3z" fill="${D}" opacity=".45"/>
+        <ellipse cx="24" cy="18.2" rx="13" ry="2.6" fill="#fff"/>
+        <path d="M10 27c0-3 3-4.5 6-4.5h16c3 0 6 1.5 6 4.5 0 3.5-2.5 6-5.5 6-2.5 0-4-2.5-6.5-2.5s-4 2.5-6.5 2.5C12.5 33 10 30.5 10 27z" fill="#fff"/>
+        <ellipse cx="18" cy="27" rx="2.7" ry="2" fill="${D}"/><ellipse cx="30" cy="27" rx="2.7" ry="2" fill="${D}"/>
+        <path d="M37.5 26l4.5-2.5-1 5z" fill="#fff"/>` },
+      // Munchie Monster: donut med øjne og tænder
+      { c: ["#ffbf7a", "#d9561a"], shape: "hex", art: (D) => `
+        <circle cx="24" cy="24" r="12.5" fill="#f3cf9a"/>
+        <path d="M24 12.5c6.4 0 11.5 4.6 11.5 10.5 0 1.5-1.4 1.3-2 2.4-.7 1.3-1.8 2.8-3.4 1.6-1.4-1-2.4.8-4 .4-1.3-.4-1.7-1.9-3.2-1.6-1.6.4-2.3 2.1-3.9 1.3-1.3-.7-1-2.4-2.4-2.8-1.3-.4-2.1 1.4-3.3.4C12.6 23.8 12.5 23.3 12.5 23c0-5.9 5.1-10.5 11.5-10.5z" fill="#ff7eb3"/>
+        <circle cx="24" cy="22.5" r="2.6" fill="${D}"/>
+        <circle cx="18.5" cy="18.5" r="3" fill="#fff"/><circle cx="29.5" cy="18.5" r="3" fill="#fff"/>
+        <circle cx="19.2" cy="19" r="1.4" fill="${D}"/><circle cx="28.8" cy="19" r="1.4" fill="${D}"/>
+        <rect x="15.5" y="24.5" width="2.6" height="1" rx=".5" fill="#fff" transform="rotate(-30 16.8 25)"/>
+        <rect x="31" y="24" width="2.6" height="1" rx=".5" fill="#ffd23f" transform="rotate(40 32.3 24.5)"/>
+        <rect x="23" y="14.5" width="2.6" height="1" rx=".5" fill="#6fd0ff"/>
+        <path d="M18.5 30q5.5 4 11 0" fill="none" stroke="${D}" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M21 31.6l1 2 1-1.6zM27 31.6l-1 2-1-1.6z" fill="#fff"/>` },
+      // Smoking Samurai: to krydsede katanaer
+      { c: ["#ff8f80", "#a31f17"], shape: "shield", art: (D) => {
+        const sword = (a) => `
+          <g transform="rotate(${a} 24 23)">
+            <path d="M22.7 29V9.5c0-1.6.8-3 2.4-4.3.3 1.7.4 3.2.4 4.6V29z" fill="#fff"/>
+            <rect x="19.6" y="28.6" width="8.8" height="2.4" rx="1.2" fill="#ffd23f"/>
+            <rect x="22.6" y="31" width="2.8" height="8.5" rx="1.2" fill="${D}"/>
+            <path d="M22.6 33.5h2.8M22.6 36h2.8" stroke="#fff" stroke-width=".7" opacity=".6"/>
+          </g>`;
+        return sword(-38) + sword(38);
+      } },
+      // Stoned Shaman: krystalkugle med gnister
+      { c: ["#6fe0d3", "#11695f"], shape: "shield", art: (D) => `
+        <path d="M15 38h18l-3.2-5.5H18.2z" fill="#fff" opacity=".9"/>
+        <rect x="13.5" y="37.5" width="21" height="2.6" rx="1.3" fill="#fff"/>
+        <circle cx="24" cy="21.5" r="11" fill="#fff" opacity=".95"/>
+        <circle cx="24" cy="21.5" r="7.5" fill="${D}" opacity=".25"/>
+        <path d="M20 22.5c1-3 5-3.5 6.5-1.2 1 1.6-.6 3.4-2.2 2.6" fill="none" stroke="${D}" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>
+        <ellipse cx="20" cy="16.5" rx="3" ry="1.8" fill="#fff" transform="rotate(-30 20 16.5)"/>
+        ${rankSpark(37, 10, 1.1)}${rankSpark(11, 13, 0.8)}${rankSpark(38, 27, 0.6)}` },
+      // Weed Wizard: troldmandshat med stjerner
+      { c: ["#c2adff", "#4b2fb5"], shape: "burst", art: (D) => `
+        <path d="M15.5 32c1.6-7 4.4-15 8.2-21.5 1-1.7 2.2-2.4 3.6-2-1.2 1.4-1.6 3-1 5 1.8 5.8 4.3 12 5.2 18.5z" fill="#fff"/>
+        <path d="M16.2 28.6h15.2l.6 3.1H15.5z" fill="${D}" opacity=".55"/>
+        <ellipse cx="24" cy="33" rx="13.5" ry="3.4" fill="#fff"/>
+        ${rankSpark(23, 21, 0.85, "#ffd23f")}${rankSpark(27.2, 15.5, 0.55, "#ffd23f")}
+        ${rankSpark(36, 13, 0.9)}${rankSpark(12, 18, 0.6)}` },
+      // Ganja God: krone med juveler og et blad
+      { c: ["#ffe58a", "#b57d00"], shape: "burst", art: (D) => `
+        <path d="M24 7.5c.9 1.6 1.2 3.4.9 5.2 1.3-1 2.9-1.6 4.6-1.6-.8 1.6-2.2 2.8-3.9 3.2 1 .3 1.8.9 2.4 1.7-1.6.3-3.1-.1-4-1-.9.9-2.4 1.3-4 1 .6-.8 1.4-1.4 2.4-1.7-1.7-.4-3.1-1.6-3.9-3.2 1.7 0 3.3.6 4.6 1.6-.3-1.8 0-3.6.9-5.2z" fill="#fff"/>
+        <path d="M11 34l-2.2-15 8.2 6 7-10 7 10 8.2-6L37 34z" fill="#fff"/>
+        <rect x="10.5" y="33.5" width="27" height="4.4" rx="1.6" fill="#fff"/>
+        <circle cx="8.8" cy="18.5" r="1.9" fill="#fff"/><circle cx="39.2" cy="18.5" r="1.9" fill="#fff"/>
+        <circle cx="24" cy="28" r="2.4" fill="#e5534b"/>
+        <circle cx="17" cy="29.5" r="1.6" fill="#3b8fd9"/><circle cx="31" cy="29.5" r="1.6" fill="#3fa66a"/>
+        <path d="M13 35.7h22" stroke="${D}" stroke-width="1" opacity=".35"/>` },
+    ];
+
+    // En lille firtakket gnist
+    function rankSpark(x, y, s, fill = "#fff") {
+      const p = (dx, dy) => `${(x + dx * s).toFixed(2)} ${(y + dy * s).toFixed(2)}`;
+      return `<path d="M${p(0, -3.2)}L${p(0.9, -0.9)}L${p(3.2, 0)}L${p(0.9, 0.9)}L${p(0, 3.2)}L${p(-0.9, 0.9)}L${p(-3.2, 0)}L${p(-0.9, -0.9)}Z" fill="${fill}"/>`;
+    }
+
+    function rankShape(shape, fill) {
+      if (shape === "hex") return `<path d="M24 1.5l20 11.5v22L24 46.5 4 35V13z" fill="${fill}"/>`;
+      if (shape === "shield") return `<path d="M24 1.5l20 6.5v14c0 12.5-8.6 21-20 24.5C12.6 43 4 34.5 4 22V8z" fill="${fill}"/>`;
+      if (shape === "burst") {
+        const pts = [];
+        for (let i = 0; i < 24; i++) {
+          const r = i % 2 ? 19.5 : 23.5;
+          const a = (Math.PI * i) / 12 - Math.PI / 2;
+          pts.push(`${(24 + r * Math.cos(a)).toFixed(2)},${(24 + r * Math.sin(a)).toFixed(2)}`);
+        }
+        return `<polygon points="${pts.join(" ")}" fill="${fill}"/>`;
+      }
+      return `<circle cx="24" cy="24" r="22.5" fill="${fill}"/>`;
+    }
+
+    let rankArtId = 0;
+
+    // Rankens emblem i en given størrelse
     function rankIcon(rank, size = 20) {
-      return `<span class="bdg rank-bdg" style="--bc:${rank.color};width:${size}px;height:${size}px" title="${rank.name}"><svg viewBox="0 0 24 24" aria-hidden="true">${BADGE_ICONS[rank.icon] || ""}</svg></span>`;
+      const art = RANK_ART[RANKS.indexOf(rank)] || RANK_ART[0];
+      const id = `rk${rankArtId++}`;
+      const [light, dark] = art.c;
+      return `
+        <svg class="rank-emb" width="${size}" height="${size}" viewBox="0 0 48 48" role="img" aria-label="${rank.name}">
+          <defs>
+            <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="${light}"/><stop offset="1" stop-color="${dark}"/>
+            </linearGradient>
+          </defs>
+          ${rankShape(art.shape, `url(#${id})`)}
+          ${art.shape === "burst" ? `<circle cx="24" cy="24" r="18" fill="${dark}" opacity=".35"/>` : ""}
+          <ellipse cx="24" cy="10" rx="13" ry="5" fill="#fff" opacity=".14"/>
+          ${art.art(dark)}
+        </svg>`;
     }
 
     // Hvor meget XP man mister i dag, ud fra den rank man har
@@ -12534,7 +12674,7 @@
       return `<span class="rank-badge">${rankIcon(rank, 18)} ${rank.name}</span>`;
     }
 
-    function rankCardHTML(xp) {
+    function rankCardHTML(xp, own = true) {
       const index = rankIndex(xp);
       const rank = RANKS[index];
       const next = RANKS[index + 1];
@@ -12556,8 +12696,9 @@
                 ${rankIcon(r, 26)}<strong>${r.name}</strong><small>${r.xp} XP · −${r.decay}/${t("rank.day")}</small>
               </li>`).join("")}
           </ol>
+          ${own ? `
           <p class="rank-decay">${icon("down")} ${t("rank.decay", { n: rank.decay })}</p>
-          <p class="muted rank-help">${t("rank.help")}</p>
+          <p class="muted rank-help">${t("rank.help")}</p>` : ""}
         </details>`;
     }
 
@@ -13838,13 +13979,13 @@
       renderBadges();
     }
 
-    function badgesHTML(earned) {
+    function badgesHTML(earned, owner = "") {
       // Låste badges står sidst
       const sorted = [...BADGES].sort((a, b) => (earned[b.id] ? 1 : 0) - (earned[a.id] ? 1 : 0));
       return `
         <div class="badge-grid">
           ${sorted.map((b) => `
-            <button type="button" class="badge-item ${earned[b.id] ? "" : "locked"}" data-badge="${b.id}">
+            <button type="button" class="badge-item ${earned[b.id] ? "" : "locked"}" data-badge="${b.id}" data-owner="${esc(owner)}">
               ${badgeIcon(b, !earned[b.id])}
               <strong>${esc(badgeText(b)[0])}</strong>
             </button>`).join("")}
@@ -13857,17 +13998,21 @@
         .join("");
     }
 
-    function renderBadges() {
-      const earned = (myProfile && myProfile.badges) || {};
+    function badgesCardHTML(earned, owner) {
       const n = BADGES.filter((b) => earned[b.id]).length;
-      document.getElementById("profile-badges").innerHTML = `
+      return `
         <details class="badges-card">
           <summary>
             <h3>${icon("medal")} ${t("badge.title")} <small>${n}/${BADGES.length}</small></h3>
-            <div class="badge-row">${badgeRowHTML(earned, currentUserKey()) || `<small class="muted badge-none">${t("badge.none")}</small>`}</div>
+            <div class="badge-row">${badgeRowHTML(earned, owner) || `<small class="muted badge-none">${t("badge.none")}</small>`}</div>
           </summary>
-          ${badgesHTML(earned)}
+          ${badgesHTML(earned, owner)}
         </details>`;
+    }
+
+    function renderBadges() {
+      const earned = (myProfile && myProfile.badges) || {};
+      document.getElementById("profile-badges").innerHTML = badgesCardHTML(earned, currentUserKey());
     }
 
     // ---------- Tryk på et badge: se hvordan det blev skaffet ----------
