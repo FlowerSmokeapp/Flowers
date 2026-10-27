@@ -3762,6 +3762,183 @@
       font-size: 14px;
       font-weight: 700;
     }
+
+    /* ---------- Statistik ---------- */
+    .stat-tiles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .stat-tiles .card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      padding: 16px;
+    }
+    .stat-tiles span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .stat-tiles strong {
+      font-size: 26px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .stat-tiles strong small {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .stats-change {
+      margin: 0 4px 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .stats-change.up {
+      color: #ffb347;
+    }
+    .stats-change.down {
+      color: var(--accent);
+    }
+    .habits h3 {
+      margin-bottom: 6px;
+    }
+    .habit-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-top: 1px solid var(--border);
+    }
+    .habit-row:first-of-type {
+      border-top: 0;
+    }
+    .habit-icon {
+      font-size: 18px;
+    }
+    .habit-label {
+      flex: 1;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .habit-row strong {
+      font-size: 15px;
+      text-transform: capitalize;
+    }
+    .habit-row small {
+      min-width: 38px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    /* ---------- Guides ---------- */
+    .guide-icon {
+      font-size: 26px;
+    }
+    .guide-tag {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .guide-detail .page-title {
+      margin-bottom: 8px;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+    .guide-sum {
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .guide-p {
+      margin-bottom: 14px;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .guide-steps {
+      list-style: none;
+      counter-reset: step;
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .guide-steps li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 42px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .guide-steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: -1px;
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .guide-tips h3 {
+      margin-bottom: 8px;
+    }
+    .guide-tips p {
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .guide-tips p + p {
+      margin-top: 8px;
+    }
+
+    /* ---------- Venner på en profil ---------- */
+    .stat-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 12px 0;
+      border: 0;
+      border-left: 1px solid var(--border);
+      background: none;
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+    .stat-btn:disabled {
+      cursor: default;
+    }
+    .stat-btn strong {
+      font-size: 22px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-btn span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .pill {
+      flex: none;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -3902,7 +4079,7 @@
               </button>
               <button class="tile" data-go="logs">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></span>
-                <strong data-i18n="home.logs">Registreringer</strong>
+                <strong data-i18n="home.logs">Smoke sesh</strong>
               </button>
               <button class="tile" data-go="stats">
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/></svg></span>
@@ -4016,15 +4193,26 @@
           <!-- Mine registreringer (åbnes fra forsiden) -->
           <div class="view" data-view="logs">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
-            <h1 class="page-title" data-i18n="home.logs">Registreringer</h1>
+            <h1 class="page-title" data-i18n="home.logs">Smoke sesh</h1>
             <div id="log-list" class="log-list"></div>
           </div>
 
-          <!-- Guides (tom indtil videre) -->
+          <!-- Guides og fakta -->
           <div class="view" data-view="guides">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title">Guides</h1>
-            <p class="empty-note" data-i18n="guides.empty">Der er ingen guides endnu.</p>
+            <div class="seg">
+              <button type="button" class="seg-btn active" data-guide-filter="all" data-i18n="guides.all">Alle</button>
+              <button type="button" class="seg-btn" data-guide-filter="fact" data-i18n="guides.fact">Fakta</button>
+              <button type="button" class="seg-btn" data-guide-filter="guide" data-i18n="guides.howto">Guides</button>
+            </div>
+            <div id="guide-list" class="game-list"></div>
+          </div>
+
+          <!-- En enkelt guide -->
+          <div class="view" data-view="guide">
+            <button class="back" data-back data-i18n="back.guides">‹ Guides</button>
+            <article id="guide-detail" class="guide-detail"></article>
           </div>
 
           <!-- Tjekliste over cannabissorter -->
@@ -4206,7 +4394,7 @@
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title" data-i18n="hb.stats">Statistik</h1>
             <div id="stats-content"></div>
-            <button type="button" class="btn-plain see-logs" data-go="logs" data-i18n="stats.seeLogs">Se alle registreringer</button>
+            <button type="button" class="btn-plain see-logs" data-go="logs" data-i18n="stats.seeLogs">Se alle dine smoke seshs</button>
           </div>
 
           <!-- Smoke spots-kort -->
@@ -4294,6 +4482,13 @@
             <button class="back" id="person-back" data-i18n="back.friends">‹ Venner</button>
             <div id="person-detail"></div>
           </div>
+
+          <!-- En andens venner -->
+          <div class="view" data-fview="pfriends">
+            <button class="back" id="pfriends-back"></button>
+            <h1 class="page-title" id="pfriends-title"></h1>
+            <div id="pfriends-list" class="people"></div>
+          </div>
         </section>
 
         <section class="page" data-page="profile">
@@ -4305,7 +4500,7 @@
             <p class="bio" id="profile-bio"></p>
             <div class="stats">
               <div><strong id="stat-benches">0</strong><span data-i18n="profile.benches">Smoke spots</span></div>
-              <div><strong id="stat-friends">0</strong><span data-i18n="profile.friends">Venner</span></div>
+              <button type="button" class="stat-btn" id="stat-friends-btn"><strong id="stat-friends">0</strong><span data-i18n="profile.friends">Venner</span></button>
             </div>
             <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
           </div>
@@ -4840,7 +5035,6 @@
         "type.sativa": "Sativa",
         "type.hybrid": "Hybrid",
         "type.landrace": "Landrace",
-        "guides.empty": "Der er ingen guides endnu.",
         "lang.title": "Vælg sprog",
         "lang.sub": "Du kan altid skifte senere under Profil",
         "auth.welcome": "Velkommen tilbage",
@@ -4882,8 +5076,8 @@
         "back.posts": "‹ Opslag",
         "back.rolls": "‹ Rate the Roll",
         "back.home": "‹ Hjem",
-        "home.logs": "Registreringer",
-        "stats.seeLogs": "Se alle registreringer",
+        "home.logs": "Smoke sesh",
+        "stats.seeLogs": "Se alle dine smoke seshs",
         "post.textPh": "Skriv noget… Tag dine venner med @",
         "post.like": "Synes godt om",
         "post.edit": "Rediger",
@@ -4983,6 +5177,39 @@
         "friends.searching": "Søger…",
         "friends.add": "＋ Tilføj ven",
         "friends.requested": "Anmodning sendt",
+        "friends.ofPerson": "{name}s venner",
+        "friends.noneOther": "{name} har ingen venner endnu.",
+        "friends.addShort": "＋ Tilføj",
+        "friends.sentShort": "Sendt",
+        "back.guides": "‹ Guides",
+        "guides.all": "Alle",
+        "guides.fact": "Fakta",
+        "guides.howto": "Guides",
+        "guides.tips": "Tips",
+        "stats.p7": "7 dage",
+        "stats.p30": "30 dage",
+        "stats.pAll": "Alt",
+        "stats.grams": "Gram",
+        "stats.sessions": "Gange røget",
+        "stats.days": "Dage med smoke",
+        "stats.daysOf": "af {n}",
+        "stats.avgHigh2": "Snit skæv",
+        "stats.more": "↑ {pct}% flere gram end perioden før",
+        "stats.less": "↓ {pct}% færre gram end perioden før",
+        "stats.same": "Samme mængde som perioden før",
+        "stats.perDay": "Gram pr. dag",
+        "stats.perWeek": "Gram pr. uge",
+        "stats.weekOf": "Ugen fra {date}",
+        "stats.chartHelp": "Tryk på en søjle for at se tallet.",
+        "stats.habits": "Dine vaner",
+        "stats.favMethod": "Favoritmetode",
+        "stats.favProduct": "Ryger mest",
+        "stats.favDay": "Mest aktive dag",
+        "stats.favTime": "Typisk tidspunkt",
+        "stats.time.morning": "Morgen",
+        "stats.time.afternoon": "Eftermiddag",
+        "stats.time.evening": "Aften",
+        "stats.time.night": "Nat",
         "friends.cancelRequest": "Annuller anmodning",
         "friends.accept": "Accepter",
         "friends.decline": "Afvis",
@@ -5243,7 +5470,6 @@
         "type.sativa": "Sativa",
         "type.hybrid": "Hybrid",
         "type.landrace": "Landrace",
-        "guides.empty": "There are no guides yet.",
         "lang.title": "Choose language",
         "lang.sub": "You can always change it later in Profile",
         "auth.welcome": "Welcome back",
@@ -5285,8 +5511,8 @@
         "back.posts": "‹ Posts",
         "back.rolls": "‹ Rate the Roll",
         "back.home": "‹ Home",
-        "home.logs": "Your logs",
-        "stats.seeLogs": "See all logs",
+        "home.logs": "Smoke sesh",
+        "stats.seeLogs": "See all your smoke seshs",
         "post.textPh": "Write something… Tag your friends with @",
         "post.like": "Like",
         "post.edit": "Edit",
@@ -5386,6 +5612,39 @@
         "friends.searching": "Searching…",
         "friends.add": "＋ Add friend",
         "friends.requested": "Request sent",
+        "friends.ofPerson": "{name}'s friends",
+        "friends.noneOther": "{name} has no friends yet.",
+        "friends.addShort": "＋ Add",
+        "friends.sentShort": "Sent",
+        "back.guides": "‹ Guides",
+        "guides.all": "All",
+        "guides.fact": "Facts",
+        "guides.howto": "Guides",
+        "guides.tips": "Tips",
+        "stats.p7": "7 days",
+        "stats.p30": "30 days",
+        "stats.pAll": "All",
+        "stats.grams": "Grams",
+        "stats.sessions": "Times smoked",
+        "stats.days": "Days smoked",
+        "stats.daysOf": "of {n}",
+        "stats.avgHigh2": "Avg. high",
+        "stats.more": "↑ {pct}% more grams than the period before",
+        "stats.less": "↓ {pct}% fewer grams than the period before",
+        "stats.same": "Same amount as the period before",
+        "stats.perDay": "Grams per day",
+        "stats.perWeek": "Grams per week",
+        "stats.weekOf": "Week from {date}",
+        "stats.chartHelp": "Tap a bar to see the number.",
+        "stats.habits": "Your habits",
+        "stats.favMethod": "Favourite method",
+        "stats.favProduct": "Smokes most",
+        "stats.favDay": "Most active day",
+        "stats.favTime": "Usual time",
+        "stats.time.morning": "Morning",
+        "stats.time.afternoon": "Afternoon",
+        "stats.time.evening": "Evening",
+        "stats.time.night": "Night",
         "friends.cancelRequest": "Cancel request",
         "friends.accept": "Accept",
         "friends.decline": "Decline",
@@ -5771,6 +6030,8 @@
       if (name === "roll") renderRoll();
       if (name === "munchie") renderMunchie();
       if (name === "leaders") loadLeaders();
+      if (name === "guides") renderGuides();
+      if (name === "guide") renderGuide();
       scrollToTop();
     }
 
@@ -6274,7 +6535,7 @@
 
       document.getElementById("stat-benches").textContent =
         benches.filter((b) => b.addedBy === uid).length;
-      document.getElementById("stat-friends").textContent = friendships.length;
+      document.getElementById("stat-friends").textContent = friendships.filter((f) => !(profileCache.get(otherUser(f)) || {}).missing).length;
     }
 
     // Klip billedet til en firkant og gør det lille
@@ -6393,7 +6654,8 @@
     async function getProfile(uid, fresh = false) {
       if (!fresh && profileCache.has(uid)) return profileCache.get(uid);
       const doc = await db.collection("profiles").doc(uid).get();
-      const profile = doc.exists ? { id: doc.id, ...doc.data() } : { id: uid, name: "?" };
+      // Findes profilen ikke (fx en slettet konto), markeres den som "missing"
+      const profile = doc.exists ? { id: doc.id, ...doc.data() } : { id: uid, name: "?", missing: true };
       profileCache.set(uid, profile);
       return profile;
     }
@@ -6470,6 +6732,19 @@
       }
       if (token !== renderToken) return; // en nyere opdatering er på vej
 
+      // Ryd op i venskaber og anmodninger fra konti, der ikke findes mere
+      const me = currentUserKey();
+      friendProfiles.filter((p) => p && p.missing).forEach((p) => {
+        const f = friendships.find((x) => otherUser(x) === p.id);
+        if (f) db.collection("friendships").doc(f.id).delete().catch(() => {});
+      });
+      inProfiles.filter((p) => p && p.missing).forEach((p) => {
+        db.collection("friendRequests").doc(`${p.id}_${me}`).delete().catch(() => {});
+      });
+      friendProfiles = friendProfiles.filter((p) => p && !p.missing);
+      inProfiles = inProfiles.filter((p) => p && !p.missing);
+      outProfiles = outProfiles.filter((p) => p && !p.missing);
+
       // Antal ubesvarede anmodninger på Venner-ikonet
       const badge = document.getElementById("friends-badge");
       badge.textContent = requestsIn.length;
@@ -6495,6 +6770,7 @@
 
       renderProfile();
       if (currentPersonId) renderPerson();
+      renderPersonFriends();
     }
 
     // ---------- Søg efter folk ----------
@@ -6543,6 +6819,8 @@
       const decline = e.target.closest("[data-decline]");
       if (accept) return acceptRequest(accept.dataset.accept);
       if (decline) return declineRequest(decline.dataset.decline);
+      const add = e.target.closest("[data-add-friend]");
+      if (add) return sendRequest(add.dataset.addFriend);
       const row = e.target.closest(".person");
       if (row) openPerson(row.dataset.uid);
     });
@@ -6566,9 +6844,18 @@
 
     document.getElementById("person-back").addEventListener("click", showFriendsList);
 
+    // Tryk på "Venner" på min egen profil
+    document.getElementById("stat-friends-btn").addEventListener("click", () => {
+      showPage("friends");
+      showFriendsList();
+    });
+
     // ---------- En andens profil ----------
+    let personFriends = null;   // null = henter, false = kunne ikke hentes
+
     async function openPerson(uid) {
       currentPersonId = uid;
+      personFriends = null;
       document.getElementById("person-detail").innerHTML = "";
       showFriendsView("person");
       try {
@@ -6577,7 +6864,48 @@
         console.error(error);
       }
       renderPerson();
+      loadPersonFriends(uid);
     }
+
+    // Hent hvem personen er venner med
+    async function loadPersonFriends(uid) {
+      try {
+        const snap = await db.collection("friendships").where("users", "array-contains", uid).get();
+        const ids = snap.docs.map((doc) => doc.data().users.find((u) => u !== uid));
+        const profiles = await Promise.all(ids.map((id) => getProfile(id).catch(() => null)));
+        if (currentPersonId !== uid) return;
+        personFriends = profiles.filter((x) => x && !x.missing).sort((a, b) => a.name.localeCompare(b.name));
+      } catch (error) {
+        console.error(error);
+        if (currentPersonId !== uid) return;
+        personFriends = false;
+      }
+      renderPerson();
+      renderPersonFriends();
+    }
+
+    function renderPersonFriends() {
+      const p = profileCache.get(currentPersonId);
+      if (!p || !Array.isArray(personFriends)) return;
+      const me = currentUserKey();
+      document.getElementById("pfriends-back").textContent = `‹ ${p.name}`;
+      document.getElementById("pfriends-title").textContent = t("friends.ofPerson", { name: p.name });
+      document.getElementById("pfriends-list").innerHTML = personFriends.length
+        ? personFriends.map((f) => {
+          const relation = f.id === me ? "me" : relationTo(f.id);
+          const extra = {
+            me: `<span class="pill">${t("lb.you")}</span>`,
+            friend: `<span class="pill">${t("friends.isFriend")}</span>`,
+            outgoing: `<span class="pill">${t("friends.sentShort")}</span>`,
+            incoming: `<button type="button" class="mini-btn primary" data-accept="${esc(f.id)}">${t("friends.accept")}</button>`,
+            none: `<button type="button" class="mini-btn primary" data-add-friend="${esc(f.id)}">${t("friends.addShort")}</button>`,
+          }[relation];
+          return personRow(f, extra);
+        }).join("")
+        : `<p class="empty-note">${t("friends.noneOther", { name: esc(p.name) })}</p>`;
+    }
+
+    document.getElementById("pfriends-back").addEventListener("click", () => showFriendsView("person"));
 
     function renderPerson() {
       const p = profileCache.get(currentPersonId);
@@ -6613,8 +6941,12 @@
           <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
           <p class="person-rank">${rankBadge(shownXp(p))}</p>
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
-          <div class="stats single">
+          <div class="stats">
             <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
+            <button type="button" class="stat-btn" data-action="friends" ${Array.isArray(personFriends) ? "" : "disabled"}>
+              <strong>${Array.isArray(personFriends) ? personFriends.length : personFriends === false ? "–" : "…"}</strong>
+              <span>${t("profile.friends")} ${Array.isArray(personFriends) ? "›" : ""}</span>
+            </button>
           </div>
           <div class="person-actions">${actions}</div>
         </div>`;
@@ -6625,6 +6957,10 @@
         decline: declineRequest,
         cancel: cancelRequest,
         remove: removeFriend,
+        friends: () => {
+          renderPersonFriends();
+          showFriendsView("pfriends");
+        },
       };
       el.querySelectorAll("[data-action]").forEach((btn) => {
         btn.addEventListener("click", () => handlers[btn.dataset.action](p.id));
@@ -7330,10 +7666,11 @@
         if (leaderBoard === "friends") {
           const ids = [me, ...friendships.map(otherUser)];
           people = await Promise.all(ids.map((uid) => getProfile(uid, true).catch(() => null)));
-          people = people.filter(Boolean);
+          people = people.filter((x) => x && !x.missing);
           if (myProfile) people = people.map((p) => (p.id === me ? { ...p, ...myProfile, xp: myXp, xpAt: Date.now() } : p));
         } else {
-          const snap = await db.collection("profiles").orderBy("xp", "desc").limit(100).get();
+          // Hent alle profiler (også dem uden XP endnu) og sortér her i appen
+          const snap = await db.collection("profiles").limit(500).get();
           people = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
           snap.docs.forEach((doc) => profileCache.set(doc.id, { id: doc.id, ...doc.data() }));
           if (myProfile && !people.some((p) => p.id === me)) people.push({ ...myProfile, id: me, xp: myXp, xpAt: Date.now() });
@@ -7392,6 +7729,479 @@
     }
 
     lightbox.addEventListener("click", () => lightbox.classList.add("hidden"));
+
+    // ==========================================================
+    // GUIDES OG FAKTA OM CANNABIS
+    // ==========================================================
+    // cat: "fact" = noget man læser om, "guide" = trin for trin
+    const GUIDES = [
+      {
+        id: "pack-joint", cat: "guide", icon: "🌿",
+        da: {
+          title: "Sådan pakker du en joint",
+          sum: "Gør det klar: grind, tip og fyld papiret jævnt.",
+          steps: [
+            "Grind dit weed, så det er fint og luftigt, men ikke støv. Har du ingen grinder, så pil det fra hinanden med fingrene og fjern stilke og frø.",
+            "Lav et tip (filter) af et stykke karton. Fold et par små harmonika-fold i den ene ende og rul resten rundt om dem.",
+            "Læg papiret med limkanten opad og ind mod dig, og læg tippet i den ene ende.",
+            "Fordel weedet jævnt langs papiret. Læg lidt mere i den yderste ende, hvis du vil have en cone-form.",
+            "Brug cirka 0,3-0,7 g til en almindelig joint. Mindre er nemmere at rulle første gang.",
+            "Klem papiret let sammen mellem fingrene og rul det frem og tilbage, så weedet pakker sig til en cylinder. Nu er den klar til at blive rullet.",
+          ],
+          tips: ["Fugtigt weed brænder dårligt. Er det meget tørt, brænder det hurtigt, så find en mellemting."],
+        },
+        en: {
+          title: "How to pack a joint",
+          sum: "Get it ready: grind, tip and fill the paper evenly.",
+          steps: [
+            "Grind your weed so it's fine and fluffy, but not dust. No grinder? Break it apart with your fingers and remove stems and seeds.",
+            "Make a tip (filter) from a piece of card. Fold a few small accordion folds at one end and roll the rest around them.",
+            "Hold the paper with the glue strip up and facing you, and put the tip at one end.",
+            "Spread the weed evenly along the paper. Put a bit more at the far end if you want a cone shape.",
+            "Use around 0.3-0.7 g for a regular joint. Less is easier to roll the first time.",
+            "Pinch the paper lightly and roll it back and forth so the weed packs into a cylinder. Now it's ready to roll.",
+          ],
+          tips: ["Damp weed burns badly. Very dry weed burns fast, so aim for something in between."],
+        },
+      },
+      {
+        id: "roll-joint", cat: "guide", icon: "🫴",
+        da: {
+          title: "Sådan ruller du en joint",
+          sum: "Fra pakket papir til en tæt, jævn joint.",
+          steps: [
+            "Start med et pakket papir (se guiden om at pakke en joint).",
+            "Rul papiret frem og tilbage mellem tommelfingre og pegefingre, til weedet er formet som en fast, jævn pølse.",
+            "Brug tommelfingrene til at stoppe den nederste kant (uden lim) ind under weedet på den anden side, startende ved tippet.",
+            "Rul opad med tommelfingrene, mens du holder det stramt, til kun limkanten er tilbage.",
+            "Fugt limkanten let og tryk den fast, igen startende fra tippet.",
+            "Pak toppen let med en kuglepen eller en tændstik, og drej spidsen sammen.",
+          ],
+          tips: [
+            "Det er tuck-delen, der er sværest. Øv dig med lidt mindre weed, til det sidder.",
+            "Er den løs, brænder den skævt (canoeing). Rul lidt strammere næste gang.",
+          ],
+        },
+        en: {
+          title: "How to roll a joint",
+          sum: "From a packed paper to a tight, even joint.",
+          steps: [
+            "Start with a packed paper (see the guide on packing a joint).",
+            "Roll the paper back and forth between your thumbs and index fingers until the weed is a firm, even tube.",
+            "Use your thumbs to tuck the bottom edge (without glue) under the weed on the other side, starting at the tip.",
+            "Roll upwards with your thumbs, keeping it tight, until only the glue strip is left.",
+            "Lightly wet the glue strip and press it down, again starting from the tip.",
+            "Pack the top gently with a pen or a match, and twist the end closed.",
+          ],
+          tips: [
+            "The tuck is the hardest part. Practise with a bit less weed until it clicks.",
+            "If it's loose it burns unevenly (canoeing). Roll a bit tighter next time.",
+          ],
+        },
+      },
+      {
+        id: "roll-cone", cat: "guide", icon: "🍦",
+        da: {
+          title: "Sådan ruller du en cone",
+          sum: "Bred i toppen, smal ved tippet. Den klassiske form.",
+          steps: [
+            "Lav et tip og læg det i den ene ende af papiret.",
+            "Hold papiret lidt på skrå, så den yderste ende er bredere end ved tippet.",
+            "Fordel weedet, så der er mindst ved tippet og mest i toppen.",
+            "Rul tippet fast ind i papiret først, og lad papiret danne en tragt op mod toppen.",
+            "Tuck og rul op som en almindelig joint, men lad papiret glide lidt skråt, så toppen bliver bred.",
+            "Fugt limen, luk den og pak toppen med en pen. Fyld lidt mere i, hvis der er plads, og drej spidsen sammen.",
+          ],
+          tips: ["Det er lettere med et king size-papir. Du kan også købe færdige cones og bare fylde dem."],
+        },
+        en: {
+          title: "How to roll a cone",
+          sum: "Wide at the top, narrow at the tip. The classic shape.",
+          steps: [
+            "Make a tip and place it at one end of the paper.",
+            "Hold the paper at a slight angle so the far end is wider than the tip end.",
+            "Spread the weed so there's least at the tip and most at the top.",
+            "Roll the tip into the paper first and let the paper form a funnel towards the top.",
+            "Tuck and roll up like a regular joint, but let the paper slide at an angle so the top gets wide.",
+            "Wet the glue, close it and pack the top with a pen. Add a bit more if there's room, and twist the end.",
+          ],
+          tips: ["King size papers make it easier. You can also buy pre-rolled cones and just fill them."],
+        },
+      },
+      {
+        id: "gravity-bong", cat: "guide", icon: "💧",
+        da: {
+          title: "Sådan laver du en gravity bong",
+          sum: "To flasker, vand og et hoved. En kraftig DIY-klassiker.",
+          steps: [
+            "Find en stor beholder uden låg (fx en spand eller en 5-liters dunk med toppen skåret af) og en mindre plastflaske (0,5-1,5 L).",
+            "Skær bunden af den lille flaske. Fyld den store beholder med vand.",
+            "Lav et hoved: brug et rigtigt bong-hoved eller en metalskål i låget. Undgå at bruge alufolie og plastik, der kommer tæt på gløden.",
+            "Fyld hovedet med lidt grindet weed og skru låget på den lille flaske.",
+            "Sæt den lille flaske ned i vandet, så kun toppen stikker op.",
+            "Tænd, og løft langsomt flasken op. Røgen trækkes ned i flasken, når vandet løber ud. Stop, før bunden kommer op af vandet.",
+            "Skru låget af og inhalér, mens du langsomt skubber flasken ned i vandet igen.",
+          ],
+          tips: [
+            "Det er meget kraftigt. Start med en lille mængde og tag ikke hele flasken i ét hug.",
+            "Brug rene flasker, og skift vandet hver gang.",
+          ],
+        },
+        en: {
+          title: "How to make a gravity bong",
+          sum: "Two bottles, water and a bowl. A powerful DIY classic.",
+          steps: [
+            "Find a large open container (like a bucket or a 5 L jug with the top cut off) and a smaller plastic bottle (0.5-1.5 L).",
+            "Cut the bottom off the small bottle. Fill the large container with water.",
+            "Make a bowl: use a real bong bowl or a metal bowl in the cap. Avoid foil and plastic close to the ember.",
+            "Fill the bowl with a little ground weed and screw the cap onto the small bottle.",
+            "Push the small bottle down into the water so only the top sticks out.",
+            "Light it and slowly lift the bottle. Smoke is pulled in as the water drains out. Stop before the bottom leaves the water.",
+            "Remove the cap and inhale while slowly pushing the bottle back into the water.",
+          ],
+          tips: [
+            "It's very strong. Start small and don't take the whole bottle in one go.",
+            "Use clean bottles and change the water every time.",
+          ],
+        },
+      },
+      {
+        id: "make-tip", cat: "guide", icon: "📜",
+        da: {
+          title: "Sådan laver du et godt tip",
+          sum: "Et godt tip giver et bedre træk og holder weed ude af munden.",
+          steps: [
+            "Riv en strimmel af tynd karton, ca. 1,5 × 5 cm. Mange papirpakker har en flap, der er lavet til det.",
+            "Lav 3-4 små zigzag-fold i den ene ende.",
+            "Rul resten af strimlen rundt om foldene, så du får en lille cylinder.",
+            "Juster tykkelsen, så den passer til dit papir. Den skal sidde stramt.",
+          ],
+          tips: ["Glas- og træ-tips kan bruges igen og igen og giver et køligere træk."],
+        },
+        en: {
+          title: "How to make a good tip",
+          sum: "A good tip gives a better draw and keeps weed out of your mouth.",
+          steps: [
+            "Tear a strip of thin card, about 1.5 × 5 cm. Many paper packs have a flap made for this.",
+            "Make 3-4 small zigzag folds at one end.",
+            "Roll the rest of the strip around the folds to get a small cylinder.",
+            "Adjust the thickness to fit your paper. It should sit tight.",
+          ],
+          tips: ["Glass and wooden tips can be reused and give a cooler draw."],
+        },
+      },
+      {
+        id: "clean-bong", cat: "guide", icon: "🧼",
+        da: {
+          title: "Sådan renser du din bong",
+          sum: "Ren bong = bedre smag og mindre hoste.",
+          steps: [
+            "Hæld det gamle vand ud og skyl med varmt vand.",
+            "Hæld isopropylalkohol (gerne 90 %+) i, så det dækker bunden, og kom en håndfuld groft salt i.",
+            "Hold for åbningerne og ryst godt i et par minutter. Saltet skrubber, og spritten opløser tjæren.",
+            "Læg hovedet og downstem i en pose med sprit og salt, og ryst den også.",
+            "Skyl alt grundigt med varmt vand, til der ikke lugter af sprit, og lad det tørre.",
+          ],
+          tips: ["Skift vandet efter hver session, så holder den sig ren meget længere."],
+        },
+        en: {
+          title: "How to clean your bong",
+          sum: "A clean bong = better taste and less coughing.",
+          steps: [
+            "Pour out the old water and rinse with hot water.",
+            "Add isopropyl alcohol (ideally 90%+) to cover the bottom, plus a handful of coarse salt.",
+            "Cover the openings and shake well for a few minutes. The salt scrubs and the alcohol dissolves the resin.",
+            "Put the bowl and downstem in a bag with alcohol and salt, and shake that too.",
+            "Rinse everything well with hot water until there's no alcohol smell, and let it dry.",
+          ],
+          tips: ["Change the water after every session and it stays clean much longer."],
+        },
+      },
+      {
+        id: "thc-cbd", cat: "fact", icon: "🧪",
+        da: {
+          title: "THC og CBD",
+          sum: "De to vigtigste stoffer i cannabis, og hvad de gør.",
+          body: [
+            "THC (tetrahydrocannabinol) er det stof, der gør dig skæv. Det binder sig til CB1-receptorer i hjernen og påvirker humør, sanser, tidsfornemmelse, appetit og hukommelse.",
+            "CBD (cannabidiol) gør dig ikke skæv. Det kan virke afslappende og kan dæmpe noget af den uro eller paranoia, som meget THC kan give.",
+            "Forholdet mellem THC og CBD betyder meget for, hvordan en sort føles. Moderne skunk har ofte meget THC og næsten ingen CBD, hvilket giver en kraftigere og mere uforudsigelig rus.",
+          ],
+        },
+        en: {
+          title: "THC and CBD",
+          sum: "The two main compounds in cannabis and what they do.",
+          body: [
+            "THC (tetrahydrocannabinol) is what gets you high. It binds to CB1 receptors in the brain and affects mood, senses, sense of time, appetite and memory.",
+            "CBD (cannabidiol) doesn't get you high. It can feel relaxing and may soften some of the anxiety or paranoia that a lot of THC can cause.",
+            "The THC to CBD ratio matters a lot for how a strain feels. Modern skunk often has lots of THC and almost no CBD, which gives a stronger and less predictable high.",
+          ],
+        },
+      },
+      {
+        id: "indica-sativa", cat: "fact", icon: "🌱",
+        da: {
+          title: "Indica, sativa og hybrid",
+          sum: "Hvad betyder ordene på sorterne egentlig?",
+          body: [
+            "Indica bruges om planter, der er korte og buskede, og som folk ofte forbinder med en tung, afslappende kropsrus (\"couch lock\").",
+            "Sativa bruges om høje, slanke planter, som folk forbinder med en mere energisk og kreativ rus i hovedet.",
+            "Næsten alt, der findes i dag, er hybrider. Forskning viser, at navnet ikke siger så meget om virkningen. Det er især THC-mængden og terpenerne, der afgør, hvordan en sort føles.",
+          ],
+        },
+        en: {
+          title: "Indica, sativa and hybrid",
+          sum: "What do the strain labels actually mean?",
+          body: [
+            "Indica describes short, bushy plants that people often link to a heavy, relaxing body high (\"couch lock\").",
+            "Sativa describes tall, slim plants that people link to a more energetic, creative head high.",
+            "Almost everything today is a hybrid. Research shows the label says little about the effect. It's mainly the amount of THC and the terpenes that decide how a strain feels.",
+          ],
+        },
+      },
+      {
+        id: "terpenes", cat: "fact", icon: "🍋",
+        da: {
+          title: "Terpener",
+          sum: "Duftstofferne der giver smag og påvirker rusen.",
+          body: [
+            "Terpener er de stoffer, der giver cannabis dens lugt og smag. De findes også i fx citroner, peber og fyrretræer.",
+            "Myrcen (jordagtig, moskus) forbindes med en afslappet rus. Limonen (citrus) med godt humør. Pinen (fyr) med klarhed. Caryophyllen (peber) med en lun, rolig følelse.",
+            "Terpenerne arbejder sammen med THC og CBD. Det kaldes entourage-effekten og er en del af grunden til, at to sorter med samme THC kan føles forskelligt.",
+          ],
+        },
+        en: {
+          title: "Terpenes",
+          sum: "The aroma compounds that give flavour and shape the high.",
+          body: [
+            "Terpenes give cannabis its smell and taste. They're also found in things like lemons, pepper and pine trees.",
+            "Myrcene (earthy, musky) is linked to a relaxed high. Limonene (citrus) to a good mood. Pinene (pine) to clarity. Caryophyllene (pepper) to a warm, calm feeling.",
+            "Terpenes work together with THC and CBD. This is called the entourage effect and is part of why two strains with the same THC can feel different.",
+          ],
+        },
+      },
+      {
+        id: "hash-skunk", cat: "fact", icon: "🟫",
+        da: {
+          title: "Hash, skunk og koncentrater",
+          sum: "Forskellen på de mest almindelige former.",
+          body: [
+            "Skunk (blomster/buds) er de tørrede blomster fra planten. Det er det mest almindelige i dag.",
+            "Hash er presset harpiks (trikomer) fra planten. Det er ofte stærkere end skunk pr. gram og har sin egen bløde, krydrede smag.",
+            "Koncentrater som wax, shatter og rosin er udtræk med meget høj THC, ofte 60-90 %. De ryges typisk som dabs og er langt stærkere, så man skal bruge meget mindre.",
+          ],
+        },
+        en: {
+          title: "Hash, flower and concentrates",
+          sum: "The difference between the most common forms.",
+          body: [
+            "Flower (buds) is the dried flowers of the plant. It's the most common form today.",
+            "Hash is pressed resin (trichomes) from the plant. It's often stronger per gram than flower and has its own soft, spicy taste.",
+            "Concentrates like wax, shatter and rosin are extracts with very high THC, often 60-90%. They're usually dabbed and are far stronger, so you need much less.",
+          ],
+        },
+      },
+      {
+        id: "edibles", cat: "fact", icon: "🍪",
+        da: {
+          title: "Edibles virker anderledes",
+          sum: "Hvorfor kager og gummies tager længere tid og varer længere.",
+          body: [
+            "Når du spiser cannabis, omdanner leveren THC til 11-hydroxy-THC, som er stærkere og varer længere end THC fra røg.",
+            "Det tager typisk 30 minutter til 2 timer, før du mærker det, og rusen kan vare 6-8 timer eller mere.",
+            "Den klassiske fejl er at tage mere, fordi man ikke mærker noget. Start lavt, fx 2,5-5 mg THC, og vent mindst 2 timer, før du tager mere.",
+          ],
+        },
+        en: {
+          title: "Edibles work differently",
+          sum: "Why cakes and gummies take longer and last longer.",
+          body: [
+            "When you eat cannabis, the liver turns THC into 11-hydroxy-THC, which is stronger and lasts longer than THC from smoke.",
+            "It usually takes 30 minutes to 2 hours to feel it, and the high can last 6-8 hours or more.",
+            "The classic mistake is taking more because you don't feel anything. Start low, e.g. 2.5-5 mg THC, and wait at least 2 hours before taking more.",
+          ],
+        },
+      },
+      {
+        id: "tolerance", cat: "fact", icon: "📉",
+        da: {
+          title: "Tolerance og T-break",
+          sum: "Hvorfor du skal bruge mere over tid, og hvordan du nulstiller.",
+          body: [
+            "Når du ryger ofte, bliver der færre aktive CB1-receptorer i hjernen. Derfor skal du bruge mere for at blive lige så skæv.",
+            "Receptorerne kommer igen, når du holder pause. Allerede efter 2 dage begynder det, og efter omkring 3-4 uger er de for de fleste tilbage på normalt niveau.",
+            "Brug T-Break beregneren i Håndbogen til at se, hvor lang en pause der passer til dig.",
+          ],
+        },
+        en: {
+          title: "Tolerance and T-breaks",
+          sum: "Why you need more over time, and how to reset.",
+          body: [
+            "When you smoke often, the number of active CB1 receptors in the brain drops. That's why you need more to get as high.",
+            "The receptors come back when you take a break. It starts after just 2 days, and after about 3-4 weeks most people are back to normal.",
+            "Use the T-Break calculator in the Handbook to see how long a break suits you.",
+          ],
+        },
+      },
+      {
+        id: "detection", cat: "fact", icon: "🔬",
+        da: {
+          title: "Hvor længe kan THC spores?",
+          sum: "Blod, spyt og urin. Og hvorfor det varierer så meget.",
+          body: [
+            "THC gemmes i fedtvæv og frigives langsomt. Derfor afhænger det meget af, hvor ofte du ryger, og af din krop.",
+            "Spyt (som politiet ofte tester ved vejen): typisk op til 1-3 døgn. Blod: få timer til flere døgn, og hos dem der ryger dagligt op til flere uger.",
+            "Urin: 3-5 dage efter en enkelt gang, 1-2 uger ved jævnlig brug og op til en måned eller mere ved daglig brug.",
+          ],
+        },
+        en: {
+          title: "How long can THC be detected?",
+          sum: "Blood, saliva and urine. And why it varies so much.",
+          body: [
+            "THC is stored in fat tissue and released slowly, so it depends a lot on how often you smoke and on your body.",
+            "Saliva (often used in roadside tests): usually up to 1-3 days. Blood: a few hours to several days, and up to several weeks for daily smokers.",
+            "Urine: 3-5 days after a single use, 1-2 weeks with regular use and up to a month or more with daily use.",
+          ],
+        },
+      },
+      {
+        id: "driving", cat: "fact", icon: "🚗",
+        da: {
+          title: "Cannabis og bilkørsel i Danmark",
+          sum: "Der er nultolerance. Også dagen efter.",
+          body: [
+            "I Danmark er det ulovligt at køre bil med THC i blodet over en meget lav grænse. Det gælder, uanset om du føler dig påvirket eller ej.",
+            "Straffen er typisk en bøde og en ubetinget frakendelse af kørekortet i mindst 3 år.",
+            "Fordi THC kan måles længe efter rusen er væk, så brug køre-timeren under Statistik som et forsigtigt pejlemærke, og vent hellere for længe end for kort.",
+          ],
+        },
+        en: {
+          title: "Cannabis and driving in Denmark",
+          sum: "There's zero tolerance. Also the day after.",
+          body: [
+            "In Denmark it's illegal to drive with THC in your blood above a very low limit. This applies whether or not you feel affected.",
+            "The penalty is usually a fine and an unconditional driving ban of at least 3 years.",
+            "Because THC can be measured long after the high is gone, use the driving timer under Statistics as a careful guide, and wait too long rather than too short.",
+          ],
+        },
+      },
+      {
+        id: "law", cat: "fact", icon: "⚖️",
+        da: {
+          title: "Cannabis og loven i Danmark",
+          sum: "Hvad gælder for besiddelse og salg?",
+          body: [
+            "Cannabis er ulovligt i Danmark. Det gælder både at købe, sælge, dyrke og have det på sig.",
+            "Besiddelse af en lille mængde til eget brug straffes typisk med en bøde. Bøden stiger med mængden, og hvis du er taget før.",
+            "Salg og større mængder straffes langt hårdere, også med fængsel. Medicinsk cannabis kan kun fås på recept fra en læge.",
+          ],
+        },
+        en: {
+          title: "Cannabis and the law in Denmark",
+          sum: "What applies to possession and selling?",
+          body: [
+            "Cannabis is illegal in Denmark. That covers buying, selling, growing and carrying it.",
+            "Possessing a small amount for personal use is usually punished with a fine. The fine goes up with the amount and if you've been caught before.",
+            "Selling and larger amounts are punished much harder, including prison. Medical cannabis is only available on a doctor's prescription.",
+          ],
+        },
+      },
+      {
+        id: "greening", cat: "fact", icon: "🥴",
+        da: {
+          title: "Hvis du bliver for skæv",
+          sum: "Sådan kommer du (eller en ven) igennem en \"greenout\".",
+          body: [
+            "Bliver man for skæv, kan man få hjertebanken, svimmelhed, kvalme eller angst. Det er ubehageligt, men går over af sig selv.",
+            "Sæt dig eller læg dig ned et roligt sted. Træk vejret langsomt, drik vand og spis noget med sukker. Mind dig selv om, at det går over.",
+            "Lugt eller tyg på sort peber; det hjælper nogle. Lad være med at ryge mere. Får nogen brystsmerter, besvimer eller ikke bliver bedre, så ring 112.",
+          ],
+        },
+        en: {
+          title: "If you get too high",
+          sum: "How to get yourself (or a friend) through a \"greenout\".",
+          body: [
+            "Getting too high can cause a racing heart, dizziness, nausea or anxiety. It's unpleasant, but it passes on its own.",
+            "Sit or lie down somewhere calm. Breathe slowly, drink water and eat something sugary. Remind yourself that it will pass.",
+            "Smelling or chewing black pepper helps some people. Don't smoke more. If someone has chest pain, faints or doesn't get better, call 112.",
+          ],
+        },
+      },
+      {
+        id: "safer", cat: "fact", icon: "🛡️",
+        da: {
+          title: "Ryg mere sikkert",
+          sum: "Små vaner, der gør en stor forskel.",
+          body: [
+            "Undlad at blande med tobak. Tobak gør det langt mere vanedannende og skader lungerne mere. En vaporizer er skånsomst for lungerne.",
+            "Hold ikke røgen inde i lang tid. Det giver ikke mere THC, kun mere tjære i lungerne.",
+            "Bland ikke med alkohol, og kør aldrig bil. Ryg med folk, du stoler på, og vær ekstra forsigtig med stærke sorter, koncentrater og edibles.",
+          ],
+        },
+        en: {
+          title: "Smoke safer",
+          sum: "Small habits that make a big difference.",
+          body: [
+            "Avoid mixing with tobacco. Tobacco makes it far more addictive and harms the lungs more. A vaporizer is easiest on the lungs.",
+            "Don't hold the smoke in for a long time. It doesn't give you more THC, just more tar in your lungs.",
+            "Don't mix with alcohol, and never drive. Smoke with people you trust, and be extra careful with strong strains, concentrates and edibles.",
+          ],
+        },
+      },
+    ];
+
+    const guideList = document.getElementById("guide-list");
+    const guideDetail = document.getElementById("guide-detail");
+    let guideFilter = "all";
+    let openGuideId = null;
+
+    function guideText(g) {
+      return g[lang === "en" ? "en" : "da"];
+    }
+
+    function renderGuides() {
+      document.querySelectorAll("[data-guide-filter]").forEach((b) => b.classList.toggle("active", b.dataset.guideFilter === guideFilter));
+      guideList.innerHTML = GUIDES
+        .filter((g) => guideFilter === "all" || g.cat === guideFilter)
+        .map((g) => {
+          const text = guideText(g);
+          return `
+            <button type="button" class="game-item" data-guide="${g.id}">
+              <span class="tile-img guide-icon" aria-hidden="true">${g.icon}</span>
+              <span><strong>${esc(text.title)}</strong><small>${esc(text.sum)}</small></span>
+              <span class="chevron">›</span>
+            </button>`;
+        }).join("");
+    }
+
+    function renderGuide() {
+      const g = GUIDES.find((x) => x.id === openGuideId);
+      if (!g) return;
+      const text = guideText(g);
+      guideDetail.innerHTML = `
+        <span class="guide-tag">${t(g.cat === "fact" ? "guides.fact" : "guides.howto")}</span>
+        <h1 class="page-title">${g.icon} ${esc(text.title)}</h1>
+        <p class="guide-sum">${esc(text.sum)}</p>
+        ${text.steps ? `<ol class="guide-steps">${text.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>` : ""}
+        ${text.body ? text.body.map((para) => `<p class="guide-p">${esc(para)}</p>`).join("") : ""}
+        ${text.tips ? `<div class="card guide-tips"><h3>💡 ${t("guides.tips")}</h3>${text.tips.map((tip) => `<p>${esc(tip)}</p>`).join("")}</div>` : ""}`;
+    }
+
+    document.querySelectorAll("[data-guide-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        guideFilter = btn.dataset.guideFilter;
+        renderGuides();
+      });
+    });
+
+    guideList.addEventListener("click", (e) => {
+      const item = e.target.closest("[data-guide]");
+      if (!item) return;
+      openGuideId = item.dataset.guide;
+      goView("guide");
+    });
+
+    renderGuides();
 
     // ==========================================================
     // TJEKLISTE: sorter, hash, koncentrater og spiselige fra hele verden
@@ -8780,14 +9590,14 @@
     // med at være aktiv for at holde sin rank.
     const XP_DECAY = 10;
     const RANKS = [
-      { name: "Baby Blazer", icon: "🐣", xp: 0 },
+      { name: "Rookie Smoker", icon: "🐣", xp: 0 },
       { name: "Giggle Goblin", icon: "🤭", xp: 100 },
-      { name: "Sofa Sloth", icon: "🦥", xp: 300 },
+      { name: "Couch Potato", icon: "🥔", xp: 300 },
       { name: "Munchie Monster", icon: "🍩", xp: 600 },
-      { name: "Haze Hopper", icon: "🐸", xp: 1000 },
-      { name: "Night Owl", icon: "🦉", xp: 1600 },
+      { name: "Cloud Chaser", icon: "☁️", xp: 1000 },
+      { name: "Heavy Smoker", icon: "💨", xp: 1600 },
       { name: "Space Cadet", icon: "👽", xp: 2500 },
-      { name: "Dank Dragon", icon: "🐉", xp: 4000 },
+      { name: "Snoop Dogg Smoker", icon: "🐶", xp: 4000 },
     ];
 
     function entryXp(entry) {
@@ -8961,6 +9771,8 @@
         </div>`;
     }
 
+    let statsPeriod = 30;   // 7, 30 eller 0 (= alt)
+
     function renderStats() {
       if (!statsEl) return;
       if (!logEntries.length) {
@@ -8973,86 +9785,104 @@
         renderLogList();
         return;
       }
-      const now = Date.now();
-      const today = dayStart(now);
-      const within = (days) => logEntries.filter((e) => entryTime(e) >= today - (days - 1) * DAY);
+      const today = dayStart(Date.now());
       const sum = (list, key) => list.reduce((s, e) => s + (Number(e[key]) || 0), 0);
-      const week = within(7);
-      const month = within(30);
-      const avgHigh = month.length ? sum(month, "high") / month.length : 0;
+      const first = dayStart(Math.min(...logEntries.map(entryTime)));
+      const span = statsPeriod || Math.max(1, Math.round((today - first) / DAY) + 1);
+      const from = today - (span - 1) * DAY;
+      const list = logEntries.filter((e) => entryTime(e) >= from);
+      const prev = logEntries.filter((e) => entryTime(e) >= from - span * DAY && entryTime(e) < from);
 
-      // Gram pr. dag de sidste 30 dage
-      const days = Array.from({ length: 30 }, (_, i) => today - (29 - i) * DAY);
-      const gramsPerDay = days.map((d) => sum(logEntries.filter((e) => dayStart(entryTime(e)) === d), "grams"));
-      const timesPerDay = days.map((d) => sum(logEntries.filter((e) => dayStart(entryTime(e)) === d), "times"));
-      const dayTips = days.map((d, i) => `${formatDate(d)}: ${formatGrams(gramsPerDay[i])} g · ${t(timesPerDay[i] === 1 ? "ai.times1" : "ai.timesN", { n: timesPerDay[i] })}`);
-      const dayLabels = days.map((d, i) => (i === 0 || i === 14 || i === 29 ? new Date(d).toLocaleDateString(t("locale"), { day: "numeric", month: "short" }) : ""));
+      // Nøgletal
+      const grams = sum(list, "grams");
+      const sessions = sum(list, "times");
+      const smokeDays = new Set(list.map((e) => dayStart(entryTime(e)))).size;
+      const avgHigh = list.length ? sum(list, "high") / list.length : 0;
+      const fmt = (n) => n.toLocaleString(t("locale"), { maximumFractionDigits: 1 });
+      let change = "";
+      const prevGrams = sum(prev, "grams");
+      if (statsPeriod && prevGrams > 0) {
+        const pct = Math.round(((grams - prevGrams) / prevGrams) * 100);
+        change = pct === 0
+          ? `<p class="stats-change">${t("stats.same")}</p>`
+          : `<p class="stats-change ${pct > 0 ? "up" : "down"}">${t(pct > 0 ? "stats.more" : "stats.less", { pct: Math.abs(pct) })}</p>`;
+      }
 
-      // Hvor skæv pr. gram, uge for uge (falder den, stiger tolerancen)
-      const weeks = Array.from({ length: 8 }, (_, i) => {
-        const end = today + DAY - (7 - i) * 7 * DAY;
-        const list = logEntries.filter((e) => entryTime(e) >= end - 7 * DAY && entryTime(e) < end);
-        const grams = sum(list, "grams");
-        return { end, value: grams ? sum(list, "high") / list.length / grams : null };
-      });
-      const points = weeks.filter((w) => w.value !== null);
-      const maxValue = Math.max(1e-9, ...points.map((p) => p.value));
-      const x = (i) => 16 + (i * (300 - 32)) / 7;
-      const y = (v) => 110 - (v / maxValue) * 90;
-      const path = weeks.map((w, i) => (w.value === null ? null : `${x(i)},${y(w.value)}`)).filter(Boolean).join(" ");
-      const lineChart = `
-        <svg class="line-chart" viewBox="0 0 300 130" role="img" aria-label="${t("stats.highPerGram")}">
-          <line x1="16" y1="110" x2="284" y2="110" class="axis"/>
-          ${points.length > 1 ? `<polyline points="${path}" class="line"/>` : ""}
-          ${weeks.map((w, i) => w.value === null ? "" : `
-            <g data-tip="${esc(t("stats.weekTip", { date: formatDate(w.end - DAY), v: w.value.toLocaleString(t("locale"), { maximumFractionDigits: 1 }) }))}">
-              <circle cx="${x(i)}" cy="${y(w.value)}" r="13" class="hit"/>
-              <circle cx="${x(i)}" cy="${y(w.value)}" r="5" class="dot"/>
-            </g>`).join("")}
-          <text x="16" y="126" class="tick">${t("stats.weeksAgo", { n: 8 })}</text>
-          <text x="284" y="126" class="tick end">${t("stats.thisWeek")}</text>
-        </svg>`;
+      // Graf: gram pr. dag (7 og 30 dage) eller pr. uge (alt)
+      let chart;
+      if (span <= 31) {
+        const days = Array.from({ length: span }, (_, i) => today - (span - 1 - i) * DAY);
+        const values = days.map((d) => sum(list.filter((e) => dayStart(entryTime(e)) === d), "grams"));
+        const tips = days.map((d, i) => `${formatDate(d)}: ${formatGrams(values[i])} g`);
+        const labels = days.map((d, i) => (span <= 7 || i === 0 || i === Math.floor(span / 2) || i === span - 1
+          ? new Date(d).toLocaleDateString(t("locale"), span <= 7 ? { weekday: "short" } : { day: "numeric", month: "short" })
+          : ""));
+        chart = chartCard(t("stats.perDay"), barChart(values, labels, tips, { dense: span > 7 }), t("stats.chartHelp"));
+      } else {
+        const count = Math.min(26, Math.ceil(span / 7));
+        const weeks = Array.from({ length: count }, (_, i) => today + DAY - (count - i) * 7 * DAY);
+        const values = weeks.map((w) => sum(list.filter((e) => entryTime(e) >= w && entryTime(e) < w + 7 * DAY), "grams"));
+        const tips = weeks.map((w, i) => `${t("stats.weekOf", { date: formatDate(w) })}: ${formatGrams(values[i])} g`);
+        const labels = weeks.map((w, i) => (i === 0 || i === count - 1
+          ? new Date(w).toLocaleDateString(t("locale"), { day: "numeric", month: "short" })
+          : ""));
+        chart = chartCard(t("stats.perWeek"), barChart(values, labels, tips, { dense: count > 10 }), t("stats.chartHelp"));
+      }
 
-      // Ugedage
-      const weekdayOrder = [1, 2, 3, 4, 5, 6, 0];
-      const perWeekday = weekdayOrder.map((wd) => sum(month.filter((e) => new Date(entryTime(e)).getDay() === wd), "times"));
-      const weekdayName = (wd, style) => new Date(Date.UTC(1970, 0, 4 + wd)).toLocaleDateString(t("locale"), { weekday: style, timeZone: "UTC" });
-
-      // Hvordan og hvad
-      const breakdown = (key, options, prefix) => {
-        const counts = options.map((o) => ({ o, n: sum(month.filter((e) => e[key] === o), "times") })).filter((c) => c.n);
-        const max = Math.max(1, ...counts.map((c) => c.n));
-        return counts.sort((a, b) => b.n - a.n).map((c) => `
-          <div class="hbar">
-            <span>${t(prefix + c.o)}</span>
-            <span class="hbar-track"><span style="width:${(c.n / max) * 100}%"></span></span>
-            <strong>${c.n}</strong>
-          </div>`).join("");
+      // Vaner: det, man gør oftest
+      const favorite = (keyOf) => {
+        const counts = {};
+        list.forEach((e) => {
+          const k = keyOf(e);
+          counts[k] = (counts[k] || 0) + (Number(e.times) || 1);
+        });
+        const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+        return best === undefined ? null : { key: best, pct: Math.round((counts[best] / sessions) * 100) };
       };
+      const hourPart = (h) => (h < 5 ? "night" : h < 12 ? "morning" : h < 18 ? "afternoon" : "evening");
+      const weekday = (wd) => new Date(Date.UTC(1970, 0, 4 + Number(wd))).toLocaleDateString(t("locale"), { weekday: "long", timeZone: "UTC" });
+      const habits = [
+        ["🔥", t("stats.favMethod"), favorite((e) => e.method), (k) => t("ai.method." + k)],
+        ["🌿", t("stats.favProduct"), favorite((e) => e.product), (k) => t("ai.product." + k)],
+        ["📅", t("stats.favDay"), favorite((e) => new Date(entryTime(e)).getDay()), weekday],
+        ["🕒", t("stats.favTime"), favorite((e) => hourPart(new Date(entryTime(e)).getHours())), (k) => t("stats.time." + k)],
+      ].filter((h) => h[2]);
 
       statsEl.innerHTML = `
-        ${driveCardHTML()}
-        <div class="stat-grid">
-          <div class="card"><strong>${formatGrams(sum(week, "grams"))} g</strong><span>${t("stats.week")}</span></div>
-          <div class="card"><strong>${sum(week, "times")}</strong><span>${t("stats.weekTimes")}</span></div>
-          <div class="card"><strong>${HIGH_EMOJI[Math.max(0, Math.round(avgHigh) - 1)]} ${avgHigh.toLocaleString(t("locale"), { maximumFractionDigits: 1 })}</strong><span>${t("stats.avgHigh")}</span></div>
+        <div class="seg">
+          ${[[7, "stats.p7"], [30, "stats.p30"], [0, "stats.pAll"]].map(([n, key]) =>
+            `<button type="button" class="seg-btn ${statsPeriod === n ? "active" : ""}" data-period="${n}">${t(key)}</button>`).join("")}
         </div>
-        ${chartCard(t("stats.gramsPerDay"), barChart(gramsPerDay, dayLabels, dayTips, { dense: true }), t("stats.month", { g: formatGrams(sum(month, "grams")) }))}
-        ${chartCard(t("stats.highPerGram"), lineChart, t("stats.highPerGramHelp"))}
-        ${chartCard(t("stats.weekdays"), barChart(perWeekday, weekdayOrder.map((wd) => weekdayName(wd, "narrow")), weekdayOrder.map((wd, i) => `${weekdayName(wd, "long")}: ${t(perWeekday[i] === 1 ? "ai.times1" : "ai.timesN", { n: perWeekday[i] })}`)), t("stats.weekdaysHelp"))}
-        <div class="card chart-card">
-          <h3>${t("ai.methodLabel")}</h3>
-          ${breakdown("method", METHODS, "ai.method.")}
-          <h3 class="spaced">${t("ai.productLabel")}</h3>
-          ${breakdown("product", PRODUCTS, "ai.product.")}
-          <p class="chart-caption">${t("stats.breakdownHelp")}</p>
-        </div>`;
+        <div class="stat-tiles">
+          <div class="card"><span>${t("stats.grams")}</span><strong>${formatGrams(grams)} g</strong></div>
+          <div class="card"><span>${t("stats.sessions")}</span><strong>${sessions}</strong></div>
+          <div class="card"><span>${t("stats.days")}</span><strong>${smokeDays} <small>${t("stats.daysOf", { n: span })}</small></strong></div>
+          <div class="card"><span>${t("stats.avgHigh2")}</span><strong>${HIGH_EMOJI[Math.max(0, Math.round(avgHigh) - 1)]} ${fmt(avgHigh)}</strong></div>
+        </div>
+        ${change}
+        ${chart}
+        <div class="card habits">
+          <h3>${t("stats.habits")}</h3>
+          ${habits.map(([icon, label, fav, name]) => `
+            <div class="habit-row">
+              <span class="habit-icon">${icon}</span>
+              <span class="habit-label">${label}</span>
+              <strong>${esc(name(fav.key))}</strong>
+              <small>${fav.pct}%</small>
+            </div>`).join("")}
+        </div>
+        ${driveCardHTML()}`;
       renderLogList();
     }
 
     // Tryk eller peg på en søjle/et punkt for at se tallet
     statsEl.addEventListener("click", (e) => {
       if (e.target.closest("[data-open-log]")) openLogSheet();
+      const period = e.target.closest("[data-period]");
+      if (period) {
+        statsPeriod = Number(period.dataset.period);
+        renderStats();
+      }
     });
 
     ["pointerover", "click"].forEach((type) => {
