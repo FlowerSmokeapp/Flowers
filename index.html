@@ -3444,38 +3444,56 @@
       cursor: pointer;
       transition: background 0.2s, transform 0.2s;
     }
-    /* Felterne rundt om jointen: ens, lige firkanter */
+    /* Lykkehjulet i Spin the Joint 2 */
     .spin2-wheel {
       margin-top: 28px;
-      background:
-        radial-gradient(circle, transparent 0 63%, var(--border) 63.3% 63.6%, transparent 64%),
-        radial-gradient(circle, var(--card-2) 0 55%, var(--card) 56% 100%);
+      border: 0;
+      background: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+    .spin-board {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .spin-board path {
+      transition: opacity 0.25s;
     }
     .spin2-tile {
       display: grid;
       place-items: center;
-      width: 38px;
-      height: 38px;
+      width: 34px;
+      height: 34px;
       max-width: none;
       padding: 0;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: var(--card-2);
-      font-size: 19px;
+      border: 0;
+      background: none;
+      color: #fff;
+      font-size: 21px;
       line-height: 1;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
       cursor: default;
-      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      pointer-events: none;
+      transition: transform 0.2s;
     }
     .spin2-tile.is-puffs {
-      color: var(--accent);
-      font-size: 17px;
+      color: #fff;
+      font-size: 20px;
       font-weight: 800;
     }
-    .spin2-tile.chosen {
-      border-color: var(--accent);
-      background: var(--primary);
-      color: #fff;
+    .spin2-wheel .spin2-tile.chosen {
+      background: none;
+      border: 0;
+      transform: translate(-50%, -50%) scale(1.35);
+    }
+    .spin-joint {
+      z-index: 1;
+    }
+    .spin2-wheel .spin-joint {
+      width: 46px;
+      height: 184px;
+      margin: -92px 0 0 -23px;
     }
     #spin2-btn {
       margin-top: 4px;
@@ -3483,14 +3501,30 @@
     .game-add {
       margin-top: 16px;
     }
+    /* Spillerne: én lige række med fast plads, så brættet ikke flytter sig */
     .spin2-players {
       display: flex;
-      flex-wrap: wrap;
       gap: 6px;
-      margin: 10px 0 0;
+      height: 38px;
+      margin: 10px -16px 0;
+      padding: 0 16px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
     }
-    .spin2-players:empty {
+    .spin2-players::-webkit-scrollbar {
       display: none;
+    }
+    .spin2-players .chip {
+      flex: none;
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 10px;
+      background: var(--card-2);
+      font-size: 14px;
+      font-weight: 600;
     }
     .spin-timer {
       margin-top: 14px;
@@ -3640,7 +3674,10 @@
       font-size: 13px;
     }
     .timer-ring.ready {
-      background: conic-gradient(#ffd166 360deg, var(--card-2) 0);
+      background: conic-gradient(#ffd166 calc(var(--p) * 360deg), var(--card-2) 0);
+    }
+    .timer-ring.puffing {
+      background: conic-gradient(#ff8a3d calc(var(--p) * 360deg), var(--card-2) 0);
     }
     .timer-ring.done {
       background: var(--primary);
@@ -5892,16 +5929,7 @@
               <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
             </form>
             <div class="spin-wheel" id="spin-wheel">
-              <svg class="spin-joint" id="spin-joint" viewBox="0 0 40 160" aria-hidden="true">
-                <defs>
-                  <radialGradient id="ember"><stop offset="0" stop-color="#ffd166"/><stop offset="0.5" stop-color="#ff7a3d"/><stop offset="1" stop-color="#ff7a3d" stop-opacity="0"/></radialGradient>
-                </defs>
-                <circle cx="20" cy="24" r="16" fill="url(#ember)"/>
-                <path d="M9 28 L31 28 L25 148 L15 148 Z" fill="#f4efe2"/>
-                <path d="M9 28 L31 28 L30.4 40 L9.6 40 Z" fill="#cfc6b0"/>
-                <rect x="15" y="128" width="10" height="20" rx="2" fill="#c9a26b"/>
-                <circle cx="20" cy="26" r="5" fill="#ff5c2b"/>
-              </svg>
+              <svg class="spin-joint" id="spin-joint" viewBox="0 0 40 160" aria-hidden="true"></svg>
               <p class="spin-empty" id="spin-empty" data-i18n="spin.empty">Tilføj spillere for at starte</p>
             </div>
             <div class="spin-card hidden" id="spin-card" aria-live="polite"></div>
@@ -5918,13 +5946,8 @@
             </form>
             <div class="spin2-players" id="spin2-players"></div>
             <div class="spin-wheel spin2-wheel" id="spin2-wheel">
-              <svg class="spin-joint" id="spin2-joint" viewBox="0 0 40 160" aria-hidden="true">
-                <circle cx="20" cy="24" r="16" fill="url(#ember)"/>
-                <path d="M9 28 L31 28 L25 148 L15 148 Z" fill="#f4efe2"/>
-                <path d="M9 28 L31 28 L30.4 40 L9.6 40 Z" fill="#cfc6b0"/>
-                <rect x="15" y="128" width="10" height="20" rx="2" fill="#c9a26b"/>
-                <circle cx="20" cy="26" r="5" fill="#ff5c2b"/>
-              </svg>
+              <svg class="spin-board" id="spin2-board" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+              <svg class="spin-joint" id="spin2-joint" viewBox="0 0 40 160" aria-hidden="true"></svg>
             </div>
             <div class="spin-card hidden" id="spin2-card" aria-live="polite"></div>
             <button type="button" class="btn-primary" id="spin2-btn" data-i18n="spin.spin">Snur jointen</button>
@@ -6899,6 +6922,9 @@
         "game.timerStart": "Start timer",
         "game.ready": "Klar…",
         "game.go": "Kør! 🔥",
+        "game.puff": "Tag et sug pr. sekund",
+        "game.puffUnit": "sug",
+        "game.hold": "Hold det inde!",
         "game.timerDone": "Tiden er gået!",
         "game.round": "Runde {n} af {total}",
         "game.hits": "⭐ {n} point",
@@ -7591,6 +7617,9 @@
         "game.timerStart": "Start timer",
         "game.ready": "Ready…",
         "game.go": "Go! 🔥",
+        "game.puff": "One puff per second",
+        "game.puffUnit": "puff",
+        "game.hold": "Hold it in!",
         "game.timerDone": "Time's up!",
         "game.round": "Round {n} of {total}",
         "game.hits": "⭐ {n} points",
@@ -11484,6 +11513,7 @@
       x510: {
         icon: "⏱️",
         timer: [10],
+        puffs: 5,
         hits: 7,
         da: { name: "5×10 sek", short: "5×10 sek", desc: "Tag 5 sug og hold det inde i 10 sekunder." },
         en: { name: "5×10 sec", short: "5×10 sec", desc: "Take 5 puffs and hold it in for 10 seconds." },
@@ -11525,6 +11555,7 @@
       x3102: {
         icon: "🔥",
         timer: [10, 10],
+        puffs: 3,
         noBreak: true,
         hits: 10,
         da: { name: "3×10×2", short: "3×10×2", desc: "Tag 3 sug og hold det inde i 10 sekunder. Tag så 3 sug mere og hold i 10 sekunder mere uden at puste ud." },
@@ -11593,6 +11624,7 @@
       x412: {
         icon: "⏱️",
         timer: [12],
+        puffs: 4,
         hits: 7,
         da: { name: "4×12 sek", short: "4×12 sek", desc: "Tag 4 sug og hold det inde i 12 sekunder." },
         en: { name: "4×12 sec", short: "4×12 sec", desc: "Take 4 puffs and hold it in for 12 seconds." },
@@ -11619,6 +11651,7 @@
         icon: "💀",
         type: "death",
         timer: [10],
+        puffs: 5,
         hits: 5,
         da: {
           name: "Dødsfeltet",
@@ -12143,6 +12176,133 @@
     // SPIN THE JOINT: jointen snurrer og peger på en spiller,
     // som trækker et kort med en udfordring
     // ==========================================================
+    // En realistisk joint: papir med skygge, brændende spids med aske og glød,
+    // en lille røgsky og et pap-filter i bunden. Spidsen peger opad (0 grader).
+    function jointArt(id) {
+      // Faste "tilfældige" tal, så jointen ser ens ud hver gang
+      let seed = 7;
+      const rnd = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+      // Urterne, der skinner igennem papiret (tættest ved den tykke ende)
+      const herbs = Array.from({ length: 70 }, () => {
+        const y = 38 + Math.pow(rnd(), 1.4) * 92;
+        const half = 11 - ((y - 30) / 120) * 5.2;
+        const x = 20 + (rnd() * 2 - 1) * (half - 1.2);
+        const colors = ["#4f6b2c", "#6b7f35", "#3e5523", "#7a6a3a", "#5c4a2a"];
+        return `<ellipse cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" rx="${(0.5 + rnd() * 1.1).toFixed(2)}" ry="${(0.4 + rnd() * 0.8).toFixed(2)}"
+          transform="rotate(${Math.round(rnd() * 180)} ${x.toFixed(2)} ${y.toFixed(2)})" fill="${colors[Math.floor(rnd() * colors.length)]}"/>`;
+      }).join("");
+      // Små gløder og sorte prikker i asken
+      const ashFlecks = Array.from({ length: 10 }, () => {
+        const x = 11 + rnd() * 18;
+        const y = 22.5 + rnd() * 7;
+        const hot = rnd() > 0.6;
+        return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${(0.2 + rnd() * 0.35).toFixed(2)}" fill="${hot ? "#ff8a3d" : "#3a3633"}" opacity="${hot ? 0.85 : 0.45}"/>`;
+      }).join("");
+      const body = "M9 31 C9.4 60 13.8 118 14.6 150 L25.4 150 C26.2 118 30.6 60 31 31 Z";
+      return `
+        <defs>
+          <clipPath id="${id}-body"><path d="${body}"/></clipPath>
+          <!-- Papirets struktur -->
+          <filter id="${id}-paper" x="0" y="0" width="1" height="1">
+            <feTurbulence type="fractalNoise" baseFrequency="1.4 0.35" numOctaves="3" seed="4" result="noise"/>
+            <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.42  0 0 0 0 0.38  0 0 0 0 0.3  0 0 0 0.32 -0.06" result="tint"/>
+            <feComposite in="tint" in2="SourceGraphic" operator="in" result="tex"/>
+            <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="tex"/></feMerge>
+          </filter>
+          <!-- Pappets struktur -->
+          <filter id="${id}-card" x="0" y="0" width="1" height="1">
+            <feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="2" seed="9" result="noise"/>
+            <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.35  0 0 0 0 0.24  0 0 0 0 0.12  0 0 0 0.45 -0.1" result="tint"/>
+            <feComposite in="tint" in2="SourceGraphic" operator="in" result="tex"/>
+            <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="tex"/></feMerge>
+          </filter>
+          <!-- Askens struktur -->
+          <filter id="${id}-ashTex" x="-0.1" y="-0.1" width="1.2" height="1.2">
+            <feTurbulence type="turbulence" baseFrequency="1.8" numOctaves="3" seed="2" result="noise"/>
+            <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.2  0 0 0 0 0.19  0 0 0 0 0.18  0 0 0 0.55 0" result="tint"/>
+            <feComposite in="tint" in2="SourceGraphic" operator="in" result="tex"/>
+            <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="tex"/></feMerge>
+          </filter>
+          <filter id="${id}-blur" x="-0.5" y="-0.5" width="2" height="2"><feGaussianBlur stdDeviation="0.45"/></filter>
+          <filter id="${id}-soft" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="1.4"/></filter>
+          <filter id="${id}-smoke" x="-2" y="-1" width="5" height="3"><feGaussianBlur stdDeviation="1.1"/></filter>
+          <!-- Rundt papir: mørkt i kanterne, lyst i midten -->
+          <linearGradient id="${id}-shade" x1="0" x2="1">
+            <stop offset="0" stop-color="#6e6556" stop-opacity="0.55"/><stop offset="0.18" stop-color="#6e6556" stop-opacity="0.12"/>
+            <stop offset="0.38" stop-color="#fff" stop-opacity="0.35"/><stop offset="0.55" stop-color="#fff" stop-opacity="0"/>
+            <stop offset="0.82" stop-color="#5f574a" stop-opacity="0.25"/><stop offset="1" stop-color="#4a4339" stop-opacity="0.65"/>
+          </linearGradient>
+          <linearGradient id="${id}-cardShade" x1="0" x2="1">
+            <stop offset="0" stop-color="#8a6537"/><stop offset="0.38" stop-color="#e3c595"/><stop offset="0.6" stop-color="#d2b07b"/><stop offset="1" stop-color="#7c5a30"/>
+          </linearGradient>
+          <linearGradient id="${id}-ash" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#d9d5ce"/><stop offset="0.6" stop-color="#a8a39b"/><stop offset="1" stop-color="#5e5a55"/>
+          </linearGradient>
+          <linearGradient id="${id}-ember" x1="0" x2="1">
+            <stop offset="0" stop-color="#7a1d0c"/><stop offset="0.25" stop-color="#ff5a14"/><stop offset="0.5" stop-color="#ffd27a"/>
+            <stop offset="0.75" stop-color="#ff5a14"/><stop offset="1" stop-color="#7a1d0c"/>
+          </linearGradient>
+          <linearGradient id="${id}-char" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1c120a"/><stop offset="0.45" stop-color="#5a3c22" stop-opacity="0.7"/><stop offset="1" stop-color="#b08a5a" stop-opacity="0"/>
+          </linearGradient>
+          <radialGradient id="${id}-glow">
+            <stop offset="0" stop-color="#ffb347" stop-opacity="0.8"/><stop offset="0.5" stop-color="#ff6a1f" stop-opacity="0.3"/>
+            <stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Røg -->
+        <g filter="url(#${id}-smoke)" fill="none" stroke-linecap="round">
+          <path d="M19 20 C15 14 24 10 19 3 C16 -1 21 -4 19 -8" stroke="#f2f2f2" stroke-width="2.4" opacity="0.28"/>
+          <path d="M22 19 C26 13 19 9 23 2" stroke="#e8e8e8" stroke-width="1.6" opacity="0.2"/>
+        </g>
+        <!-- Glød rundt om spidsen -->
+        <ellipse cx="20" cy="29" rx="16" ry="11" fill="url(#${id}-glow)"/>
+
+        <!-- Papir med urter, der skinner igennem -->
+        <path d="${body}" fill="#f4efe3" filter="url(#${id}-paper)"/>
+        <g clip-path="url(#${id}-body)">
+          <g filter="url(#${id}-blur)" opacity="0.4">${herbs}</g>
+          <!-- Limkanten, der snor sig rundt -->
+          <path d="M9 52 C16 64 24 74 31 84" stroke="#d8cfbd" stroke-width="2.2" fill="none" opacity="0.55"/>
+          <path d="M9 52 C16 64 24 74 31 84" stroke="#8c816c" stroke-width="0.35" fill="none" opacity="0.5"/>
+          <path d="M10 104 C15 112 21 120 28 128" stroke="#8c816c" stroke-width="0.3" fill="none" opacity="0.35"/>
+          <!-- Små krøller i papiret -->
+          <path d="M12 40 l4 1.2 M24 44 l4 -1 M15 92 l3 1 M22 70 l3.5 0.6" stroke="#7c725f" stroke-width="0.35" opacity="0.4"/>
+          <rect x="0" y="0" width="40" height="160" fill="url(#${id}-shade)"/>
+          <!-- Glans -->
+          <path d="M16 36 C16.4 70 17.3 110 17.8 126" stroke="#fff" stroke-width="1.2" opacity="0.55" filter="url(#${id}-blur)"/>
+        </g>
+
+        <!-- Pap-filteret -->
+        <g clip-path="url(#${id}-body)">
+          <rect x="0" y="126" width="40" height="26" fill="url(#${id}-cardShade)" filter="url(#${id}-card)"/>
+          <path d="M14 126.5 H26" stroke="#6b4a24" stroke-width="0.6" opacity="0.5"/>
+          <path d="M14 134 H26 M14 142 H26" stroke="#6b4a24" stroke-width="0.35" opacity="0.3"/>
+        </g>
+        <!-- Enden af filteret med den foldede zigzag -->
+        <ellipse cx="20" cy="150" rx="5.4" ry="1.6" fill="#c9a46d"/>
+        <path d="M15.6 150 l1.1 -0.9 l1.1 1.4 l1.1 -1.4 l1.1 1.4 l1.1 -1.4 l1.1 1.4 l1.1 -1.4 l1.1 0.9" fill="none" stroke="#6b4a24" stroke-width="0.4"/>
+
+        <!-- Forkullet papir under gløden -->
+        <path d="M8.9 31 L31.1 31 L30.9 41 Q27 38.5 24 40.5 Q20 38 16 40.8 Q12.5 38.6 9.1 40.5 Z" fill="url(#${id}-char)"/>
+        <!-- Gløden -->
+        <path d="M8.6 30 Q11 33.4 13.6 31.8 Q16.2 34.6 19.2 32.6 Q22.2 35 25.2 32.8 Q28.2 34.4 31.4 30 L31.2 33.2 Q28.2 36.6 25.2 35.2 Q22.2 37.4 19.2 35.4 Q16.2 37.2 13.6 35.2 Q11 36.6 8.8 33.2 Z"
+          fill="url(#${id}-ember)"/>
+        <path d="M10 33.6 Q15 36 20 34.6 Q25 36 30 33.6" fill="none" stroke="#ffe3a3" stroke-width="0.6" opacity="0.85" filter="url(#${id}-blur)"/>
+        <ellipse cx="20" cy="32.5" rx="12" ry="3.4" fill="#ff7a2e" opacity="0.45" filter="url(#${id}-soft)"/>
+        <!-- Asken -->
+        <path d="M8.5 30.6 C8.4 27 9.6 24.6 11.6 23.4 C12.6 21.8 14.6 21.6 15.8 22.6 C17 20.6 19.6 20.4 21 21.8 C22.6 20.6 25.2 21 26.2 22.8 C28.6 23.4 30.6 26 31.5 30.6 Q20 33.2 8.5 30.6 Z"
+          fill="url(#${id}-ash)" filter="url(#${id}-ashTex)"/>
+        <path d="M11 25 Q14 23.6 16.5 24.8 M19 23.4 Q22.5 22.6 25.5 24.4 M12.5 28.4 Q20 29.8 28.8 27.8" fill="none" stroke="#7a756e" stroke-width="0.45" opacity="0.7"/>
+        ${ashFlecks}`;
+    }
+    document.getElementById("spin-joint").innerHTML = jointArt("j1");
+    document.getElementById("spin2-joint").innerHTML = jointArt("j2");
+
     const spinPlayers = [];
     const spinForm = document.getElementById("spin-form");
     const spinCircle = document.getElementById("spin-wheel");
@@ -12278,8 +12438,41 @@
       renderSpin2();
     }
 
+    // Hvert felt har en farve, der passer til ikonet
+    const SPIN_COLORS = {
+      s1: "#2f7d4f", s2: "#2a7048", s3: "#256341", s4: "#205739", s5: "#1b4a31",
+      turtle: "#4a8a3c", tornado: "#5b6b7d", x510: "#c2453b", x412: "#b03a46", x3102: "#d9662b",
+      bobLong: "#c9a227", bobShort: "#2e8b57", lung: "#c25b7a", lung2: "#b04d6c", lung3: "#9c4060",
+      diy: "#d4a017", diy2: "#b8860b", chimney: "#6b6f76", pass: "#c27a35",
+    };
+
+    // Lykkehjulet: et farvet felt pr. straf, så man tydeligt kan se, hvor jointen lander
+    function renderSpin2Board(chosen) {
+      const n = spin2Tiles.length;
+      const step = 360 / n;
+      const point = (deg, r) => {
+        const a = ((deg - 90) * Math.PI) / 180;
+        return `${(r * Math.cos(a)).toFixed(2)} ${(r * Math.sin(a)).toFixed(2)}`;
+      };
+      const slices = spin2Tiles.map((id, i) => {
+        const a0 = i * step - step / 2;
+        const a1 = i * step + step / 2;
+        const color = SPIN_COLORS[id] || "#555";
+        const dim = chosen >= 0 && i !== chosen;
+        return `<path d="M${point(a0, 34)} L${point(a0, 99)} A99 99 0 0 1 ${point(a1, 99)} L${point(a1, 34)} A34 34 0 0 0 ${point(a0, 34)} Z"
+          fill="${color}" opacity="${dim ? 0.35 : 1}" stroke="#0b0c0b" stroke-width="1.2" ${i === chosen ? 'class="hit"' : ""}/>`;
+      }).join("");
+      document.getElementById("spin2-board").innerHTML = `
+        <circle r="99.5" fill="#0b0c0b"/>
+        ${slices}
+        <circle r="99" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+        <circle r="34" fill="#141614" stroke="#0b0c0b" stroke-width="2"/>
+        <circle r="34" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+    }
+
     function renderSpin2(chosen = -1) {
       const n = spin2Tiles.length;
+      renderSpin2Board(chosen);
       spin2Circle.querySelectorAll(".spin-name").forEach((el) => el.remove());
       spin2Tiles.forEach((id, i) => {
         const angle = (i / n) * 2 * Math.PI - Math.PI / 2;
@@ -12287,8 +12480,8 @@
         // Samme ikoner som på brættet i Game of Joints; tal (antal sug) står i grønt
         el.className = `spin-name spin2-tile ${/^\d+$/.test(TILES[id].icon) ? "is-puffs" : ""} ${i === chosen ? "chosen" : ""}`;
         el.dataset.index = i;
-        el.style.left = `${50 + 42 * Math.cos(angle)}%`;
-        el.style.top = `${50 + 42 * Math.sin(angle)}%`;
+        el.style.left = `${50 + 40 * Math.cos(angle)}%`;
+        el.style.top = `${50 + 40 * Math.sin(angle)}%`;
         el.textContent = TILES[id].icon;
         el.title = tileText(id).name;
         spin2Circle.appendChild(el);
@@ -12323,7 +12516,7 @@
       spin2Btn.dataset.spinning = "1";
       spin2Btn.disabled = true;
       spin2Card.classList.add("hidden");
-      spin2Circle.querySelectorAll(".spin-name").forEach((el) => el.classList.remove("chosen"));
+      renderSpin2();
 
       const n = spin2Tiles.length;
       const pick = Math.floor(Math.random() * n);
@@ -12369,7 +12562,7 @@
       return `
         <div class="timer-ring" id="timer-ring" style="--p:1">
           <b id="timer-num">${seconds}</b>
-          <small>${t("game.seconds")}</small>
+          <small id="timer-unit">${t("game.seconds")}</small>
         </div>`;
     }
 
@@ -12402,22 +12595,43 @@
       const roundEl = root.querySelector("#timer-round");
       const ring = root.querySelector("#timer-ring");
       button.disabled = true;
+      const unit = root.querySelector("#timer-unit");
       for (let r = 0; r < rounds.length; r++) {
         if (rounds.length > 1) roundEl.textContent = t("game.round", { n: r + 1, total: rounds.length });
-        // 3-2-1, så man kan nå at gøre klar (ikke midt i 3×10×2)
-        ring.classList.add("ready");
-        for (let c = r > 0 && tile.noBreak ? 0 : 3; c > 0; c--) {
-          if (token !== timerToken) return;
-          setTimerRing(1, c);
+        // 1. Klar: 3 sekunder (ikke midt i 3×10×2)
+        if (!(r > 0 && tile.noBreak)) {
+          ring.classList.add("ready");
+          unit.textContent = t("game.seconds");
           button.textContent = t("game.ready");
-          await wait(800);
+          for (let c = 3; c > 0; c--) {
+            if (token !== timerToken) return;
+            setTimerRing(c / 3, c);
+            await wait(1000);
+          }
+          ring.classList.remove("ready");
         }
-        ring.classList.remove("ready");
-        button.textContent = t("game.go");
+        // 2. Sugene: 1 sekund pr. sug (det første tal, fx 4 i 4×12)
+        if (tile.puffs) {
+          ring.classList.add("puffing");
+          unit.textContent = t("game.puffUnit");
+          button.textContent = t("game.puff");
+          for (let k = 1; k <= tile.puffs; k++) {
+            if (token !== timerToken) return;
+            setTimerRing(k / tile.puffs, k);
+            vibrate(40);
+            await wait(1000);
+          }
+          ring.classList.remove("puffing");
+        }
+        // 3. Hold det inde (eller selve suget på fx Skildpadde)
+        if (token !== timerToken) return;
+        unit.textContent = t("game.seconds");
+        button.textContent = t(tile.puffs ? "game.hold" : "game.go");
         vibrate(60);
         if (!(await countdown(rounds[r], token))) return;
         vibrate([200, 80, 200]);
       }
+      unit.textContent = "";
       setTimerRing(0, "✓");
       ring.classList.add("done");
       button.textContent = t("game.timerDone");
