@@ -5134,9 +5134,6 @@
     .rank-ladder li .rank-emb {
       filter: none;
     }
-    .person-stats {
-      grid-template-columns: repeat(4, 1fr);
-    }
     .person-stats button:disabled {
       opacity: 1;
       cursor: default;
@@ -6090,6 +6087,10 @@
         <span data-i18n="ai.grams">Hvor meget i alt? (gram)</span>
         <input type="text" name="grams" inputmode="decimal" data-i18n-ph="ai.gramsPh" placeholder="Fx 0,5">
       </label>
+      <label class="field">
+        <span data-i18n="ai.spent">Hvad kostede det? (kr, valgfrit)</span>
+        <input type="text" name="spent" inputmode="decimal" data-i18n-ph="ai.spentPh" placeholder="Fx 100">
+      </label>
       <div class="field">
         <span><span data-i18n="ai.high">Hvor skæv blev du?</span> <b id="log-high-value"></b></span>
         <input type="range" name="high" min="1" max="10" value="5" class="range">
@@ -6427,6 +6428,9 @@
         "ai.date": "Dato",
         "ai.times": "Hvor mange gange røg du?",
         "ai.grams": "Hvor meget i alt? (gram)",
+        "ai.spent": "Hvad kostede det? (kr, valgfrit)",
+        "ai.spentPh": "Fx 100",
+        "ai.errSpent": "Skriv beløbet i kroner, fx 100",
         "ai.gramsPh": "Fx 0,5",
         "ai.high": "Hvor skæv blev du?",
         "ai.methodLabel": "Hvordan?",
@@ -7000,7 +7004,8 @@
         "stats.sessions": "Gange røget",
         "stats.days": "Dage med smoke",
         "stats.daysOf": "af {n}",
-        "stats.avgHigh2": "Snit skæv",
+        "stats.avgHigh2": "Gennemsnitlig skævhed",
+        "stats.spent": "Penge brugt",
         "stats.more": "↑ {pct}% flere gram end perioden før",
         "stats.less": "↓ {pct}% færre gram end perioden før",
         "stats.same": "Samme mængde som perioden før",
@@ -7079,6 +7084,9 @@
         "ai.date": "Date",
         "ai.times": "How many times did you smoke?",
         "ai.grams": "How much in total? (grams)",
+        "ai.spent": "What did it cost? (kr, optional)",
+        "ai.spentPh": "E.g. 100",
+        "ai.errSpent": "Enter the amount in kroner, e.g. 100",
         "ai.gramsPh": "E.g. 0.5",
         "ai.high": "How high did you get?",
         "ai.methodLabel": "How?",
@@ -9135,9 +9143,7 @@
       const mine = p.id === currentUserKey();
       document.getElementById("puploads-back").textContent = mine ? t("back.profile") : `‹ ${p.name}`;
       document.getElementById("puploads-title").textContent = mine ? t("up.mine") : t("up.of", { name: p.name });
-      if (!mine && uploadTab === "spots") uploadTab = "posts";
       document.querySelectorAll("[data-up-tab]").forEach((b) => {
-        b.classList.toggle("hidden", !mine && b.dataset.upTab === "spots");
         const n = personUploads ? personUploads[b.dataset.upTab].length : 0;
         b.classList.toggle("active", b.dataset.upTab === uploadTab);
         b.textContent = `${t("up." + b.dataset.upTab)} (${n})`;
@@ -9274,7 +9280,6 @@
       if (relation === "friend") {
         actions = `
           <button type="button" class="btn-primary" data-action="chat">${icon("chat")} ${t("chat.write")}</button>
-          <button type="button" class="btn-plain" disabled>${t("friends.isFriend")}</button>
           <button type="button" class="link-btn danger" data-action="remove">${t("friends.remove")}</button>`;
       } else if (relation === "incoming") {
         actions = `
@@ -9312,6 +9317,7 @@
             </div>` : ""}
           <div class="me-stats person-stats">
             <button type="button" data-action="friends" ${Array.isArray(personFriends) ? "" : "disabled"}><strong>${friendsN}</strong><span>${t("profile.friends")}</span></button>
+            <button type="button" data-action="tab" data-tab="spots"><strong>${up ? up.spots.length : "…"}</strong><span>${t("up.spots")}</span></button>
             <button type="button" data-action="tab" data-tab="posts"><strong>${up ? up.posts.length : "…"}</strong><span>${t("up.posts")}</span></button>
             <button type="button" data-action="tab" data-tab="rolls"><strong>${up ? up.rolls.length : "…"}</strong><span>Rolls</span></button>
             <button type="button" data-action="tab" data-tab="munchies"><strong>${up ? up.munchies.length : "…"}</strong><span>Munchies</span></button>
@@ -12130,7 +12136,7 @@
     function renderLogForm() {
       document.getElementById("log-times").textContent = logTimes;
       const high = Number(logForm.elements.high.value);
-      document.getElementById("log-high-value").textContent = `${HIGH_EMOJI[high - 1]} ${high}/10`;
+      document.getElementById("log-high-value").textContent = `${high}/10`;
       renderChoice("log-methods", METHODS, logMethod, "ai.method.");
       renderChoice("log-products", PRODUCTS, logProduct, "ai.product.");
       logForm.elements.date.max = todayISO();
@@ -12175,7 +12181,12 @@
     logForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       clearErrors(logForm);
-      const { date, time, grams, high, thc } = logForm.elements;
+      const { date, time, grams, high, thc, spent } = logForm.elements;
+      const spentValue = spent.value.trim() ? Number(String(spent.value).replace(",", ".")) : 0;
+      if (spent.value.trim() && !(spentValue >= 0 && spentValue < 100000)) {
+        markInvalid(spent);
+        return setError(logForm, t("ai.errSpent"));
+      }
       const gramValue = Number(String(grams.value).replace(",", "."));
       if (!date.value) return setError(logForm, t("ai.errDate"));
       const at = new Date(`${date.value}T${time.value || "12:00"}`).getTime();
@@ -12202,6 +12213,7 @@
           method: logMethod,
           product: logProduct,
           thc: thcValue && thcValue > 0 && thcValue <= 100 ? thcValue : null,
+          spent: spentValue > 0 ? spentValue : null,
           createdAt: Date.now(),
         });
         closeSheet();
@@ -12892,22 +12904,12 @@
       const span = statsPeriod || Math.max(1, Math.round((today - first) / DAY) + 1);
       const from = today - (span - 1) * DAY;
       const list = logEntries.filter((e) => entryTime(e) >= from);
-      const prev = logEntries.filter((e) => entryTime(e) >= from - span * DAY && entryTime(e) < from);
 
       // Nøgletal
-      const grams = sum(list, "grams");
       const sessions = sum(list, "times");
       const smokeDays = new Set(list.map((e) => dayStart(entryTime(e)))).size;
       const avgHigh = list.length ? sum(list, "high") / list.length : 0;
       const fmt = (n) => n.toLocaleString(t("locale"), { maximumFractionDigits: 1 });
-      let change = "";
-      const prevGrams = sum(prev, "grams");
-      if (statsPeriod && prevGrams > 0) {
-        const pct = Math.round(((grams - prevGrams) / prevGrams) * 100);
-        change = pct === 0
-          ? `<p class="stats-change">${t("stats.same")}</p>`
-          : `<p class="stats-change ${pct > 0 ? "up" : "down"}">${t(pct > 0 ? "stats.more" : "stats.less", { pct: Math.abs(pct) })}</p>`;
-      }
 
       // Graf: gram pr. dag (7 og 30 dage) eller pr. uge (alt)
       let chart;
@@ -12955,13 +12957,11 @@
             `<button type="button" class="seg-btn ${statsPeriod === n ? "active" : ""}" data-period="${n}">${t(key)}</button>`).join("")}
         </div>
         <div class="stat-tiles">
-          <div class="card"><span>${t("stats.grams")}</span><strong>${formatGrams(grams)} g</strong></div>
+          <div class="card"><span>${t("stats.spent")}</span><strong>${Math.round(sum(list, "spent")).toLocaleString(t("locale"))} kr</strong></div>
           <div class="card"><span>${t("stats.sessions")}</span><strong>${sessions}</strong></div>
           <div class="card"><span>${t("stats.days")}</span><strong>${smokeDays} <small>${t("stats.daysOf", { n: span })}</small></strong></div>
-          <div class="card"><span>${t("stats.avgHigh2")}</span><strong>${HIGH_EMOJI[Math.max(0, Math.round(avgHigh) - 1)]} ${fmt(avgHigh)}</strong></div>
+          <div class="card"><span>${t("stats.avgHigh2")}</span><strong>${fmt(avgHigh)}<small>/10</small></strong></div>
         </div>
-        ${change}
-        ${moneyHTML(grams, span)}
         ${chart}
         <div class="card habits">
           <h3>${t("stats.habits")}</h3>
@@ -12973,43 +12973,9 @@
               <small>${fav.pct}%</small>
             </div>`).join("")}
         </div>
-        ${driveCardHTML()}
-        <div class="card price-card">
-          <h3>${t("money.price")}</h3>
-          <div class="price-row">
-            <input type="text" inputmode="decimal" data-price value="${esc(aiProfile.price || "")}" placeholder="80">
-            <span>${t("money.perGram")}</span>
-          </div>
-          <p class="muted">${t("money.help")}</p>
-        </div>`;
+        ${driveCardHTML()}`;
       renderLogList();
     }
-
-    // Hvad man har brugt i perioden (kræver en gram-pris)
-    function moneyHTML(grams, span) {
-      const price = Number(String(aiProfile.price || "").replace(",", "."));
-      if (!price) return "";
-      const spent = grams * price;
-      const perWeek = (spent / span) * 7;
-      const perMonth = (spent / span) * 30;
-      const kr = (n) => Math.round(n).toLocaleString(t("locale"));
-      return `
-        <div class="stat-tiles money">
-          <div class="card"><span>${t("money.spent")}</span><strong>${kr(spent)} kr</strong></div>
-          <div class="card"><span>${t("money.avg")}</span><strong>${kr(perWeek)} <small>kr/${t("money.week")}</small></strong><small class="muted">${kr(perMonth)} kr/${t("money.month")}</small></div>
-        </div>`;
-    }
-
-    statsEl.addEventListener("change", (e) => {
-      const input = e.target.closest("[data-price]");
-      if (!input) return;
-      const value = String(input.value).replace(",", ".").trim();
-      if (value && !(Number(value) > 0 && Number(value) < 10000)) return showToast(t("money.err"));
-      aiProfile.price = value;
-      renderStats();
-      renderTBreakMode();
-      logsDoc().set({ profile: { price: value } }, { merge: true }).catch((error) => showToast(dbErrorText(error)));
-    });
 
     // Tryk eller peg på en søjle/et punkt for at se tallet
     statsEl.addEventListener("click", (e) => {
@@ -13051,10 +13017,10 @@
           ${entry.photo ? `<img class="log-photo" src="${esc(entry.photo)}" alt="">` : ""}
           <div class="log-main">
             <strong>${formatDate(entryTime(entry))}${entry.time ? ` · ${esc(entry.time)}` : ""}</strong>
-            <small>${t(entry.times === 1 ? "ai.times1" : "ai.timesN", { n: entry.times })} · ${formatGrams(entry.grams)} g · ${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}</small>
+            <small>${t(entry.times === 1 ? "ai.times1" : "ai.timesN", { n: entry.times })} · ${formatGrams(entry.grams)} g${entry.spent ? ` · ${Math.round(entry.spent)} kr` : ""} · ${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}</small>
             ${entry.note ? `<small class="log-note">${esc(entry.note)}</small>` : ""}
           </div>
-          <span class="log-high">${HIGH_EMOJI[(entry.high || 1) - 1]} ${entry.high}/10</span>
+          <span class="log-high">${entry.high}/10</span>
           <button type="button" class="log-delete" data-delete-log="${esc(entry.id)}" aria-label="${t("forum.delete")}">✕</button>
         </div>`).join("");
     }
@@ -13882,10 +13848,8 @@
 
     // Hvad man plejer at bruge pr. dag (30 dage før pausen)
     function dailySpend(before = Date.now()) {
-      const price = Number(aiProfile.price) || 0;
-      if (!price) return 0;
       const list = logEntries.filter((e) => entryTime(e) < before && entryTime(e) >= before - 30 * DAY);
-      return (list.reduce((s, e) => s + (Number(e.grams) || 0), 0) * price) / 30;
+      return list.reduce((s, e) => s + (Number(e.spent) || 0), 0) / 30;
     }
 
     function renderTBreakMode() {
