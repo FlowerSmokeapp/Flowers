@@ -4982,6 +4982,134 @@
       font-size: 16px;
       line-height: 1.4;
     }
+
+    /* ---------- Rent look: ensfarvede ikoner ---------- */
+    .ic {
+      width: 1.1em;
+      height: 1.1em;
+      vertical-align: -0.18em;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .home-btn span .ic,
+    .log-cta-icon .ic {
+      width: 24px;
+      height: 24px;
+    }
+    .home-btn span {
+      color: var(--accent);
+    }
+    .log-cta-icon {
+      color: #fff;
+    }
+    .home-streak {
+      color: var(--accent);
+    }
+    .habit-icon {
+      color: var(--accent);
+    }
+    .notif-row .avatar .ic {
+      width: 20px;
+      height: 20px;
+    }
+    /* Emojis, der er tilbage (ranks, badges og guides), vises uden farve */
+    .rank-icon,
+    .mini-rank,
+    .rank-badge,
+    .rank-ladder li > span,
+    .badge-row span,
+    .badge-item span,
+    .guide-icon {
+      filter: grayscale(1) brightness(1.15);
+    }
+    :root[data-theme="light"] .rank-icon,
+    :root[data-theme="light"] .mini-rank,
+    :root[data-theme="light"] .rank-badge,
+    :root[data-theme="light"] .rank-ladder li > span,
+    :root[data-theme="light"] .badge-row span,
+    :root[data-theme="light"] .badge-item span,
+    :root[data-theme="light"] .guide-icon {
+      filter: grayscale(1) contrast(1.1);
+    }
+
+    /* ---------- Min profil ---------- */
+    .me-card {
+      text-align: left;
+    }
+    .me-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .avatar.avatar-md2 {
+      flex: none;
+      width: 76px;
+      height: 76px;
+      margin: 0;
+      font-size: 30px;
+      border: 2px solid var(--primary);
+    }
+    .me-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .me-info h2 {
+      margin-bottom: 2px;
+      font-size: 22px;
+      overflow-wrap: anywhere;
+    }
+    .me-info .muted {
+      font-size: 13px;
+    }
+    .me-info .bio {
+      margin-top: 6px;
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: left;
+    }
+    .me-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      margin: 18px 0 14px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .me-stats > * {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--text);
+      font: inherit;
+      text-align: center;
+    }
+    .me-stats button {
+      cursor: pointer;
+    }
+    .me-stats strong {
+      font-size: 19px;
+      font-variant-numeric: tabular-nums;
+    }
+    .me-stats span {
+      max-width: 100%;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .badge-none {
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
@@ -5297,7 +5425,7 @@
             <h1 class="page-title">Games of Joints</h1>
             <!-- Aftenens spil: skifter hver dag, de andre kan stadig vælges -->
             <button type="button" class="tonight" id="tonight" data-go="game">
-              <small>🌙 <span data-i18n="tonight.label">Aftenens spil</span></small>
+              <small><svg class="ic" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/></svg> <span data-i18n="tonight.label">Aftenens spil</span></small>
               <strong id="tonight-name"></strong>
               <span class="muted" id="tonight-text"></span>
               <span class="tonight-play" data-i18n="tonight.play">Spil nu ›</span>
@@ -5576,19 +5704,19 @@
           </header>
 
           <button type="button" class="log-cta" data-shortcut="log">
-            <span class="log-cta-icon" aria-hidden="true">🌿</span>
+            <span class="log-cta-icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19l8-8"/></svg></span>
             <span>
               <strong data-i18n="home.logCta">Log en smoke</strong>
             </span>
           </button>
           <div class="home-row">
-            <button type="button" class="home-btn" id="sesh-btn"><span>🔥</span><strong data-i18n="sesh.btn">Hvem er klar?</strong></button>
+            <button type="button" class="home-btn" id="sesh-btn"><span><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21.5 19"/></svg></span><strong data-i18n="sesh.btn">Hvem er klar?</strong></button>
             <button type="button" class="home-btn" id="smoking-btn"></button>
           </div>
           <div class="card tbreak-card hidden" id="tbreak-card"></div>
           <div class="card challenge-card" id="challenge-card"></div>
           <div class="card sesh-card hidden" id="sesh-card">
-            <h3>🔥 <span data-i18n="sesh.title">Seshs</span></h3>
+            <h3 data-i18n="sesh.title">Seshs</h3>
             <div id="sesh-list"></div>
           </div>
           <!-- Installer som app (vises kun i browseren) -->
@@ -5675,6 +5803,7 @@
               <button type="button" class="seg-btn active" data-up-tab="posts">Opslag</button>
               <button type="button" class="seg-btn" data-up-tab="rolls">Rolls</button>
               <button type="button" class="seg-btn" data-up-tab="munchies">Munchies</button>
+              <button type="button" class="seg-btn" data-up-tab="spots">Spots</button>
             </div>
             <div id="puploads-list" class="feed"></div>
           </div>
@@ -5707,13 +5836,21 @@
             <h1 class="page-title" data-i18n="nav.profile">Profil</h1>
             <button type="button" class="icon-btn" id="open-settings" data-i18n-aria="settings.title" aria-label="Indstillinger"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
           </div>
-          <div class="card profile-card">
-            <div class="avatar avatar-lg" id="avatar"></div>
-            <h2 id="profile-name"></h2>
-            <p class="muted" id="profile-since"></p>
-            <p class="bio" id="profile-bio"></p>
-            <div class="stats single">
-              <button type="button" class="stat-btn" id="stat-friends-btn"><strong id="stat-friends">0</strong><span data-i18n="profile.friends">Venner</span></button>
+          <div class="card profile-card me-card">
+            <div class="me-head">
+              <div class="avatar avatar-md2" id="avatar"></div>
+              <div class="me-info">
+                <h2 id="profile-name"></h2>
+                <p class="muted" id="profile-since"></p>
+                <p class="bio" id="profile-bio"></p>
+              </div>
+            </div>
+            <div class="me-stats">
+              <button type="button" id="stat-friends-btn"><strong id="stat-friends">0</strong><span data-i18n="profile.friends">Venner</span></button>
+              <button type="button" data-my-tab="spots"><strong id="stat-spots">0</strong><span data-i18n="up.spots">Spots</span></button>
+              <button type="button" data-my-tab="posts"><strong id="stat-posts">0</strong><span data-i18n="up.posts">Opslag</span></button>
+              <button type="button" data-my-tab="rolls"><strong id="stat-rolls">0</strong><span>Rolls</span></button>
+              <button type="button" data-my-tab="munchies"><strong id="stat-munchies">0</strong><span>Munchies</span></button>
             </div>
             <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
           </div>
@@ -5728,8 +5865,8 @@
             <div class="card">
               <h3 data-i18n="profile.language">Sprog</h3>
               <div class="lang-toggle">
-                <button type="button" data-lang="da">🇩🇰 Dansk</button>
-                <button type="button" data-lang="en">🇬🇧 English</button>
+                <button type="button" data-lang="da">Dansk</button>
+                <button type="button" data-lang="en">English</button>
               </div>
             </div>
             <div class="card">
@@ -6104,7 +6241,7 @@
         "locale": "da-DK",
         "hb.pause": "T-Break beregner",
         "hb.stats": "Statistik",
-        "home.logTitle": "🌿 Log en smoke",
+        "home.logTitle": "Log en smoke",
         "home.logCta": "Log en smoke",
         "ai.intro": "Beregneren bruger dine registreringer fra \"Log en smoke\" til at regne din tolerance ud, og hvornår en pause giver mest mening for dig.",
         "ai.time": "Klokken",
@@ -6123,7 +6260,7 @@
         "drive.usage.occasional": "Du ryger sjældent, så estimatet er mindst 2 døgn (3 døgn efter koncentrat eller spiseligt).",
         "drive.usage.regular": "Du ryger flere gange om ugen, så THC kan blive i blodet i mindst en uge.",
         "drive.usage.daily": "Du ryger næsten dagligt, så THC kan blive i blodet i op til flere uger.",
-        "drive.warning": "⚠️ Kun et groft estimat, ingen garanti. I Danmark er der nultolerance for THC i blodet, og hvor længe det kan spores, er forskelligt fra person til person. Er du i tvivl, så lad bilen stå.",
+        "drive.warning": "Kun et groft estimat, ingen garanti. I Danmark er der nultolerance for THC i blodet, og hvor længe det kan spores, er forskelligt fra person til person. Er du i tvivl, så lad bilen stå.",
         "stats.emptyTitle": "Ingen statistik endnu",
         "stats.emptyText": "Når du har logget dine smokes, ser du grafer over hvor meget og hvor ofte, og hvor længe du bør vente, før du kører bil.",
         "stats.week": "Gram de sidste 7 dage",
@@ -6144,7 +6281,7 @@
         "onb.photo": "Tryk på cirklen for at vælge et profilbillede",
         "onb.save": "Gem og fortsæt",
         "onb.errEmpty": "Vælg et profilbillede eller skriv en bio",
-        "onb.welcome": "Velkommen, {name} 🌿",
+        "onb.welcome": "Velkommen, {name}",
         "ai.date": "Dato",
         "ai.times": "Hvor mange gange røg du?",
         "ai.grams": "Hvor meget i alt? (gram)",
@@ -6154,7 +6291,7 @@
         "ai.productLabel": "Hvad?",
         "ai.thc": "THC % (hvis du ved det)",
         "ai.thcPh": "Valgfrit",
-        "ai.saved": "Registreringen er gemt ✅",
+        "ai.saved": "Registreringen er gemt",
         "ai.errDate": "Vælg en dato",
         "ai.errGrams": "Skriv hvor mange gram, fx 0,5",
         "ai.method.joint": "Joint",
@@ -6199,12 +6336,12 @@
         "ai.myLogs": "Dine registreringer",
         "tb.emptyTitle": "Ingen registreringer endnu",
         "tb.emptyText": "Log dine smokes, så regner modellen ud, hvor høj din tolerance er, og hvornår en pause giver mest mening.",
-        "tb.headNone": "Din tolerance er lav. Ingen pause nødvendig lige nu 🌱",
+        "tb.headNone": "Din tolerance er lav. Ingen pause nødvendig lige nu",
         "tb.headToday": "Start en pause på {n} dage i dag",
         "tb.headDay": "Start en pause på {n} dage på {day}",
         "tb.headKeep": "Stærkt! {days} dage uden. Hold {n} dage mere",
         "tb.headKeep1": "Stærkt! {days} dage uden. Hold 1 dag mere",
-        "tb.headDone": "Din tolerance er nulstillet 🎉",
+        "tb.headDone": "Din tolerance er nulstillet",
         "tb.freq": "Du har røget {n} af de sidste 14 dage.",
         "tb.dose": "På en dag, hvor du ryger, optager kroppen ca. {mg} mg THC.",
         "tb.potent": "Mange af dine registreringer er hash eller koncentrat, som bygger tolerance hurtigere op.",
@@ -6247,7 +6384,7 @@
         "tb.updated": "Opdateres automatisk, hver gang du logger en smoke.",
         "rank.level": "Level {n} af 8",
         "rank.next": "{xp} XP · {need} XP til {name}",
-        "rank.max": "{xp} XP · Du har nået den højeste rank 👑",
+        "rank.max": "{xp} XP · Du har nået den højeste rank",
         "rank.help": "Jo mere du ryger, jo højere rank. Hver registrering giver 10 XP + 5 XP for hver gang + 10 XP pr. gram. Men du mister XP hver dag, og jo højere rank du har, jo mere mister du. Så du skal være mere aktiv for at holde en høj rank.",
         "rank.decay": "Du mister {n} XP om dagen på din rank",
         "rank.day": "dag",
@@ -6316,7 +6453,7 @@
         "munch.newTitle": "Del dine munchies",
         "munch.note": "Vis hvad du snacker på, og giv de andres munchies et like",
         "munch.errPhoto": "Tilføj et billede af dine munchies",
-        "munch.posted": "Dine munchies er delt 🍕",
+        "munch.posted": "Dine munchies er delt",
         "munch.empty": "Ingen munchies endnu. Del de første!",
         "munch.confirmDelete": "Vil du slette billedet?",
         "munch.deleted": "Billedet er slettet",
@@ -6355,7 +6492,7 @@
         "forum.deleted": "Opslaget er slettet",
         "forum.justNow": "lige nu",
         "diary.new": "＋ Nyt opslag",
-        "diary.addPhoto": "📷 Tilføj billede",
+        "diary.addPhoto": "Tilføj billede",
         "diary.text": "Tekst",
         "diary.textPh": "Hvad røg du, hvor og med hvem?",
         "diary.rating": "Rating",
@@ -6393,7 +6530,7 @@
         "err.nameMissing": "Skriv dit smoker name",
         "err.pwMissing": "Skriv din adgangskode",
         "err.wrongLogin": "Forkert smoker name eller adgangskode",
-        "toast.signedUp": "Konto oprettet 🎉",
+        "toast.signedUp": "Konto oprettet",
         "toast.loggedIn": "Du er logget ind",
         "toast.loggedOut": "Du er logget ud",
         "toast.soon": "Kommer snart",
@@ -6430,7 +6567,7 @@
         "roll.newTitle": "Del din roll",
         "roll.note": "Del et billede af din joint, og lad de andre rate den",
         "roll.errPhoto": "Tilføj et billede af din joint",
-        "roll.posted": "Din roll er delt 🌿",
+        "roll.posted": "Din roll er delt",
         "roll.empty": "Ingen rolls endnu. Del den første!",
         "roll.new": "Ny",
         "roll.yourRating": "Din rating",
@@ -6449,7 +6586,7 @@
         "map.empty": "Ingen smoke spots endnu. Sæt det første på kortet!",
         "map.placeHint": "Tryk på kortet, hvor dit smoke spot er",
         "map.add": "Tilføj smoke spot",
-        "map.noInternet": "Kortet kræver internetforbindelse 🌐",
+        "map.noInternet": "Kortet kræver internetforbindelse",
         "map.notLoaded": "Kortet er ikke indlæst",
         "map.noLocation": "Kan ikke finde din placering",
         "db.noConnection": "Kunne ikke forbinde til databasen",
@@ -6459,7 +6596,7 @@
         "pin.new": "Ny",
         "stars": "{n} stjerner",
         "bench.new": "Nyt smoke spot",
-        "bench.addPhoto": "📷 Tilføj billede af stedet",
+        "bench.addPhoto": "Tilføj billede af stedet",
         "bench.name": "Navn på stedet",
         "bench.namePh": "Fx Udsigten ved søen",
         "bench.why": "Hvorfor er det fedt?",
@@ -6471,19 +6608,19 @@
         "bench.errPhoto": "Tilføj et billede af stedet",
         "bench.errName": "Giv stedet et navn",
         "bench.errSave": "Smoke spottet kunne ikke gemmes. Tjek din internetforbindelse.",
-        "bench.added": "Smoke spottet er sat på kortet 📍",
+        "bench.added": "Smoke spottet er sat på kortet",
         "bench.addedBy": "Tilføjet af {name} · {date}",
         "bench.rating1": "bedømmelse",
         "bench.ratingN": "bedømmelser",
-        "bench.showOnMap": "📍 Vis på kortet",
+        "bench.showOnMap": "Vis på kortet",
         "bench.delete": "Slet smoke spot",
         "bench.confirmDelete": "Vil du slette dette smoke spot?",
         "bench.deleted": "Smoke spottet er slettet",
         "bench.deleteFailed": "Smoke spottet kunne ikke slettes",
         "bench.gone": "Smoke spottet findes ikke længere.",
         "bench.photoAlt": "Billede af {name}",
-        "bench.rated1": "Du gav 1 stjerne ⭐",
-        "bench.ratedN": "Du gav {n} stjerner ⭐",
+        "bench.rated1": "Du gav 1 stjerne",
+        "bench.ratedN": "Du gav {n} stjerner",
         "bench.rateFailed": "Bedømmelsen kunne ikke gemmes",
         "profile.since": "Smoker siden {date}",
         "profile.benches": "Smoke spots",
@@ -6498,7 +6635,7 @@
         "inst.s4": "Tryk \"Tilføj\" øverst til højre",
         "inst.after": "Nu ligger Flower på din hjemmeskærm med eget ikon og åbner i fuld skærm som en rigtig app.",
         "inst.ok": "Forstået",
-        "inst.done": "Flower er installeret 🌿",
+        "inst.done": "Flower er installeret",
         "notif.title": "Notifikationer",
         "notif.readAll": "Læs alle",
         "notif.empty": "Ingen notifikationer endnu. Her ser du, når nogen lægger noget op i Smoke Hub eller sender dig en venneanmodning.",
@@ -6508,8 +6645,8 @@
         "notif.roll": "{name} har delt en roll. Giv den en rating!",
         "notif.munch": "{name} har delt sine munchies",
         "notif.spot": "{name} har tilføjet smoke spottet {spot}",
-        "notif.state.default": "🔔 Slå notifikationer til",
-        "notif.state.granted": "✅ Notifikationer er slået til",
+        "notif.state.default": "Slå notifikationer til",
+        "notif.state.granted": "Notifikationer er slået til",
         "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
         "notif.state.unsupported": "Ikke understøttet her",
         "notif.help": "Du får en notifikation på telefonen, når nogen lægger noget op i Smoke Hub, eller du får en venneanmodning, mens appen er åben.",
@@ -6529,8 +6666,8 @@
         "usage.heavy": "Flere gange om dagen",
         "settings.title": "Indstillinger",
         "settings.theme": "Tema",
-        "settings.dark": "🌙 Mørk",
-        "settings.light": "☀️ Lys",
+        "settings.dark": "Mørk",
+        "settings.light": "Lys",
         "back.profile": "‹ Profil",
         "profile.logout": "Log ud",
         "profile.noBio": "Ingen bio endnu. Tryk på Rediger profil og skriv lidt om dig selv.",
@@ -6539,7 +6676,7 @@
         "profile.bio": "Bio",
         "profile.bioPh": "Fortæl lidt om dig selv…",
         "profile.save": "Gem",
-        "profile.saved": "Profilen er gemt ✅",
+        "profile.saved": "Profilen er gemt",
         "profile.friends": "Venner",
         "back.friends": "‹ Venner",
         "err.tooMany": "For mange forsøg. Vent lidt og prøv igen.",
@@ -6549,19 +6686,19 @@
         "friends.searchPh": "Søg efter smoker",
         "friends.requests": "Venneanmodninger",
         "friends.yours": "Dine venner",
-        "rev.rate": "☆ Anmeld",
+        "rev.rate": "Anmeld",
         "rev.stars": "Din rating",
         "rev.note": "Kort note (valgfri)",
         "rev.notePh": "Fx citrus, giver god energi",
         "rev.errStars": "Giv sorten mindst én stjerne",
-        "rev.saved": "Din anmeldelse er gemt 🌿",
+        "rev.saved": "Din anmeldelse er gemt",
         "rev.top3": "Top 3 sorter",
         "quiz.tagline": "Svar rigtigt, og du får et sug",
         "quiz.help": "10 spørgsmål om cannabis. Svarer du rigtigt, får du lov at tage et sug. Tilføj spillere, så går spørgsmålene på skift.",
         "quiz.start": "Start quizzen",
         "quiz.solo": "Spil alene",
         "quiz.question": "Spørgsmål {n} af {total}",
-        "quiz.right": "Rigtigt! Tag et sug 🌿",
+        "quiz.right": "Rigtigt! Tag et sug",
         "quiz.wrong": "Forkert! Ingen sug til dig denne gang",
         "quiz.finish": "Se resultatet",
         "quiz.done": "Quizzen er slut!",
@@ -6572,7 +6709,7 @@
         "build.custom": "Byg dit eget",
         "build.count": "{n}/{total} felter valgt",
         "build.help": "Vælg hvor mange af hvert felt. Er der for få, gentages de.",
-        "build.fill": "🎲 Fyld resten tilfældigt",
+        "build.fill": "Fyld resten tilfældigt",
         "build.clear": "Ryd",
         "del.btn": "Slet min konto",
         "del.confirm1": "Vil du slette din konto? Din profil, dine smoke seshs, opslag, rolls, munchies, smoke spots og venner bliver slettet for altid.",
@@ -6580,11 +6717,13 @@
         "del.password": "Skriv din adgangskode",
         "del.cancelled": "Kontoen blev ikke slettet",
         "del.working": "Sletter din konto…",
-        "del.done": "Din konto er slettet. Farvel 👋",
+        "del.done": "Din konto er slettet. Farvel",
         "del.wrongPassword": "Forkert adgangskode. Kontoen blev ikke slettet",
         "del.failed": "Kunne ikke slette kontoen. Prøv igen",
         "chat.title": "Chat",
         "up.title": "Opslag",
+        "up.mine": "Mine opslag",
+        "up.spots": "Spots",
         "up.of": "{name}s opslag",
         "up.posts": "Opslag",
         "up.rolls": "Rolls",
@@ -6594,7 +6733,7 @@
         "chat.you": "Dig:",
         "chat.empty": "Ingen samtaler endnu.",
         "chat.startNew": "Skriv til en ven",
-        "chat.first": "Skriv den første besked til {name} 👋",
+        "chat.first": "Skriv den første besked til {name}",
         "chat.ph": "Skriv en besked…",
         "back.chats": "‹ Chat",
         "notif.chat": "{name}: {text}",
@@ -6608,21 +6747,24 @@
         "money.err": "Skriv en pris i kroner, fx 80",
         "badge.title": "Badges",
         "badge.none": "Ingen endnu. Brug appen for at låse op!",
-        "badge.new": "🏅 Nyt badge: {name}",
-        "ch.title": "Ugens udfordring",
-        "ch.progress": "{n}/{goal} · {days} dage tilbage",
-        "ch.done": "Klaret! XP'en er lagt til din rank ✅",
-        "ch.completed": "🏆 Ugens udfordring er klaret! +{xp} XP",
-        "streak.one": "🔥 1 dag i træk",
-        "streak.many": "🔥 {n} dage i træk",
+        "badge.new": "Nyt badge: {name}",
+        "ch.title": "Dagens udfordring",
+        "ch.progress": "{n}/{goal} · {hours} timer tilbage",
+        "ch.claim": "Klaret",
+        "ch.claimHelp": "Tryk Klaret, når du har gjort det · {hours} timer tilbage",
+        "ch.logFirst": "Log dagens smoke først, så kan du trykke Klaret · {hours} timer tilbage",
+        "ch.done": "Klaret! XP'en er lagt til din rank",
+        "ch.completed": "Dagens udfordring er klaret! +{xp} XP",
+        "streak.one": "1 dag i træk",
+        "streak.many": "{n} dage i træk",
         "now.start": "Jeg smoker nu",
         "now.on": "Smoker nu",
         "now.left": "{h}t {m}m tilbage",
-        "now.started": "Dine venner kan se, at du smoker 💨",
+        "now.started": "Dine venner kan se, at du smoker",
         "now.stopped": "\"Smoker nu\" er slået fra",
         "sesh.btn": "Hvem er klar?",
         "sesh.title": "Seshs",
-        "sesh.sub": "Alle dine venner får en invitation og kan svare 👍 eller 👎",
+        "sesh.sub": "Alle dine venner får en invitation og kan svare eller",
         "sesh.when": "Hvornår?",
         "sesh.where": "Hvor?",
         "sesh.anyPlace": "Vælg et smoke spot (valgfrit)",
@@ -6631,7 +6773,7 @@
         "sesh.note": "Besked (valgfri)",
         "sesh.notePh": "Fx jeg har snacks med",
         "sesh.send": "Send invitation",
-        "sesh.sent": "Invitationen er sendt til dine venner 🔥",
+        "sesh.sent": "Invitationen er sendt til dine venner",
         "sesh.noFriends": "Tilføj venner først, så du har nogen at invitere",
         "sesh.errTime": "Vælg et tidspunkt, der ikke er gået",
         "sesh.today": "i dag kl. {time}",
@@ -6639,16 +6781,18 @@
         "sesh.yours": "Din sesh",
         "sesh.from": "{name} inviterer",
         "sesh.yes": "Jeg er klar",
+        "sesh.yesN": "{n} kommer",
+        "sesh.noN": "{n} kan ikke",
         "sesh.no": "Kan ikke",
         "sesh.cancel": "Aflys",
         "sesh.confirmCancel": "Vil du aflyse seshen?",
         "notif.sesh": "{name} inviterer til sesh {time}",
-        "notif.cheer": "{name} sendte dig opmuntring til din pause 💪",
+        "notif.cheer": "{name} sendte dig opmuntring til din pause",
         "tbm.label": "T-break",
         "tbm.day1": "dag på pause",
         "tbm.days": "dage på pause",
         "tbm.left": "{n} dage tilbage af {goal}",
-        "tbm.done": "Målet på {goal} dage er nået! 🎉",
+        "tbm.done": "Målet på {goal} dage er nået!",
         "tbm.m0": "Første dag. Du kan godt!",
         "tbm.m1": "Dag 1: Det sværeste er at starte. Godt gået!",
         "tbm.m2": "Dag 2: Tolerancen er allerede begyndt at falde.",
@@ -6658,21 +6802,21 @@
         "tbm.m10": "Dag 10: Mere energi og klarere hoved.",
         "tbm.m14": "To uger! Halvvejs mod en fuld nulstilling.",
         "tbm.m21": "Tre uger: Receptorerne er næsten tilbage.",
-        "tbm.m28": "28 dage: Fuld nulstilling! 🎉",
+        "tbm.m28": "28 dage: Fuld nulstilling!",
         "tbm.saved": "Du har sparet ca. {kr} kr.",
         "tbm.cheered": "heppede på dig",
         "tbm.stop": "Stop pausen",
-        "tbm.finish": "Afslut pausen 🎉",
+        "tbm.finish": "Afslut pausen",
         "tbm.started": "Din pause på {n} dage er startet. Held og lykke!",
         "tbm.stopped": "Pausen er stoppet efter {n} dage",
-        "tbm.finished": "Pausen er gennemført! {n} dage 🎉",
+        "tbm.finished": "Pausen er gennemført! {n} dage",
         "tbm.confirmStop": "Du har ikke nået dit mål endnu. Vil du stoppe pausen?",
         "tbm.logConfirm": "Du er på T-break. Logger du en smoke, stopper pausen. Vil du fortsætte?",
         "tbm.startBtn": "Start en pause på {n} dage",
         "tbm.activeHere": "Du er på pause: dag {n}. Følg den på forsiden.",
         "tbm.friendOn": "På T-break: dag {n}",
         "tbm.cheerBtn": "Hep",
-        "tbm.cheerSent": "Du heppede på {name} 💪",
+        "tbm.cheerSent": "Du heppede på {name}",
         "friends.suggest": "Forslag til dig",
         "friends.mutual1": "1 fælles ven",
         "friends.mutualN": "{n} fælles venner",
@@ -6725,7 +6869,7 @@
         "friends.remove": "Fjern ven",
         "friends.confirmRemove": "Vil du fjerne {name} som ven?",
         "friends.sentToast": "Venneanmodning sendt til {name}",
-        "friends.acceptedToast": "Du og {name} er nu venner 🎉",
+        "friends.acceptedToast": "Du og {name} er nu venner",
         "friends.declinedToast": "Anmodningen er afvist",
         "friends.removedToast": "{name} er fjernet som ven",
         "friends.failed": "Det lykkedes ikke. Prøv igen.",
@@ -6736,7 +6880,7 @@
         "locale": "en-GB",
         "hb.pause": "T-Break calculator",
         "hb.stats": "Stats",
-        "home.logTitle": "🌿 Log a smoke",
+        "home.logTitle": "Log a smoke",
         "home.logCta": "Log a smoke",
         "ai.intro": "The calculator uses what you've logged with \"Log a smoke\" to work out your tolerance and when a break makes the most sense for you.",
         "ai.time": "Time",
@@ -6755,7 +6899,7 @@
         "drive.usage.occasional": "You smoke rarely, so the estimate is at least 2 days (3 days after concentrates or edibles).",
         "drive.usage.regular": "You smoke several times a week, so THC can stay in your blood for at least a week.",
         "drive.usage.daily": "You smoke almost daily, so THC can stay in your blood for several weeks.",
-        "drive.warning": "⚠️ Only a rough estimate, no guarantee. Denmark has zero tolerance for THC in the blood, and how long it can be detected varies from person to person. If in doubt, don't drive.",
+        "drive.warning": "Only a rough estimate, no guarantee. Denmark has zero tolerance for THC in the blood, and how long it can be detected varies from person to person. If in doubt, don't drive.",
         "stats.emptyTitle": "No stats yet",
         "stats.emptyText": "Once you've logged your smokes, you'll see charts of how much and how often, and how long you should wait before driving.",
         "stats.week": "Grams in the last 7 days",
@@ -6776,7 +6920,7 @@
         "onb.photo": "Tap the circle to pick a profile photo",
         "onb.save": "Save and continue",
         "onb.errEmpty": "Pick a profile photo or write a bio",
-        "onb.welcome": "Welcome, {name} 🌿",
+        "onb.welcome": "Welcome, {name}",
         "ai.date": "Date",
         "ai.times": "How many times did you smoke?",
         "ai.grams": "How much in total? (grams)",
@@ -6786,7 +6930,7 @@
         "ai.productLabel": "What?",
         "ai.thc": "THC % (if you know it)",
         "ai.thcPh": "Optional",
-        "ai.saved": "Log saved ✅",
+        "ai.saved": "Log saved",
         "ai.errDate": "Pick a date",
         "ai.errGrams": "Enter how many grams, e.g. 0.5",
         "ai.method.joint": "Joint",
@@ -6831,12 +6975,12 @@
         "ai.myLogs": "Your logs",
         "tb.emptyTitle": "Nothing logged yet",
         "tb.emptyText": "Log your smokes and the model works out how high your tolerance is and when a break makes the most sense.",
-        "tb.headNone": "Your tolerance is low. No break needed right now 🌱",
+        "tb.headNone": "Your tolerance is low. No break needed right now",
         "tb.headToday": "Start a {n} day break today",
         "tb.headDay": "Start a {n} day break on {day}",
         "tb.headKeep": "Nice! {days} days without. Keep going {n} more days",
         "tb.headKeep1": "Nice! {days} days without. Keep going 1 more day",
-        "tb.headDone": "Your tolerance has reset 🎉",
+        "tb.headDone": "Your tolerance has reset",
         "tb.freq": "You've smoked on {n} of the last 14 days.",
         "tb.dose": "On a day you smoke, your body takes in about {mg} mg of THC.",
         "tb.potent": "A lot of your logs are hash or concentrate, which build tolerance faster.",
@@ -6879,7 +7023,7 @@
         "tb.updated": "Updates automatically every time you log a smoke.",
         "rank.level": "Level {n} of 8",
         "rank.next": "{xp} XP · {need} XP to {name}",
-        "rank.max": "{xp} XP · You've reached the top rank 👑",
+        "rank.max": "{xp} XP · You've reached the top rank",
         "rank.help": "The more you smoke, the higher your rank. Each log gives 10 XP + 5 XP for each time + 10 XP per gram. But you lose XP every day, and the higher your rank, the more you lose. So you need to be more active to keep a high rank.",
         "rank.decay": "You lose {n} XP a day at your rank",
         "rank.day": "day",
@@ -6948,7 +7092,7 @@
         "munch.newTitle": "Share your munchies",
         "munch.note": "Show what you're snacking on and like the others' munchies",
         "munch.errPhoto": "Add a photo of your munchies",
-        "munch.posted": "Your munchies are live 🍕",
+        "munch.posted": "Your munchies are live",
         "munch.empty": "No munchies yet. Share the first!",
         "munch.confirmDelete": "Delete this photo?",
         "munch.deleted": "Photo deleted",
@@ -6987,7 +7131,7 @@
         "forum.deleted": "Post deleted",
         "forum.justNow": "just now",
         "diary.new": "＋ New post",
-        "diary.addPhoto": "📷 Add a photo",
+        "diary.addPhoto": "Add a photo",
         "diary.text": "Text",
         "diary.textPh": "What did you smoke, where and with who?",
         "diary.rating": "Rating",
@@ -7025,7 +7169,7 @@
         "err.nameMissing": "Enter your smoker name",
         "err.pwMissing": "Enter your password",
         "err.wrongLogin": "Wrong smoker name or password",
-        "toast.signedUp": "Account created 🎉",
+        "toast.signedUp": "Account created",
         "toast.loggedIn": "You're logged in",
         "toast.loggedOut": "You're logged out",
         "toast.soon": "Coming soon",
@@ -7062,7 +7206,7 @@
         "roll.newTitle": "Share your roll",
         "roll.note": "Share a photo of your joint and let the others rate it",
         "roll.errPhoto": "Add a photo of your joint",
-        "roll.posted": "Your roll is live 🌿",
+        "roll.posted": "Your roll is live",
         "roll.empty": "No rolls yet. Share the first one!",
         "roll.new": "New",
         "roll.yourRating": "Your rating",
@@ -7081,7 +7225,7 @@
         "map.empty": "No smoke spots yet. Put the first one on the map!",
         "map.placeHint": "Tap the map where the smoke spot is",
         "map.add": "Add smoke spot",
-        "map.noInternet": "The map needs an internet connection 🌐",
+        "map.noInternet": "The map needs an internet connection",
         "map.notLoaded": "The map hasn't loaded",
         "map.noLocation": "Can't find your location",
         "db.noConnection": "Couldn't connect to the database",
@@ -7091,7 +7235,7 @@
         "pin.new": "New",
         "stars": "{n} stars",
         "bench.new": "New smoke spot",
-        "bench.addPhoto": "📷 Add a photo of the spot",
+        "bench.addPhoto": "Add a photo of the spot",
         "bench.name": "Spot name",
         "bench.namePh": "E.g. The view by the lake",
         "bench.why": "Why is it great?",
@@ -7103,19 +7247,19 @@
         "bench.errPhoto": "Add a photo of the spot",
         "bench.errName": "Give the spot a name",
         "bench.errSave": "The smoke spot couldn't be saved. Check your internet connection.",
-        "bench.added": "The smoke spot is on the map 📍",
+        "bench.added": "The smoke spot is on the map",
         "bench.addedBy": "Added by {name} · {date}",
         "bench.rating1": "rating",
         "bench.ratingN": "ratings",
-        "bench.showOnMap": "📍 Show on map",
+        "bench.showOnMap": "Show on map",
         "bench.delete": "Delete smoke spot",
         "bench.confirmDelete": "Do you want to delete this smoke spot?",
         "bench.deleted": "The smoke spot was deleted",
         "bench.deleteFailed": "The smoke spot couldn't be deleted",
         "bench.gone": "This smoke spot no longer exists.",
         "bench.photoAlt": "Photo of {name}",
-        "bench.rated1": "You gave 1 star ⭐",
-        "bench.ratedN": "You gave {n} stars ⭐",
+        "bench.rated1": "You gave 1 star",
+        "bench.ratedN": "You gave {n} stars",
         "bench.rateFailed": "Your rating couldn't be saved",
         "profile.since": "Smoker since {date}",
         "profile.benches": "Smoke spots",
@@ -7130,7 +7274,7 @@
         "inst.s4": "Tap \"Add\" in the top right",
         "inst.after": "Flower is now on your home screen with its own icon and opens full screen like a real app.",
         "inst.ok": "Got it",
-        "inst.done": "Flower is installed 🌿",
+        "inst.done": "Flower is installed",
         "notif.title": "Notifications",
         "notif.readAll": "Read all",
         "notif.empty": "No notifications yet. Here you'll see when someone posts in Smoke Hub or sends you a friend request.",
@@ -7140,8 +7284,8 @@
         "notif.roll": "{name} shared a roll. Give it a rating!",
         "notif.munch": "{name} shared their munchies",
         "notif.spot": "{name} added the smoke spot {spot}",
-        "notif.state.default": "🔔 Turn on notifications",
-        "notif.state.granted": "✅ Notifications are on",
+        "notif.state.default": "Turn on notifications",
+        "notif.state.granted": "Notifications are on",
         "notif.state.denied": "Notifications are blocked in your phone's settings",
         "notif.state.unsupported": "Not supported here",
         "notif.help": "You'll get a notification on your phone when someone posts in Smoke Hub or you get a friend request, while the app is open.",
@@ -7161,8 +7305,8 @@
         "usage.heavy": "Several times a day",
         "settings.title": "Settings",
         "settings.theme": "Theme",
-        "settings.dark": "🌙 Dark",
-        "settings.light": "☀️ Light",
+        "settings.dark": "Dark",
+        "settings.light": "Light",
         "back.profile": "‹ Profile",
         "profile.logout": "Log out",
         "profile.noBio": "No bio yet. Tap Edit profile to tell people about yourself.",
@@ -7171,7 +7315,7 @@
         "profile.bio": "Bio",
         "profile.bioPh": "Tell people a bit about yourself…",
         "profile.save": "Save",
-        "profile.saved": "Profile saved ✅",
+        "profile.saved": "Profile saved",
         "profile.friends": "Friends",
         "back.friends": "‹ Friends",
         "err.tooMany": "Too many attempts. Wait a bit and try again.",
@@ -7181,19 +7325,19 @@
         "friends.searchPh": "Search for a smoker",
         "friends.requests": "Friend requests",
         "friends.yours": "Your friends",
-        "rev.rate": "☆ Rate",
+        "rev.rate": "Rate",
         "rev.stars": "Your rating",
         "rev.note": "Short note (optional)",
         "rev.notePh": "E.g. citrus, good energy",
         "rev.errStars": "Give the strain at least one star",
-        "rev.saved": "Your review is saved 🌿",
+        "rev.saved": "Your review is saved",
         "rev.top3": "Top 3 strains",
         "quiz.tagline": "Answer right and you get a hit",
         "quiz.help": "10 questions about cannabis. Answer right and you get to take a hit. Add players and the questions go in turns.",
         "quiz.start": "Start the quiz",
         "quiz.solo": "Play alone",
         "quiz.question": "Question {n} of {total}",
-        "quiz.right": "Correct! Take a hit 🌿",
+        "quiz.right": "Correct! Take a hit",
         "quiz.wrong": "Wrong! No hit for you this time",
         "quiz.finish": "See the result",
         "quiz.done": "The quiz is over!",
@@ -7204,7 +7348,7 @@
         "build.custom": "Build your own",
         "build.count": "{n}/{total} tiles chosen",
         "build.help": "Choose how many of each tile. If there are too few, they repeat.",
-        "build.fill": "🎲 Fill the rest randomly",
+        "build.fill": "Fill the rest randomly",
         "build.clear": "Clear",
         "del.btn": "Delete my account",
         "del.confirm1": "Delete your account? Your profile, smoke seshes, posts, rolls, munchies, smoke spots and friends will be deleted forever.",
@@ -7212,11 +7356,13 @@
         "del.password": "Enter your password",
         "del.cancelled": "The account was not deleted",
         "del.working": "Deleting your account…",
-        "del.done": "Your account is deleted. Bye 👋",
+        "del.done": "Your account is deleted. Bye",
         "del.wrongPassword": "Wrong password. The account was not deleted",
         "del.failed": "Couldn't delete the account. Try again",
         "chat.title": "Chat",
         "up.title": "Posts",
+        "up.mine": "My posts",
+        "up.spots": "Spots",
         "up.of": "{name}'s posts",
         "up.posts": "Posts",
         "up.rolls": "Rolls",
@@ -7226,7 +7372,7 @@
         "chat.you": "You:",
         "chat.empty": "No conversations yet.",
         "chat.startNew": "Message a friend",
-        "chat.first": "Send the first message to {name} 👋",
+        "chat.first": "Send the first message to {name}",
         "chat.ph": "Write a message…",
         "back.chats": "‹ Chat",
         "notif.chat": "{name}: {text}",
@@ -7240,21 +7386,24 @@
         "money.err": "Enter a price in kroner, e.g. 80",
         "badge.title": "Badges",
         "badge.none": "None yet. Use the app to unlock them!",
-        "badge.new": "🏅 New badge: {name}",
-        "ch.title": "Weekly challenge",
-        "ch.progress": "{n}/{goal} · {days} days left",
-        "ch.done": "Done! The XP was added to your rank ✅",
-        "ch.completed": "🏆 Weekly challenge done! +{xp} XP",
-        "streak.one": "🔥 1 day in a row",
-        "streak.many": "🔥 {n} days in a row",
+        "badge.new": "New badge: {name}",
+        "ch.title": "Daily challenge",
+        "ch.progress": "{n}/{goal} · {hours} hours left",
+        "ch.claim": "Done",
+        "ch.claimHelp": "Tap Done when you've done it · {hours} hours left",
+        "ch.logFirst": "Log today's smoke first, then you can tap Done · {hours} hours left",
+        "ch.done": "Done! The XP was added to your rank",
+        "ch.completed": "Daily challenge done! +{xp} XP",
+        "streak.one": "1 day in a row",
+        "streak.many": "{n} days in a row",
         "now.start": "I'm smoking now",
         "now.on": "Smoking now",
         "now.left": "{h}h {m}m left",
-        "now.started": "Your friends can see you're smoking 💨",
+        "now.started": "Your friends can see you're smoking",
         "now.stopped": "\"Smoking now\" is off",
         "sesh.btn": "Who's ready?",
         "sesh.title": "Seshes",
-        "sesh.sub": "All your friends get an invite and can answer 👍 or 👎",
+        "sesh.sub": "All your friends get an invite and can answer or",
         "sesh.when": "When?",
         "sesh.where": "Where?",
         "sesh.anyPlace": "Choose a smoke spot (optional)",
@@ -7263,7 +7412,7 @@
         "sesh.note": "Message (optional)",
         "sesh.notePh": "E.g. I'm bringing snacks",
         "sesh.send": "Send invite",
-        "sesh.sent": "Your invite was sent to your friends 🔥",
+        "sesh.sent": "Your invite was sent to your friends",
         "sesh.noFriends": "Add friends first so you have someone to invite",
         "sesh.errTime": "Choose a time that hasn't passed",
         "sesh.today": "today at {time}",
@@ -7271,16 +7420,18 @@
         "sesh.yours": "Your sesh",
         "sesh.from": "{name} invites you",
         "sesh.yes": "I'm in",
+        "sesh.yesN": "{n} going",
+        "sesh.noN": "{n} can't",
         "sesh.no": "Can't",
         "sesh.cancel": "Cancel",
         "sesh.confirmCancel": "Cancel the sesh?",
         "notif.sesh": "{name} invites you to a sesh {time}",
-        "notif.cheer": "{name} cheered you on for your break 💪",
+        "notif.cheer": "{name} cheered you on for your break",
         "tbm.label": "T-break",
         "tbm.day1": "day on break",
         "tbm.days": "days on break",
         "tbm.left": "{n} of {goal} days left",
-        "tbm.done": "You reached your goal of {goal} days! 🎉",
+        "tbm.done": "You reached your goal of {goal} days!",
         "tbm.m0": "Day one. You've got this!",
         "tbm.m1": "Day 1: Starting is the hardest part. Well done!",
         "tbm.m2": "Day 2: Your tolerance has already started dropping.",
@@ -7290,21 +7441,21 @@
         "tbm.m10": "Day 10: More energy and a clearer head.",
         "tbm.m14": "Two weeks! Halfway to a full reset.",
         "tbm.m21": "Three weeks: Your receptors are almost back.",
-        "tbm.m28": "28 days: Full reset! 🎉",
+        "tbm.m28": "28 days: Full reset!",
         "tbm.saved": "You've saved about {kr} kr.",
         "tbm.cheered": "cheered you on",
         "tbm.stop": "Stop the break",
-        "tbm.finish": "Finish the break 🎉",
+        "tbm.finish": "Finish the break",
         "tbm.started": "Your {n} day break has started. Good luck!",
         "tbm.stopped": "Break stopped after {n} days",
-        "tbm.finished": "Break completed! {n} days 🎉",
+        "tbm.finished": "Break completed! {n} days",
         "tbm.confirmStop": "You haven't reached your goal yet. Stop the break?",
         "tbm.logConfirm": "You're on a T-break. Logging a smoke will stop it. Continue?",
         "tbm.startBtn": "Start a {n} day break",
         "tbm.activeHere": "You're on a break: day {n}. Follow it on the home screen.",
         "tbm.friendOn": "On a T-break: day {n}",
         "tbm.cheerBtn": "Cheer",
-        "tbm.cheerSent": "You cheered on {name} 💪",
+        "tbm.cheerSent": "You cheered on {name}",
         "friends.suggest": "Suggested for you",
         "friends.mutual1": "1 mutual friend",
         "friends.mutualN": "{n} mutual friends",
@@ -7357,7 +7508,7 @@
         "friends.remove": "Remove friend",
         "friends.confirmRemove": "Remove {name} as a friend?",
         "friends.sentToast": "Friend request sent to {name}",
-        "friends.acceptedToast": "You and {name} are now friends 🎉",
+        "friends.acceptedToast": "You and {name} are now friends",
         "friends.declinedToast": "Request declined",
         "friends.removedToast": "{name} was removed as a friend",
         "friends.failed": "That didn't work. Please try again.",
@@ -8338,6 +8489,33 @@
       return esc(((profile && profile.name) || "?").charAt(0).toUpperCase());
     }
 
+    // Hvor meget jeg selv har lagt op (hentes én gang og efter nye opslag)
+    let myCounts = null;
+    let myCountsAt = 0;
+
+    function renderMyCounts() {
+      const me = currentUserKey();
+      if (!me || !db) return;
+      document.getElementById("stat-spots").textContent = benches.filter((b) => b.addedBy === me).length;
+      const posted = (list) => list.filter((x) => x.author === me).length;
+      // Hent de rigtige tal, hvis de er mere end 5 minutter gamle
+      if (Date.now() - myCountsAt > 5 * 60e3) {
+        myCountsAt = Date.now();
+        const count = (name) => db.collection(name).where("author", "==", me).get().then((snap) => snap.size).catch(() => null);
+        Promise.all([count("posts"), count("rolls"), count("munchies")]).then(([a, b, c]) => {
+          myCounts = { posts: a, rolls: b, munchies: c };
+          renderMyCounts();
+        });
+      }
+      const show = (key, list) => {
+        const fromDb = myCounts && myCounts[key] !== null ? myCounts[key] : 0;
+        document.getElementById("stat-" + key).textContent = Math.max(fromDb, posted(list));
+      };
+      show("posts", posts);
+      show("rolls", rolls);
+      show("munchies", munchies);
+    }
+
     function renderProfile() {
       queueNotifications();
       renderHomeExtras();
@@ -8357,6 +8535,7 @@
       bio.textContent = myProfile.bio || t("profile.noBio");
       bio.classList.toggle("empty", !myProfile.bio);
 
+      renderMyCounts();
       document.getElementById("stat-friends").textContent = friendships.filter((f) => !(profileCache.get(otherUser(f)) || {}).missing).length;
     }
 
@@ -8533,7 +8712,7 @@
           <span class="avatar avatar-sm">${avatarHTML(profile)}</span>
           <span class="person-text">
             <strong>${esc(profile.name)} <span class="mini-rank" title="${RANKS[rankIndex(shownXp(profile))].name}">${RANKS[rankIndex(shownXp(profile))].icon}</span></strong>
-            <small>${isSmoking(profile) ? `<span class="now-pill">💨 ${t("now.on")}</span> ` : ""}${esc(profile.bio || "")}</small>
+            <small>${isSmoking(profile) ? `<span class="now-pill">${t("now.on")}</span> ` : ""}${esc(profile.bio || "")}</small>
           </span>
           ${extra || '<span class="chevron">›</span>'}
         </div>`;
@@ -8764,7 +8943,7 @@
         });
       const [p, r, m] = await Promise.all([get("posts"), get("rolls"), get("munchies")]);
       if (currentPersonId !== uid) return;
-      personUploads = { posts: p, rolls: r, munchies: m };
+      personUploads = { posts: p, rolls: r, munchies: m, spots: benches.filter((b) => b.addedBy === uid) };
       renderPerson();
       renderPersonUploads();
     }
@@ -8772,8 +8951,9 @@
     function renderPersonUploads() {
       const p = profileCache.get(currentPersonId);
       if (!p) return;
-      document.getElementById("puploads-back").textContent = `‹ ${p.name}`;
-      document.getElementById("puploads-title").textContent = t("up.of", { name: p.name });
+      const mine = p.id === currentUserKey();
+      document.getElementById("puploads-back").textContent = mine ? t("back.profile") : `‹ ${p.name}`;
+      document.getElementById("puploads-title").textContent = mine ? t("up.mine") : t("up.of", { name: p.name });
       document.querySelectorAll("[data-up-tab]").forEach((b) => {
         const n = personUploads ? personUploads[b.dataset.upTab].length : 0;
         b.classList.toggle("active", b.dataset.upTab === uploadTab);
@@ -8796,9 +8976,11 @@
       }
       box.className = "roll-grid";
       box.innerHTML = list.map((x) => {
-        const label = uploadTab === "rolls"
-          ? (averageRating(x) ? `★ ${averageRating(x).toFixed(1)}` : t("roll.new"))
-          : `♥ ${(x.likes || []).length}`;
+        const label = uploadTab === "munchies"
+          ? `♥ ${(x.likes || []).length}`
+          : uploadTab === "spots"
+            ? esc(x.name || "")
+            : (averageRating(x) ? `★ ${averageRating(x).toFixed(1)}` : t("roll.new"));
         return `
           <button type="button" class="roll-tile" data-up-open="${esc(x.id)}" ${x.imageId ? `data-full="${esc(x.imageId)}"` : ""}>
             <img src="${esc(photoSrc(x))}" alt="" loading="lazy">
@@ -8812,7 +8994,29 @@
       renderPersonUploads();
     }));
 
-    document.getElementById("puploads-back").addEventListener("click", () => showFriendsView("person"));
+    document.getElementById("puploads-back").addEventListener("click", () => {
+      if (currentPersonId === currentUserKey()) {
+        showFriendsList();
+        return showPage("profile");
+      }
+      showFriendsView("person");
+    });
+
+    // Tryk på et tal på min egen profil: se mine opslag, rolls, munchies eller spots
+    function openMyUploads(tab) {
+      const me = currentUserKey();
+      if (!me || !myProfile) return;
+      profileCache.set(me, { ...myProfile, id: me });
+      currentPersonId = me;
+      uploadTab = tab;
+      personUploads = null;
+      showPage("friends");
+      showFriendsView("puploads");
+      renderPersonUploads();
+      loadPersonUploads(me);
+    }
+
+    document.querySelectorAll("[data-my-tab]").forEach((b) => b.addEventListener("click", () => openMyUploads(b.dataset.myTab)));
 
     document.getElementById("puploads-list").addEventListener("click", (e) => {
       const tile = e.target.closest("[data-up-open]");
@@ -8823,6 +9027,10 @@
           openView("hub", "rolls");
           openRollId = id;
           return goView("roll");
+        }
+        if (uploadTab === "spots") {
+          openView("hub", "map");
+          return openBench(id);
         }
         if (uploadTab === "munchies" && munchies.some((m) => m.id === id)) {
           openView("hub", "munchies");
@@ -8882,7 +9090,7 @@
       let actions;
       if (relation === "friend") {
         actions = `
-          <button type="button" class="btn-primary" data-action="chat">💬 ${t("chat.write")}</button>
+          <button type="button" class="btn-primary" data-action="chat">${icon("chat")} ${t("chat.write")}</button>
           <button type="button" class="btn-plain" disabled>${t("friends.isFriend")}</button>
           <button type="button" class="link-btn danger" data-action="remove">${t("friends.remove")}</button>`;
       } else if (relation === "incoming") {
@@ -8907,11 +9115,11 @@
           <h2>${esc(p.name)}</h2>
           <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
           <p class="person-rank">${rankBadge(shownXp(p))}</p>
-          ${isSmoking(p) ? `<p class="now-pill big">💨 ${t("now.on")}</p>` : ""}
+          ${isSmoking(p) ? `<p class="now-pill big">${t("now.on")}</p>` : ""}
           ${isOnTBreak(p) ? `
             <div class="person-tbreak">
-              <p>⏸️ ${t("tbm.friendOn", { n: tbreakDays(p.tbreak) })}</p>
-              ${relation === "friend" ? `<button type="button" class="mini-btn primary" data-action="cheer">💪 ${t("tbm.cheerBtn")}</button>` : ""}
+              <p>${icon("pause")} ${t("tbm.friendOn", { n: tbreakDays(p.tbreak) })}</p>
+              ${relation === "friend" ? `<button type="button" class="mini-btn primary" data-action="cheer">${icon("heart")} ${t("tbm.cheerBtn")}</button>` : ""}
             </div>` : ""}
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
           ${topStrainsHTML(p)}
@@ -9772,7 +9980,7 @@
         leaderList.innerHTML = `<p class="empty-note">${t("lb.noFriends")}</p>`;
         return;
       }
-      const medals = ["🥇", "🥈", "🥉"];
+      const medals = [];
       leaderList.innerHTML = rows.map(({ p, xp }, i) => {
         const rank = RANKS[rankIndex(xp)];
         return `
@@ -12092,7 +12300,7 @@
               <small>/ 100</small>
             </div>
             <div>
-              <small class="eyebrow">🧠 ${t("ai.resultLabel")}</small>
+              <small class="eyebrow">${t("ai.resultLabel")}</small>
               <h2>${esc(a.headline)}</h2>
               <p class="muted">${t("ai.level." + a.tolerance_level)}</p>
             </div>
@@ -12106,8 +12314,8 @@
           <h3>${t("tb.forecast")}</h3>
           ${forecastChart(a.forecast)}
           ${isOnTBreak(myProfile)
-            ? `<p class="tbm-active">⏸️ ${t("tbm.activeHere", { n: tbreakDays(myProfile.tbreak) })}</p>`
-            : `<button type="button" class="btn-primary tbm-start" data-start-tbreak="${Math.max(2, a.break_days || 7)}">⏸️ ${t("tbm.startBtn", { n: Math.max(2, a.break_days || 7) })}</button>`}
+            ? `<p class="tbm-active">${icon("pause")} ${t("tbm.activeHere", { n: tbreakDays(myProfile.tbreak) })}</p>`
+            : `<button type="button" class="btn-primary tbm-start" data-start-tbreak="${Math.max(2, a.break_days || 7)}">${t("tbm.startBtn", { n: Math.max(2, a.break_days || 7) })}</button>`}
           <h3>${t("ai.tips")}</h3>
           <ul class="ai-tips">${a.tips.map((tip) => `<li>${esc(tip)}</li>`).join("")}</ul>
           <p class="muted ai-when">${t("tb.updated")}</p>
@@ -12241,7 +12449,7 @@
                 <span>${r.icon}</span><strong>${r.name}</strong><small>${r.xp} XP · −${r.decay}/${t("rank.day")}</small>
               </li>`).join("")}
           </ol>
-          <p class="rank-decay">📉 ${t("rank.decay", { n: rank.decay })}</p>
+          <p class="rank-decay">${icon("down")} ${t("rank.decay", { n: rank.decay })}</p>
           <p class="muted rank-help">${t("rank.help")}</p>
         </details>`;
     }
@@ -12424,10 +12632,10 @@
       const hourPart = (h) => (h < 5 ? "night" : h < 12 ? "morning" : h < 18 ? "afternoon" : "evening");
       const weekday = (wd) => new Date(Date.UTC(1970, 0, 4 + Number(wd))).toLocaleDateString(t("locale"), { weekday: "long", timeZone: "UTC" });
       const habits = [
-        ["🔥", t("stats.favMethod"), favorite((e) => e.method), (k) => t("ai.method." + k)],
-        ["🌿", t("stats.favProduct"), favorite((e) => e.product), (k) => t("ai.product." + k)],
-        ["📅", t("stats.favDay"), favorite((e) => new Date(entryTime(e)).getDay()), weekday],
-        ["🕒", t("stats.favTime"), favorite((e) => hourPart(new Date(entryTime(e)).getHours())), (k) => t("stats.time." + k)],
+        ["flame", t("stats.favMethod"), favorite((e) => e.method), (k) => t("ai.method." + k)],
+        ["leaf", t("stats.favProduct"), favorite((e) => e.product), (k) => t("ai.product." + k)],
+        ["calendar", t("stats.favDay"), favorite((e) => new Date(entryTime(e)).getDay()), weekday],
+        ["clock", t("stats.favTime"), favorite((e) => hourPart(new Date(entryTime(e)).getHours())), (k) => t("stats.time." + k)],
       ].filter((h) => h[2]);
 
       statsEl.innerHTML = `
@@ -12446,9 +12654,9 @@
         ${chart}
         <div class="card habits">
           <h3>${t("stats.habits")}</h3>
-          ${habits.map(([icon, label, fav, name]) => `
+          ${habits.map(([iconName, label, fav, name]) => `
             <div class="habit-row">
-              <span class="habit-icon">${icon}</span>
+              <span class="habit-icon">${icon(iconName)}</span>
               <span class="habit-label">${label}</span>
               <strong>${esc(name(fav.key))}</strong>
               <small>${fav.pct}%</small>
@@ -12456,7 +12664,7 @@
         </div>
         ${driveCardHTML()}
         <div class="card price-card">
-          <h3>💰 ${t("money.price")}</h3>
+          <h3>${t("money.price")}</h3>
           <div class="price-row">
             <input type="text" inputmode="decimal" data-price value="${esc(aiProfile.price || "")}" placeholder="80">
             <span>${t("money.perGram")}</span>
@@ -12476,8 +12684,8 @@
       const kr = (n) => Math.round(n).toLocaleString(t("locale"));
       return `
         <div class="stat-tiles money">
-          <div class="card"><span>💸 ${t("money.spent")}</span><strong>${kr(spent)} kr</strong></div>
-          <div class="card"><span>📅 ${t("money.avg")}</span><strong>${kr(perWeek)} <small>kr/${t("money.week")}</small></strong><small class="muted">${kr(perMonth)} kr/${t("money.month")}</small></div>
+          <div class="card"><span>${t("money.spent")}</span><strong>${kr(spent)} kr</strong></div>
+          <div class="card"><span>${t("money.avg")}</span><strong>${kr(perWeek)} <small>kr/${t("money.week")}</small></strong><small class="muted">${kr(perMonth)} kr/${t("money.month")}</small></div>
         </div>`;
     }
 
@@ -12789,51 +12997,51 @@
       if (!me) return [];
       const list = [];
       requestsIn.forEach((r) => list.push({
-        id: "req-" + r.from, time: r.createdAt || 0, icon: "👋", uid: r.from,
+        id: "req-" + r.from, time: r.createdAt || 0, icon: "wave", uid: r.from,
         unread: true,
         text: t("notif.request", { name: personName(r.from) }), open: () => { showPage("friends"); showFriendsList(); },
       }));
       posts.filter((p) => p.author !== me).forEach((p) => {
         const tagged = (p.mentions || []).some((m) => m.uid === me);
         list.push({
-          id: "post-" + p.id, time: p.createdAt || 0, icon: tagged ? "🏷️" : "📝", uid: p.author,
+          id: "post-" + p.id, time: p.createdAt || 0, icon: tagged ? "tag" : "image", uid: p.author,
           unread: (p.createdAt || 0) > sectionSeen("posts"),
           text: t(tagged ? "notif.tagged" : "notif.post", { name: personName(p.author, p.authorName) }),
           open: () => { openView("hub", "posts"); openPost(p.id); },
         });
       });
       rolls.filter((r) => r.author !== me).forEach((r) => list.push({
-        id: "roll-" + r.id, time: r.createdAt || 0, icon: "🌿", uid: r.author,
+        id: "roll-" + r.id, time: r.createdAt || 0, icon: "leaf", uid: r.author,
         unread: (r.createdAt || 0) > sectionSeen("rolls"),
         text: t("notif.roll", { name: personName(r.author, r.authorName) }),
         open: () => { openView("hub", "rolls"); openRollId = r.id; goView("roll"); },
       }));
       munchies.filter((m) => m.author !== me).forEach((m) => list.push({
-        id: "munch-" + m.id, time: m.createdAt || 0, icon: "🍕", uid: m.author,
+        id: "munch-" + m.id, time: m.createdAt || 0, icon: "bowl", uid: m.author,
         unread: (m.createdAt || 0) > sectionSeen("munchies"),
         text: t("notif.munch", { name: personName(m.author, m.authorName) }),
         open: () => { openView("hub", "munchies"); openMunchId = m.id; goView("munchie"); },
       }));
       (seshes || []).filter((x) => x.host !== me).forEach((x) => list.push({
-        id: "sesh-" + x.id, time: x.createdAt || 0, icon: "🔥", uid: x.host,
+        id: "sesh-" + x.id, time: x.createdAt || 0, icon: "users", uid: x.host,
         unread: !(x.responses || {})[me],
         text: t("notif.sesh", { name: personName(x.host, x.hostName), time: seshTime(x.time) }),
         open: () => showPage("home"),
       }));
       (chats || []).filter((c) => isUnread(c)).forEach((c) => list.push({
-        id: "chat-" + c.id + "-" + c.lastAt, time: c.lastAt, icon: "💬", uid: c.lastFrom,
+        id: "chat-" + c.id + "-" + c.lastAt, time: c.lastAt, icon: "chat", uid: c.lastFrom,
         unread: true,
         text: t("notif.chat", { name: personName(c.lastFrom), text: c.lastText || "" }),
         open: () => { showPage("friends"); openChat(c.lastFrom); },
       }));
       (cheers || []).forEach((c) => list.push({
-        id: "cheer-" + c.id, time: c.createdAt || 0, icon: "💪", uid: c.from,
+        id: "cheer-" + c.id, time: c.createdAt || 0, icon: "heart", uid: c.from,
         unread: (c.createdAt || 0) > sectionSeen("cheers"),
         text: t("notif.cheer", { name: personName(c.from, c.fromName) }),
         open: () => showPage("home"),
       }));
       benches.filter((b) => b.addedBy !== me && b.createdAt).forEach((b) => list.push({
-        id: "spot-" + b.id, time: b.createdAt, icon: "📍", uid: b.addedBy,
+        id: "spot-" + b.id, time: b.createdAt, icon: "pin", uid: b.addedBy,
         unread: b.createdAt > sectionSeen("spots"),
         text: t("notif.spot", { name: b.addedByName || "?", spot: b.name || "" }),
         open: () => { openView("hub", "map"); openBench(b.id); },
@@ -12876,9 +13084,9 @@
           const profile = profileCache.get(n.uid);
           return `
             <button type="button" class="notif-row ${n.unread ? "unread" : ""}" data-notif="${esc(n.id)}">
-              <span class="avatar avatar-sm">${profile ? avatarHTML(profile) : n.icon}</span>
+              <span class="avatar avatar-sm">${profile ? avatarHTML(profile) : icon(n.icon)}</span>
               <span class="notif-text">
-                <span>${n.icon} ${esc(n.text)}</span>
+                <span>${esc(n.text)}</span>
                 <small>${timeAgo(n.time)}</small>
               </span>
               ${n.unread ? '<span class="unread-dot"></span>' : ""}
@@ -12905,7 +13113,7 @@
         .slice(0, 3)
         .forEach((n) => {
           alerted.add(n.id);
-          showToast(`${n.icon} ${n.text}`);
+          showToast(n.text);
           systemNotify(n);
         });
       notifications.forEach((n) => alerted.add(n.id));
@@ -12972,6 +13180,43 @@
     renderNotifToggle();
 
     // ==========================================================
+    // IKONER: enkle streg-ikoner i tekstfarven i stedet for emojis
+    // ==========================================================
+    const ICON_PATHS = {
+      leaf: '<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19l8-8"/>',
+      flame: '<path d="M12 21c-4 0-7-3-7-7 0-4 3-6 4-10 1 3 3 4 4 6 1-1 1-3 1-4 2 2 5 5 5 8 0 4-3 7-7 7z"/>',
+      smoke: '<path d="M4 15h11a2 2 0 1 0-2-2"/><path d="M4 11h7a2 2 0 1 0-2-2"/><path d="M4 19h13a2 2 0 1 1-2 2"/>',
+      trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M8.5 20h7M10 17h4"/>',
+      pause: '<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>',
+      flag: '<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>',
+      coin: '<circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/>',
+      clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+      up: '<path d="M7 11l5-6 5 6M12 5v14"/>',
+      down: '<path d="M7 13l5 6 5-6M12 19V5"/>',
+      check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+      heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+      chat: '<path d="M4 5h16v11H9l-5 4z"/>',
+      star: '<path d="M12 4l2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8z"/>',
+      moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/>',
+      calendar: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+      chart: '<path d="M4 20h16"/><path d="M7 16v-5M12 16V6M17 16v-8"/>',
+      users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2A5 5 0 0 1 21.5 19"/>',
+      bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/>',
+      image: '<rect x="3.5" y="4" width="17" height="16" rx="3.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="M20 15.5l-4.5-4.5L6 20"/>',
+      bowl: '<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/>',
+      tag: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/>',
+      wave: '<path d="M7 11V6a1.5 1.5 0 0 1 3 0v5M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 9a1.5 1.5 0 0 1 3 0v4a7 7 0 0 1-7 7h-1a7 7 0 0 1-6-3.5L3 13a1.5 1.5 0 0 1 2.5-1.5L7 13"/>',
+      muscle: '<path d="M4 15c2-6 5-9 8-9 1.5 0 2 1 1.5 2l-1.5 2c2 0 4 1 5 3 2 4-2 7-6 7-3 0-6-1-7-5z"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>',
+      medal: '<circle cx="12" cy="15" r="5"/><path d="M8.5 11L6 3h4l2 5 2-5h4l-2.5 8"/>',
+    };
+
+    function icon(name) {
+      return `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON_PATHS[name] || ""}</svg>`;
+    }
+
+    // ==========================================================
     // STREAK: hvor mange dage i træk man har logget
     // ==========================================================
     function currentStreak() {
@@ -13002,7 +13247,7 @@
       const streak = currentStreak();
       const el = document.getElementById("home-streak");
       el.classList.toggle("hidden", !streak);
-      el.textContent = t(streak === 1 ? "streak.one" : "streak.many", { n: streak });
+      el.innerHTML = `${icon("flame")} ${t(streak === 1 ? "streak.one" : "streak.many", { n: streak })}`;
     }
 
     // ==========================================================
@@ -13019,13 +13264,13 @@
       const on = isSmoking(myProfile);
       btn.classList.toggle("active", on);
       if (!on) {
-        btn.innerHTML = `<span>💨</span><strong>${t("now.start")}</strong>`;
+        btn.innerHTML = `<span>${icon("smoke")}</span><strong>${t("now.start")}</strong>`;
         return;
       }
       const left = Math.max(0, myProfile.smokingUntil - Date.now());
       const h = Math.floor(left / HOUR);
       const m = Math.round((left % HOUR) / 60e3);
-      btn.innerHTML = `<span>💨</span><strong>${t("now.on")}</strong><small>${t("now.left", { h, m })}</small>`;
+      btn.innerHTML = `<span>${icon("smoke")}</span><strong>${t("now.on")}</strong><small>${t("now.left", { h, m })}</small>`;
     }
 
     document.getElementById("smoking-btn").addEventListener("click", () => {
@@ -13108,15 +13353,15 @@
           <div class="sesh">
             <div class="sesh-head">
               <strong>${host ? t("sesh.yours") : t("sesh.from", { name: esc(personName(x.host, x.hostName)) })}</strong>
-              <small>🕒 ${esc(seshTime(x.time))}${x.place ? ` · 📍 ${esc(x.place)}` : ""}</small>
+              <small>${icon("clock")} ${esc(seshTime(x.time))}${x.place ? ` · ${icon("pin")} ${esc(x.place)}` : ""}</small>
               ${x.note ? `<p>${esc(x.note)}</p>` : ""}
             </div>
-            <p class="sesh-count">👍 ${yes.length} · 👎 ${no.length}${names ? ` · ${esc(names)}` : ""}</p>
+            <p class="sesh-count">${t("sesh.yesN", { n: yes.length })} · ${t("sesh.noN", { n: no.length })}${names ? ` · ${esc(names)}` : ""}</p>
             ${host
               ? `<button type="button" class="link-btn danger small" data-sesh-cancel="${esc(x.id)}">${t("sesh.cancel")}</button>`
               : `<div class="sesh-answer">
-                  <button type="button" class="${mine === "yes" ? "on" : ""}" data-sesh="${esc(x.id)}" data-answer="yes">👍 ${t("sesh.yes")}</button>
-                  <button type="button" class="${mine === "no" ? "on" : ""}" data-sesh="${esc(x.id)}" data-answer="no">👎 ${t("sesh.no")}</button>
+                  <button type="button" class="${mine === "yes" ? "on" : ""}" data-sesh="${esc(x.id)}" data-answer="yes">${icon("check")} ${t("sesh.yes")}</button>
+                  <button type="button" class="${mine === "no" ? "on" : ""}" data-sesh="${esc(x.id)}" data-answer="no">${t("sesh.no")}</button>
                 </div>`}
           </div>`;
       }).join("");
@@ -13151,7 +13396,7 @@
       seshForm.elements.time.value = localInputValue(soon);
       seshForm.elements.spot.innerHTML = `<option value="">${t("sesh.anyPlace")}</option>` + benches
         .slice().sort((a, b) => (a.name || "").localeCompare(b.name || ""))
-        .map((b) => `<option value="${esc(b.name || "")}">📍 ${esc(b.name || "")}</option>`).join("");
+        .map((b) => `<option value="${esc(b.name || "")}">${esc(b.name || "")}</option>`).join("");
       sheetBackdrop.classList.remove("hidden");
       seshForm.classList.remove("hidden");
     }
@@ -13243,17 +13488,17 @@
       const myCheers = cheers.filter((c) => c.createdAt >= tb.start).slice(0, 5);
       card.classList.remove("hidden");
       card.innerHTML = `
-        <small class="eyebrow">⏸️ ${t("tbm.label")}</small>
+        <small class="eyebrow">${icon("pause")} ${t("tbm.label")}</small>
         <div class="tbm-count">
           <strong>${days}</strong>
           <span>${t(days === 1 ? "tbm.day1" : "tbm.days")}<br><small>${left ? t("tbm.left", { n: left, goal }) : t("tbm.done", { goal })}</small></span>
         </div>
         <div class="progress"><span style="width:${pct}%"></span></div>
-        ${milestone ? `<p class="tbm-milestone">🏁 ${t("tbm.m" + milestone)}</p>` : `<p class="tbm-milestone">💪 ${t("tbm.m0")}</p>`}
-        ${saved ? `<p class="tbm-saved">💰 ${t("tbm.saved", { kr: saved })}</p>` : ""}
+        <p class="tbm-milestone">${icon("flag")} ${t("tbm.m" + (milestone || 0))}</p>
+        ${saved ? `<p class="tbm-saved">${icon("coin")} ${t("tbm.saved", { kr: saved })}</p>` : ""}
         ${myCheers.length && markSectionSeenLater("cheers") ? `
           <div class="tbm-cheers">
-            ${myCheers.map((c) => `<p>${esc(c.emoji || "💪")} <strong>${esc(personName(c.from, c.fromName))}</strong> ${t("tbm.cheered")}</p>`).join("")}
+            ${myCheers.map((c) => `<p>${icon("heart")} <strong>${esc(personName(c.from, c.fromName))}</strong> ${t("tbm.cheered")}</p>`).join("")}
           </div>` : ""}
         <button type="button" class="btn-plain" id="tbreak-end">${t(left ? "tbm.stop" : "tbm.finish")}</button>`;
       document.getElementById("tbreak-end").addEventListener("click", endTBreak);
@@ -13325,7 +13570,7 @@
       { id: "dt_done", icon: "💥", da: ["Double Trouble", "Spil et spil Double Trouble"], en: ["Double Trouble", "Play a game of Double Trouble"], ok: (c) => c.games.dt >= 1 },
       { id: "quiz_master", icon: "🧠", da: ["Quiz-mester", "Få 5 rigtige i en quiz"], en: ["Quiz master", "Get 5 right in one quiz"], ok: (c) => c.quizBest >= 5 },
       { id: "checklist_25", icon: "✅", da: ["Smagt 25 sorter", "Kryds 25 sorter af i tjeklisten"], en: ["Tasted 25 strains", "Tick off 25 strains in the checklist"], ok: (c) => c.strains >= 25 },
-      { id: "challenge", icon: "🏆", da: ["Ugens helt", "Klar en ugentlig udfordring"], en: ["Hero of the week", "Complete a weekly challenge"], ok: (c) => c.challenges >= 1 },
+      { id: "challenge", icon: "🏆", da: ["Dagens helt", "Klar en daglig udfordring"], en: ["Hero of the day", "Complete a daily challenge"], ok: (c) => c.challenges >= 1 },
       { id: "rank_top", icon: "👑", da: ["Ganja God", "Nå den højeste rank"], en: ["Ganja God", "Reach the top rank"], ok: (c) => c.rank >= 7 },
     ];
 
@@ -13393,8 +13638,8 @@
       document.getElementById("profile-badges").innerHTML = `
         <details class="badges-card">
           <summary>
-            <h3>🏅 ${t("badge.title")} <small>${n}/${BADGES.length}</small></h3>
-            <div class="badge-row">${BADGES.filter((b) => earned[b.id]).map((b) => `<span>${b.icon}</span>`).join("") || `<small class="muted">${t("badge.none")}</small>`}</div>
+            <h3>${icon("medal")} ${t("badge.title")} <small>${n}/${BADGES.length}</small></h3>
+            <div class="badge-row">${BADGES.filter((b) => earned[b.id]).map((b) => `<span>${b.icon}</span>`).join("") || `<small class="muted badge-none">${t("badge.none")}</small>`}</div>
           </summary>
           ${badgesHTML(earned, true)}
         </details>`;
@@ -13413,46 +13658,78 @@
     }
 
     // ==========================================================
-    // UGENS UDFORDRING: samme for alle, giver bonus-XP
+    // DAGENS UDFORDRING: samme for alle, ny hver dag, giver bonus-XP
     // ==========================================================
-    function weekStart(time = Date.now()) {
-      const d = new Date(dayStart(time));
-      const back = (d.getDay() + 6) % 7;   // mandag = 0
-      d.setDate(d.getDate() - back);
-      return d.getTime();
+    // "check" = appen tjekker selv dagens smoke seshs osv.
+    // Uden "check" trykker man selv "Klaret", når man har logget i dag.
+    function todayStart() {
+      return dayStart(Date.now());
     }
 
-    function weekKey(time = Date.now()) {
-      return "w" + Math.round(weekStart(time) / DAY);
+    function todayKey() {
+      return "d" + Math.round(todayStart() / DAY);
     }
+
+    const todayLogs = () => logEntries.filter((e) => entryTime(e) >= todayStart());
 
     const CHALLENGES = [
-      { id: "logs5", xp: 150, goal: 5, da: "Log 5 smoke seshs", en: "Log 5 smoke seshes",
-        progress: (w) => logEntries.filter((e) => entryTime(e) >= w).length },
-      { id: "grams3", xp: 150, goal: 3, da: "Ryg 3 gram i alt", en: "Smoke 3 grams in total",
-        progress: (w) => Math.floor(logEntries.filter((e) => entryTime(e) >= w).reduce((s, e) => s + (Number(e.grams) || 0), 0) * 10) / 10 },
-      { id: "methods3", xp: 120, goal: 3, da: "Prøv 3 forskellige metoder", en: "Try 3 different methods",
-        progress: (w) => new Set(logEntries.filter((e) => entryTime(e) >= w).map((e) => e.method)).size },
-      { id: "days4", xp: 150, goal: 4, da: "Smoke på 4 forskellige dage", en: "Smoke on 4 different days",
-        progress: (w) => new Set(logEntries.filter((e) => entryTime(e) >= w).map((e) => dayStart(entryTime(e)))).size },
-      { id: "weekend", xp: 100, goal: 2, da: "Log en smoke både lørdag og søndag", en: "Log a smoke on both Saturday and Sunday",
-        progress: (w) => new Set(logEntries.filter((e) => entryTime(e) >= w && [0, 6].includes(new Date(entryTime(e)).getDay())).map((e) => new Date(entryTime(e)).getDay())).size },
-      { id: "hash2", xp: 120, goal: 2, da: "Log hash eller koncentrat 2 gange", en: "Log hash or concentrate twice",
-        progress: (w) => logEntries.filter((e) => entryTime(e) >= w && ["hash", "concentrate"].includes(e.product)).length },
-      { id: "roll", xp: 100, goal: 1, da: "Del en roll i Rate the Roll", en: "Share a roll in Rate the Roll",
-        progress: (w) => rolls.filter((r) => r.author === currentUserKey() && r.createdAt >= w).length },
-      { id: "munch", xp: 80, goal: 1, da: "Del dine munchies", en: "Share your munchies",
-        progress: (w) => munchies.filter((m) => m.author === currentUserKey() && m.createdAt >= w).length },
-      { id: "sesh", xp: 100, goal: 1, da: "Inviter vennerne til en sesh", en: "Invite your friends to a sesh",
-        progress: (w) => seshes.filter((x) => x.host === currentUserKey() && x.createdAt >= w).length },
-      { id: "game", xp: 80, goal: 1, da: "Spil et spil fra Games of Joints", en: "Play a game from Games of Joints",
-        progress: (w) => ((myProfile && myProfile.lastGameAt) || 0) >= w ? 1 : 0 },
+      { id: "troldmand", xp: 100, da: "Ryg en troldmand", en: "Smoke a wizard joint" },
+      { id: "cone", xp: 60, da: "Rul og ryg en cone", en: "Roll and smoke a cone" },
+      { id: "tulip", xp: 100, da: "Rul og ryg en tulip-joint", en: "Roll and smoke a tulip joint" },
+      { id: "cross", xp: 120, da: "Rul og ryg en cross joint", en: "Roll and smoke a cross joint" },
+      { id: "bob", xp: 80, da: "Lav en lang Bob Marley", en: "Do a long Bob Marley" },
+      { id: "chimney", xp: 60, da: "Tag en skorsten", en: "Do a chimney" },
+      { id: "rings", xp: 60, da: "Lav 3 røgringe", en: "Blow 3 smoke rings" },
+      { id: "blunt", xp: 80, da: "Ryg en blunt", en: "Smoke a blunt" },
+      { id: "speedroll", xp: 60, da: "Rul en joint på under 2 minutter", en: "Roll a joint in under 2 minutes" },
+      { id: "newspot", xp: 70, da: "Ryg et nyt sted, du aldrig har røget før", en: "Smoke somewhere you've never smoked before" },
+      { id: "logs2", xp: 60, da: "Log 2 smoke seshs i dag", en: "Log 2 smoke seshes today", goal: 2,
+        check: () => todayLogs().length },
+      { id: "gram1", xp: 80, da: "Ryg 1 gram i dag", en: "Smoke 1 gram today", goal: 1,
+        check: () => Math.floor(todayLogs().reduce((s, e) => s + (Number(e.grams) || 0), 0) * 10) / 10 },
+      { id: "bong", xp: 60, da: "Tag et bong-hit og log det", en: "Take a bong hit and log it", goal: 1,
+        check: () => todayLogs().filter((e) => e.method === "bong").length },
+      { id: "roll", xp: 70, da: "Del en roll i Rate the Roll", en: "Share a roll in Rate the Roll", goal: 1,
+        check: () => rolls.filter((r) => r.author === currentUserKey() && r.createdAt >= todayStart()).length },
+      { id: "game", xp: 60, da: "Spil et spil fra Games of Joints", en: "Play a game from Games of Joints", goal: 1,
+        check: () => (((myProfile && myProfile.lastGameAt) || 0) >= todayStart() ? 1 : 0) },
+      { id: "sesh", xp: 70, da: "Inviter vennerne til en sesh", en: "Invite your friends to a sesh", goal: 1,
+        check: () => seshes.filter((x) => x.host === currentUserKey() && x.createdAt >= todayStart()).length },
     ];
 
+    // Udfordringerne kommer i en blandet rækkefølge, så alle er med, før
+    // nogen kommer igen. Rækkefølgen er den samme for alle.
+    function seededOrder(seed) {
+      let x = seed * 2654435761 % 4294967296 || 1;
+      const rand = () => {
+        x = (x * 1103515245 + 12345) % 2147483648;
+        return x / 2147483648;
+      };
+      const order = CHALLENGES.map((_, i) => i);
+      for (let i = order.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [order[i], order[j]] = [order[j], order[i]];
+      }
+      return order;
+    }
+
     function currentChallenge() {
-      const key = weekKey();
-      const index = dayHash(Number(key.slice(1))) % CHALLENGES.length;
-      return { key, ...CHALLENGES[index] };
+      const today = Math.round(todayStart() / DAY);
+      const n = CHALLENGES.length;
+      const cycle = Math.floor(today / n);
+      let order = seededOrder(cycle);
+      // Undgå samme udfordring to dage i træk, når en ny runde starter
+      if (today % n === 0 && order[0] === seededOrder(cycle - 1)[n - 1]) order = [...order.slice(1), order[0]];
+      return { key: todayKey(), ...CHALLENGES[order[today % n]] };
+    }
+
+    function completeChallenge(c) {
+      const entry = { id: c.id, xp: c.xp, at: Date.now() };
+      myProfile.challenges = { ...(myProfile.challenges || {}), [c.key]: entry };
+      showToast(t("ch.completed", { xp: c.xp }));
+      db.collection("profiles").doc(currentUserKey()).set({ challenges: { [c.key]: entry } }, { merge: true }).catch(() => {});
+      syncXp();
+      renderChallenge();
     }
 
     function renderChallenge() {
@@ -13460,27 +13737,37 @@
       if (!myProfile) return;
       const c = currentChallenge();
       const done = myProfile.challenges && myProfile.challenges[c.key];
-      const progress = Math.min(c.goal, c.progress(weekStart()));
-      const left = Math.ceil((weekStart() + 7 * DAY - Date.now()) / DAY);
+      const hours = Math.max(1, Math.ceil((todayStart() + DAY - Date.now()) / HOUR));
+      let status;
+      if (done) {
+        status = `<small class="muted">${t("ch.done")}</small>`;
+      } else if (c.check) {
+        const progress = Math.min(c.goal, c.check());
+        status = `
+          <div class="progress"><span style="width:${(progress / c.goal) * 100}%"></span></div>
+          <small class="muted">${t("ch.progress", { n: progress, goal: c.goal, hours })}</small>`;
+        if (progress >= c.goal && logsLoaded) setTimeout(() => completeChallenge(c), 0);
+      } else {
+        const canClaim = todayLogs().length > 0;
+        status = `
+          <small class="muted">${t(canClaim ? "ch.claimHelp" : "ch.logFirst", { hours })}</small>
+          <button type="button" class="btn-primary challenge-claim" data-claim ${canClaim ? "" : "disabled"}>${t("ch.claim")}</button>`;
+      }
       card.innerHTML = `
         <div class="challenge-head">
-          <small class="eyebrow">🏆 ${t("ch.title")}</small>
+          <small class="eyebrow">${icon("trophy")} ${t("ch.title")}</small>
           <span class="challenge-xp">+${c.xp} XP</span>
         </div>
         <strong>${esc(lang === "en" ? c.en : c.da)}</strong>
-        <div class="progress"><span style="width:${(progress / c.goal) * 100}%"></span></div>
-        <small class="muted">${done ? t("ch.done") : t("ch.progress", { n: progress, goal: c.goal, days: left })}</small>`;
+        ${status}`;
       card.classList.toggle("done", !!done);
-      // Klaret? Så får man XP med det samme
-      if (!done && progress >= c.goal && logsLoaded) {
-        const entry = { id: c.id, xp: c.xp, at: Date.now() };
-        myProfile.challenges = { ...(myProfile.challenges || {}), [c.key]: entry };
-        showToast(t("ch.completed", { xp: c.xp }));
-        db.collection("profiles").doc(currentUserKey()).set({ challenges: { [c.key]: entry } }, { merge: true }).catch(() => {});
-        syncXp();
-        renderChallenge();
-      }
     }
+
+    document.getElementById("challenge-card").addEventListener("click", (e) => {
+      if (!e.target.closest("[data-claim]")) return;
+      const c = currentChallenge();
+      if (myProfile && !(myProfile.challenges || {})[c.key]) completeChallenge(c);
+    });
 
     // ==========================================================
     // CHAT mellem venner
@@ -13682,10 +13969,10 @@
       if (!top.length) return "";
       return `
         <div class="top-strains">
-          <p class="leader-title">🌿 ${t("rev.top3")}</p>
+          <p class="leader-title">${t("rev.top3")}</p>
           ${top.map(([id, r], i) => `
             <div class="top-strain">
-              <span>${["🥇", "🥈", "🥉"][i]}</span>
+              <span class="lb-place">${i + 1}.</span>
               <span><strong>${esc(strainName(id))}</strong>${r.note ? `<small>${esc(r.note)}</small>` : ""}</span>
               <span class="stars">${starsText(r.stars)}</span>
             </div>`).join("")}
