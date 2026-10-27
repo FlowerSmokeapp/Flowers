@@ -2610,18 +2610,6 @@
       margin-top: 12px;
     }
 
-    .ai-run {
-      margin-top: 4px;
-      font-size: 18px;
-    }
-
-    .ai-status {
-      min-height: 20px;
-      margin: 10px 4px 14px;
-      color: var(--muted);
-      font-size: 14px;
-      text-align: center;
-    }
 
     .log-list {
       display: flex;
@@ -3062,6 +3050,136 @@
       transform: translate(-50%, 0);
       opacity: 1;
     }
+
+    /* ---------- Ranks ---------- */
+    .home-rank {
+      margin-top: 6px;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(111, 208, 143, 0.12);
+      border: 1px solid rgba(111, 208, 143, 0.3);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .person-rank {
+      margin: 6px 0 0;
+    }
+    .mini-rank {
+      font-size: 13px;
+    }
+    .rank-card {
+      margin: 0;
+    }
+    .rank-card summary {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      list-style: none;
+      cursor: pointer;
+    }
+    .rank-card summary::-webkit-details-marker {
+      display: none;
+    }
+    .rank-icon {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: rgba(111, 208, 143, 0.12);
+      font-size: 30px;
+    }
+    .rank-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .rank-info strong {
+      font-size: 18px;
+    }
+    .rank-info small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .rank-ladder {
+      list-style: none;
+      margin: 14px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+    }
+    .rank-ladder li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      opacity: 0.5;
+    }
+    .rank-ladder li.done {
+      opacity: 0.85;
+    }
+    .rank-ladder li.current {
+      opacity: 1;
+      background: rgba(111, 208, 143, 0.12);
+    }
+    .rank-ladder strong {
+      flex: 1;
+      font-size: 14px;
+    }
+    .rank-ladder small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .rank-help {
+      margin: 12px 0 0;
+      font-size: 12px;
+    }
+
+    /* ---------- T-Break prognose ---------- */
+    .forecast {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .forecast-row {
+      display: grid;
+      grid-template-columns: 64px 1fr 28px;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+    .forecast-row strong {
+      text-align: right;
+    }
+    .forecast-bar {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .forecast-bar span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--level, var(--accent));
+    }
+    .pause-empty {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -3284,7 +3402,7 @@
           <div class="view" data-view="pause">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title" data-i18n="hb.pause">T-Break beregner</h1>
-            <p class="private-note" data-i18n="ai.intro">AI'en bruger dine registreringer fra "Log en smoke" til at beregne, hvornår en pause giver mest mening for dig.</p>
+            <p class="private-note" data-i18n="ai.intro">Beregneren bruger dine registreringer fra "Log en smoke" til at regne din tolerance ud, og hvornår en pause giver mest mening for dig.</p>
 
             <!-- Seneste AI-beregning -->
             <div id="ai-result"></div>
@@ -3325,8 +3443,6 @@
             </details>
 
             <!-- Beregn -->
-            <button type="button" class="btn-primary ai-run" id="ai-run">✨ Beregn med AI</button>
-            <p class="ai-status" id="ai-status" aria-live="polite"></p>
             <p class="tbreak-count muted" id="tbreak-count"></p>
             <p class="pause-disclaimer" data-i18n="ai.disclaimer">T-Break beregneren er et estimat ud fra dine egne registreringer og ikke lægefaglig rådgivning. Er det svært at holde pause, så snak med din læge.</p>
           </div>
@@ -3382,6 +3498,7 @@
             <div>
               <p class="greeting" id="home-greeting"></p>
               <h1 class="page-title" id="home-name"></h1>
+              <button type="button" class="home-rank" id="home-rank" data-shortcut="profile"></button>
             </div>
             <span class="avatar avatar-md" id="home-avatar" data-shortcut="profile"></span>
           </header>
@@ -3454,6 +3571,7 @@
             </div>
             <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
           </div>
+          <div class="card" id="profile-rank"></div>
           <div class="card">
             <h3 data-i18n="profile.language">Sprog</h3>
             <div class="lang-toggle">
@@ -3754,7 +3872,7 @@
         "home.logTitle": "🌿 Log en smoke",
         "home.logCta": "Log en smoke",
         "home.logSub": "Hvor meget, hvordan og hvor skæv du blev",
-        "ai.intro": "AI'en bruger dine registreringer fra \"Log en smoke\" til at beregne, hvornår en pause giver mest mening for dig.",
+        "ai.intro": "Beregneren bruger dine registreringer fra \"Log en smoke\" til at regne din tolerance ud, og hvornår en pause giver mest mening for dig.",
         "ai.time": "Klokken",
         "ai.note": "Note (valgfrit)",
         "ai.notePh": "Hvad røg du, hvor og med hvem?",
@@ -3839,16 +3957,7 @@
         "ai.a.1_6m": "For 1-6 måneder siden",
         "ai.a.over_6m": "For over et halvt år siden",
         "ai.a.never": "Aldrig",
-        "ai.run": "✨ Beregn med AI",
-        "ai.thinking": "AI'en tænker…",
-        "ai.notSetUp": "AI'en er ikke sat op endnu. Den virker, når serveren er lagt op.",
-        "ai.err.not_logged_in": "Log ind igen og prøv en gang til.",
-        "ai.err.no_entries": "Registrér mindst én gang, du har røget, før AI'en kan regne.",
-        "ai.err.busy": "AI'en har travlt lige nu. Prøv igen om et øjeblik.",
-        "ai.err.refusal": "AI'en kunne ikke svare på det her. Prøv igen senere.",
-        "ai.err.server_key": "AI-serveren mangler sin nøgle.",
-        "ai.err.general": "Det lykkedes ikke at beregne. Tjek din internetforbindelse og prøv igen.",
-        "ai.resultLabel": "AI-beregning",
+        "ai.resultLabel": "Din tolerance",
         "ai.level.low": "Lav tolerance",
         "ai.level.moderate": "Moderat tolerance",
         "ai.level.high": "Høj tolerance",
@@ -3858,8 +3967,46 @@
         "ai.noBreak": "Ingen nødvendig",
         "ai.startOn": "Start",
         "ai.tips": "Tips til pausen",
-        "ai.calculated": "Beregnet {date}",
         "ai.myLogs": "Dine registreringer",
+        "tb.emptyTitle": "Ingen registreringer endnu",
+        "tb.emptyText": "Log dine smokes, så regner modellen ud, hvor høj din tolerance er, og hvornår en pause giver mest mening.",
+        "tb.headNone": "Din tolerance er lav. Ingen pause nødvendig lige nu 🌱",
+        "tb.headToday": "Start en pause på {n} dage i dag",
+        "tb.headDay": "Start en pause på {n} dage på {day}",
+        "tb.headKeep": "Stærkt! {days} dage uden. Hold {n} dage mere",
+        "tb.headKeep1": "Stærkt! {days} dage uden. Hold 1 dag mere",
+        "tb.headDone": "Din tolerance er nulstillet 🎉",
+        "tb.freq": "Du har røget {n} af de sidste 14 dage.",
+        "tb.dose": "På en dag, hvor du ryger, optager kroppen ca. {mg} mg THC.",
+        "tb.potent": "Mange af dine registreringer er hash eller koncentrat, som bygger tolerance hurtigere op.",
+        "tb.trendDown": "Du bliver mindre skæv af den samme mængde end før. Det er et klart tegn på stigende tolerance.",
+        "tb.trendUp": "Du bliver mere skæv af den samme mængde end før, så tolerancen er på vej ned.",
+        "tb.recovery": "Uden at ryge er din tolerance lav igen om ca. {n} dage.",
+        "tb.recoveryNone": "Din tolerance er allerede lav.",
+        "tb.pattern": "Du ryger mest om {day}en, oftest om {part} og helst {method}.",
+        "tb.part.morning": "morgenen",
+        "tb.part.afternoon": "eftermiddagen",
+        "tb.part.evening": "aftenen",
+        "tb.part.night": "natten",
+        "tb.more": "Du har røget {pct}% mere end ugen før.",
+        "tb.less": "Du har røget {pct}% mindre end ugen før.",
+        "tb.tip.evening": "Find en ny aftenrutine, fx en gåtur, træning eller en serie, de første aftener.",
+        "tb.tip.weekend": "Planlæg noget sjovt i weekenden, hvor du plejer at ryge mest.",
+        "tb.tip.taper": "Trap ned over et par dage før pausen, så den bliver nemmere.",
+        "tb.tip.sleep": "Søvnen kan være urolig de første nætter. Det går over efter en uges tid.",
+        "tb.tip.friend": "Fortæl en ven om pausen, så I kan holde hinanden oppe.",
+        "tb.tip.gear": "Læg grej og rester væk, så de ikke frister.",
+        "tb.tip.doctor": "Er det svært at holde pause, så snak med din læge. Det er helt normalt at få hjælp.",
+        "tb.forecast": "Din tolerance, hvis du holder pause fra nu",
+        "tb.after": "{n} dage",
+        "tb.left": "Dage tilbage",
+        "tb.started": "Pausen startede",
+        "tb.updated": "Opdateres automatisk, hver gang du logger en smoke.",
+        "rank.level": "Level {n} af 8",
+        "rank.next": "{xp} XP · {need} XP til {name}",
+        "rank.max": "{xp} XP · Du har nået den højeste rank 👑",
+        "rank.help": "Du får 10 XP for hver registrering, 5 XP for hver gang du har røget og 15 XP for hver dag, du holder pause. Så du stiger både ved at logge og ved at holde pauser.",
+        "db.rules": "Databasen afviste det. Reglerne i Firebase skal opdateres.",
         "ai.times1": "1 gang",
         "ai.timesN": "{n} gange",
         "home.heroText": "Saml vennerne, slå med terningen og se, hvor du lander.",
@@ -4051,7 +4198,7 @@
         "home.logTitle": "🌿 Log a smoke",
         "home.logCta": "Log a smoke",
         "home.logSub": "How much, how and how high you got",
-        "ai.intro": "The AI uses what you've logged with \"Log a smoke\" to work out when a break makes the most sense for you.",
+        "ai.intro": "The calculator uses what you've logged with \"Log a smoke\" to work out your tolerance and when a break makes the most sense for you.",
         "ai.time": "Time",
         "ai.note": "Note (optional)",
         "ai.notePh": "What did you smoke, where and with who?",
@@ -4136,16 +4283,7 @@
         "ai.a.1_6m": "1-6 months ago",
         "ai.a.over_6m": "More than six months ago",
         "ai.a.never": "Never",
-        "ai.run": "✨ Calculate with AI",
-        "ai.thinking": "The AI is thinking…",
-        "ai.notSetUp": "The AI isn't set up yet. It will work once the server is online.",
-        "ai.err.not_logged_in": "Log in again and try once more.",
-        "ai.err.no_entries": "Log at least one session before the AI can calculate.",
-        "ai.err.busy": "The AI is busy right now. Try again in a moment.",
-        "ai.err.refusal": "The AI couldn't answer this. Try again later.",
-        "ai.err.server_key": "The AI server is missing its key.",
-        "ai.err.general": "The calculation didn't work. Check your internet connection and try again.",
-        "ai.resultLabel": "AI result",
+        "ai.resultLabel": "Your tolerance",
         "ai.level.low": "Low tolerance",
         "ai.level.moderate": "Moderate tolerance",
         "ai.level.high": "High tolerance",
@@ -4155,8 +4293,46 @@
         "ai.noBreak": "Not needed",
         "ai.startOn": "Start",
         "ai.tips": "Tips for your break",
-        "ai.calculated": "Calculated {date}",
         "ai.myLogs": "Your logs",
+        "tb.emptyTitle": "Nothing logged yet",
+        "tb.emptyText": "Log your smokes and the model works out how high your tolerance is and when a break makes the most sense.",
+        "tb.headNone": "Your tolerance is low. No break needed right now 🌱",
+        "tb.headToday": "Start a {n} day break today",
+        "tb.headDay": "Start a {n} day break on {day}",
+        "tb.headKeep": "Nice! {days} days without. Keep going {n} more days",
+        "tb.headKeep1": "Nice! {days} days without. Keep going 1 more day",
+        "tb.headDone": "Your tolerance has reset 🎉",
+        "tb.freq": "You've smoked on {n} of the last 14 days.",
+        "tb.dose": "On a day you smoke, your body takes in about {mg} mg of THC.",
+        "tb.potent": "A lot of your logs are hash or concentrate, which build tolerance faster.",
+        "tb.trendDown": "You get less high from the same amount than before. That's a clear sign of rising tolerance.",
+        "tb.trendUp": "You get higher from the same amount than before, so your tolerance is going down.",
+        "tb.recovery": "Without smoking, your tolerance will be low again in about {n} days.",
+        "tb.recoveryNone": "Your tolerance is already low.",
+        "tb.pattern": "You smoke most on {day}s, usually in the {part} and mostly {method}.",
+        "tb.part.morning": "morning",
+        "tb.part.afternoon": "afternoon",
+        "tb.part.evening": "evening",
+        "tb.part.night": "night",
+        "tb.more": "You smoked {pct}% more than the week before.",
+        "tb.less": "You smoked {pct}% less than the week before.",
+        "tb.tip.evening": "Find a new evening routine for the first nights, like a walk, a workout or a series.",
+        "tb.tip.weekend": "Plan something fun for the weekend, when you usually smoke the most.",
+        "tb.tip.taper": "Taper off over a few days before the break to make it easier.",
+        "tb.tip.sleep": "Your sleep might be restless the first nights. It passes after about a week.",
+        "tb.tip.friend": "Tell a friend about your break so you can keep each other going.",
+        "tb.tip.gear": "Put your gear and leftovers away so they don't tempt you.",
+        "tb.tip.doctor": "If taking a break is hard, talk to your doctor. Getting help is completely normal.",
+        "tb.forecast": "Your tolerance if you take a break from now",
+        "tb.after": "{n} days",
+        "tb.left": "Days left",
+        "tb.started": "Break started",
+        "tb.updated": "Updates automatically every time you log a smoke.",
+        "rank.level": "Level {n} of 8",
+        "rank.next": "{xp} XP · {need} XP to {name}",
+        "rank.max": "{xp} XP · You've reached the top rank 👑",
+        "rank.help": "You get 10 XP for each log, 5 XP for each time you smoked and 15 XP for each day you take a break. So you level up both by logging and by taking breaks.",
+        "db.rules": "The database refused it. The rules in Firebase need updating.",
         "ai.times1": "1 time",
         "ai.timesN": "{n} times",
         "home.heroText": "Gather your friends, roll the die and see where you land.",
@@ -4799,7 +4975,7 @@
           worldCopyJump: true,
           minZoom: 2,
           maxZoom: 21,
-        }).setView([30, 10], 2);
+        }).setView([56.2, 10.6], 6);
 
         // Satellitbilleder + et tyndt lag med by- og landenavne ovenpå
         L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
@@ -4883,6 +5059,8 @@
         myLocationMarker.setLatLng(myLatLng);
         return;
       }
+      // Første gang vi kender placeringen: zoom ind tæt på mig
+      map.setView(myLatLng, 15);
       myLocationMarker = L.marker(myLatLng, {
         icon: L.divIcon({ className: "me-pin", html: '<span class="me-dot"></span>', iconSize: [22, 22], iconAnchor: [11, 11] }),
         interactive: false,
@@ -5308,7 +5486,7 @@
         <div class="person" data-uid="${esc(profile.id)}" role="button" tabindex="0">
           <span class="avatar avatar-sm">${avatarHTML(profile)}</span>
           <span class="person-text">
-            <strong>${esc(profile.name)}</strong>
+            <strong>${esc(profile.name)} <span class="mini-rank" title="${RANKS[rankIndex(profile.xp)].name}">${RANKS[rankIndex(profile.xp)].icon}</span></strong>
             <small>${esc(profile.bio || "")}</small>
           </span>
           ${extra || '<span class="chevron">›</span>'}
@@ -5475,6 +5653,7 @@
           <div class="avatar avatar-lg">${avatarHTML(p)}</div>
           <h2>${esc(p.name)}</h2>
           <p class="muted">${p.createdAt ? t("profile.since", { date: formatDate(p.createdAt) }) : "Smoker"}</p>
+          <p class="person-rank">${rankBadge(p.xp)}</p>
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
           <div class="stats single">
             <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
@@ -6351,19 +6530,15 @@
     // Registreringerne gemmes i logs/{mit id}/entries, som kun jeg kan læse.
     // T-Break-beregningen laves af Claude via vores egen lille server
     // (ai-server/), som holder API-nøglen hemmelig og tjekker, at man er logget ind.
-    const AI_URL = "";   // adressen på serveren, sættes når den er lagt op
     const logForm = document.getElementById("log-form");
     const logList = document.getElementById("log-list");
     const statsEl = document.getElementById("stats-content");
     const aiResult = document.getElementById("ai-result");
-    const aiButton = document.getElementById("ai-run");
-    const aiStatus = document.getElementById("ai-status");
     const logPhotoInput = document.getElementById("log-photo-input");
     const logPhotoPreview = document.getElementById("log-photo-preview");
     const logPhotoText = document.getElementById("log-photo-text");
     let logEntries = [];
     let aiProfile = {};
-    let lastAnalysis = null;
     let logUnsubs = [];
     let logTimes = 1;
     let logMethod = "joint";
@@ -6405,17 +6580,16 @@
       if (logUnsubs.length) return;
       const onError = (error) => console.error(error);
       logUnsubs = [
-        logsDoc().collection("entries").orderBy("date", "desc").limit(120).onSnapshot((snap) => {
+        logsDoc().collection("entries").orderBy("date", "desc").onSnapshot((snap) => {
           logEntries = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          syncXp();
           renderStats();
           renderTBreak();
           updateDriveTimers();
         }, onError),
-        // Mine svar under "Om dig" og den seneste T-Break-beregning
+        // Mine svar under "Om dig"
         logsDoc().onSnapshot((doc) => {
-          const data = doc.exists ? doc.data() : {};
-          aiProfile = data.profile || {};
-          lastAnalysis = data.lastAnalysis || null;
+          aiProfile = (doc.exists && doc.data().profile) || {};
           renderTBreak();
         }, onError),
       ];
@@ -6426,7 +6600,7 @@
       logUnsubs = [];
       logEntries = [];
       aiProfile = {};
-      lastAnalysis = null;
+      myXp = 0;
     }
 
     // ---------- Skemaet "Log en smoke" ----------
@@ -6530,15 +6704,190 @@
         showToast(t("ai.saved"));
       } catch (error) {
         console.error(error);
-        setError(logForm, t("friends.failed"));
+        setError(logForm, dbErrorText(error));
       } finally {
         setBusy(logForm, false);
       }
     });
 
     // ==========================================================
-    // T-BREAK-BEREGNER (AI)
+    // T-BREAK-BEREGNER: avanceret model, der kører gratis i appen
     // ==========================================================
+    // 1. Hver registrering omregnes til den mængde THC, kroppen anslået
+    //    optager: gram × styrke (THC % eller typisk styrke for produktet)
+    //    × hvor meget der optages ved metoden.
+    // 2. Tolerancen består af to dele: en hurtig, der falder på få dage,
+    //    og en langsom, der tager uger om at forsvinde.
+    // 3. Bliver man mindre skæv pr. mg THC over tid, er det et tegn på
+    //    stigende tolerance, og scoren justeres op.
+    // 4. Svarene under "Om dig" justerer score og anbefaling.
+    const POTENCY = { flower: 0.18, hash: 0.3, concentrate: 0.7, edible: 0.01, other: 0.18 };
+    const ABSORPTION = { joint: 0.25, spliff: 0.2, bong: 0.35, pipe: 0.3, vape: 0.4, dab: 0.45, edible: 0.15 };
+    const FAST_DAYS = 2;       // den hurtige del af tolerancen (dage)
+    const SLOW_DAYS = 7;       // den langsomme del af tolerancen (dage)
+    const SCORE_SCALE = 250;   // mg optaget THC, der giver en score på ca. 63
+    const LOW_SCORE = 20;      // under denne score er tolerancen lav
+    const BREAK_STEPS = [0, 2, 7, 14, 21, 28];
+
+    function doseMg(entry) {
+      const potency = entry.thc ? entry.thc / 100 : POTENCY[entry.product] ?? POTENCY.flower;
+      const absorption = ABSORPTION[entry.method] ?? ABSORPTION.joint;
+      return (Number(entry.grams) || 0) * 1000 * potency * absorption;
+    }
+
+    function toleranceLoad(entries, time) {
+      return entries.reduce((sum, e) => {
+        const age = (time - entryTime(e)) / DAY;
+        if (age < 0) return sum;
+        return sum + doseMg(e) * (0.4 * Math.exp(-age / FAST_DAYS) + 0.6 * Math.exp(-age / SLOW_DAYS));
+      }, 0);
+    }
+
+    function loadToScore(load) {
+      return 100 * (1 - Math.exp(-load / SCORE_SCALE));
+    }
+
+    // Hvor meget ændrer "skæv pr. mg" sig pr. uge (negativ = tolerancen stiger)
+    function highTrend(entries) {
+      const points = entries
+        .filter((e) => entryTime(e) > Date.now() - 42 * DAY && doseMg(e) > 0)
+        .map((e) => ({ x: entryTime(e) / (7 * DAY), y: (e.high || 5) / doseMg(e) }));
+      if (points.length < 4) return 0;
+      const mx = points.reduce((s, p) => s + p.x, 0) / points.length;
+      const my = points.reduce((s, p) => s + p.y, 0) / points.length;
+      const sxx = points.reduce((s, p) => s + (p.x - mx) ** 2, 0);
+      if (!sxx || !my) return 0;
+      const slope = points.reduce((s, p) => s + (p.x - mx) * (p.y - my), 0) / sxx;
+      return slope / my;
+    }
+
+    function mostCommon(list) {
+      const counts = {};
+      list.forEach((v) => { counts[v] = (counts[v] || 0) + 1; });
+      return Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+    }
+
+    function dayName(index) {
+      // 4. januar 1970 var en søndag (indeks 0)
+      return new Date(Date.UTC(1970, 0, 4 + index)).toLocaleDateString(t("locale"), { weekday: "long", timeZone: "UTC" });
+    }
+
+    function analyseTBreak() {
+      if (!logEntries.length) return null;
+      const now = Date.now();
+      const entries = logEntries;
+      const load = toleranceLoad(entries, now);
+      const trend = highTrend(entries);
+
+      // Justeringer ud fra "skæv pr. mg" og svarene under "Om dig"
+      let adjust = 0;
+      if (trend < -0.1) adjust += Math.min(12, -trend * 40);
+      else if (trend > 0.1) adjust -= 5;
+      if (aiProfile.since === "over_3y") adjust += 4;
+      if (aiProfile.lastBreak === "never") adjust += 4;
+      if (aiProfile.lastBreak === "last_month") adjust -= 4;
+      // Justeringen fylder mindre, jo lavere tolerancen er, så den kan nå ned på 0
+      const scoreAt = (days) => {
+        const base = loadToScore(toleranceLoad(entries, now + days * DAY));
+        return Math.round(Math.max(0, Math.min(100, base + adjust * Math.min(1, base / 40))));
+      };
+      const score = scoreAt(0);
+      const level = score < 25 ? "low" : score < 50 ? "moderate" : score < 75 ? "high" : "very_high";
+
+      // Hvor mange dages pause, før tolerancen er lav igen
+      let daysToLow = 0;
+      while (daysToLow < 60 && scoreAt(daysToLow) > LOW_SCORE) daysToLow++;
+      let breakDays = BREAK_STEPS.find((step) => step >= daysToLow) ?? 28;
+      if (aiProfile.goal === "take_break") breakDays = Math.max(breakDays, 7);
+      if (aiProfile.goal === "quit") breakDays = Math.max(breakDays, 28);
+      if (aiProfile.goal === "keep_low" && breakDays === 0 && score >= 15) breakDays = 2;
+
+      const lastTime = Math.max(...entries.map(entryTime));
+      const daysSince = Math.floor((now - lastTime) / DAY);
+      const onBreak = daysSince >= 1;
+
+      // Mønster de sidste 30 dage
+      const month = entries.filter((e) => entryTime(e) > now - 30 * DAY);
+      const perWeekday = [0, 1, 2, 3, 4, 5, 6].map((wd) =>
+        month.filter((e) => new Date(entryTime(e)).getDay() === wd).reduce((s, e) => s + (e.times || 1), 0));
+      const calmest = perWeekday.indexOf(Math.min(...perWeekday));
+      const busiest = perWeekday.indexOf(Math.max(...perWeekday));
+      const hourPart = (h) => (h < 5 ? "night" : h < 12 ? "morning" : h < 18 ? "afternoon" : "evening");
+      const part = mostCommon(month.map((e) => hourPart(new Date(entryTime(e)).getHours()))) || "evening";
+      const topMethod = mostCommon(month.map((e) => e.method)) || "joint";
+      const useDays14 = new Set(entries.filter((e) => entryTime(e) > now - 14 * DAY).map((e) => e.date)).size;
+      const strongShare = month.length
+        ? month.filter((e) => ["hash", "concentrate"].includes(e.product)).length / month.length
+        : 0;
+      const useDays30 = new Set(month.map((e) => e.date)).size;
+      const mgPerUseDay = useDays30 ? month.reduce((s, e) => s + doseMg(e), 0) / useDays30 : 0;
+      const doseIn = (from, to) => entries
+        .filter((e) => entryTime(e) > now - from * DAY && entryTime(e) <= now - to * DAY)
+        .reduce((s, e) => s + doseMg(e), 0);
+      const thisWeek = doseIn(7, 0);
+      const lastWeek = doseIn(14, 7);
+      const change = lastWeek ? (thisWeek - lastWeek) / lastWeek : null;
+
+      // Bedste startdag
+      const today = new Date();
+      today.setHours(12, 0, 0, 0);
+      let start = today;
+      if (onBreak) start = new Date(lastTime + DAY);
+      else if (breakDays && level !== "high" && level !== "very_high") {
+        const ahead = (calmest - today.getDay() + 7) % 7;
+        start = new Date(today.getTime() + ahead * DAY);
+      }
+      const startISO = `${start.getFullYear()}-${pad2(start.getMonth() + 1)}-${pad2(start.getDate())}`;
+
+      // Overskrift
+      let headline;
+      if (onBreak && daysToLow > 0) headline = t(daysToLow === 1 ? "tb.headKeep1" : "tb.headKeep", { n: daysToLow, days: daysSince });
+      else if (onBreak) headline = t("tb.headDone");
+      else if (!breakDays) headline = t("tb.headNone");
+      else if (start.getTime() === today.getTime()) headline = t("tb.headToday", { n: breakDays });
+      else headline = t("tb.headDay", { n: breakDays, day: dayName(start.getDay()) });
+
+      // Forklaring: de vigtigste grunde
+      const reasons = [t("tb.freq", { n: useDays14 })];
+      if (mgPerUseDay) reasons.push(t("tb.dose", { mg: Math.round(mgPerUseDay) }));
+      if (strongShare > 0.4) reasons.push(t("tb.potent"));
+      if (trend < -0.1) reasons.push(t("tb.trendDown"));
+      else if (trend > 0.1) reasons.push(t("tb.trendUp"));
+      reasons.push(daysToLow ? t("tb.recovery", { n: daysToLow }) : t("tb.recoveryNone"));
+
+      let pattern = t("tb.pattern", {
+        day: dayName(busiest),
+        part: t("tb.part." + part),
+        method: t("ai.method." + topMethod).toLowerCase(),
+      });
+      if (change !== null && Math.abs(change) >= 0.2) {
+        pattern += " " + t(change > 0 ? "tb.more" : "tb.less", { pct: Math.round(Math.abs(change) * 100) });
+      }
+
+      // Tips, der passer til mønsteret
+      const tips = [];
+      if (part === "evening" || part === "night") tips.push(t("tb.tip.evening"));
+      if ([5, 6, 0].includes(busiest)) tips.push(t("tb.tip.weekend"));
+      if (strongShare > 0.4 || mgPerUseDay > 60) tips.push(t("tb.tip.taper"));
+      tips.push(t("tb.tip.sleep"));
+      tips.push(t("tb.tip.friend"));
+      tips.push(t("tb.tip.gear"));
+      if (aiProfile.goal === "quit" || level === "very_high") tips.unshift(t("tb.tip.doctor"));
+
+      return {
+        tolerance_score: score,
+        tolerance_level: level,
+        break_days: onBreak ? daysToLow : breakDays,
+        start_date: startISO,
+        headline,
+        explanation: reasons.join(" "),
+        pattern,
+        tips: tips.slice(0, 4),
+        forecast: [2, 7, 14, 28].map((d) => ({ days: d, score: scoreAt(d) })),
+        onBreak,
+      };
+    }
+
     function renderAiProfile() {
       document.querySelectorAll("[data-profile-field]").forEach((select) => {
         select.value = aiProfile[select.dataset.profileField] || "";
@@ -6547,102 +6896,156 @@
 
     document.querySelectorAll("[data-profile-field]").forEach((select) => {
       select.addEventListener("change", () => {
+        aiProfile[select.dataset.profileField] = select.value;
+        renderTBreak();
         logsDoc().set({ profile: { [select.dataset.profileField]: select.value } }, { merge: true })
-          .catch(() => showToast(t("friends.failed")));
+          .catch((error) => showToast(dbErrorText(error)));
       });
     });
 
     const LEVEL_COLORS = { low: "#6fd08f", moderate: "#ffd166", high: "#ffb347", very_high: "#ff6159" };
 
-    function renderAiResult() {
-      if (!lastAnalysis) {
-        aiResult.innerHTML = "";
+    function renderTBreak() {
+      renderAiProfile();
+      const a = analyseTBreak();
+      document.getElementById("tbreak-count").textContent = logEntries.length === 1
+        ? t("ai.basedOn1")
+        : t("ai.basedOnN", { n: logEntries.length });
+      if (!a) {
+        aiResult.innerHTML = `
+          <div class="card pause-empty">
+            <h2>${t("tb.emptyTitle")}</h2>
+            <p class="muted">${t("tb.emptyText")}</p>
+            <button type="button" class="btn-primary" data-open-log>${t("home.logTitle")}</button>
+          </div>`;
         return;
       }
-      const a = lastAnalysis;
-      const score = Math.max(0, Math.min(100, Number(a.tolerance_score) || 0));
-      const color = LEVEL_COLORS[a.tolerance_level] || LEVEL_COLORS.moderate;
-      const start = a.start_date ? formatDate(a.start_date + "T12:00") : "";
+      const color = LEVEL_COLORS[a.tolerance_level];
+      const start = formatDate(a.start_date + "T12:00");
       aiResult.innerHTML = `
         <div class="card ai-card" style="--level:${color}">
           <div class="pause-score">
-            <div class="ring" style="--pct:${score}">
-              <strong>${score}</strong>
+            <div class="ring" style="--pct:${a.tolerance_score}">
+              <strong>${a.tolerance_score}</strong>
               <small>/ 100</small>
             </div>
             <div>
-              <small class="eyebrow">✨ ${t("ai.resultLabel")}</small>
-              <h2>${esc(a.headline || "")}</h2>
+              <small class="eyebrow">🧠 ${t("ai.resultLabel")}</small>
+              <h2>${esc(a.headline)}</h2>
               <p class="muted">${t("ai.level." + a.tolerance_level)}</p>
             </div>
           </div>
           <div class="ai-facts">
-            <div><small>${t("ai.breakLength")}</small><strong>${a.break_days ? t("ai.days", { n: a.break_days }) : t("ai.noBreak")}</strong></div>
-            ${a.break_days ? `<div><small>${t("ai.startOn")}</small><strong>${start}</strong></div>` : ""}
+            <div><small>${t(a.onBreak ? "tb.left" : "ai.breakLength")}</small><strong>${a.break_days ? t("ai.days", { n: a.break_days }) : t("ai.noBreak")}</strong></div>
+            ${a.break_days ? `<div><small>${t(a.onBreak ? "tb.started" : "ai.startOn")}</small><strong>${start}</strong></div>` : ""}
           </div>
-          <p class="ai-text">${esc(a.explanation || "")}</p>
-          ${a.pattern ? `<p class="ai-pattern">📊 ${esc(a.pattern)}</p>` : ""}
-          ${Array.isArray(a.tips) && a.tips.length ? `
-            <h3>${t("ai.tips")}</h3>
-            <ul class="ai-tips">${a.tips.map((tip) => `<li>${esc(tip)}</li>`).join("")}</ul>` : ""}
-          <p class="muted ai-when">${t("ai.calculated", { date: formatDate(a.createdAt || Date.now()) })}</p>
+          <p class="ai-text">${esc(a.explanation)}</p>
+          <p class="ai-pattern">📊 ${esc(a.pattern)}</p>
+          <h3>${t("tb.forecast")}</h3>
+          <div class="forecast">
+            ${a.forecast.map((f) => `
+              <div class="forecast-row">
+                <span>${t("tb.after", { n: f.days })}</span>
+                <span class="forecast-bar"><span style="width:${f.score}%"></span></span>
+                <strong>${f.score}</strong>
+              </div>`).join("")}
+          </div>
+          <h3>${t("ai.tips")}</h3>
+          <ul class="ai-tips">${a.tips.map((tip) => `<li>${esc(tip)}</li>`).join("")}</ul>
+          <p class="muted ai-when">${t("tb.updated")}</p>
         </div>`;
     }
 
-    function renderTBreak() {
-      renderAiProfile();
-      renderAiResult();
-      document.getElementById("tbreak-count").textContent = logEntries.length === 1
-        ? t("ai.basedOn1")
-        : t("ai.basedOnN", { n: logEntries.length });
-      if (!aiButton.disabled) aiButton.textContent = t("ai.run");
-    }
-
-    function aiErrorText(code) {
-      const known = ["not_logged_in", "no_entries", "busy", "refusal", "server_key"];
-      return t(known.includes(code) ? "ai.err." + code : "ai.err.general");
-    }
-
-    aiButton.addEventListener("click", async () => {
-      aiStatus.textContent = "";
-      if (!AI_URL) {
-        aiStatus.textContent = t("ai.notSetUp");
-        return;
-      }
-      if (!logEntries.length) {
-        aiStatus.textContent = t("ai.err.no_entries");
-        return;
-      }
-      aiButton.disabled = true;
-      aiButton.textContent = t("ai.thinking");
-      try {
-        const token = await fbAuth.currentUser.getIdToken();
-        const response = await fetch(AI_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({
-            lang: lang === "en" ? "en" : "da",
-            today: todayISO(),
-            profile: aiProfile,
-            entries: logEntries.map(({ date, time, times, grams, high, method, product, thc }) =>
-              ({ date, time, times, grams, high, method, product, thc })),
-          }),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          aiStatus.textContent = aiErrorText(data.error);
-          return;
-        }
-        // Gem resultatet, så det også er der næste gang
-        await logsDoc().set({ lastAnalysis: { ...data, createdAt: Date.now() } }, { merge: true });
-      } catch (error) {
-        console.error(error);
-        aiStatus.textContent = t("ai.err.general");
-      } finally {
-        aiButton.disabled = false;
-        aiButton.textContent = t("ai.run");
-      }
+    aiResult.addEventListener("click", (e) => {
+      if (e.target.closest("[data-open-log]")) openLogSheet();
     });
+
+    // Forklar en afvisning fra databasen på en forståelig måde
+    function dbErrorText(error) {
+      return error && error.code === "permission-denied" ? t("db.rules") : t("friends.failed");
+    }
+
+    // ==========================================================
+    // RANKS: 8 niveauer, man stiger i ved at registrere
+    // ==========================================================
+    // XP: 10 pr. registrering + 5 pr. gang + 15 pr. pausedag (dage uden
+    // registreringer, så man også stiger ved at holde pause).
+    const RANKS = [
+      { name: "Stoner Snail", icon: "🐌", xp: 0 },
+      { name: "Couch Cadet", icon: "🛋️", xp: 100 },
+      { name: "Munchie Monk", icon: "🍕", xp: 300 },
+      { name: "Blaze Bunny", icon: "🐰", xp: 600 },
+      { name: "Cloud Captain", icon: "☁️", xp: 1000 },
+      { name: "Herbal Hero", icon: "🦸", xp: 1600 },
+      { name: "Ganja Guru", icon: "🧘", xp: 2500 },
+      { name: "Weed Wizard", icon: "🧙", xp: 4000 },
+    ];
+
+    function computeXp(entries) {
+      if (!entries.length) return 0;
+      const days = new Set(entries.map((e) => e.date)).size;
+      const sessions = entries.reduce((s, e) => s + (Number(e.times) || 1), 0);
+      const times = entries.map(entryTime);
+      const first = Math.min(...times);
+      const last = Math.max(...times);
+      const span = Math.round((dayStart(last) - dayStart(first)) / DAY) + 1;
+      const breakDays = Math.max(0, span - days) + Math.min(28, Math.floor((Date.now() - last) / DAY));
+      return entries.length * 10 + sessions * 5 + breakDays * 15;
+    }
+
+    function rankIndex(xp) {
+      let index = 0;
+      RANKS.forEach((rank, i) => { if ((xp || 0) >= rank.xp) index = i; });
+      return index;
+    }
+
+    function rankBadge(xp) {
+      const rank = RANKS[rankIndex(xp)];
+      return `<span class="rank-badge">${rank.icon} ${rank.name}</span>`;
+    }
+
+    function rankCardHTML(xp) {
+      const index = rankIndex(xp);
+      const rank = RANKS[index];
+      const next = RANKS[index + 1];
+      const pct = next ? ((xp - rank.xp) / (next.xp - rank.xp)) * 100 : 100;
+      return `
+        <details class="rank-card">
+          <summary>
+            <span class="rank-icon">${rank.icon}</span>
+            <span class="rank-info">
+              <small>${t("rank.level", { n: index + 1 })}</small>
+              <strong>${rank.name}</strong>
+              <span class="progress"><span style="width:${pct}%"></span></span>
+              <small>${next ? t("rank.next", { xp, need: next.xp - xp, name: next.name }) : t("rank.max", { xp })}</small>
+            </span>
+          </summary>
+          <ol class="rank-ladder">
+            ${RANKS.map((r, i) => `
+              <li class="${i === index ? "current" : i < index ? "done" : ""}">
+                <span>${r.icon}</span><strong>${r.name}</strong><small>${r.xp} XP</small>
+              </li>`).join("")}
+          </ol>
+          <p class="muted rank-help">${t("rank.help")}</p>
+        </details>`;
+    }
+
+    // Min XP regnes ud fra mine registreringer og gemmes på profilen,
+    // så venner kan se min rank
+    let myXp = 0;
+
+    function syncXp() {
+      myXp = computeXp(logEntries);
+      renderRank();
+      if (myProfile && myProfile.xp !== myXp) {
+        db.collection("profiles").doc(currentUserKey()).set({ xp: myXp }, { merge: true }).catch(() => {});
+      }
+    }
+
+    function renderRank() {
+      document.getElementById("home-rank").innerHTML = rankBadge(myXp);
+      document.getElementById("profile-rank").innerHTML = rankCardHTML(myXp);
+    }
 
     // ==========================================================
     // KØRE-TIMER: groft estimat af, hvor længe man bør vente
@@ -6879,10 +7282,11 @@
       const del = e.target.closest("[data-delete-log]");
       if (!del || !confirm(t("ai.confirmDelete"))) return;
       logsDoc().collection("entries").doc(del.dataset.deleteLog).delete()
-        .catch(() => showToast(t("friends.failed")));
+        .catch((error) => showToast(dbErrorText(error)));
     });
 
     function renderPause() {
+      renderRank();
       renderTBreak();
       renderStats();
       updateDriveTimers();

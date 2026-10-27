@@ -1,6 +1,0 @@
-# Lille server, der holder Claude-API-nøglen hemmelig for appen.
-# Lægges op automatisk af .github/workflows/deploy-ai.yml.
-name = "flowers-ai"
-main = "src/index.js"
-compatibility_date = "2025-09-01"
-compatibility_flags = ["nodejs_compat"]
