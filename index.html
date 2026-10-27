@@ -3939,6 +3939,82 @@
       font-size: 12px;
       font-weight: 600;
     }
+
+    /* ---------- Tandhjul ---------- */
+    .icon-btn {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .stats.single .stat-btn {
+      border-left: 0;
+    }
+    #profile-settings .card h3 {
+      margin-bottom: 12px;
+    }
+    #profile-settings .lang-toggle button {
+      background: var(--card-2);
+    }
+    #profile-settings .lang-toggle button.active {
+      background: var(--primary);
+    }
+
+    /* ==========================================================
+       LYST TEMA
+       ========================================================== */
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f5f3;
+      --card: #ffffff;
+      --card-2: #eef0ed;
+      --text: #121512;
+      --muted: #687069;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.14);
+      --primary: #1f5e38;
+      --primary-pressed: #194d2e;
+      --accent: #1d7a43;
+      --accent-soft: rgba(29, 122, 67, 0.1);
+      --tabbar-bg: rgba(255, 255, 255, 0.9);
+    }
+    :root[data-theme="light"] .tile-card {
+      background: rgba(255, 255, 255, 0.97);
+    }
+    :root[data-theme="light"] .comment-form {
+      background: rgba(255, 255, 255, 0.94);
+    }
+    :root[data-theme="light"] .tile-desc,
+    :root[data-theme="light"] .ai-pattern,
+    :root[data-theme="light"] .drive-warning,
+    :root[data-theme="light"] .log-note {
+      color: var(--text);
+    }
+    :root[data-theme="light"] .sheet-backdrop {
+      background: rgba(0, 0, 0, 0.25);
+    }
+    :root[data-theme="light"] .tabbar {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    :root[data-theme="light"] .die {
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), inset 0 -3px 0 rgba(0, 0, 0, 0.08);
+    }
   </style>
 </head>
 <body>
@@ -4492,27 +4568,44 @@
         </section>
 
         <section class="page" data-page="profile">
-          <h1 class="page-title" data-i18n="nav.profile">Profil</h1>
+          <div id="profile-main">
+          <div class="title-row">
+            <h1 class="page-title" data-i18n="nav.profile">Profil</h1>
+            <button type="button" class="icon-btn" id="open-settings" data-i18n-aria="settings.title" aria-label="Indstillinger"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+          </div>
           <div class="card profile-card">
             <div class="avatar avatar-lg" id="avatar"></div>
             <h2 id="profile-name"></h2>
             <p class="muted" id="profile-since"></p>
             <p class="bio" id="profile-bio"></p>
-            <div class="stats">
-              <div><strong id="stat-benches">0</strong><span data-i18n="profile.benches">Smoke spots</span></div>
+            <div class="stats single">
               <button type="button" class="stat-btn" id="stat-friends-btn"><strong id="stat-friends">0</strong><span data-i18n="profile.friends">Venner</span></button>
             </div>
             <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
           </div>
           <div class="card" id="profile-rank"></div>
-          <div class="card">
-            <h3 data-i18n="profile.language">Sprog</h3>
-            <div class="lang-toggle">
-              <button type="button" data-lang="da">🇩🇰 Dansk</button>
-              <button type="button" data-lang="en">🇬🇧 English</button>
-            </div>
           </div>
-          <button id="logout" class="btn-secondary" data-i18n="profile.logout">Log ud</button>
+
+          <!-- Indstillinger (tandhjulet) -->
+          <div id="profile-settings" class="hidden">
+            <button class="back" id="settings-back" data-i18n="back.profile">‹ Profil</button>
+            <h1 class="page-title" data-i18n="settings.title">Indstillinger</h1>
+            <div class="card">
+              <h3 data-i18n="profile.language">Sprog</h3>
+              <div class="lang-toggle">
+                <button type="button" data-lang="da">🇩🇰 Dansk</button>
+                <button type="button" data-lang="en">🇬🇧 English</button>
+              </div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="settings.theme">Tema</h3>
+              <div class="lang-toggle">
+                <button type="button" data-theme-pick="dark" data-i18n="settings.dark">🌙 Mørk</button>
+                <button type="button" data-theme-pick="light" data-i18n="settings.light">☀️ Lys</button>
+              </div>
+            </div>
+            <button id="logout" class="btn-secondary" data-i18n="profile.logout">Log ud</button>
+          </div>
         </section>
 
         <!-- Menu i bunden -->
@@ -5154,6 +5247,11 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
+        "settings.title": "Indstillinger",
+        "settings.theme": "Tema",
+        "settings.dark": "🌙 Mørk",
+        "settings.light": "☀️ Lys",
+        "back.profile": "‹ Profil",
         "profile.logout": "Log ud",
         "profile.noBio": "Ingen bio endnu. Tryk på Rediger profil og skriv lidt om dig selv.",
         "profile.photo": "Skift profilbillede",
@@ -5589,6 +5687,11 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Edit profile",
         "profile.language": "Language",
+        "settings.title": "Settings",
+        "settings.theme": "Theme",
+        "settings.dark": "🌙 Dark",
+        "settings.light": "☀️ Light",
+        "back.profile": "‹ Profile",
         "profile.logout": "Log out",
         "profile.noBio": "No bio yet. Tap Edit profile to tell people about yourself.",
         "profile.photo": "Change profile photo",
@@ -5710,6 +5813,45 @@
         renderFeed();
       }
     }
+
+    // ---------- Indstillinger og tema ----------
+    const THEME_KEY = "theme";
+
+    function showSettings(open) {
+      document.getElementById("profile-main").classList.toggle("hidden", open);
+      document.getElementById("profile-settings").classList.toggle("hidden", !open);
+      scrollToTop();
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme === "light" ? "light" : "dark";
+      document.querySelectorAll("[data-theme-pick]").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.themePick === document.documentElement.dataset.theme);
+      });
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.content = theme === "light" ? "#f4f5f3" : "#000000";
+    }
+
+    function setTheme(theme) {
+      applyTheme(theme);
+      try {
+        localStorage.setItem(THEME_KEY, theme);
+      } catch {
+        // Temaet virker også uden at blive husket
+      }
+    }
+
+    try {
+      applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+    } catch {
+      applyTheme("dark");
+    }
+
+    document.getElementById("open-settings").addEventListener("click", () => showSettings(true));
+    document.getElementById("settings-back").addEventListener("click", () => showSettings(false));
+    document.querySelectorAll("[data-theme-pick]").forEach((btn) => {
+      btn.addEventListener("click", () => setTheme(btn.dataset.themePick));
+    });
 
     function setLanguage(newLang) {
       lang = newLang;
@@ -5976,6 +6118,8 @@
 
     function showPage(name) {
       const root = ROOTS[name];
+      // Tryk på Profil-fanen = tilbage til selve profilen
+      if (name === "profile") showSettings(false);
       // Tryk på fanen igen, eller skift mellem Smoke Hub og Håndbog = forsiden
       if (root && (activeTab === name || viewStack[0] !== root)) {
         viewStack = [root];
@@ -6533,8 +6677,6 @@
       bio.textContent = myProfile.bio || t("profile.noBio");
       bio.classList.toggle("empty", !myProfile.bio);
 
-      document.getElementById("stat-benches").textContent =
-        benches.filter((b) => b.addedBy === uid).length;
       document.getElementById("stat-friends").textContent = friendships.filter((f) => !(profileCache.get(otherUser(f)) || {}).missing).length;
     }
 
