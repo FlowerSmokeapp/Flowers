@@ -3396,34 +3396,12 @@
     .game-item .tile-img {
       flex: none;
     }
-    .dice-game {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 6px;
-    }
-    .dice-game .page-title {
-      align-self: stretch;
-      text-align: left;
-    }
-    .dice-game > .muted {
-      align-self: stretch;
-      text-align: left;
-      margin: 0 0 24px;
-    }
     .die.big-die {
       width: 150px;
       height: 150px;
       padding: 26px;
       gap: 10px;
       border-radius: 34px;
-    }
-    .dice-result {
-      min-height: 44px;
-      margin: 22px 0 14px;
-      font-size: 34px;
-      font-weight: 800;
     }
     #spin-form {
       margin: 16px 0;
@@ -4957,8 +4935,14 @@
       margin: 18px auto 0;
     }
 
-    .dice-result.six {
+    .dice-stage {
+      display: grid;
+      place-items: center;
+      margin-top: 16px;
+    }
+    .spin-card.six .spin-prev {
       color: #ffd166;
+      font-weight: 700;
     }
 
     .unread-dot {
@@ -5827,13 +5811,18 @@
           <!-- Terningespillet -->
           <div class="view" data-view="dice">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
-            <div class="dice-game">
-              <h1 class="page-title" data-i18n="dice.title">Terningespillet</h1>
-              <p class="muted" data-i18n="dice.help">Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.</p>
+            <h1 class="page-title" data-i18n="dice.title">Terningespillet</h1>
+            <p class="muted" data-i18n="dice.help">Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.</p>
+            <div class="spin2-players" id="dice-players"></div>
+            <form id="dice-form" class="player-add" novalidate>
+              <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+              <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+            </form>
+            <div class="spin-wheel dice-stage">
               <div class="die big-die" id="dice-die" role="img"></div>
-              <p class="dice-result" id="dice-result" aria-live="polite"></p>
-              <button type="button" class="btn-primary" id="dice-roll" data-i18n="dice.roll">Slå med terningen</button>
             </div>
+            <div class="spin-card hidden" id="dice-card" aria-live="polite"></div>
+            <button type="button" class="btn-primary" id="dice-roll" data-i18n="dice.roll">Slå med terningen</button>
           </div>
 
           <!-- Weed Quiz -->
@@ -6817,6 +6806,9 @@
         "dice.resultN": "{n} sug",
         "dice.roll": "Slå med terningen",
         "dice.six": "6 sug, og du slår igen!",
+        "dice.you": "Dit slag",
+        "dice.pass": "Tag sugene, og send terningen videre",
+        "dice.again": "Du slår igen!",
         "spin2.tagline": "Jointen vælger straffen",
         "spin2.you": "Din straf",
         "spin.tagline": "Spin the joints",
@@ -7506,6 +7498,9 @@
         "dice.resultN": "{n} hits",
         "dice.roll": "Roll the die",
         "dice.six": "6 hits, and you roll again!",
+        "dice.you": "Your roll",
+        "dice.pass": "Take your hits and pass the die on",
+        "dice.again": "You roll again!",
         "spin2.tagline": "The joint picks the penalty",
         "spin2.you": "Your penalty",
         "spin.tagline": "Spin the joints",
@@ -12072,17 +12067,49 @@
     // ==========================================================
     const diceEl = document.getElementById("dice-die");
     const diceBtn = document.getElementById("dice-roll");
-    const diceResult = document.getElementById("dice-result");
+    const diceCard = document.getElementById("dice-card");
+    const dicePlayers = [];
+    let diceTurn = 0;
     let diceRecorded = false;
     showDie(diceEl, 6);
 
+    function renderDicePlayers() {
+      document.getElementById("dice-players").innerHTML = dicePlayers.map((name, i) => `
+        <button type="button" class="chip" data-remove="${i}" title="${t("game.remove")}">${esc(name)}</button>`).join("");
+    }
+
+    document.getElementById("dice-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = e.target.elements.player;
+      const name = input.value.trim();
+      if (!name || dicePlayers.length >= 10) return;
+      dicePlayers.push(name);
+      input.value = "";
+      renderDicePlayers();
+    });
+
+    // Tryk på et navn for at fjerne spilleren
+    document.getElementById("dice-players").addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-remove]");
+      if (!chip || diceBtn.disabled) return;
+      dicePlayers.splice(Number(chip.dataset.remove), 1);
+      if (diceTurn >= dicePlayers.length) diceTurn = 0;
+      renderDicePlayers();
+    });
+
     diceBtn.addEventListener("click", async () => {
       diceBtn.disabled = true;
-      diceResult.textContent = "";
+      diceCard.classList.add("hidden");
+      const player = dicePlayers.length ? dicePlayers[diceTurn] : "";
       const value = await rollDie(diceEl);
-      // Slår man en sekser, slår man igen
-      diceResult.textContent = value === 6 ? t("dice.six") : t(value === 1 ? "dice.result1" : "dice.resultN", { n: value });
-      diceResult.classList.toggle("six", value === 6);
+      // Slår man en sekser, slår man igen; ellers går terningen videre
+      diceCard.innerHTML = `
+        <small>${player ? esc(player) : t("dice.you")}</small>
+        <p>${t(value === 1 ? "dice.result1" : "dice.resultN", { n: value })}</p>
+        <p class="spin-prev">${value === 6 ? t("dice.again") : t("dice.pass")}</p>`;
+      diceCard.classList.toggle("six", value === 6);
+      diceCard.classList.remove("hidden");
+      if (dicePlayers.length && value !== 6) diceTurn = (diceTurn + 1) % dicePlayers.length;
       if (!diceRecorded) {
         diceRecorded = true;
         recordGame("dice");
