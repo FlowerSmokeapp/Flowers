@@ -4079,6 +4079,41 @@
       font-size: 13px;
       font-weight: 600;
     }
+
+    /* ---------- Changelog ---------- */
+    .changelog h3 {
+      margin-bottom: 10px;
+    }
+    .cl-day + .cl-day {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .cl-date {
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .cl-date::first-letter {
+      text-transform: uppercase;
+    }
+    .cl-date small {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .changelog ul {
+      display: grid;
+      gap: 6px;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .changelog li::marker {
+      color: var(--accent);
+    }
+    #changelog-more {
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
@@ -4603,6 +4638,13 @@
             </span>
           </button>
           <div class="card home-rank-card" id="home-rank"></div>
+
+          <!-- Changelog: hentes fra GitHub, så den opdaterer sig selv hver dag -->
+          <div class="card changelog">
+            <h3>📝 Changelog</h3>
+            <div id="changelog-list"><p class="muted" data-i18n="cl.loading">Henter nyheder…</p></div>
+            <button type="button" class="link-btn hidden" id="changelog-more" data-i18n="cl.more">Vis mere</button>
+          </div>
         </section>
 
 
@@ -5346,6 +5388,14 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Rediger profil",
         "profile.language": "Sprog",
+        "cl.loading": "Henter nyheder…",
+        "cl.more": "Vis mere",
+        "cl.less": "Vis mindre",
+        "cl.today": "I dag",
+        "cl.yesterday": "I går",
+        "cl.changes1": "1 ændring",
+        "cl.changesN": "{n} ændringer",
+        "cl.failed": "Kunne ikke hente changelog lige nu.",
         "onb.usage": "Hvor meget ryger du?",
         "onb.errUsage": "Vælg hvor meget du ryger",
         "onb.startRank": "Du starter som {rank}",
@@ -5803,6 +5853,14 @@
         "profile.benches": "Smoke spots",
         "profile.edit": "Edit profile",
         "profile.language": "Language",
+        "cl.loading": "Loading news…",
+        "cl.more": "Show more",
+        "cl.less": "Show less",
+        "cl.today": "Today",
+        "cl.yesterday": "Yesterday",
+        "cl.changes1": "1 change",
+        "cl.changesN": "{n} changes",
+        "cl.failed": "Couldn't load the changelog right now.",
         "onb.usage": "How much do you smoke?",
         "onb.errUsage": "Choose how much you smoke",
         "onb.startRank": "You start as {rank}",
@@ -10478,6 +10536,86 @@
         setBusy(onbForm, false);
       }
     });
+
+    // ==========================================================
+    // CHANGELOG: hvad der er lavet på appen, dag for dag
+    // ==========================================================
+    // Hver gang appen opdateres, gemmes ændringen på GitHub med en kort
+    // besked. Dem henter vi her og grupperer pr. dag.
+    const CHANGELOG_URL = "https://api.github.com/repos/danielsh08/Flowers/commits?per_page=100";
+    const CHANGELOG_KEY = "changelog";
+    const changelogList = document.getElementById("changelog-list");
+    const changelogMore = document.getElementById("changelog-more");
+    let changelogDays = [];
+    let changelogAll = false;
+
+    function groupChangelog(commits) {
+      const days = new Map();
+      commits.forEach((c) => {
+        const title = c.message.split("\n")[0].trim();
+        if (!title) return;
+        const day = dayStart(new Date(c.date).getTime());
+        if (!days.has(day)) days.set(day, []);
+        days.get(day).push(title);
+      });
+      return [...days.entries()].sort((a, b) => b[0] - a[0]).map(([day, items]) => ({ day, items }));
+    }
+
+    function dayLabel(day) {
+      const today = dayStart(Date.now());
+      if (day === today) return t("cl.today");
+      if (day === today - DAY || day === dayStart(today - DAY + 2 * HOUR)) return t("cl.yesterday");
+      return new Date(day).toLocaleDateString(t("locale"), { weekday: "long", day: "numeric", month: "long" });
+    }
+
+    function renderChangelog() {
+      if (!changelogDays.length) return;
+      const shown = changelogAll ? changelogDays.slice(0, 14) : changelogDays.slice(0, 1);
+      changelogList.innerHTML = shown.map(({ day, items }) => `
+        <div class="cl-day">
+          <p class="cl-date">${dayLabel(day)} <small>${t(items.length === 1 ? "cl.changes1" : "cl.changesN", { n: items.length })}</small></p>
+          <ul>${(changelogAll ? items : items.slice(0, 5)).map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </div>`).join("");
+      changelogMore.classList.toggle("hidden", changelogDays.length < 2 && changelogDays[0].items.length <= 5);
+      changelogMore.textContent = t(changelogAll ? "cl.less" : "cl.more");
+    }
+
+    async function loadChangelog() {
+      // Brug den gemte version, mens vi henter en ny (max hver 15. minut)
+      let cached = null;
+      try {
+        cached = JSON.parse(localStorage.getItem(CHANGELOG_KEY));
+      } catch {
+        cached = null;
+      }
+      if (cached && cached.commits) {
+        changelogDays = groupChangelog(cached.commits);
+        renderChangelog();
+        if (Date.now() - cached.at < 15 * 60e3) return;
+      }
+      try {
+        const response = await fetch(CHANGELOG_URL);
+        if (!response.ok) throw new Error(response.status);
+        const commits = (await response.json()).map((c) => ({ message: c.commit.message, date: c.commit.author.date }));
+        changelogDays = groupChangelog(commits);
+        renderChangelog();
+        try {
+          localStorage.setItem(CHANGELOG_KEY, JSON.stringify({ at: Date.now(), commits }));
+        } catch {
+          // Virker også uden at gemme
+        }
+      } catch (error) {
+        console.error(error);
+        if (!changelogDays.length) changelogList.innerHTML = `<p class="muted">${t("cl.failed")}</p>`;
+      }
+    }
+
+    changelogMore.addEventListener("click", () => {
+      changelogAll = !changelogAll;
+      renderChangelog();
+    });
+
+    loadChangelog();
 
     // ---------- Genveje på hjemmeskærmen ----------
     function greetingKey() {
