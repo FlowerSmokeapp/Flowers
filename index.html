@@ -6037,7 +6037,7 @@
     <!-- Billede i fuld skærm -->
     <div id="lightbox" class="lightbox hidden"><img alt=""></div>
     <form id="bench-form" class="sheet hidden" novalidate>
-      <h2 data-i18n="bench.new">Nyt smoke spot</h2>
+      <h2 id="bench-form-title" data-i18n="bench.new">Nyt smoke spot</h2>
       <label class="photo-pick" id="photo-pick">
         <span id="photo-text" data-i18n="bench.addPhoto">📷 Tilføj billede af stedet</span>
         <img id="photo-preview" class="hidden" alt="">
@@ -6051,7 +6051,7 @@
         <span data-i18n="bench.why">Hvorfor er det fedt?</span>
         <textarea name="desc" data-i18n-ph="bench.whyPh" placeholder="Udsigt, læ, roligt sted…" maxlength="400"></textarea>
       </label>
-      <div class="field">
+      <div class="field" id="bench-rating-field">
         <span data-i18n="bench.yourRating">Din bedømmelse</span>
         <div class="star-input" id="form-stars"></div>
       </div>
@@ -6760,6 +6760,9 @@
         "bench.ratingN": "bedømmelser",
         "bench.showOnMap": "Vis på kortet",
         "bench.delete": "Slet smoke spot",
+        "bench.edit": "Rediger smoke spot",
+        "bench.editTitle": "Rediger smoke spot",
+        "bench.updated": "Smoke spot opdateret",
         "bench.confirmDelete": "Vil du slette dette smoke spot?",
         "bench.deleted": "Smoke spottet er slettet",
         "bench.deleteFailed": "Smoke spottet kunne ikke slettes",
@@ -7416,6 +7419,9 @@
         "bench.ratingN": "ratings",
         "bench.showOnMap": "Show on map",
         "bench.delete": "Delete smoke spot",
+        "bench.edit": "Edit smoke spot",
+        "bench.editTitle": "Edit smoke spot",
+        "bench.updated": "Smoke spot updated",
         "bench.confirmDelete": "Do you want to delete this smoke spot?",
         "bench.deleted": "The smoke spot was deleted",
         "bench.deleteFailed": "The smoke spot couldn't be deleted",
@@ -8409,17 +8415,35 @@
     const formStars = document.getElementById("form-stars");
     let pendingPhoto = null;
     let formRating = 0;
+    let editingBenchId = null;   // sat, når man redigerer sit eget smoke spot
+    let benchPhotoChanged = false;
 
-    function openSheet() {
+    function openSheet(bench = null) {
       benchForm.reset();
       clearErrors(benchForm);
-      pendingPhoto = null;
+      editingBenchId = bench ? bench.id : null;
+      benchPhotoChanged = false;
+      pendingPhoto = bench ? photoSrc(bench) || null : null;
       formRating = 0;
       formStars.innerHTML = starInputHTML(0);
-      photoPreview.classList.add("hidden");
-      photoText.classList.remove("hidden");
+      document.getElementById("bench-form-title").textContent = t(bench ? "bench.editTitle" : "bench.new");
+      benchForm.querySelector('button[type="submit"]').textContent = t(bench ? "post.save" : "bench.save");
+      document.getElementById("bench-rating-field").classList.toggle("hidden", !!bench);
+      if (bench) {
+        benchForm.elements.name.value = bench.name || "";
+        benchForm.elements.desc.value = bench.desc || "";
+      }
+      photoPreview.src = pendingPhoto || "";
+      photoPreview.classList.toggle("hidden", !pendingPhoto);
+      photoText.classList.toggle("hidden", !!pendingPhoto);
       sheetBackdrop.classList.remove("hidden");
       benchForm.classList.remove("hidden");
+      // Vis det store billede i stedet for det lille preview
+      if (bench && bench.imageId) {
+        loadFullImage(bench.imageId).then((full) => {
+          if (full && !benchPhotoChanged && editingBenchId === bench.id) photoPreview.src = full;
+        }).catch(() => {});
+      }
     }
 
     function closeSheet() {
@@ -8514,6 +8538,7 @@
       if (!file) return;
       try {
         pendingPhoto = await resizeImage(file);
+        benchPhotoChanged = true;
         photoPreview.src = pendingPhoto;
         photoPreview.classList.remove("hidden");
         photoText.classList.add("hidden");
@@ -8535,6 +8560,32 @@
         return setError(benchForm, t("bench.errName"));
       }
 
+      const submitBtn = benchForm.querySelector('button[type="submit"]');
+
+      // Redigér et eksisterende smoke spot
+      if (editingBenchId) {
+        const old = getBenches().find((b) => b.id === editingBenchId);
+        const id = editingBenchId;
+        submitBtn.disabled = true;
+        try {
+          const update = { name: name.value.trim(), desc: desc.value.trim(), editedAt: Date.now() };
+          if (benchPhotoChanged) {
+            Object.assign(update, await storeImage(pendingPhoto));
+            deleteImage(old);
+          }
+          await benchesRef.doc(id).update(update);
+          closeSheet();
+          showToast(t("bench.updated"));
+          if (currentBenchId === id) renderBench();
+        } catch (error) {
+          console.error(error);
+          setError(benchForm, t("bench.errSave"));
+        } finally {
+          submitBtn.disabled = false;
+        }
+        return;
+      }
+
       const email = currentUserKey();
       const user = myProfile;
       const bench = {
@@ -8548,7 +8599,6 @@
         ratings: formRating ? { [email]: formRating } : {},
       };
 
-      const submitBtn = benchForm.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
       submitBtn.textContent = t("bench.saving");
       try {
@@ -8607,7 +8657,9 @@
         </div>
         <div class="bench-actions">
           <button class="btn-plain" id="show-on-map">${t("bench.showOnMap")}</button>
-          ${bench.addedBy === email ? `<button class="btn-secondary" id="delete-bench">${t("bench.delete")}</button>` : ""}
+          ${bench.addedBy === email ? `
+            <button class="btn-plain" id="edit-bench">${icon("edit")} ${t("bench.edit")}</button>
+            <button class="btn-secondary" id="delete-bench">${t("bench.delete")}</button>` : ""}
         </div>`;
 
       document.getElementById("bench-stars").addEventListener("click", (e) => {
@@ -8626,6 +8678,9 @@
           if (full && img) img.src = full;
         }).catch(() => {});
       }
+
+      const editBtn = document.getElementById("edit-bench");
+      if (editBtn) editBtn.addEventListener("click", () => openSheet(bench));
 
       const deleteBtn = document.getElementById("delete-bench");
       if (deleteBtn) {
@@ -13564,6 +13619,7 @@
     // IKONER: enkle streg-ikoner i tekstfarven i stedet for emojis
     // ==========================================================
     const ICON_PATHS = {
+      edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
       leaf: '<path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19l8-8"/>',
       flame: '<path d="M12 21c-4 0-7-3-7-7 0-4 3-6 4-10 1 3 3 4 4 6 1-1 1-3 1-4 2 2 5 5 5 8 0 4-3 7-7 7z"/>',
       smoke: '<path d="M4 15h11a2 2 0 1 0-2-2"/><path d="M4 11h7a2 2 0 1 0-2-2"/><path d="M4 19h13a2 2 0 1 1-2 2"/>',
