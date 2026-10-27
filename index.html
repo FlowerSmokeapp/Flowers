@@ -8797,10 +8797,8 @@
     const BOARD_FIRST = ["s1", "s2", "s3", "s4", "s5", "pass", "back", "bobLong"];
     const BOARD_MIDDLE = [
       "lung", "lung2", "lung3", "bobShort", "bobLong", "bobLong", "tornado", "x412", "x412",
-      "x510", "x510", "x3102", "diy", "diy2", "chimney", "wheel", "tornado",
+      "x510", "x510", "x3102", "diy", "diy2", "chimney", "chimney", "lung2", "tornado",
     ];
-    // Ét af felterne i midten er et tilfældigt felt, der skifter hvert spil
-    const BOARD_RANDOM = ["s2", "s3", "s4", "lung", "lung2", "diy", "chimney", "bobShort", "x510", "x412", "turtle", "stinging"];
     const BOARD_LAST = ["stinging", "bobLong", "lung2", "stinging", "diy2", "turtle", "x3102", "death"];
 
     // Lykkehjulet: 8 felter
@@ -9479,8 +9477,7 @@
     // ---------- Start og slut ----------
     // Spillet fylder hele skærmen og spilles med telefonen vandret
     function startGame() {
-      const random = BOARD_RANDOM[Math.floor(Math.random() * BOARD_RANDOM.length)];
-      board = ["start", ...BOARD_FIRST, ...shuffle([...BOARD_MIDDLE, random]), ...BOARD_LAST, "goal"];
+      board = ["start", ...BOARD_FIRST, ...shuffle(BOARD_MIDDLE), ...BOARD_LAST, "goal"];
       positions = players.map(() => 0);
       hits = players.map(() => 0);
       lastRoll = 0;
