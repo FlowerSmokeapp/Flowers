@@ -3678,6 +3678,90 @@
         display: none;
       }
     }
+
+    /* ---------- Leaderboard ---------- */
+    .seg {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+    }
+    .seg-btn {
+      flex: 1;
+      padding: 9px 0;
+      border: 0;
+      border-radius: 10px;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .seg-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .leader-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .leader-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .leader-row.me {
+      border-color: var(--primary);
+      background: var(--accent-soft);
+    }
+    .leader-place {
+      width: 28px;
+      flex: none;
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .leader-name {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .leader-name strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .leader-name strong small {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .leader-name > small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .leader-xp {
+      flex: none;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -3855,7 +3939,22 @@
                 <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/></svg></span>
                 <strong>Munchies</strong>
               </button>
+              <button class="tile" data-go="leaders">
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M8.5 20h7M10 17h4"/></svg></span>
+                <strong>Leaderboard</strong>
+              </button>
             </div>
+          </div>
+
+          <!-- Leaderboards -->
+          <div class="view" data-view="leaders">
+            <button class="back" data-back data-i18n="back.hub">‹ Smoke Hub</button>
+            <h1 class="page-title">Leaderboard</h1>
+            <div class="seg" role="tablist">
+              <button type="button" class="seg-btn active" data-board="friends" data-i18n="lb.friends">Venner</button>
+              <button type="button" class="seg-btn" data-board="all" data-i18n="lb.all">Alle</button>
+            </div>
+            <div id="leader-list" class="leader-list"></div>
           </div>
 
           <!-- Munchies -->
@@ -4691,6 +4790,11 @@
         "munch.empty": "Ingen munchies endnu. Del de første!",
         "munch.confirmDelete": "Vil du slette billedet?",
         "munch.deleted": "Billedet er slettet",
+        "lb.friends": "Venner",
+        "lb.all": "Alle",
+        "lb.you": "dig",
+        "lb.loading": "Henter leaderboard…",
+        "lb.noFriends": "Tilføj venner for at se, hvem af jer der har det højeste level.",
         "game.seconds": "sek",
         "game.timerStart": "Start timer",
         "game.ready": "Klar…",
@@ -5089,6 +5193,11 @@
         "munch.empty": "No munchies yet. Share the first!",
         "munch.confirmDelete": "Delete this photo?",
         "munch.deleted": "Photo deleted",
+        "lb.friends": "Friends",
+        "lb.all": "Everyone",
+        "lb.you": "you",
+        "lb.loading": "Loading leaderboard…",
+        "lb.noFriends": "Add friends to see which of you has the highest level.",
         "game.seconds": "sec",
         "game.timerStart": "Start timer",
         "game.ready": "Ready…",
@@ -5661,6 +5770,7 @@
       if (name === "post") renderPostDetail();
       if (name === "roll") renderRoll();
       if (name === "munchie") renderMunchie();
+      if (name === "leaders") loadLeaders();
       scrollToTop();
     }
 
@@ -7202,6 +7312,75 @@
           .update({ likes: liked ? FieldValue().arrayRemove(me) : FieldValue().arrayUnion(me) })
           .catch((error) => showToast(dbErrorText(error)));
       }
+    });
+
+    // ==========================================================
+    // LEADERBOARD: højeste level blandt venner og blandt alle
+    // ==========================================================
+    const leaderList = document.getElementById("leader-list");
+    let leaderBoard = "friends";
+    let leaderToken = 0;
+
+    async function loadLeaders() {
+      const token = ++leaderToken;
+      const me = currentUserKey();
+      leaderList.innerHTML = `<p class="empty-note">${t("lb.loading")}</p>`;
+      let people = [];
+      try {
+        if (leaderBoard === "friends") {
+          const ids = [me, ...friendships.map(otherUser)];
+          people = await Promise.all(ids.map((uid) => getProfile(uid, true).catch(() => null)));
+          people = people.filter(Boolean);
+          if (myProfile) people = people.map((p) => (p.id === me ? { ...p, ...myProfile, xp: myXp, xpAt: Date.now() } : p));
+        } else {
+          const snap = await db.collection("profiles").orderBy("xp", "desc").limit(100).get();
+          people = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          snap.docs.forEach((doc) => profileCache.set(doc.id, { id: doc.id, ...doc.data() }));
+          if (myProfile && !people.some((p) => p.id === me)) people.push({ ...myProfile, id: me, xp: myXp, xpAt: Date.now() });
+        }
+      } catch (error) {
+        console.error(error);
+        if (token === leaderToken) leaderList.innerHTML = `<p class="empty-note">${dbErrorText(error)}</p>`;
+        return;
+      }
+      if (token !== leaderToken) return;
+
+      // XP falder hver dag, så vi sorterer efter den XP, der gælder i dag
+      const rows = people
+        .map((p) => ({ p, xp: p.id === me ? myXp : shownXp(p) }))
+        .sort((a, b) => b.xp - a.xp)
+        .slice(0, 50);
+      if (leaderBoard === "friends" && rows.length < 2) {
+        leaderList.innerHTML = `<p class="empty-note">${t("lb.noFriends")}</p>`;
+        return;
+      }
+      const medals = ["🥇", "🥈", "🥉"];
+      leaderList.innerHTML = rows.map(({ p, xp }, i) => {
+        const rank = RANKS[rankIndex(xp)];
+        return `
+          <button type="button" class="leader-row ${p.id === me ? "me" : ""}" data-person="${esc(p.id)}">
+            <span class="leader-place">${medals[i] || i + 1}</span>
+            <span class="avatar avatar-sm">${avatarHTML(p)}</span>
+            <span class="leader-name">
+              <strong>${esc(p.name || "?")}${p.id === me ? ` <small>(${t("lb.you")})</small>` : ""}</strong>
+              <small>${rank.icon} ${rank.name}</small>
+            </span>
+            <span class="leader-xp">${xp} XP</span>
+          </button>`;
+      }).join("");
+    }
+
+    document.querySelectorAll("[data-board]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        leaderBoard = btn.dataset.board;
+        document.querySelectorAll("[data-board]").forEach((b) => b.classList.toggle("active", b === btn));
+        loadLeaders();
+      });
+    });
+
+    leaderList.addEventListener("click", (e) => {
+      const row = e.target.closest("[data-person]");
+      if (row) openProfileOf(row.dataset.person);
     });
 
     // ---------- Billede i fuld skærm ----------
