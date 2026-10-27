@@ -4542,6 +4542,112 @@
       font-size: 14px;
       font-weight: 600;
     }
+
+    /* ---------- Badges og ugens udfordring ---------- */
+    .badges-card summary {
+      list-style: none;
+      cursor: pointer;
+    }
+    .badges-card summary::-webkit-details-marker {
+      display: none;
+    }
+    .badges-card h3 small {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+      font-size: 24px;
+    }
+    .person-badges {
+      justify-content: center;
+      margin: 8px 0 0;
+      font-size: 20px;
+    }
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .badge-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 6px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      text-align: center;
+    }
+    .badge-item span {
+      font-size: 26px;
+    }
+    .badge-item strong {
+      font-size: 12px;
+      line-height: 1.2;
+    }
+    .badge-item small {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.25;
+    }
+    .badge-item.locked {
+      background: var(--card-2);
+      opacity: 0.45;
+    }
+    .badge-item.locked span {
+      filter: grayscale(1);
+    }
+    .challenge-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .challenge-card.done {
+      border-color: var(--primary);
+    }
+    .challenge-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .challenge-xp {
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: rgba(255, 209, 102, 0.15);
+      color: #ffd166;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .challenge-card strong {
+      font-size: 17px;
+    }
+
+    /* ---------- Penge ---------- */
+    .stat-tiles.money .card > small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .price-card h3 {
+      margin-bottom: 10px;
+    }
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .price-row input {
+      width: 110px;
+    }
+    .price-card p {
+      font-size: 13px;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -5113,6 +5219,7 @@
             <button type="button" class="home-btn" id="smoking-btn"></button>
           </div>
           <div class="card tbreak-card hidden" id="tbreak-card"></div>
+          <div class="card challenge-card" id="challenge-card"></div>
           <div class="card sesh-card hidden" id="sesh-card">
             <h3>🔥 <span data-i18n="sesh.title">Seshs</span></h3>
             <div id="sesh-list"></div>
@@ -5192,6 +5299,7 @@
             <button type="button" class="btn-plain" id="edit-profile" data-i18n="profile.edit">Rediger profil</button>
           </div>
           <div class="card" id="profile-rank"></div>
+          <div class="card" id="profile-badges"></div>
           </div>
 
           <!-- Indstillinger (tandhjulet) -->
@@ -5975,6 +6083,21 @@
         "friends.searchPh": "Søg efter smoker",
         "friends.requests": "Venneanmodninger",
         "friends.yours": "Dine venner",
+        "money.price": "Pris pr. gram",
+        "money.perGram": "kr pr. gram",
+        "money.help": "Skriv hvad du typisk giver pr. gram, så kan du se, hvad du bruger, og hvad du sparer under en pause.",
+        "money.spent": "Brugt i perioden",
+        "money.avg": "I snit",
+        "money.week": "uge",
+        "money.month": "md.",
+        "money.err": "Skriv en pris i kroner, fx 80",
+        "badge.title": "Badges",
+        "badge.none": "Ingen endnu. Brug appen for at låse op!",
+        "badge.new": "🏅 Nyt badge: {name}",
+        "ch.title": "Ugens udfordring",
+        "ch.progress": "{n}/{goal} · {days} dage tilbage",
+        "ch.done": "Klaret! XP'en er lagt til din rank ✅",
+        "ch.completed": "🏆 Ugens udfordring er klaret! +{xp} XP",
         "streak.one": "🔥 1 dag i træk",
         "streak.many": "🔥 {n} dage i træk",
         "now.start": "Jeg smoker nu",
@@ -6532,6 +6655,21 @@
         "friends.searchPh": "Search for a smoker",
         "friends.requests": "Friend requests",
         "friends.yours": "Your friends",
+        "money.price": "Price per gram",
+        "money.perGram": "kr per gram",
+        "money.help": "Enter what you usually pay per gram to see what you spend and how much you save during a break.",
+        "money.spent": "Spent in period",
+        "money.avg": "On average",
+        "money.week": "week",
+        "money.month": "mo.",
+        "money.err": "Enter a price in kroner, e.g. 80",
+        "badge.title": "Badges",
+        "badge.none": "None yet. Use the app to unlock them!",
+        "badge.new": "🏅 New badge: {name}",
+        "ch.title": "Weekly challenge",
+        "ch.progress": "{n}/{goal} · {days} days left",
+        "ch.done": "Done! The XP was added to your rank ✅",
+        "ch.completed": "🏆 Weekly challenge done! +{xp} XP",
         "streak.one": "🔥 1 day in a row",
         "streak.many": "🔥 {n} days in a row",
         "now.start": "I'm smoking now",
@@ -8051,6 +8189,7 @@
               ${relation === "friend" ? `<button type="button" class="mini-btn primary" data-action="cheer">💪 ${t("tbm.cheerBtn")}</button>` : ""}
             </div>` : ""}
           <p class="bio ${p.bio ? "" : "empty"}">${p.bio ? esc(p.bio) : t("friends.noBio")}</p>
+          ${p.badges && Object.keys(p.badges).length ? `<div class="badge-row person-badges">${BADGES.filter((b) => p.badges[b.id]).map((b) => `<span title="${esc(badgeText(b)[0])}">${b.icon}</span>`).join("")}</div>` : ""}
           <div class="stats">
             <div><strong>${benchCount}</strong><span>${t("profile.benches")}</span></div>
             <button type="button" class="stat-btn" data-action="friends" ${Array.isArray(personFriends) ? "" : "disabled"}>
@@ -10152,6 +10291,7 @@
     }
 
     document.getElementById("dt-finish").addEventListener("click", () => {
+      recordGame("dt");
       dtCard.innerHTML = `
         <div class="dt-end">
           <p class="leader-title">${t("game.leaderboard")}</p>
@@ -10184,6 +10324,7 @@
     const diceEl = document.getElementById("dice-die");
     const diceBtn = document.getElementById("dice-roll");
     const diceResult = document.getElementById("dice-result");
+    let diceRecorded = false;
     showDie(diceEl, 6);
 
     diceBtn.addEventListener("click", async () => {
@@ -10191,6 +10332,10 @@
       diceResult.textContent = "";
       const value = await rollDie(diceEl);
       diceResult.textContent = t(value === 1 ? "dice.result1" : "dice.resultN", { n: value });
+      if (!diceRecorded) {
+        diceRecorded = true;
+        recordGame("dice");
+      }
       diceBtn.disabled = false;
     });
 
@@ -10207,6 +10352,7 @@
     let spinAngle = 0;
     let lastCard = -1;
     let lastCardText = "";
+    let spinRecorded = false;
 
     function renderSpin() {
       const n = spinPlayers.length;
@@ -10280,6 +10426,10 @@
           ${card === mirror ? `<p class="spin-prev">${t("spin.prev")}: ${esc(lastCardText)}</p>` : ""}`;
         if (card !== mirror) lastCardText = text;
         spinCard.classList.remove("hidden");
+        if (!spinRecorded) {
+          spinRecorded = true;
+          recordGame("spin");
+        }
         delete spinBtn.dataset.spinning;
         spinBtn.disabled = false;
       }, 3200);
@@ -10641,6 +10791,7 @@
     function showWinner(player) {
       confetti();
       vibrate([100, 60, 100, 60, 300]);
+      recordGame("goj");
       showTile("🏆", `
         ${whoHTML(player)}
         <h2>${t("game.won", { name: esc(players[player].name) })}</h2>
@@ -10748,6 +10899,7 @@
           logsLoaded = true;
           syncXp();
           renderStreak();
+          renderHomeExtras();
           renderStats();
           renderTBreak();
           updateDriveTimers();
@@ -11226,11 +11378,17 @@
     function computeXp(entries) {
       const base = (myProfile && myProfile.baseXp) || 0;
       const baseDay = base ? dayStart(myProfile.baseAt || Date.now()) : null;
-      if (!entries.length && !base) return 0;
+      const bonuses = Object.values((myProfile && myProfile.challenges) || {});
+      if (!entries.length && !base && !bonuses.length) return 0;
       const perDay = new Map();
       entries.forEach((e) => {
         const day = dayStart(entryTime(e));
         perDay.set(day, (perDay.get(day) || 0) + entryXp(e));
+      });
+      // Bonus-XP fra klarede udfordringer
+      bonuses.forEach((b) => {
+        const day = dayStart(b.at);
+        perDay.set(day, (perDay.get(day) || 0) + (b.xp || 0));
       });
       const today = dayStart(Date.now());
       const firstDay = Math.min(...perDay.keys(), ...(base ? [baseDay] : []));
@@ -11485,6 +11643,7 @@
           <div class="card"><span>${t("stats.avgHigh2")}</span><strong>${HIGH_EMOJI[Math.max(0, Math.round(avgHigh) - 1)]} ${fmt(avgHigh)}</strong></div>
         </div>
         ${change}
+        ${moneyHTML(grams, span)}
         ${chart}
         <div class="card habits">
           <h3>${t("stats.habits")}</h3>
@@ -11496,9 +11655,43 @@
               <small>${fav.pct}%</small>
             </div>`).join("")}
         </div>
-        ${driveCardHTML()}`;
+        ${driveCardHTML()}
+        <div class="card price-card">
+          <h3>💰 ${t("money.price")}</h3>
+          <div class="price-row">
+            <input type="text" inputmode="decimal" data-price value="${esc(aiProfile.price || "")}" placeholder="80">
+            <span>${t("money.perGram")}</span>
+          </div>
+          <p class="muted">${t("money.help")}</p>
+        </div>`;
       renderLogList();
     }
+
+    // Hvad man har brugt i perioden (kræver en gram-pris)
+    function moneyHTML(grams, span) {
+      const price = Number(String(aiProfile.price || "").replace(",", "."));
+      if (!price) return "";
+      const spent = grams * price;
+      const perWeek = (spent / span) * 7;
+      const perMonth = (spent / span) * 30;
+      const kr = (n) => Math.round(n).toLocaleString(t("locale"));
+      return `
+        <div class="stat-tiles money">
+          <div class="card"><span>💸 ${t("money.spent")}</span><strong>${kr(spent)} kr</strong></div>
+          <div class="card"><span>📅 ${t("money.avg")}</span><strong>${kr(perWeek)} <small>kr/${t("money.week")}</small></strong><small class="muted">${kr(perMonth)} kr/${t("money.month")}</small></div>
+        </div>`;
+    }
+
+    statsEl.addEventListener("change", (e) => {
+      const input = e.target.closest("[data-price]");
+      if (!input) return;
+      const value = String(input.value).replace(",", ".").trim();
+      if (value && !(Number(value) > 0 && Number(value) < 10000)) return showToast(t("money.err"));
+      aiProfile.price = value;
+      renderStats();
+      renderTBreakMode();
+      logsDoc().set({ profile: { price: value } }, { merge: true }).catch((error) => showToast(dbErrorText(error)));
+    });
 
     // Tryk eller peg på en søjle/et punkt for at se tallet
     statsEl.addEventListener("click", (e) => {
@@ -12090,6 +12283,8 @@
       const place = seshForm.elements.place.value.trim() || seshForm.elements.spot.value;
       setBusy(seshForm, true);
       try {
+        db.collection("profiles").doc(currentUserKey())
+          .set({ seshesHosted: (myProfile.seshesHosted || 0) + 1 }, { merge: true }).catch(() => {});
         await db.collection("seshes").add({
           host: currentUserKey(),
           hostName: myProfile ? myProfile.name : "?",
@@ -12223,6 +12418,186 @@
         .catch((error) => showToast(dbErrorText(error)));
     }
 
+    // ==========================================================
+    // BADGES: små trofæer, man låser op ved at bruge appen
+    // ==========================================================
+    // Badges regnes ud fra det, appen allerede ved, og gemmes på profilen,
+    // så venner også kan se dem.
+    const BADGES = [
+      { id: "first_log", icon: "🌱", da: ["Første smoke", "Log din første smoke"], en: ["First smoke", "Log your first smoke"], ok: (c) => c.logs >= 1 },
+      { id: "logs_50", icon: "📒", da: ["50 smoke seshs", "Log 50 smoke seshs"], en: ["50 smoke seshes", "Log 50 smoke seshes"], ok: (c) => c.logs >= 50 },
+      { id: "streak_7", icon: "🔥", da: ["7 dage i træk", "Log 7 dage i træk"], en: ["7 days in a row", "Log 7 days in a row"], ok: (c) => c.streak >= 7 },
+      { id: "streak_30", icon: "☄️", da: ["30 dage i træk", "Log 30 dage i træk"], en: ["30 days in a row", "Log 30 days in a row"], ok: (c) => c.streak >= 30 },
+      { id: "joints_10", icon: "🫴", da: ["Rullet 10 joints", "Log 10 joints eller spliffs"], en: ["Rolled 10 joints", "Log 10 joints or spliffs"], ok: (c) => c.joints >= 10 },
+      { id: "bong_10", icon: "💧", da: ["Bong-boss", "Log 10 bong-hits"], en: ["Bong boss", "Log 10 bong hits"], ok: (c) => c.bongs >= 10 },
+      { id: "ounce", icon: "⚖️", da: ["En hel ounce", "Ryg 28 gram i alt"], en: ["A whole ounce", "Smoke 28 grams in total"], ok: (c) => c.grams >= 28 },
+      { id: "first_tbreak", icon: "⏸️", da: ["Første T-break", "Gennemfør en T-break"], en: ["First T-break", "Complete a T-break"], ok: (c) => c.tbreaks >= 1 },
+      { id: "friends_5", icon: "🤝", da: ["5 venner", "Få 5 venner i appen"], en: ["5 friends", "Get 5 friends in the app"], ok: (c) => c.friends >= 5 },
+      { id: "roll_first", icon: "🌀", da: ["Roll-kunstner", "Del en roll i Rate the Roll"], en: ["Roll artist", "Share a roll in Rate the Roll"], ok: (c) => c.rolls >= 1 },
+      { id: "munch_first", icon: "🍕", da: ["Munchie-fotograf", "Del dine munchies"], en: ["Munchie photographer", "Share your munchies"], ok: (c) => c.munchies >= 1 },
+      { id: "spot_first", icon: "📍", da: ["Spot-finder", "Tilføj et smoke spot"], en: ["Spot finder", "Add a smoke spot"], ok: (c) => c.spots >= 1 },
+      { id: "host_sesh", icon: "🎉", da: ["Sesh-host", "Inviter til en sesh"], en: ["Sesh host", "Invite friends to a sesh"], ok: (c) => c.hosted >= 1 },
+      { id: "goj_done", icon: "🎲", da: ["Brætspiller", "Spil Game of Joints til ende"], en: ["Board gamer", "Finish a game of Game of Joints"], ok: (c) => c.games.goj >= 1 },
+      { id: "dt_done", icon: "💥", da: ["Double Trouble", "Spil et spil Double Trouble"], en: ["Double Trouble", "Play a game of Double Trouble"], ok: (c) => c.games.dt >= 1 },
+      { id: "quiz_master", icon: "🧠", da: ["Quiz-mester", "Få 5 rigtige i en quiz"], en: ["Quiz master", "Get 5 right in one quiz"], ok: (c) => c.quizBest >= 5 },
+      { id: "checklist_25", icon: "✅", da: ["Smagt 25 sorter", "Kryds 25 sorter af i tjeklisten"], en: ["Tasted 25 strains", "Tick off 25 strains in the checklist"], ok: (c) => c.strains >= 25 },
+      { id: "challenge", icon: "🏆", da: ["Ugens helt", "Klar en ugentlig udfordring"], en: ["Hero of the week", "Complete a weekly challenge"], ok: (c) => c.challenges >= 1 },
+      { id: "rank_top", icon: "🐶", da: ["Snoop Dogg Smoker", "Nå den højeste rank"], en: ["Snoop Dogg Smoker", "Reach the top rank"], ok: (c) => c.rank >= 7 },
+    ];
+
+    function badgeText(badge) {
+      return badge[lang === "en" ? "en" : "da"];
+    }
+
+    function badgeContext() {
+      const me = currentUserKey();
+      const p = myProfile || {};
+      const count = (key, values) => logEntries.filter((e) => values.includes(e[key])).length;
+      return {
+        logs: logEntries.length,
+        streak: Math.max(bestStreak(), currentStreak()),
+        joints: count("method", ["joint", "spliff"]),
+        bongs: count("method", ["bong"]),
+        grams: logEntries.reduce((s, e) => s + (Number(e.grams) || 0), 0),
+        tbreaks: p.tbreaksDone || 0,
+        friends: friendships.length,
+        rolls: rolls.filter((r) => r.author === me).length,
+        munchies: munchies.filter((m) => m.author === me).length,
+        spots: benches.filter((b) => b.addedBy === me).length,
+        hosted: (p.seshesHosted || 0) + seshes.filter((x) => x.host === me).length,
+        games: { goj: 0, dt: 0, ...(p.games || {}) },
+        quizBest: p.quizBest || 0,
+        strains: Object.keys(checked || {}).length,
+        challenges: Object.keys(p.challenges || {}).length,
+        rank: rankIndex(myXp),
+      };
+    }
+
+    // Find nye badges og gem dem på profilen
+    function syncBadges() {
+      if (!myProfile || !logsLoaded) return;
+      const have = myProfile.badges || {};
+      const ctx = badgeContext();
+      const fresh = BADGES.filter((b) => !have[b.id] && b.ok(ctx));
+      if (!fresh.length) return;
+      const update = {};
+      fresh.forEach((b) => { update[b.id] = Date.now(); });
+      myProfile.badges = { ...have, ...update };
+      showToast(t("badge.new", { name: `${fresh[0].icon} ${badgeText(fresh[0])[0]}` }));
+      db.collection("profiles").doc(currentUserKey()).set({ badges: update }, { merge: true }).catch(() => {});
+      renderBadges();
+    }
+
+    function badgesHTML(earned, showLocked) {
+      return `
+        <div class="badge-grid">
+          ${BADGES.filter((b) => showLocked || earned[b.id]).map((b) => {
+            const [name, desc] = badgeText(b);
+            return `
+              <div class="badge-item ${earned[b.id] ? "" : "locked"}" title="${esc(desc)}">
+                <span>${b.icon}</span>
+                <strong>${esc(name)}</strong>
+                ${showLocked ? `<small>${esc(desc)}</small>` : ""}
+              </div>`;
+          }).join("")}
+        </div>`;
+    }
+
+    function renderBadges() {
+      const earned = (myProfile && myProfile.badges) || {};
+      const n = BADGES.filter((b) => earned[b.id]).length;
+      document.getElementById("profile-badges").innerHTML = `
+        <details class="badges-card">
+          <summary>
+            <h3>🏅 ${t("badge.title")} <small>${n}/${BADGES.length}</small></h3>
+            <div class="badge-row">${BADGES.filter((b) => earned[b.id]).map((b) => `<span>${b.icon}</span>`).join("") || `<small class="muted">${t("badge.none")}</small>`}</div>
+          </summary>
+          ${badgesHTML(earned, true)}
+        </details>`;
+    }
+
+    // Tæl spil, man har spillet (til badges og ugens udfordring)
+    function recordGame(key) {
+      if (!myProfile) return;
+      const games = { ...(myProfile.games || {}) };
+      games[key] = (games[key] || 0) + 1;
+      myProfile.games = games;
+      myProfile.lastGameAt = Date.now();
+      db.collection("profiles").doc(currentUserKey()).set({ games, lastGameAt: Date.now() }, { merge: true }).catch(() => {});
+      syncBadges();
+      renderChallenge();
+    }
+
+    // ==========================================================
+    // UGENS UDFORDRING: samme for alle, giver bonus-XP
+    // ==========================================================
+    function weekStart(time = Date.now()) {
+      const d = new Date(dayStart(time));
+      const back = (d.getDay() + 6) % 7;   // mandag = 0
+      d.setDate(d.getDate() - back);
+      return d.getTime();
+    }
+
+    function weekKey(time = Date.now()) {
+      return "w" + Math.round(weekStart(time) / DAY);
+    }
+
+    const CHALLENGES = [
+      { id: "logs5", xp: 150, goal: 5, da: "Log 5 smoke seshs", en: "Log 5 smoke seshes",
+        progress: (w) => logEntries.filter((e) => entryTime(e) >= w).length },
+      { id: "grams3", xp: 150, goal: 3, da: "Ryg 3 gram i alt", en: "Smoke 3 grams in total",
+        progress: (w) => Math.floor(logEntries.filter((e) => entryTime(e) >= w).reduce((s, e) => s + (Number(e.grams) || 0), 0) * 10) / 10 },
+      { id: "methods3", xp: 120, goal: 3, da: "Prøv 3 forskellige metoder", en: "Try 3 different methods",
+        progress: (w) => new Set(logEntries.filter((e) => entryTime(e) >= w).map((e) => e.method)).size },
+      { id: "days4", xp: 150, goal: 4, da: "Smoke på 4 forskellige dage", en: "Smoke on 4 different days",
+        progress: (w) => new Set(logEntries.filter((e) => entryTime(e) >= w).map((e) => dayStart(entryTime(e)))).size },
+      { id: "weekend", xp: 100, goal: 2, da: "Log en smoke både lørdag og søndag", en: "Log a smoke on both Saturday and Sunday",
+        progress: (w) => new Set(logEntries.filter((e) => entryTime(e) >= w && [0, 6].includes(new Date(entryTime(e)).getDay())).map((e) => new Date(entryTime(e)).getDay())).size },
+      { id: "hash2", xp: 120, goal: 2, da: "Log hash eller koncentrat 2 gange", en: "Log hash or concentrate twice",
+        progress: (w) => logEntries.filter((e) => entryTime(e) >= w && ["hash", "concentrate"].includes(e.product)).length },
+      { id: "roll", xp: 100, goal: 1, da: "Del en roll i Rate the Roll", en: "Share a roll in Rate the Roll",
+        progress: (w) => rolls.filter((r) => r.author === currentUserKey() && r.createdAt >= w).length },
+      { id: "munch", xp: 80, goal: 1, da: "Del dine munchies", en: "Share your munchies",
+        progress: (w) => munchies.filter((m) => m.author === currentUserKey() && m.createdAt >= w).length },
+      { id: "sesh", xp: 100, goal: 1, da: "Inviter vennerne til en sesh", en: "Invite your friends to a sesh",
+        progress: (w) => seshes.filter((x) => x.host === currentUserKey() && x.createdAt >= w).length },
+      { id: "game", xp: 80, goal: 1, da: "Spil et spil fra Games of Joints", en: "Play a game from Games of Joints",
+        progress: (w) => ((myProfile && myProfile.lastGameAt) || 0) >= w ? 1 : 0 },
+    ];
+
+    function currentChallenge() {
+      const key = weekKey();
+      const index = dayHash(Number(key.slice(1))) % CHALLENGES.length;
+      return { key, ...CHALLENGES[index] };
+    }
+
+    function renderChallenge() {
+      const card = document.getElementById("challenge-card");
+      if (!myProfile) return;
+      const c = currentChallenge();
+      const done = myProfile.challenges && myProfile.challenges[c.key];
+      const progress = Math.min(c.goal, c.progress(weekStart()));
+      const left = Math.ceil((weekStart() + 7 * DAY - Date.now()) / DAY);
+      card.innerHTML = `
+        <div class="challenge-head">
+          <small class="eyebrow">🏆 ${t("ch.title")}</small>
+          <span class="challenge-xp">+${c.xp} XP</span>
+        </div>
+        <strong>${esc(lang === "en" ? c.en : c.da)}</strong>
+        <div class="progress"><span style="width:${(progress / c.goal) * 100}%"></span></div>
+        <small class="muted">${done ? t("ch.done") : t("ch.progress", { n: progress, goal: c.goal, days: left })}</small>`;
+      card.classList.toggle("done", !!done);
+      // Klaret? Så får man XP med det samme
+      if (!done && progress >= c.goal && logsLoaded) {
+        const entry = { id: c.id, xp: c.xp, at: Date.now() };
+        myProfile.challenges = { ...(myProfile.challenges || {}), [c.key]: entry };
+        showToast(t("ch.completed", { xp: c.xp }));
+        db.collection("profiles").doc(currentUserKey()).set({ challenges: { [c.key]: entry } }, { merge: true }).catch(() => {});
+        syncXp();
+        renderChallenge();
+      }
+    }
+
     // ---------- Det hele på forsiden ----------
     function renderHomeExtras() {
       if (!currentUserKey()) return;
@@ -12230,6 +12605,9 @@
       renderSmokingNow();
       renderTBreakMode();
       renderSeshes();
+      renderChallenge();
+      renderBadges();
+      syncBadges();
     }
 
     // ---------- Genveje på hjemmeskærmen ----------
