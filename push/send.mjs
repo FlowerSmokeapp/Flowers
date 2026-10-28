@@ -133,5 +133,7 @@ async function main() {
 
 main().catch((error) => {
   console.error(error);
+  // Vis fejlen som en besked på kørslen i GitHub
+  console.log(`::error::${String(error.message || error).replace(/\n/g, " ")}`);
   process.exit(1);
 });
