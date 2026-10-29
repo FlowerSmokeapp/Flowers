@@ -1,0 +1,8 @@
+{
+  "name": "flower-x-poster",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "twitter-api-v2": "1.29.1"
+  }
+}

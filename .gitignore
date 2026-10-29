@@ -1,2 +1,5 @@
 android-app/node_modules/
 android-app/android/
+promo/x/node_modules/
+promo/video/raw*/
+promo/video/out*/

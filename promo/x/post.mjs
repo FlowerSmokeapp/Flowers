@@ -1,0 +1,46 @@
+// Poster det næste opslag fra promo/x/queue til X og flytter det til promo/x/posted.
+// Et opslag er en .txt-fil (teksten) og evt. en .mp4 med samme navn. De tages i navne-rækkefølge.
+// Kræver repo-secrets: X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN og X_ACCESS_SECRET.
+import { readdirSync, readFileSync, existsSync, renameSync, appendFileSync } from "node:fs";
+import { join } from "node:path";
+import { TwitterApi } from "twitter-api-v2";
+
+const dir = new URL(".", import.meta.url).pathname;
+const queue = join(dir, "queue");
+const posted = join(dir, "posted");
+
+const { X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET } = process.env;
+if (!X_API_KEY || !X_API_SECRET || !X_ACCESS_TOKEN || !X_ACCESS_SECRET) {
+  console.log("::warning::Tilføj X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN og X_ACCESS_SECRET under Settings → Secrets → Actions");
+  process.exit(0);
+}
+
+const next = readdirSync(queue).filter((f) => f.endsWith(".txt")).sort()[0];
+if (!next) {
+  console.log("::warning::Køen i promo/x/queue er tom");
+  process.exit(0);
+}
+const name = next.slice(0, -4);
+const text = readFileSync(join(queue, next), "utf8").trim();
+if ([...text].length > 280) throw new Error(`${next} er over 280 tegn`);
+
+const client = new TwitterApi({
+  appKey: X_API_KEY,
+  appSecret: X_API_SECRET,
+  accessToken: X_ACCESS_TOKEN,
+  accessSecret: X_ACCESS_SECRET,
+});
+
+const payload = {};
+const video = join(queue, name + ".mp4");
+if (existsSync(video)) {
+  const mediaId = await client.v2.uploadMedia(readFileSync(video), { media_type: "video/mp4" });
+  payload.media = { media_ids: [mediaId] };
+}
+const { data } = await client.v2.tweet(text, payload);
+const url = `https://x.com/i/status/${data.id}`;
+console.log(`Postet ${name}: ${url}`);
+
+renameSync(join(queue, next), join(posted, next));
+if (existsSync(video)) renameSync(video, join(posted, name + ".mp4"));
+appendFileSync(join(posted, "log.md"), `- ${new Date().toISOString().slice(0, 16).replace("T", " ")} UTC · ${name} · ${url}\n`);

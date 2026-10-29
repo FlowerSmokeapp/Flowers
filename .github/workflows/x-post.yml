@@ -1,0 +1,43 @@
+# Poster det næste opslag fra promo/x/queue til X én gang om dagen (kl. 18:17 dansk vintertid).
+# Kræver repo-secrets: X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN og X_ACCESS_SECRET.
+# Sæt variablen X_PAUSED til true under Settings → Variables → Actions for at holde pause.
+name: X-opslag
+
+on:
+  schedule:
+    - cron: "17 17 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: x-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    if: vars.X_PAUSED != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Installer
+        working-directory: promo/x
+        run: npm ci --no-audit --no-fund
+      - name: Post næste opslag
+        run: node promo/x/post.mjs
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+      - name: Gem at opslaget er postet
+        run: |
+          git add -A promo/x/queue promo/x/posted
+          git diff --cached --quiet && exit 0
+          git -c user.name="Flower bot" -c user.email="actions@github.com" commit -m "X: postet næste opslag"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
