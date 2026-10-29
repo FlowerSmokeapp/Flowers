@@ -149,7 +149,7 @@ async function signIn(env) {
   const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: env.PUSH_EMAIL, password: env.PUSH_PASSWORD, returnSecureToken: true }),
+    body: JSON.stringify({ email: env.PUSH_EMAIL.trim(), password: env.PUSH_PASSWORD, returnSecureToken: true }),
   });
   const json = await res.json();
   if (!json.idToken) throw new Error("Kunne ikke logge ind som bot: " + JSON.stringify(json.error || json));

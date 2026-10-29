@@ -18,11 +18,15 @@ jobs:
     env:
       CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
+      - uses: actions/checkout@v4
+      - name: Tjek bot-kontoen
+        run: node push-worker/check.mjs
+        env:
+          PUSH_EMAIL: ${{ secrets.PUSH_EMAIL }}
+          PUSH_PASSWORD: ${{ secrets.PUSH_PASSWORD }}
       - name: Mangler Cloudflare-nøglen?
         if: env.CF_TOKEN == ''
         run: echo "::warning::Tilføj CLOUDFLARE_API_TOKEN og CLOUDFLARE_ACCOUNT_ID under Settings → Secrets → Actions"
-      - uses: actions/checkout@v4
-        if: env.CF_TOKEN != ''
       - uses: cloudflare/wrangler-action@v3
         if: env.CF_TOKEN != ''
         with:
