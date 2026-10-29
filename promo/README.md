@@ -6,7 +6,7 @@ dem i et planlægningsværktøj som Buffer eller Metricool. AI'en poster aldrig 
 
 ## Om appen
 - **Flower**: en social app for folk, der ryger cannabis, på dansk og engelsk.
-- Link: https://danielsh08.github.io/Flowers/ (download-side: https://danielsh08.github.io/Flowers/download/)
+- Link: https://flowersmokeapp.github.io/Flowers/ (download-side: https://flowersmokeapp.github.io/Flowers/download/)
 - Det fede ved appen:
   - **Spil**: Game of Joints (brætspil), Spin the Joint 1 (Nem, Svær, Umulig) og 2 (lykkehjul med straffe), Terningespillet, Double Trouble og Weed Quiz.
   - **Smoke spots** på et kort, med billeder og bedømmelser.
