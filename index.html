@@ -5587,6 +5587,40 @@
     .log-feelings {
       color: var(--accent);
     }
+
+    /* ---------- Inviter venner ---------- */
+    .invite-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 14px;
+    }
+    .invite-icon {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .invite-text {
+      display: grid;
+      flex: 1;
+      gap: 2px;
+      min-width: 0;
+    }
+    .invite-text small {
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+    #invite-btn {
+      flex: none;
+      padding: 9px 16px;
+    }
   </style>
 </head>
 <body>
@@ -6275,6 +6309,14 @@
               <div id="suggest-section">
                 <h2 class="section-title" data-i18n="friends.suggest">Venneforslag</h2>
                 <div id="suggest-list" class="people"></div>
+                <div class="card invite-card">
+                  <span class="invite-icon"><svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M19 8v6M16 11h6"/></svg></span>
+                  <div class="invite-text">
+                    <strong data-i18n="invite.title">Inviter venner</strong>
+                    <small data-i18n="invite.help">Del et link. Når din ven opretter sig, får du automatisk en venneanmodning fra dem.</small>
+                  </div>
+                  <button type="button" class="mini-btn primary" id="invite-btn" data-i18n="invite.btn">Del</button>
+                </div>
               </div>
               <div id="sent-section" class="hidden">
                 <h2 class="section-title" data-i18n="friends.sent">Sendte anmodninger</h2>
@@ -7404,6 +7446,12 @@
         "tbm.cheerSent": "Du heppede på {name}",
         "friends.suggest": "Venneforslag",
         "friends.noSuggest": "Ingen venneforslag lige nu",
+        "invite.title": "Inviter venner",
+        "invite.help": "Del et link. Når din ven opretter sig, får du automatisk en venneanmodning fra dem.",
+        "invite.btn": "Del",
+        "invite.text": "Kom med på Flower! Log dine smokes, spil Spin the Joint og find smoke spots. Tilføj mig: {name} 🌿",
+        "invite.copied": "Link kopieret. Send det til dine venner",
+        "invite.copyPrompt": "Kopiér linket og send det til dine venner:",
         "friends.mutual1": "1 fælles ven",
         "friends.mutualN": "{n} fælles venner",
         "tonight.label": "Aftenens spil",
@@ -8112,6 +8160,12 @@
         "tbm.cheerSent": "You cheered on {name}",
         "friends.suggest": "Friend suggestions",
         "friends.noSuggest": "No friend suggestions right now",
+        "invite.title": "Invite friends",
+        "invite.help": "Share a link. When your friend signs up, you'll automatically get a friend request from them.",
+        "invite.btn": "Share",
+        "invite.text": "Join me on Flower! Log your smokes, play Spin the Joint and find smoke spots. Add me: {name} 🌿",
+        "invite.copied": "Link copied. Send it to your friends",
+        "invite.copyPrompt": "Copy the link and send it to your friends:",
         "friends.mutual1": "1 mutual friend",
         "friends.mutualN": "{n} mutual friends",
         "tonight.label": "Tonight's game",
@@ -8483,6 +8537,7 @@
             renderProfile();
             checkOnboarding();
             setTimeout(maybeAskPush, 800);
+            setTimeout(applyInvite, 1500);
             // Start-XP kan være ændret, så regn rank igen (når registreringerne er hentet)
             if (myProfile && logsLoaded) syncXp();
           },
@@ -9571,6 +9626,61 @@
       profileCache.clear();
       document.getElementById("friends-badge").classList.add("hidden");
     }
+
+    // ---------- Inviter venner ----------
+    // Linket indeholder ?ref=<mit id>. Åbner en ny bruger det, huskes id'et,
+    // og når de har oprettet deres profil, sendes en venneanmodning til mig.
+    try {
+      const ref = new URLSearchParams(location.search).get("ref");
+      if (ref) localStorage.setItem("inviteRef", ref);
+    } catch {
+      // Privat browsing
+    }
+
+    async function applyInvite() {
+      let ref = null;
+      try {
+        ref = localStorage.getItem("inviteRef");
+      } catch {
+        return;
+      }
+      const me = currentUserKey();
+      if (!ref || !me || !myProfile || !myProfile.onboarded) return;
+      try {
+        localStorage.removeItem("inviteRef");
+      } catch {
+        // ignorer
+      }
+      if (ref === me) return;
+      try {
+        const [friend, inviter] = await Promise.all([
+          db.collection("friendships").doc(friendshipId(me, ref)).get(),
+          getProfile(ref, true),
+        ]);
+        if (friend.exists || inviter.missing || relationTo(ref) === "outgoing") return;
+        await sendRequest(ref);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    document.getElementById("invite-btn").addEventListener("click", async () => {
+      const me = currentUserKey();
+      if (!me) return;
+      const url = `${location.origin}${location.pathname}?ref=${encodeURIComponent(me)}`;
+      const text = t("invite.text", { name: myProfile ? myProfile.name : "" });
+      try {
+        if (navigator.share) return await navigator.share({ title: "Flower", text, url });
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+      }
+      try {
+        await navigator.clipboard.writeText(`${text} ${url}`);
+        showToast(t("invite.copied"));
+      } catch {
+        prompt(t("invite.copyPrompt"), url);
+      }
+    });
 
     function relationTo(uid) {
       if (friendships.some((f) => f.users.includes(uid))) return "friend";
