@@ -1,6 +1,6 @@
 // Service worker til Flower: gør at appen åbner som en rigtig app (også
 // uden internet) og kan vise notifikationer på telefonen.
-const CACHE = "flower-v4";
+const CACHE = "flower-v5";
 const SHELL = [
   "./",
   "index.html",
@@ -9,6 +9,7 @@ const SHELL = [
   "icon-192.png",
   "icon-512.png",
   "joint.webp",
+  "logo.svg",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
 ];
