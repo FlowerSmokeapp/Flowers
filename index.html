@@ -7230,7 +7230,7 @@
         "notif.state.granted": "Notifikationer er slået til",
         "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
         "notif.state.unsupported": "Ikke understøttet her",
-        "notif.help": "Du får en notifikation på telefonen, når nogen skriver til dig, sender en venneanmodning, inviterer til en sesh eller kommenterer dit opslag. Også når appen er lukket (kan tage op til 10-15 minutter).",
+        "notif.help": "Du får en notifikation på telefonen, når nogen skriver til dig, sender en venneanmodning, inviterer til en sesh eller kommenterer dit opslag. Også når appen er lukket (kan tage op til et minut).",
         "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
         "cl.more": "Vis mere",
         "cl.title": "Opdateringer",
@@ -7938,7 +7938,7 @@
         "notif.state.granted": "Notifications are on",
         "notif.state.denied": "Notifications are blocked in your phone's settings",
         "notif.state.unsupported": "Not supported here",
-        "notif.help": "You'll get a notification on your phone when someone messages you, sends a friend request, invites you to a sesh or comments on your post. Even when the app is closed (can take up to 10-15 minutes).",
+        "notif.help": "You'll get a notification on your phone when someone messages you, sends a friend request, invites you to a sesh or comments on your post. Even when the app is closed (can take up to a minute).",
         "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
         "cl.more": "Show more",
         "cl.title": "Updates",
@@ -14536,7 +14536,7 @@
     // ---------- Push: notifikationer, når appen er lukket ----------
     // Telefonen giver et "abonnement", som gemmes i pushSubs/{uid}.
     // Når man skriver til nogen osv., lægges en besked i pushQueue.
-    // En GitHub Action kigger i køen hvert 5. minut og sender beskederne.
+    // En Cloudflare Worker (push-worker) kigger i køen hvert minut og sender beskederne.
     const PUSH_PUBLIC_KEY = "BCddMZ1dKlYPo9CdWxrjmrs1QyxwnmJ7gyQPWqDlkO-EOl96MrUSThl7oiB5LY4SiiqNewhoGXZLlECLP6fcLXI";
     let pushAsked = false;
 

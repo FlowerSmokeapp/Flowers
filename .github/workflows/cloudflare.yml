@@ -1,0 +1,39 @@
+# Lægger push-afsenderen (push-worker) op på Cloudflare, når den ændres.
+# Kræver repo-secrets: CLOUDFLARE_API_TOKEN og CLOUDFLARE_ACCOUNT_ID
+# samt PUSH_EMAIL, PUSH_PASSWORD og VAPID_PRIVATE (sendes videre til Worker'en).
+name: Cloudflare push
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "push-worker/**"
+      - ".github/workflows/cloudflare.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Mangler Cloudflare-nøglen?
+        if: env.CF_TOKEN == ''
+        run: echo "::warning::Tilføj CLOUDFLARE_API_TOKEN og CLOUDFLARE_ACCOUNT_ID under Settings → Secrets → Actions"
+      - uses: actions/checkout@v4
+        if: env.CF_TOKEN != ''
+      - uses: cloudflare/wrangler-action@v3
+        if: env.CF_TOKEN != ''
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: push-worker
+          secrets: |
+            PUSH_EMAIL
+            PUSH_PASSWORD
+            VAPID_PRIVATE
+        env:
+          PUSH_EMAIL: ${{ secrets.PUSH_EMAIL }}
+          PUSH_PASSWORD: ${{ secrets.PUSH_PASSWORD }}
+          VAPID_PRIVATE: ${{ secrets.VAPID_PRIVATE }}

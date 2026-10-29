@@ -1,0 +1,10 @@
+# Cloudflare Worker, der sender Flowers push-notifikationer.
+# Hemmelighederne (PUSH_EMAIL, PUSH_PASSWORD, VAPID_PRIVATE) sættes af
+# GitHub Actions ud fra repoets secrets, når Worker'en bliver lagt op.
+name = "flower-push"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+workers_dev = false
+
+[triggers]
+crons = ["* * * * *"]
