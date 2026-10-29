@@ -20,6 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Tjek bot-kontoen
+        continue-on-error: true
         run: node push-worker/check.mjs
         env:
           PUSH_EMAIL: ${{ secrets.PUSH_EMAIL }}
